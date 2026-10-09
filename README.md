@@ -8,8 +8,10 @@ branches. No template language is used.
 
 This branch is the Go foundation. Its private counting example has a domain, a Files port, a
 disk adapter and an in-memory fake, with example and property tests. There is no command-line
-executable here yet; `go/cli` adds that public entry point. The template is not advertised as
-ready until both planned combinations pass the final template-check piece.
+executable here; `go/cli` adds that public entry point. The manifest declares render checks
+for both combinations, including a pinned credential scan. A render excludes the template's
+itos configuration and work history. Fresh-project policy and CI still need separate
+verification before this branch's gates can be claimed for generated projects.
 
 ## Check the Go project
 
@@ -30,7 +32,8 @@ whitespace, using Go's standard library; punctuation does not split a word. Thus
 is one word. The domain has no JSON, flags or exit codes, and file access is read-only through
 its port. Its additive property uses newline-terminated pieces to preserve word boundaries.
 
-Read [docs/architecture.md](docs/architecture.md) for the layer boundaries,
+Read [docs/engineering.md](docs/engineering.md) for shared engineering rules,
+[docs/architecture.md](docs/architecture.md) for the layer boundaries,
 [docs/security.md](docs/security.md) for trust boundaries, and
 [docs/upgrading.md](docs/upgrading.md) before moving dependency pins.
 

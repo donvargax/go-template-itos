@@ -13,7 +13,8 @@ upstream identities, licenses and notices. Go's vulnerability scan examines used
 including test dependencies and the standard library. Mutation proof and its CI sample judge
 recorded behavior; these controls do not isolate untrusted programs.
 
-No render credential scan is installed at this stage. The template-check piece adds a pinned
-scanner and proves every supported combination before claiming that protection. A template's
-check commands can execute programs, so run them only in an environment appropriate to that
-trust. itos's hooks and commit rules are workflow controls, not a security sandbox.
+The manifest declares pinned gitleaks as a root credential check, so itos-template check
+scans every supported render. This does not establish a standing credential scan in a made
+project's own CI. A template's check commands can execute programs, so run them only in an
+environment appropriate to that trust. itos's hooks and commit rules are workflow controls,
+not a security sandbox.

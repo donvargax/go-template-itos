@@ -3,6 +3,9 @@
 Read `PLAN.md` first. This repository is itself the template; each branch stays a real project.
 This branch has the Go foundation and a private counting example, not the public CLI yet.
 
+Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
+stack and interface; stack and feature guides add only what is specific to them.
+
 The person's session coordinates with `itos go`. An implementing agent runs `itos guide work`,
 takes its item with `itos work take`, does the work itself and starts no agents. Read the registry
 with `itos work`; never edit owners or statuses by hand.
