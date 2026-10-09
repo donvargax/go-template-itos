@@ -10,4 +10,14 @@
 #     depends_on: []
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
-items: []
+items:
+  - id: T-1
+    title: Bootstrap the language-neutral template root
+    phase: 1
+    owner: donvargax
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      Establish shared root policy, documentation, Renovate setup and root-only CI before the Go
+      stack or CLI exists.
