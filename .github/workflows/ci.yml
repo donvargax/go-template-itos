@@ -65,6 +65,12 @@ jobs:
     defaults:
       run:
         shell: bash
+    # A GOCOVERDIR that is not there is a coverage failure the binary prints on
+    # stderr on every run, and stderr is what a scenario reads: the folder is
+    # made before the tests below, so the runs are quiet. What the runs write
+    # stays on the runner, for the piece that merges coverage to read.
+    env:
+      GOCOVERDIR: ${{ runner.temp }}/cover
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -74,11 +80,12 @@ jobs:
       # go test carries on past a package that fails, so one run shows a platform's every
       # failure. The features build the binary they run themselves, go-template-itos.exe on
       # windows, stamped with a known version and commit.
-      # GOCOVERDIR makes that binary a -cover build, so the scenarios run cover-enabled code;
-      # the coverage it writes is this job's to read, not something it merges here.
+      # GOCOVERDIR, made above, makes that binary a -cover build, so the scenarios run
+      # cover-enabled code rather than the same code with the counter left out.
       # RAPID_CHECKS=1: each property of the domain on one random case, as in the CI plan.
       - name: Tests
-        run: go test ./... -count=1
+        run: |
+          mkdir -p "$GOCOVERDIR"
+          go test ./... -count=1
         env:
           RAPID_CHECKS: 1
-          GOCOVERDIR: ${{ runner.temp }}/cover
