@@ -10,7 +10,7 @@ Feature: Shell completion
   kong declares. The scripts name this project's own binary. The scenarios ask
   __complete, as a script would, on the three systems; no shell runs in them.
 
-  @ID-COMPL-01 @count-cli @wip
+  @ID-COMPL-01 @count-cli
   Scenario: a new word at the top completes to the commands, the hidden one left out
     When go-template-itos runs with "__complete ''"
     Then it exits with code 0
@@ -19,7 +19,7 @@ Feature: Shell completion
     And its standard output lists "completion"
     And its standard output does not list "__complete"
 
-  @ID-COMPL-02 @count-cli @wip
+  @ID-COMPL-02 @count-cli
   Scenario: a flag of a command completes from its name's start
     When go-template-itos runs with "__complete count notes.txt --js"
     Then it exits with code 0
@@ -27,13 +27,13 @@ Feature: Shell completion
     And the last line of its standard output is ":none"
 
   # count's argument is a path, so the shell is the one that knows the file names.
-  @ID-COMPL-03 @count-cli @wip
+  @ID-COMPL-03 @count-cli
   Scenario: a command's argument is left to the shell's completion of file names
     When go-template-itos runs with "__complete count ''"
     Then it exits with code 0
     And the last line of its standard output is ":files"
 
-  @ID-COMPL-04 @count-cli @wip
+  @ID-COMPL-04 @count-cli
   Scenario Outline: completion prints a script for <shell> that asks go-template-itos
     When go-template-itos runs with "completion <shell>"
     Then it exits with code 0
@@ -47,20 +47,20 @@ Feature: Shell completion
       | fish       |
       | powershell |
 
-  @ID-COMPL-05 @count-cli @wip
+  @ID-COMPL-05 @count-cli
   Scenario: completion refuses a shell it has no script for with exit 2, naming it
     When go-template-itos runs with "completion tcsh"
     Then it exits with code 2
     And its error output says "tcsh"
 
-  @ID-COMPL-06 @count-cli @wip
+  @ID-COMPL-06 @count-cli
   Scenario: the help names completion and not __complete
     When go-template-itos runs with "--help"
     Then it exits with code 0
     And its standard output says "completion"
     And its standard output does not say "__complete"
 
-  @ID-COMPL-07 @count-cli @wip
+  @ID-COMPL-07 @count-cli
   Scenario: completion handles a shell with no current word
     When go-template-itos runs with "__complete"
     Then it exits with code 0
