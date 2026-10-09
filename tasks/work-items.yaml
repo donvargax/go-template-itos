@@ -154,3 +154,20 @@ items:
       selected branches quality rules, and that running setup does not silently weaken CI or
       regenerate rules from a weaker starter. Any missing itos capability is reported upstream
       rather than worked around here.
+  - id: made-project-ci
+    title: Run the inherited Go and CLI checks on a generated ordinary main branch
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Belongs on stack/go for Go CI, with CLI scenario additions on go/cli. Keep root main
+      language-neutral. Current Go workflows condition Go setup and platform jobs on template branch
+      names, so ordinary generated main skips them. Each emitted workflow must exercise the code it
+      carries without needing the template branch names; retain Linux/macOS/Windows tests,
+      dependency checks, lint, vulnerability checks, coverage and mutation sampling. Coordinate with
+      made-project-policy for configured itos gates rather than treating template render checks as
+      emitted-project CI. Verify actual generated-project workflow behavior and exact-head CI, not
+      only YAML strings or template-branch green runs. Common manifest declarations land on root
+      main and merge downward separately.
