@@ -25,3 +25,16 @@
         test -f docs/upgrading.md && test -f LICENSE && test -f .gitattributes &&
         test -f .gitignore && test -f .github/workflows/ci.yml &&
         test -f .github/renovate.json5 && test -x tools/bin/doc-caps
+- id: T-2
+  type: build
+  title: Build the Go foundation and its proof gates
+  why: >
+    Add a working Go module with the specified private counting example and its
+    domain, port, disk adapter, fake and property tests. Retarget Go tooling and
+    CI to this branch, keep it buildable without the later CLI, and prove changed
+    code with fresh mutation evidence.
+  done_when:
+    - run: go mod verify
+    - run: go mod tidy -diff
+    - run: go test ./...
+    - run: tools/bin/domain-coverage
