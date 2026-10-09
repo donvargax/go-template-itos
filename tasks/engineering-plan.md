@@ -24,8 +24,10 @@ branch's actual code in view, not by copying root bootstrap claims into finished
 - `go-architecture` strengthens existing depguard enforcement on `stack/go`, then inherits
   into `go/cli`. Additions needed only for the CLI stay in the feature's configuration.
 - `cli-contract` carries the reusable CLI guide and exhaustive failure handling on `go/cli`.
-  Duplicate-flag behavior is held for q-1: the existing scenario accepts last-negation-wins,
-  unlike the source contract. Do not change it in a documentation or lint commit.
+  q-1 selects rejection of repeated non-cumulative flags with usage exit 2, matching the
+  source contract. Replace the existing last-negation-wins specification before building
+  the change; explicitly cumulative flags remain repeatable. Do not change behavior in a
+  documentation or lint commit.
 - `made-project-policy` separates reusable rules from template history. Common policy
   belongs on the root; Go and CLI additions belong on their branches. It depends on a
   supported fresh-project initialization mechanism, not an invented workaround around itos.

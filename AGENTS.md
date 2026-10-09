@@ -4,6 +4,9 @@ Read `PLAN.md` first. This repository is itself the template: its branches must 
 projects. The root currently has no Go module or executable. Add each language-specific gate
 with the code it checks; never claim a check runs before it exists.
 
+Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
+stack and interface; stack and feature guides add only what is specific to them.
+
 The person's session coordinates with `itos go`. An implementing agent runs `itos guide work`,
 takes its named item with `itos work take`, does the work itself and starts no agents. Read work
 through `itos work`; never edit owners or statuses by hand. Bootstrap initialization is owned
