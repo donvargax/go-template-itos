@@ -77,11 +77,12 @@ Feature: Count
     And its JSON output gives file "notes.txt", 2 lines and 5 words
 
   # -- ends the options and an option-argument is never read as a flag, so a file
-  # whose name starts with a dash is still counted.
+  # whose name starts with a dash is still counted. --json comes before the --,
+  # which ends the options: after it --json is a file's name, not a switch.
   @ID-COUNT-08 @count-cli @wip
   Scenario: -- ends the options so a name starting with - is a file
     Given the file "-draft.txt" contains "one two"
-    When go-template-itos runs with "count -- -draft.txt --json"
+    When go-template-itos runs with "count --json -- -draft.txt"
     Then it exits with code 0
     And its JSON output gives file "-draft.txt", 1 lines and 2 words
 
