@@ -116,7 +116,7 @@ items:
       remove stale bootstrap claims on this branch, and preserve all gates. The template branch and
       emitted project must be discussed separately until emitted-project setup and CI are verified.
   - id: cli-contract
-    title: Carry the general CLI contract and exhaustive failure handling into go/cli
+    title: Document the reusable CLI contract on go/cli
     phase: 1
     owner: null
     status: todo
@@ -135,6 +135,11 @@ items:
       implementation, not a docs or lint task disguised as a fix. Reconcile non-domain unit tests
       with the agreed scenario/testing policy before removing tests. Correct CLI-branch bootstrap
       documentation without claiming dormant releases run.
+
+      Split before implementation: this item now owns documentation only. Exhaustive error linting
+      is cli-exhaustive-errors; the q-1 behavior change is cli-once-only-flags. Describe the current
+      behavior accurately and identify the selected change as pending until its slice lands. Do not
+      change live scenarios, flags or error classification in the documentation item.
   - id: made-project-policy
     title: Give generated projects fresh governance with the inherited quality policy
     phase: 1
