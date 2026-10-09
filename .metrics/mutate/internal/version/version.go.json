@@ -3,7 +3,7 @@
   "file": "internal/version/version.go",
   "language": "go",
   "tests": {
-    "cmd/go-template-itos/main_test.go": "39cc8b88ce015e7c6810171252882769918b9362c7af8bdeb6a102dc3d28a968",
+    "cmd/go-template-itos/main_test.go": "25c7791b428d496ef053e24de090fe8a4221dea3cee5ea94f5ea5891f732e157",
     "internal/version/version_test.go": "08fab3fc897b6f89b46461c7e626876b12e56b658f1e78e16f5af356a7dd9ff5"
   },
   "units": [

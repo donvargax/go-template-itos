@@ -3,7 +3,7 @@
   "file": "internal/cli/completion.go",
   "language": "go",
   "tests": {
-    "cmd/go-template-itos/main_test.go": "39cc8b88ce015e7c6810171252882769918b9362c7af8bdeb6a102dc3d28a968",
+    "cmd/go-template-itos/main_test.go": "25c7791b428d496ef053e24de090fe8a4221dea3cee5ea94f5ea5891f732e157",
     "internal/cli/cli_test.go": "52abace9ae31e82ba96750e462a1c12d1e1c36a43e786795a58ebe9cb141a96b",
     "internal/cli/completion_test.go": "e5a2efb94994d45b2580e11e919af565e5650f39d7116c388c78fbba98e626e3",
     "internal/cli/flags_test.go": "cba940b5f7aaa4bc3b7c4c6b2d56d010d063fdd1133880c89764a28cf3e3068a",
