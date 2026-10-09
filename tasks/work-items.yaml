@@ -172,3 +172,21 @@ items:
       binary releases distinct from template branch/tag releases, and never publish a nonexistent
       root binary. Preserve GoReleaser checksums and attestation, prove the wiring on a generated
       main, and make docs say what runs rather than what the dormant scaffold promises.
+  - id: cli-once-only-flags
+    title: Reject repeated non-cumulative flags in the default CLI
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Belongs on go/cli. The person selected q-1: match itos-template by refusing each
+      non-cumulative flag repeated with usage exit 2, including --json --no-json, while explicitly
+      cumulative flags remain repeatable. Current ID-COUNT-06 specifies last-negation-wins, so
+      specify new wip acceptance scenarios before implementation and update the incompatible live
+      scenario only in the behavior-changing feat/fix commit. Harvest the existing flag-trace
+      implementation from source internal/cli/flags.go rather than inventing a second parser. Cover
+      identical and positive/negative repetitions, human and JSON usage results as the contract
+      permits, preservation of -- and data arguments, and cumulative semantics only where the real
+      CLI offers them. Commit failing steps first and confirm behavior failures, then build;
+      describe the intentional upgrade change. No extra future flags or unrelated command behavior.
