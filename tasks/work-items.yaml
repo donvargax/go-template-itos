@@ -69,3 +69,26 @@ items:
       Hold the fixture in a shape whose alignment cannot depend on a literal, a call per file or
       keys built from a constant, and prove it by rendering two answers of different lengths and
       running gofmt on each.
+  - id: T-6
+    title: A rendered file is gofmt-clean whatever the substituted project name is
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      The first run of check over the checks T-5 declared found this.
+      internal/release/releasetest/releasetest.go holds its fixture file names as the keys of one
+      map literal, and two of those keys carry the project name: cmd/go-template-itos/main.go and
+      its test. gofmt aligns the values of adjacent entries into a column sized by the longest key,
+      so substituting a shorter name moves that column and every line in the block. The branch
+      itself is gofmt-clean, so its own CI never sees this class of defect; only a render does,
+      which is what the checks are for. Break the alignment group rather than chase a column, so the
+      file is gofmt-clean at any name length: a blank line between composite-literal entries does
+      it, verified on this shape, and gofmt then leaves each entry alone. Run gofmt after the edit,
+      since the padding the old column left is then stale. Leave the checks alone: the manifest
+      already declares the gofmt check and check already runs it, so a recurrence is caught without
+      a new rule, and weakening it to make this green is not an option. Touching internal means the
+      item owes the branch's code proof over cmd and internal, with fresh .metrics/mutate records,
+      fail-uncovered and all-tests, and reshaping the fixture to hold no mutation site is not an
+      option either.
