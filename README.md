@@ -6,16 +6,22 @@ branches. No template language is used.
 
 ## Status
 
-This branch is the Go foundation. Its private counting example has a domain, a Files port, a
-disk adapter and an in-memory fake, with example and property tests. There is no command-line
-executable here yet; `go/cli` adds that public entry point. The template is not advertised as
-ready until both planned combinations pass the final template-check piece.
+This branch is the Go foundation plus the first feature built on it.
+`go-template-itos count <file>` counts a file's lines and words, `-` for standard input, and
+prints the counts for a person or one JSON object with `--json`; `internal/count` is the
+private counting domain beneath it, with a Files port, a disk adapter and an in-memory fake,
+and `internal/cli` is the UI that turns a typed failure into an exit code. The public behaviour
+lives in `features/` as scenarios, which godog runs against the binary the harness builds for
+the platform it is on, and the release machinery a made project needs is here as well. The
+template is not advertised as ready until both planned combinations pass the final
+template-check piece.
 
 ## Check the Go project
 
 ```sh
 go build ./...
 go test ./...
+go test ./features -count=1
 ```
 
 CI runs the Go gates and tests on Linux, macOS and Windows. Domain coverage must stay at least
