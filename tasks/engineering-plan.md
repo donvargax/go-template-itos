@@ -30,7 +30,11 @@ branch's actual code in view, not by copying root bootstrap claims into finished
 - `go-architecture` strengthens existing depguard enforcement on `stack/go`, then inherits
   into `go/cli`. Additions needed only for the CLI stay in the feature's configuration.
   The stack-owned implementation is T-9, specified in its ledger; reserve that ID across
-  branches. Root manifest registration is not part of T-9.
+  branches. T-9 is closed. Its final code head is
+  `376037fe8f2cd925c6f4c07b5136a10a90e752ab`; [exact-head CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/37983078990).
+  The self-test compiles 99 positive/negative fixtures before checking the actual pinned
+  linter and configuration. No configured `internal` code-proof path changed. Root manifest
+  registration and propagation into `go/cli` remain separate work.
 - `cli-contract` writes the reusable CLI guide on `go/cli`, without changing behavior.
 - `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
 - `cli-once-only-flags` implements q-1: reject repeated non-cumulative flags with usage exit

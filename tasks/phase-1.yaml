@@ -157,6 +157,17 @@
     registration and CLI integration adjustments get separate items. If any existing test
     contradicts the agreed boundary, stop with evidence rather than deleting coverage or broadening
     the rule. Source harvest provenance and MIT permission remain as documented.
+    The test commits 3461464, 9328e34 and 76a289d preceded configuration commit 1c16636.
+    The normalized red run compiled 85 independent fixtures before showing missing domain/port,
+    adapter and mock-family refusals; it did not accept fixture-loading failures as enforcement.
+    The matrix grew to 99 fixtures before the configuration landed. Hosted run 37982764398
+    then exposed checker path assumptions on macOS and Windows, not invalid fixtures: macOS
+    resolves temporary-folder symlinks and Windows uses a different drive. Commit 376037f
+    requested absolute linter paths and resolved fixture symlinks without relaxing any rule.
+    Exact head 376037fe8f2cd925c6f4c07b5136a10a90e752ab passed every job in run 37983078990,
+    https://github.com/donvargax/go-template-itos/actions/runs/37983078990. All 99 fixtures pass;
+    configured internal code-proof paths were unchanged. The coordinator closed T-9 after
+    verifying that head and run. Manifest registration and CLI integration are separate items.
   done_when:
     - run: tools/bin/architecture-check
       timeout: 240
