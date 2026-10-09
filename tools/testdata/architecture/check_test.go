@@ -3,6 +3,7 @@ package architecture_test
 import (
 	"encoding/json"
 	"fmt"
+	"go/format"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -19,7 +20,15 @@ func TestImportBoundaries(t *testing.T) {
 	if root == "" || linter == "" {
 		t.Fatal("run tools/bin/architecture-check")
 	}
-	dir := t.TempDir()
+	dir, err := os.MkdirTemp("", "T-9-architecture-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := os.RemoveAll(dir); err != nil {
+			t.Error(err)
+		}
+	})
 	moduleBytes, err := os.ReadFile(filepath.Join(root, "go.mod"))
 	if err != nil {
 		t.Fatal(err)
@@ -27,6 +36,13 @@ func TestImportBoundaries(t *testing.T) {
 	module := strings.Fields(string(moduleBytes))[1]
 	write := func(path, contents string) {
 		t.Helper()
+		if strings.HasSuffix(path, ".go") {
+			formatted, err := format.Source([]byte(contents))
+			if err != nil {
+				t.Fatalf("format %s: %v", path, err)
+			}
+			contents = string(formatted)
+		}
 		path = filepath.Join(dir, filepath.FromSlash(path))
 		if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 			t.Fatal(err)
@@ -150,14 +166,16 @@ func TestImportBoundaries(t *testing.T) {
 	}
 	seen := make(map[string]bool)
 	for _, issue := range report.Issues {
-		path := filepath.ToSlash(issue.Pos.Filename)
-		if filepath.IsAbs(issue.Pos.Filename) {
-			rel, err := filepath.Rel(dir, issue.Pos.Filename)
-			if err != nil {
-				t.Fatal(err)
-			}
-			path = filepath.ToSlash(rel)
+		filename := issue.Pos.Filename
+		if !filepath.IsAbs(filename) {
+			// golangci-lint defaults to paths relative to its config file.
+			filename = filepath.Join(root, filename)
 		}
+		rel, err := filepath.Rel(dir, filename)
+		if err != nil {
+			t.Fatal(err)
+		}
+		path := filepath.ToSlash(rel)
 		var expected *expectation
 		for i := range cases {
 			if cases[i].path == path {
