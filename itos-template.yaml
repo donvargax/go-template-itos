@@ -1,11 +1,46 @@
 version: 4
 
+# The root's checks, run in every render first, then the stack's, then the
+# features' (docs/manifest.md). A check is a list of words and no shell runs
+# it, so the gofmt pipeline writes one itself, and each word's literals are
+# replaced by the answers as a file's contents are. None is an itos one: a
+# render carries none of this repository's own itos data (template_only below),
+# so itos config check and the like would have nothing to read.
+checks:
+  # The credential scan every render passes first, pinned as the other tools
+  # are in tools/bin/pinned. Marking it is what tells itos-template check that
+  # the template scans its renders for credentials, so it stops warning.
+  - {run: [tools/bin/pinned, gitleaks, dir, ., --redact], scans: [credentials]}
+
 stacks:
   - name: go
+    checks:
+      - [sh, -c, "! gofmt -l internal | grep ."]
+      - [go, build, ./...]
+      - [go, vet, ./...]
+      - [go, mod, verify]
+      - [go, mod, tidy, -diff]
+      - [tools/bin/pinned, golangci-lint, run, ./...]
+      - [go, tool, govulncheck, -test, ./...]
+      - [go, test, ./...]
+      - [tools/bin/domain-coverage]
+      - [tools/bin/pinned, itos-cc, mutation, sample, --count, 10]
 
 features:
   - name: cli
     stack: go
+    checks:
+      - [sh, -c, "! gofmt -l cmd internal features | grep ."]
+      - [go, build, ./...]
+      - [go, vet, ./...]
+      - [go, mod, verify]
+      - [go, mod, tidy, -diff]
+      - [tools/bin/pinned, golangci-lint, run, ./...]
+      - [go, tool, govulncheck, -test, ./...]
+      - [go, test, ./cmd/..., ./internal/...]
+      - [tools/bin/domain-coverage]
+      - [go, test, ./features, -count=1]
+      - [tools/bin/pinned, itos-cc, mutation, sample, --count, 10]
 
 questions:
   - name: name
