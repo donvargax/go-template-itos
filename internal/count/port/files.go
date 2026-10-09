@@ -13,13 +13,13 @@ type ReadFailure interface {
 // Missing is returned when the requested input does not exist.
 type Missing struct{ Path string }
 
-func (*Missing) readFailure() {}
+func (*Missing) readFailure()    {}
 func (e *Missing) Error() string { return "missing file: " + e.Path }
 
 // Unreadable is returned when the requested input exists but cannot be read.
 type Unreadable struct{ Path string }
 
-func (*Unreadable) readFailure() {}
+func (*Unreadable) readFailure()    {}
 func (e *Unreadable) Error() string { return "unreadable file: " + e.Path }
 
 // Files reads the bytes at a path. Implementations return a typed ReadFailure
