@@ -48,3 +48,59 @@
     - run: go vet ./...
     - run: go test ./...
     - run: tools/bin/domain-coverage
+- id: T-3
+  type: build
+  title: Build the public count CLI, its scenario runner and its release machinery
+  why: >
+    Third piece of the template, after the root and the Go foundation. Branch go/cli from
+    the verified stack/go head without rewriting history; keep the foundation and its
+    proof and coverage gates whole. Add a thin application handler and a kong UI whose
+    command carries domain data and calls the counting domain through its Files port: no
+    options struct copying a domain type, no counting in the UI, and no ordinary count
+    refusal, so exit 1 is unused. The sealed error-kind-to-exit switch lives in the UI,
+    exhaustive and never a default, so a kind no case classifies is the 70 of an
+    unclassified bug and never a child process's status passed through. The command is
+    count <file>, with - reading standard input and no implicit default action. Human
+    success prints the counts on stdout and the use-json hint on stderr, never the input
+    contents; --json prints one object with schema 1, ok, file (the argument, - for
+    standard input), lines and words, and every failure prints its own object with
+    problems carrying rule, message and fix. Missing input is COUNT_INPUT_MISSING and
+    other unreadable input, a directory included, COUNT_INPUT_UNREADABLE, both exit 3;
+    a usage failure exits 2. No arguments and --help print help on stdout with exit 0,
+    while count without its file is a usage failure. --help and --version are actions,
+    --json a negatable switch with GO_TEMPLATE_ITOS_JSON, the project's name in upper
+    case. Install the runnable scenario kind, its footer and its CI selection together,
+    never one without the others, and add a representative smoke scenario with each live
+    feature file. The public behaviour lives in features/, tagged @count-cli, with the
+    steps the agent writes in a red-first test commit. Run the built, stamped,
+    cover-enabled binary through godog on Linux, macOS and Windows; keep the domain unit
+    tests fake-backed and let infrastructure tests fake a failing reader instead of
+    assuming Unix permission bits. Harvest the count command's entry point, kong UI,
+    four-shell completion, version, scenario harness, quoted-argument steps and real-git
+    resolution from the owner's itos-template without its generator behaviour: the root
+    command holds count, version, completion and the hidden __complete, completion
+    answers from kong's model, and no input value is read as a global flag. Structured
+    logs stay quiet below warnings, JSON off a terminal and text on one, without colour.
+    Harvest GoReleaser, the reusable release workflow and internal/release, retargeting
+    the hard-coded binary path and keeping upstream identities: a made project's binary
+    releases are not this template's release protocol, so this branch's CI must not run a
+    binary release on a root where no binary exists. Add the actual kong, godog and
+    terminal dependencies from the source pins, tidy the lockfiles, regenerate the agent
+    rules from the actual config, and keep no generator-specific lint exception. Prove
+    changed and newly imported paths with fresh fail-uncovered, all-tests mutation
+    records, killing survivors rather than reshaping code or weakening a gate.
+  done_when:
+    - run: itos config check
+    - run: tools/bin/doc-caps
+    - run: >-
+        test -f cmd/go-template-itos/main.go &&
+        test -f .goreleaser.yaml && test -f .github/workflows/release.yml &&
+        test -f features/smoke.yaml
+    - run: go mod verify
+    - run: go mod tidy -diff
+    - run: go build ./...
+    - run: go vet ./...
+    - run: itos tests smoke check scenario
+    - run: go test ./...
+    - run: tools/bin/domain-coverage
+    - run: go run ./cmd/go-template-itos count README.md --json

@@ -25,3 +25,17 @@ items:
     status: done
     depends_on: []
     kind: task
+  - id: T-3
+    title: Build the public count CLI, its scenario runner and its release machinery
+    phase: 1
+    owner: donvargax
+    status: todo
+    depends_on: [T-2]
+    kind: task
+  - id: count-cli
+    title: go-template-itos counts the lines and words of a file or of standard input
+    phase: 1
+    owner: donvargax
+    status: todo
+    depends_on: []
+    kind: slice
