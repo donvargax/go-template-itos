@@ -57,18 +57,9 @@ items:
     title: A render stays gofmt-clean after the literals are replaced
     phase: 1
     owner: null
-    status: todo
+    status: dropped
     depends_on: []
     kind: idea
-    why: >
-      check now runs the Go stack's gates in every render, and the go + cli combination fails the
-      first of them: internal/release/releasetest/releasetest.go holds its fixture in one map
-      literal, whose values gofmt aligns in a column, so replacing cmd/go-template-itos with a made
-      project's name, which is shorter, moves every value in the block. The source is gofmt-clean,
-      so this branch's own plan never sees it; only a render does, which is what the checks are for.
-      Hold the fixture in a shape whose alignment cannot depend on a literal, a call per file or
-      keys built from a constant, and prove it by rendering two answers of different lengths and
-      running gofmt on each.
   - id: T-6
     title: A rendered file is gofmt-clean whatever the substituted project name is
     phase: 1
