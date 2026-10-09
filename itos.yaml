@@ -39,6 +39,7 @@ ci:
         test -f .github/renovate.json5 && test -x tools/bin/doc-caps
       cost: static
     - { run: "! gofmt -l internal | grep .", cost: static }
+    - { run: go build ./..., cost: static }
     - { run: go vet ./..., cost: static }
     - { run: go mod verify, cost: static }
     - { run: go mod tidy -diff, cost: static }
