@@ -6,9 +6,12 @@ disk adapter implements real read-only access; an in-memory fake holds domain te
 failures. Unit tests assert outcomes, and the rapid property checks addition for
 newline-terminated pieces.
 
-The domain does not know command-line flags, JSON or exit codes. Those belong to the `go/cli`
-feature's future thin handler and UI. This Go foundation has no public executable or godog
-command-line runner yet.
+The domain does not know command-line flags, JSON or exit codes. Those belong to the `count`
+handler, which carries the command's domain data into the domain through the port and holds no
+counting of its own, and to the kong UI in front of it, which maps each typed failure to its
+exit code and prints the JSON or the text answer. `cmd/go-template-itos` is that UI's entry
+point; `features/` holds the public behaviour as scenarios, which godog runs against the binary
+the harness builds for the platform it is on.
 
 Line separators are LF, with CRLF counted once; a nonempty final unterminated line counts.
 Words follow the standard-library Unicode-whitespace rule. No encoding detection or linguistic

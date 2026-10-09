@@ -5,8 +5,9 @@ credentials in answers, committed files, fixtures or logs. Owner and module answ
 public project, not authentication data.
 
 The counting domain accesses input through its Files port. Its disk adapter reads files without
-executing or modifying their contents. It is not a filesystem sandbox; a future caller must
-decide which paths it permits. There is no public CLI in this foundation yet.
+executing or modifying their contents. It is not a filesystem sandbox; a caller must decide
+which paths it permits. The `count` CLI reads the path its own arguments name and writes no
+file, so what a script may read is the script's decision, not the binary's.
 
 Dependencies are locked with go.mod/go.sum and verified in CI. Tools keep their checked pins,
 upstream identities, licenses and notices. Go's vulnerability scan examines used dependencies,
