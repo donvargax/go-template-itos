@@ -48,8 +48,10 @@ jobs:
       - run: itos verify "$FROM" "$TO"
       - run: itos ci run "$FROM" "$TO"
 
+  # Every test, the unit tests and the whole godog suite, on Linux, macOS and Windows, with each
+  # platform's paths, shell and line endings: what touches paths and CRLF breaks on Windows first.
   platform:
-    name: Go tests (${{ matrix.os }})
+    name: Tests (${{ matrix.os }})
     if: >-
       startsWith(github.base_ref, 'stack/') || startsWith(github.base_ref, 'go/') ||
       startsWith(github.head_ref, 'stack/') || startsWith(github.head_ref, 'go/') ||
@@ -69,7 +71,14 @@ jobs:
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
+      # go test carries on past a package that fails, so one run shows a platform's every
+      # failure. The features build the binary they run themselves, go-template-itos.exe on
+      # windows, stamped with a known version and commit.
+      # GOCOVERDIR makes that binary a -cover build, so the scenarios run cover-enabled code;
+      # the coverage it writes is this job's to read, not something it merges here.
+      # RAPID_CHECKS=1: each property of the domain on one random case, as in the CI plan.
       - name: Tests
         run: go test ./... -count=1
         env:
           RAPID_CHECKS: 1
+          GOCOVERDIR: ${{ runner.temp }}/cover
