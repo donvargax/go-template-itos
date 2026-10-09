@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "file": "internal/version/version.go",
+  "language": "go",
+  "tests": {
+    "cmd/go-template-itos/main_test.go": "39cc8b88ce015e7c6810171252882769918b9362c7af8bdeb6a102dc3d28a968",
+    "internal/version/version_test.go": "08fab3fc897b6f89b46461c7e626876b12e56b658f1e78e16f5af356a7dd9ff5"
+  },
+  "units": [
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/version",
+      "name": "Version",
+      "hash": "1ed88fb0d1f951aa",
+      "start_line": 38,
+      "end_line": 46,
+      "killed": 1,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 1,
+      "mutants": [
+        {
+          "line": 39,
+          "column": 11,
+          "offset": 34,
+          "original": "!=",
+          "replacement": "==",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/version",
+      "name": "fromModule",
+      "hash": "d10466ef7874b63f",
+      "start_line": 50,
+      "end_line": 55,
+      "killed": 3,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 3,
+      "mutants": [
+        {
+          "line": 51,
+          "column": 7,
+          "offset": 41,
+          "original": "==",
+          "replacement": "!=",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 51,
+          "column": 13,
+          "offset": 47,
+          "original": "||",
+          "replacement": "&&",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 51,
+          "column": 18,
+          "offset": 52,
+          "original": "==",
+          "replacement": "!=",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/version",
+      "name": "Commit",
+      "hash": "5d916037edce7a7d",
+      "start_line": 59,
+      "end_line": 62,
+      "killed": 0,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 0,
+      "mutants": []
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/version",
+      "name": "commitOf",
+      "hash": "1e9315fce1e2c4e2",
+      "start_line": 66,
+      "end_line": 79,
+      "killed": 3,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 3,
+      "mutants": [
+        {
+          "line": 67,
+          "column": 13,
+          "offset": 74,
+          "original": "!=",
+          "replacement": "==",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 70,
+          "column": 10,
+          "offset": 111,
+          "original": "==",
+          "replacement": "!=",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 74,
+          "column": 18,
+          "offset": 193,
+          "original": "==",
+          "replacement": "!=",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/version",
+      "name": "Text",
+      "hash": "7ce24d58dc6c69bd",
+      "start_line": 84,
+      "end_line": 86,
+      "killed": 0,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 0,
+      "mutants": []
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/version",
+      "name": "text",
+      "hash": "223649f6517330d5",
+      "start_line": 88,
+      "end_line": 93,
+      "killed": 7,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 7,
+      "mutants": [
+        {
+          "line": 89,
+          "column": 12,
+          "offset": 63,
+          "original": "==",
+          "replacement": "!=",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 90,
+          "column": 18,
+          "offset": 88,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 90,
+          "column": 24,
+          "offset": 94,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 92,
+          "column": 17,
+          "offset": 123,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 92,
+          "column": 23,
+          "offset": 129,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 92,
+          "column": 33,
+          "offset": 139,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 92,
+          "column": 47,
+          "offset": 153,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    }
+  ]
+}
