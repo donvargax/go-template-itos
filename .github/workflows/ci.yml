@@ -26,6 +26,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         if: >-
+          startsWith(github.base_ref, 'stack/') || startsWith(github.base_ref, 'go/') ||
           startsWith(github.head_ref, 'stack/') || startsWith(github.head_ref, 'go/') ||
           startsWith(github.head_ref, 'renovate/') || startsWith(github.ref, 'refs/heads/stack/') ||
           startsWith(github.ref, 'refs/heads/go/') || startsWith(github.ref, 'refs/heads/renovate/')
@@ -50,6 +51,7 @@ jobs:
   platform:
     name: Go tests (${{ matrix.os }})
     if: >-
+      startsWith(github.base_ref, 'stack/') || startsWith(github.base_ref, 'go/') ||
       startsWith(github.head_ref, 'stack/') || startsWith(github.head_ref, 'go/') ||
       startsWith(github.head_ref, 'renovate/') || startsWith(github.ref, 'refs/heads/stack/') ||
       startsWith(github.ref, 'refs/heads/go/') || startsWith(github.ref, 'refs/heads/renovate/')

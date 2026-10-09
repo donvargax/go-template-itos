@@ -1,5 +1,5 @@
-# The root branch's commit rules and checks. Language-specific gates arrive
-# with their code, not before it exists.
+# Shared commit rules and checks. Stack branches add language gates with the
+# code they prove; the root remains language-neutral.
 version: 1
 
 # The source project's pin and checksum, copied with its workflow action.
