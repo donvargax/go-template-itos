@@ -19,15 +19,19 @@ branch's actual code in view, not by copying root bootstrap claims into finished
 
 ## Work
 
-- T-8 writes the shared guide and its short agent-rule reference on `main`.
+- T-8 wrote `docs/engineering.md` and its short agent-rule reference on `main`.
+  The guide commit is `9a58617892771a6eb9d67b3d04f9ac3c16b1f9cb`; its
+  [exact-head CI passed](https://github.com/donvargax/go-template-itos/actions/runs/37980659570).
+  The item is closed. The guide still needs downward propagation into the Go branches.
 - `go-engineering` describes the actual Go policy on `stack/go`.
 - `go-architecture` strengthens existing depguard enforcement on `stack/go`, then inherits
   into `go/cli`. Additions needed only for the CLI stay in the feature's configuration.
-- `cli-contract` carries the reusable CLI guide and exhaustive failure handling on `go/cli`.
-  q-1 selects rejection of repeated non-cumulative flags with usage exit 2, matching the
-  source contract. Replace the existing last-negation-wins specification before building
-  the change; explicitly cumulative flags remain repeatable. Do not change behavior in a
-  documentation or lint commit.
+- `cli-contract` writes the reusable CLI guide on `go/cli`, without changing behavior.
+- `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
+- `cli-once-only-flags` implements q-1: reject repeated non-cumulative flags with usage exit
+  2, matching the source contract. Specify the replacement of last-negation-wins before
+  building the change; explicitly cumulative flags remain repeatable. Do not change this
+  behavior in a documentation or lint commit.
 - `made-project-policy` separates reusable rules from template history. Common policy
   belongs on the root; Go and CLI additions belong on their branches. It depends on a
   supported fresh-project initialization mechanism, not an invented workaround around itos.
