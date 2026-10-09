@@ -1,0 +1,28 @@
+version: 4
+
+stacks:
+  - name: go
+
+features:
+  - name: cli
+    stack: go
+
+questions:
+  - name: name
+    literal: go-template-itos
+    question: What is the project's name?
+    pattern: "[a-z][a-z0-9]*(-[a-z0-9]+)*"
+    case_forms: true
+  - name: owner
+    literal: itos-corp
+    question: What owner should appear in the project's attribution?
+    pattern: "[a-z][a-z0-9]*(?:-[a-z0-9]+)*"
+  - name: module
+    literal: github.com/itos-corp/go-template-itos
+    question: What is the Go module path?
+    pattern: "[a-z0-9.-]+(/[a-z0-9._-]+)+"
+
+first_commit: |-
+  chore: start the generated project
+
+  Task: T-1
