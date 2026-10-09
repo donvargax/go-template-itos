@@ -36,6 +36,6 @@ items:
     title: go-template-itos counts the lines and words of a file or of standard input
     phase: 1
     owner: donvargax
-    status: todo
+    status: doing
     depends_on: []
     kind: slice
