@@ -19,11 +19,11 @@ merging branches. MIT is the template's license; owner attribution is an answer,
 ## Order of work
 
 1. Root: shared docs, fresh itos data, git conventions, Renovate configuration and root-only CI.
-2. Go stack: a working Go project, its locked dependencies and the gates applicable to its code.
-3. CLI feature: kong UI, a thin handler, counting domain, Files port, disk adapter, in-memory
-   fake, unit/property tests and black-box scenarios. The example counts a file's lines and
-   words; its detailed behavior must be specified before implementation. Joined-pieces
-   properties must respect word boundaries, not assume arbitrary concatenation is additive.
+2. Go stack: a working Go project, its locked dependencies, private counting domain, Files port,
+   read-only disk adapter, in-memory fake, example/property tests and gates applicable to its code.
+   It has no public CLI or scenario runner yet.
+3. CLI feature: Kong UI, a thin handler over the counting domain and black-box scenarios. Joined-
+   pieces properties respect word boundaries; arbitrary concatenation is not promised additive.
 4. Template CI: render and check both combinations, with pinned gitleaks marked as a credential
    scan. Only after this passes is the template advertised as ready.
 
