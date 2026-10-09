@@ -18,3 +18,14 @@ items:
     status: done
     depends_on: []
     kind: task
+  - id: T-2
+    title: Build the Go foundation and its proof gates
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      Add a working Go module with the specified private counting example and its domain, port, disk
+      adapter, fake and property tests. Retarget Go tooling and CI to this branch, keep it buildable
+      without the later CLI, and prove changed code with fresh mutation evidence.
