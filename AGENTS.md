@@ -35,7 +35,8 @@ with `itos work`; never edit owners or statuses by hand.
 - Templates are real projects. Never introduce a template language or runtime switches merely
   to pick a stack or provider. Select branches before rendering.
 - No credentials in answers, fixtures, logs or committed files. Go vulnerability checks are not
-  credential scans; the final template-check piece adds and proves that separate protection.
+  credential scans; every render is scanned separately by gitleaks, pinned in tools/bin/pinned
+  and marked as the manifest's root check, so itos-template check proves it on every combination.
 - Preserve third-party notices. Owner permission for copied infrastructure does not relicense
   dependencies or the original source projects.
 

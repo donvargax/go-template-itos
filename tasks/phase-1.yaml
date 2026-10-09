@@ -104,3 +104,45 @@
     - run: go test ./...
     - run: tools/bin/domain-coverage
     - run: go run ./cmd/go-template-itos count README.md --json
+- id: T-4
+  type: build
+  title: Keep the template's itos data out of every render, and drop first_commit's footer
+  why: >
+    Each branch already keeps its own config, ledger and registry, scoped to the work that happened
+    on it: main holds T-1, stack/go adds T-2, go/cli adds T-3 and the count-cli slice, and no branch
+    holds another's work. Nothing is duplicated that ought to be one thing, so no branch is added,
+    nothing merges up into anything, and no CI plan moves: every branch keeps the gates, the plan,
+    the proof and the task checks it has today. What a render would inherit is the problem, and the
+    fix is two lines of the manifest. Add to it a template_only naming itos.yaml and tasks, the two
+    paths a render has no use for, which IsTemplateOnly already excludes from every render beside
+    the manifest itself. Drop the Task footer from first_commit: a render is committed before the
+    made project has any ledger, so the footer names nothing, and in a made project T-1 means Adopt
+    itos rather than anything this repository decides. The made project's own setup comes from the
+    template's declared setup steps per ADR-0031, a later piece.
+  done_when:
+    - run: m=itos-template.yaml && grep -q '^template_only:' "$m" && grep -qE '^  - itos\.yaml$' "$m" && grep -qE '^  - tasks$' "$m" && ! grep -q 'Task:' "$m"
+- id: T-5
+  type: build
+  title: The manifest declares what every render must pass, so check proves something
+  why: >
+    check runs and passes today and proves nothing: the manifest names no checks, so every
+    combination renders and has nothing to run, and its only output is the warning that no check is
+    marked as scanning the renders for credentials. Declare the checks beside what they check, per
+    branch as docs/manifest.md says: the root's, stack/go's own, the cli feature's own, and a
+    combination running the root's then the stack's then the features' in order. What each branch
+    already runs in its CI is what its renders must pass, so a render is proved as strongly as the
+    branch it came from. Checks run with no shell, so the gofmt pipeline is written as [sh, -c, …]
+    and every other is a plain word list, each word's literals replaced by the answers as a file's
+    contents are. No check is an itos one: after T-4 a render carries none of this repository's itos
+    data, so itos config check and the like would have nothing to read, and the made project's own
+    setup comes from the template's declared setup steps per ADR-0031. Pin gitleaks the way
+    tools/bin/pinned pins the others, at a version and its release's own checksum, and mark it
+    scans: [credentials] as the root's check, so every render is scanned and check stops warning.
+    itos-template scans no render itself and knows no tool that does: the template names its own.
+    The pin lands on the Go stack with the other tools itos.yaml's plan runs, never on the root,
+    which has no toolchain; the manifest is one file on the root and merges down, so every render of
+    a stack already carries the tool the root's check runs.
+  done_when:
+    - run: "m=itos-template.yaml && grep -q '^checks:' \"$m\" && grep -q 'scans: \\[credentials\\]' \"$m\" && grep -q 'gitleaks' \"$m\" && grep -qE '^  - name: go$' \"$m\" && grep -qE '^  - name: cli$' \"$m\""
+    - run: m=itos-template.yaml && grep -q 'gofmt' "$m" && grep -q 'go, build' "$m" && grep -q 'go, vet' "$m" && grep -q 'go, mod, verify' "$m" && grep -q 'go, mod, tidy, -diff' "$m" && grep -q 'golangci-lint' "$m" && grep -q 'govulncheck' "$m" && grep -q 'go, test' "$m" && grep -q 'domain-coverage' "$m" && grep -q 'mutation, sample' "$m" && grep -q 'go, test, ./features' "$m"
+    - run: test ! -f tools/bin/pinned || grep -q 'gitleaks' tools/bin/pinned
