@@ -20,6 +20,14 @@ commits:
       required_for: [refactor, perf, test, build, ci, chore, style, revert]
       validate_for: all
       read_at: commit
+    # The work registry item a commit belongs to, for the commits no ledger task ties to:
+    # a slice's scenarios committed red first, its specification, a chore it needs. Taken
+    # in place of Task for those types, since a slice has no task of its own.
+    Item:
+      source: registry
+      validate_for: all
+      read_at: commit
+      in_place_of: { Task: [test, docs, chore] }
   scopes:
     docs: { only: ["**/*.md", "docs/**", "tasks/**"] }
 
