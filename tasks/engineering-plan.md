@@ -22,10 +22,15 @@ branch's actual code in view, not by copying root bootstrap claims into finished
 - T-8 wrote `docs/engineering.md` and its short agent-rule reference on `main`.
   The guide commit is `9a58617892771a6eb9d67b3d04f9ac3c16b1f9cb`; its
   [exact-head CI passed](https://github.com/donvargax/go-template-itos/actions/runs/37980659570).
-  The item is closed. The guide still needs downward propagation into the Go branches.
+  The item is closed. The guide reached `stack/go` in merge
+  `5b7a38cc26cff141db752c456ea155126e3e1760`, preserving that branch's registry and
+  Go configuration. Its [CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/37981702016).
+  Propagation into `go/cli` remains.
 - `go-engineering` describes the actual Go policy on `stack/go`.
 - `go-architecture` strengthens existing depguard enforcement on `stack/go`, then inherits
   into `go/cli`. Additions needed only for the CLI stay in the feature's configuration.
+  The stack-owned implementation is T-9, specified in its ledger; reserve that ID across
+  branches. Root manifest registration is not part of T-9.
 - `cli-contract` writes the reusable CLI guide on `go/cli`, without changing behavior.
 - `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
 - `cli-once-only-flags` implements q-1: reject repeated non-cumulative flags with usage exit
@@ -43,6 +48,12 @@ Each idea is specified and promoted on the branch that owns its implementation. 
 cross-branch integration into separate items where the checks differ. The manifest is a
 root-owned file: declaring a new Go check there is distinct from installing its tooling
 and CI on the Go branch. Keep only one implementing agent in this checkout.
+
+When merging shared documentation, preserve the child's registry and configuration rather
+than copying a parent's owners or statuses. Merge task specifications additively: CI reads
+footers from imported commits too, and a whole-ledger snapshot would omit root T-8 and fail
+the plan as an unknown task. Register child-owned work through itos after committing the
+merge. A copied question remains evidence of the person's answer, not a child work item.
 
 ## What the evidence must show
 
