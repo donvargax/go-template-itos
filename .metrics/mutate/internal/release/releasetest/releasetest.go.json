@@ -9,9 +9,9 @@
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/release/releasetest",
       "name": "Example",
-      "hash": "72c31d456ad87741",
+      "hash": "f22ed5a5f7a26335",
       "start_line": 23,
-      "end_line": 93,
+      "end_line": 104,
       "killed": 3,
       "survived": 0,
       "uncovered": 0,
@@ -27,18 +27,18 @@
           "scope": "all-tests"
         },
         {
-          "line": 77,
+          "line": 88,
           "column": 57,
-          "offset": 2243,
+          "offset": 2098,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",
           "scope": "all-tests"
         },
         {
-          "line": 80,
+          "line": 91,
           "column": 58,
-          "offset": 2329,
+          "offset": 2184,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",
@@ -50,15 +50,15 @@
       "namespace": "github.com/itos-corp/go-template-itos/internal/release/releasetest",
       "name": "Change",
       "hash": "e5cbe38070a59143",
-      "start_line": 97,
-      "end_line": 116,
+      "start_line": 108,
+      "end_line": 127,
       "killed": 6,
       "survived": 0,
       "uncovered": 0,
       "sites": 6,
       "mutants": [
         {
-          "line": 100,
+          "line": 111,
           "column": 9,
           "offset": 83,
           "original": "!=",
@@ -67,7 +67,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 102,
+          "line": 113,
           "column": 10,
           "offset": 204,
           "original": "!=",
@@ -76,7 +76,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 105,
+          "line": 116,
           "column": 24,
           "offset": 256,
           "original": "!",
@@ -85,7 +85,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 109,
+          "line": 120,
           "column": 56,
           "offset": 395,
           "original": "!=",
@@ -94,7 +94,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 113,
+          "line": 124,
           "column": 70,
           "offset": 574,
           "original": "1",
@@ -103,7 +103,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 113,
+          "line": 124,
           "column": 87,
           "offset": 591,
           "original": "!=",
@@ -117,15 +117,15 @@
       "namespace": "github.com/itos-corp/go-template-itos/internal/release/releasetest",
       "name": "Git",
       "hash": "ce59b00df5420092",
-      "start_line": 118,
-      "end_line": 125,
+      "start_line": 129,
+      "end_line": 136,
       "killed": 1,
       "survived": 0,
       "uncovered": 0,
       "sites": 1,
       "mutants": [
         {
-          "line": 122,
+          "line": 133,
           "column": 43,
           "offset": 208,
           "original": "!=",
@@ -139,8 +139,8 @@
       "namespace": "github.com/itos-corp/go-template-itos/internal/release/releasetest",
       "name": "Commit",
       "hash": "a511acc304bcb131",
-      "start_line": 128,
-      "end_line": 132,
+      "start_line": 139,
+      "end_line": 143,
       "killed": 0,
       "survived": 0,
       "uncovered": 0,
