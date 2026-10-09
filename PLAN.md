@@ -1,0 +1,43 @@
+# go-template-itos: the plan
+
+This is a template that is a real project, not a folder of placeholders. Its code and tooling
+are minimal examples of the rules a made project starts with. The generator is
+[itos-template](https://github.com/donvargax/itos-template); this repository does not copy its
+rendering, manifest-reading or update domain code.
+
+## Shape
+
+The default/root branch is `main`. `stack/go` branches off it; `go/cli` branches off the stack.
+Common changes merge downward without rebasing published history. The supported combinations
+will be `go` and `go + cli`, proved by rendering both and running their checks.
+
+The manifest's literals are real values: `go-template-itos` for the project name, with its five
+case forms; `itos-corp` for the attribution owner; and
+`github.com/itos-corp/go-template-itos` for the module path. A render substitutes answers after
+merging branches. MIT is the template's license; owner attribution is an answer, not a secret.
+
+## Order of work
+
+1. Root: shared docs, fresh itos data, git conventions, Renovate configuration and root-only CI.
+2. Go stack: a working Go project, its locked dependencies and the gates applicable to its code.
+3. CLI feature: kong UI, a thin handler, counting domain, Files port, disk adapter, in-memory
+   fake, unit/property tests and black-box scenarios. The example counts a file's lines and
+   words; its detailed behavior must be specified before implementation. Joined-pieces
+   properties must respect word boundaries, not assume arbitrary concatenation is additive.
+4. Template CI: render and check both combinations, with pinned gitleaks marked as a credential
+   scan. Only after this passes is the template advertised as ready.
+
+Keep the completed Go/CLI project's machinery whole: three-platform CI, itos gates, code proof,
+rapid properties, godog scenarios, pinned tools, Renovate and attested binary releases. Attach
+each part to the branch where its prerequisites exist. Root alone cannot build a binary or
+measure a nonexistent domain; the finished branches must not retain weaker placeholder gates.
+
+Template releases and the generator's adoption/update workflow are separate later work. Binary
+release tooling carried by a made CLI project is not a template-release protocol.
+
+## Provenance
+
+Infrastructure is harvested from the owner's itos and itos-template projects rather than
+rewritten. The owner authorized MIT distribution of their copied work for this template.
+Preserve original provenance and applicable third-party notices. Do not replace real upstream
+tool and preset identities when substituting project identity.
