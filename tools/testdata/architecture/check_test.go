@@ -146,7 +146,9 @@ func TestImportBoundaries(t *testing.T) {
 	}
 	t.Logf("all %d independent boundary fixtures compiled; fixture-I/O tests passed", len(cases))
 	outputPath := filepath.Join(dir, "issues.json")
-	lint := exec.Command(linter, "run", "--config", filepath.Join(root, ".golangci.yml"), "--output.json.path", outputPath, "--max-issues-per-linter=0", "--max-same-issues=0", "./...")
+	// Absolute output paths avoid the config/fixture being on different
+	// Windows drives. This changes presentation only, not any lint rule.
+	lint := exec.Command(linter, "run", "--config", filepath.Join(root, ".golangci.yml"), "--output.json.path", outputPath, "--path-mode=abs", "--max-issues-per-linter=0", "--max-same-issues=0", "./...")
 	lint.Dir = dir
 	lint.Env = compile.Env
 	output, lintErr := lint.CombinedOutput()
@@ -169,13 +171,21 @@ func TestImportBoundaries(t *testing.T) {
 		t.Fatal(err)
 	}
 	seen := make(map[string]bool)
+	canonicalDir, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, issue := range report.Issues {
-		filename := issue.Pos.Filename
-		if !filepath.IsAbs(filename) {
-			// golangci-lint defaults to paths relative to its config file.
-			filename = filepath.Join(root, filename)
+		if !filepath.IsAbs(issue.Pos.Filename) {
+			t.Fatalf("linter did not emit an absolute path: %s", issue.Pos.Filename)
 		}
-		rel, err := filepath.Rel(dir, filename)
+		// macOS's temporary directory is reached through /var -> /private/var;
+		// compare the physical files, not their different lexical spellings.
+		filename, err := filepath.EvalSymlinks(issue.Pos.Filename)
+		if err != nil {
+			t.Fatal(err)
+		}
+		rel, err := filepath.Rel(canonicalDir, filename)
 		if err != nil {
 			t.Fatal(err)
 		}
