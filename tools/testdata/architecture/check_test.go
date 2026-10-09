@@ -115,12 +115,16 @@ func TestImportBoundaries(t *testing.T) {
 		add("fixture_io_allowed", base, "os", "ReadFile", "", true)
 		add("fake_allowed", base, module+"/internal/count/port/porttest", "Value", "", true)
 	}
-	for _, target := range []string{"internal/count/domain", "internal/count/app", "internal/count/input", "internal/count/port/porttest", "internal/cli", "cmd/probe", "internal/other"} {
-		add(strings.ReplaceAll(target, "/", "_"), "internal/count/disk", module+"/"+target, "Value", "infra", false)
+	for _, adapter := range []string{"disk", "input"} {
+		base := "internal/count/" + adapter
+		for _, target := range []string{"internal/count/domain", "internal/count/app", "internal/count/disk", "internal/count/input", "internal/count/port/porttest", "internal/cli", "cmd/probe", "internal/other"} {
+			add(strings.ReplaceAll(target, "/", "_"), base, module+"/"+target, "Value", "infra", false)
+		}
+		add("port_allowed", base, module+"/internal/count/port", "Value", "", false)
+		add("fake_allowed", base, module+"/internal/count/port/porttest", "Value", "", true)
+		add("os_allowed", base, "os", "ReadFile", "", false)
+		add("fixture_io_allowed", base, "os", "ReadFile", "", true)
 	}
-	add("port_allowed", "internal/count/disk", module+"/internal/count/port", "Value", "", false)
-	add("fake_allowed", "internal/count/disk", module+"/internal/count/port/porttest", "Value", "", true)
-	add("os_allowed", "internal/count/disk", "os", "ReadFile", "", true)
 	add("disk_allowed", "internal/other", module+"/internal/count/disk", "Value", "", false)
 	for i, imported := range mocks {
 		for _, test := range []bool{false, true} {
