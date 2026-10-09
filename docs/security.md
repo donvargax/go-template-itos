@@ -1,17 +1,19 @@
 # Security and trust boundaries
 
-Use templates you trust: a made project contains the selected template's files and workflows.
-Do not put credentials in template answers, committed files, fixtures or logs. The owner and
-module answers are public project identity, not authentication data.
+Use templates you trust: a made project contains their files and workflows. Do not put
+credentials in answers, committed files, fixtures or logs. Owner and module answers identify a
+public project, not authentication data.
 
-Pinned tools keep their upstream identities and licenses. Upgrades must preserve checksum and
-provenance verification; the source owner's permission to distribute copied infrastructure under
-MIT does not grant permission to change third-party licenses.
+The counting domain accesses input through its Files port. Its disk adapter reads files without
+executing or modifying their contents. It is not a filesystem sandbox; a future caller must
+decide which paths it permits. There is no public CLI in this foundation yet.
 
-At the root-bootstrap stage, CI verifies commits, configuration and documentation caps. It does
-not yet scan rendered projects for credentials. The template-check piece installs a pinned
-credential scanner and proves its checks for every supported combination before claiming that
-protection. Code-specific checks arrive with their code.
+Dependencies are locked with go.mod/go.sum and verified in CI. Tools keep their checked pins,
+upstream identities, licenses and notices. Go's vulnerability scan examines used dependencies,
+including test dependencies and the standard library. Mutation proof and its CI sample judge
+recorded behavior; these controls do not isolate untrusted programs.
 
-itos's hooks and commit rules are workflow controls, not a security sandbox. A template's own
-check commands can execute programs; run them only in an environment appropriate to that trust.
+No render credential scan is installed at this stage. The template-check piece adds a pinned
+scanner and proves every supported combination before claiming that protection. A template's
+check commands can execute programs, so run them only in an environment appropriate to that
+trust. itos's hooks and commit rules are workflow controls, not a security sandbox.

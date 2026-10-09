@@ -1,11 +1,19 @@
 # Architecture
 
-The root carries project policy and shared documentation. It has no executable or Go module.
-Stack and feature branches add the code and checks they need while retaining these shared files.
+The private counting domain owns line/word semantics and its result. It reads through a Files
+port whose outcomes describe the required file input without exposing OS-specific models. A
+disk adapter implements real read-only access; an in-memory fake holds domain test inputs and
+failures. Unit tests assert outcomes, and the rapid property checks addition for
+newline-terminated pieces.
 
-`stack/go` will supply the Go foundation. `go/cli` will demonstrate thin entry points over a
-domain through ports, with real disk access at the boundary and an in-memory fake for domain
-tests. The count example and its detailed interfaces are not implemented at this root stage.
+The domain does not know command-line flags, JSON or exit codes. Those belong to the `go/cli`
+feature's future thin handler and UI. This Go foundation has no public executable or godog
+command-line runner yet.
 
-Rendering and template updates belong to itos-template, not to this repository. Templates use
-real literals and git branches; their generated projects do not contain a template interpreter.
+Line separators are LF, with CRLF counted once; a nonempty final unterminated line counts.
+Words follow the standard-library Unicode-whitespace rule. No encoding detection or linguistic
+word segmentation is performed. File data is not executed or changed.
+
+Root policy and documentation are inherited from `main`. Language-specific gates travel with
+their code; stack and feature branches remain buildable projects. Rendering and updating belong
+to itos-template, not to this example's domain.

@@ -1,101 +1,50 @@
 # Working rules
 
-Read `PLAN.md` first. This repository is itself the template: its branches must remain real
-projects. The root currently has no Go module or executable. Add each language-specific gate
-with the code it checks; never claim a check runs before it exists.
+Read `PLAN.md` first. This repository is itself the template; each branch stays a real project.
+This branch has the Go foundation and a private counting example, not the public CLI yet.
 
 The person's session coordinates with `itos go`. An implementing agent runs `itos guide work`,
-takes its named item with `itos work take`, does the work itself and starts no agents. Read work
-through `itos work`; never edit owners or statuses by hand. Bootstrap initialization is owned
-by the source project's T-25 until this new repository has its own usable registry and history.
+takes its item with `itos work take`, does the work itself and starts no agents. Read the registry
+with `itos work`; never edit owners or statuses by hand.
 
 ## Changes and commits
 
-- Specify behavior before building it. When a public entry point and its scenario runner exist,
-  features and fixes follow their scenarios, with red steps committed first. Before that, the
-  bootstrap is a checked task, not an excuse to add unspecified behavior.
-- Everything else names a task in the ledger. Split commit types and their paths before editing.
+- Specify behavior before building it. The private foundation is a checked bootstrap task. The
+  public CLI's features and fixes follow black-box scenarios when its entry point and runner
+  arrive, with red steps committed first; never add unspecified behavior meanwhile.
+- Other work names a ledger task. Decide each commit's type and paths before editing.
 - Commit with `itos commit -F <file>`, never `git commit`. Bodies explain what changed and why;
   no body line starts with a word and a colon, or with `with #,`.
-- Read `git status --short` before staging, and stage only explicit file paths. Never stage a
-  whole folder, `.` or use `git add -A` or `-u`.
+- Read `git status --short` before staging; stage only explicit file paths, never a whole folder,
+  `.`, or with `git add -A` or `-u`.
 - Never bypass hooks, force-push or rewrite published history. Push with `itos push` in the
-  background; read its output and watch CI without polling. Do not pipe a commit or push.
-- Run slow gates through their configured hooks and CI, not by hand before committing. A valid
-  check's failure is fixed in the work, not by weakening the check. Stop on a wrong gate.
+  background, reading its output and watching CI without polling. Never pipe a commit or push.
+- Gates run through their configured hooks and CI, not manually before committing. Fix a valid
+  check's failure in the work, not by weakening the check; stop on a wrong gate.
 
-## Template boundaries
+## Code and template boundaries
 
+- Keep thin entry points over domain-owned behavior through ports. The domain knows no UI,
+  filesystem implementation, JSON or exit codes. Use our fakes in its tests, never mocks.
+- Look for a library before building what one likely solves; settle the choice in the spec. The
+  count example uses Go's standard-library whitespace tokenization, not a custom word parser.
+- Code differing by OS takes the OS as a value. Build tags hold only a call unavailable on one
+  OS, with no mutation site; never branch on runtime.GOOS inside logic.
+- The additive counting property uses newline-terminated pieces. Arbitrary concatenation can
+  join words and is not additive.
 - Templates are real projects. Never introduce a template language or runtime switches merely
-  to select a stack or provider: selection is a branch choice before rendering.
-- Look for an existing library before building what one likely solves; the person settles that
-  choice in the spec. Preserve thin entry points and domain-owned behavior through ports.
-- No credentials belong in answers, fixtures, logs or committed files. No credential scan is
-  installed at this root-bootstrap stage; the template-check piece adds and proves it.
-- Preserve third-party license notices. MIT permission for the owner's harvested infrastructure
-  does not change dependencies' licenses or the original source projects' licenses.
+  to pick a stack or provider. Select branches before rendering.
+- No credentials in answers, fixtures, logs or committed files. Go vulnerability checks are not
+  credential scans; the final template-check piece adds and proves that separate protection.
+- Preserve third-party notices. Owner permission for copied infrastructure does not relicense
+  dependencies or the original source projects.
 
 ## Finishing
 
-An item closes through `itos work done` only after its actual pushed head is green. Add the
-complete code proof with the first Go code, and its mutation results with the code they prove.
-Never copy another project's mutation cache. The rules `itos init --agent-rules` generates below
-must describe this branch's actual configuration.
-
-<!-- itos:begin -->
-
-## The rules itos holds this repository to
-
-Generated by itos init from `itos.yaml`, which decides them: change the config, then run `itos init --agent-rules`, which rewrites only what is between these markers. The hooks and CI hold every commit to these rules.
-
-### Commit types
-
-A commit's type is one of `feat`, `fix`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `docs`, `style` or `revert`. The header is held to commitlint's config-conventional rules by itos's own lint: `type: subject` or `type(scope): subject`.
-
-### Footers
-
-- `Task:` names tasks of the ledger, `tasks/phase-{group}.yaml`.
-
-The footers each type needs:
-
-- `feat`: none.
-- `fix`: none.
-- `refactor`: `Task:`.
-- `perf`: `Task:`.
-- `test`: `Task:`.
-- `build`: `Task:`.
-- `ci`: `Task:`.
-- `chore`: `Task:`.
-- `docs`: none.
-- `style`: `Task:`.
-- `revert`: `Task:`.
-
-### The paths each type may touch
-
-- `docs` may touch only `**/*.md`, `docs/**` and `tasks/**`.
-- `feat`, `fix`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `style` and `revert` may touch anything.
-
-### What the gates run
-
-The commit-msg hook, `itos hook commit-msg`, runs these on every commit, the first to fail refusing it:
-
-- itos's own data, when the commit stages any of it (the config, the ledger, the work registry and the smoke sets), as `itos config check` judges it.
-- The paths the commit's type may touch.
-- The header and the footers.
-- The static checks of the tasks `Task:` names: a failure refuses the commit once the task's work item is done, and is only printed while it is not.
-
-The pre-push hook, `itos hook pre-push`, runs these on every push:
-
-- The commit rules above, over every commit the push adds, as `itos verify` judges them.
-
-CI runs its plan, `itos ci run`, on every push, in this order, stopping at the first failure:
-
-- `itos config check`
-- `tools/bin/doc-caps`
-- `test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md && test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md && test -f docs/architecture.md && test -f docs/security.md && test -f docs/upgrading.md && test -f LICENSE && test -f .gitattributes && test -f .gitignore && test -f .github/workflows/ci.yml && test -f .github/renovate.json5 && test -x tools/bin/doc-caps`
-- The static checks of the tasks the push's commits name.
-- The other checks of the tasks the push's commits name.
-
-A push that touches only `**/*.md`, `docs/**` and `tasks/**` runs only `itos config check`, `tools/bin/doc-caps` and `test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md && test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md && test -f docs/architecture.md && test -f docs/security.md && test -f docs/upgrading.md && test -f LICENSE && test -f .gitattributes && test -f .gitignore && test -f .github/workflows/ci.yml && test -f .github/renovate.json5 && test -x tools/bin/doc-caps`, and the static checks of the tasks its commits name.
-
-<!-- itos:end -->
+Close with `itos work done` only after the actual pushed head is green and its code proof passes.
+Before the last push, record changed-code proof with the pinned itos-cc, all-tests,
+fail-uncovered and no-annotate; commit `.metrics/mutate/`. Use the parent of the item's actual
+first commit, specs included, not an assumed take commit. Kill each survivor with a test; only
+truly equivalent mutants may be excepted with a reason for the person to review. An uncovered
+mutant needs a test, never an exception. Never reshape code merely to remove mutation sites or
+copy another project's cache. Generated rules below describe this branch's actual configuration.

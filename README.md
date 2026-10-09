@@ -1,40 +1,50 @@
 # go-template-itos
 
-A real project template for [itos-template](https://github.com/donvargax/itos-template),
-maintained by itos-corp. Answers replace real project values; no template language is used.
+A real Go project template for [itos-template](https://github.com/donvargax/itos-template),
+maintained by itos-corp. Answers replace real project values after git merges the selected
+branches. No template language is used.
 
 ## Status
 
-This is the root bootstrap, not yet a usable Go template. The Go stack, CLI feature and checks
-of their rendered combinations are the next pieces. Do not advertise a working count command,
-credential scanner or binary release before those pieces pass their checks.
+This branch is the Go foundation. Its private counting example has a domain, a Files port, a
+disk adapter and an in-memory fake, with example and property tests. There is no command-line
+executable here yet; `go/cli` adds that public entry point. The template is not advertised as
+ready until both planned combinations pass the final template-check piece.
 
-## Branches
+## Check the Go project
 
-- `main` holds the files every stack shares.
-- `stack/go` will add a working Go project.
-- `go/cli` will add a command line, with a small count command demonstrating the project's rules.
+```sh
+go build ./...
+go test ./...
+```
 
-The planned combinations are `go` and `go + cli`. Root changes merge down into the branches;
-published history is not rebased. A render merges its selected branches, then replaces the
-manifest's literals and excludes template-only files.
+CI runs the Go gates and tests on Linux, macOS and Windows. Domain coverage must stay at least
+80 percent. Changed code needs fresh mutation proof before its item closes; recorded mutants
+are sampled in CI. Properties run one random case per CI push, and more in ordinary local runs.
+
+## The example
+
+Lines are logical text lines separated by LF; CRLF is one separator, and a nonempty final line
+without a newline counts. Empty input has zero lines. Words are runs separated by Unicode
+whitespace, using Go's standard library; punctuation does not split a word. Thus `hello-world`
+is one word. The domain has no JSON, flags or exit codes, and file access is read-only through
+its port. Its additive property uses newline-terminated pieces to preserve word boundaries.
+
+Read [docs/architecture.md](docs/architecture.md) for the layer boundaries,
+[docs/security.md](docs/security.md) for trust boundaries, and
+[docs/upgrading.md](docs/upgrading.md) before moving dependency pins.
 
 ## Working here
 
-Read [AGENTS.md](AGENTS.md) and [PLAN.md](PLAN.md). `itos go` is the coordinator's entry point;
-an implementing agent uses `itos guide work`. The repository's own notes are
-[docs/ORCHESTRATING.md](docs/ORCHESTRATING.md). Hooks and CI judge the repository's rules.
-
-The root checks configuration, commit rules and documentation caps. Go-specific checks will
-arrive with their code; this root has no Go module or binary.
+Read [AGENTS.md](AGENTS.md) and [PLAN.md](PLAN.md). `itos go` coordinates; an implementing agent
+uses `itos guide work`. Hooks and CI judge the rules configured for this branch. Common changes
+merge from root `main` into stacks and then features; published history is not rebased.
 
 ## License and provenance
 
-The template is MIT licensed. `itos-corp` is an illustrative owner literal, replaced with the
-made project's owner. [LICENSE](LICENSE) contains the license text.
-
-Infrastructure is harvested from the copyright owner's
+The template is MIT licensed; `itos-corp` is the illustrative attribution owner replaced by a
+made project's answer. Infrastructure comes from the copyright owner's
 [itos](https://github.com/donvargax/itos) and
 [itos-template](https://github.com/donvargax/itos-template), with permission to distribute that
-owner's copied work under MIT in this template. Those source projects retain their own licenses.
-Third-party dependencies and tools retain their licenses and notices.
+owner's copied work under MIT here. The original projects and third-party dependencies retain
+their own licenses and notices. See [LICENSE](LICENSE) and [CONTRIBUTORS.md](CONTRIBUTORS.md).

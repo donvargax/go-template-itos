@@ -1,30 +1,32 @@
 # This repository's own notes
 
-`itos go` prints these notes after its coordinator guide. They hold only what is specific to this
-template; do not repeat the generic guide here.
+`itos go` prints these notes after its coordinator guide. Keep them specific to this template.
 
 ## Start of a session
 
-- Read `PLAN.md` and the branch's actual `itos.yaml` before assigning work. This root-bootstrap
-  stage has no Go code, scenario runner, mutation proof or binary release job yet.
-- The template's root is `main`; stack and feature branches are real projects. Keep history and
-  merge root changes downward. Do not treat a made project's binary release as a template tag.
-- Infrastructure came from the owner's itos-template and itos repositories. Harvest proven
-  machinery, retaining provenance, rather than rebuilding it differently for this template.
-- GitHub App installation and bot operation must be verified before claiming Renovate is active;
-  a committed configuration alone proves neither.
+- Read `PLAN.md` and this branch's actual `itos.yaml`. The Go foundation has private example
+  code and its Go/code-proof gates, but no public CLI, godog runner or binary release job yet.
+- Root is `main`; stacks and features remain real projects. Merge common changes downward,
+  never rebase published history. Made-project binary releases are not template release tags.
+- Infrastructure is harvested from the owner's itos-template and itos repositories. Preserve
+  provenance and real upstream identities; do not globally substitute the owner's handle.
+- A Renovate configuration does not prove App installation or bot activity. Verify before
+  claiming the automation runs.
 
-## Briefs
+## Briefs and proof
 
-- Name the implementing item, its spec, exact harvest files and neighboring checks.
-- Attach code-specific gates with their code. The final Go/CLI template carries the full rules;
-  an unfinished root must not pretend to exercise nonexistent code.
-- The coordinator writes user-facing project docs in separate docs commits. Keep each claim in
-  step with the branch's implementation.
-- No mutation cache or generator-domain fixture is inherited from another project.
+- Name the item, spec, exact harvest files and neighboring checks. The coordinator writes the
+  user-facing docs; each branch's claims must match its implemented stage.
+- The count example uses standard-library Unicode whitespace and logical lines. Its additive
+  property uses newline-terminated pieces, not arbitrary concatenation.
+- The proof base is the parent of the item's actual first commit, specs included. Adding tests
+  can stale imported-code snapshots: refresh the records the gate requires, not the gate.
+- Pick a representative smoke scenario when the CLI runner makes each feature live. Keep live
+  scenarios as explained wip on a revert; never delete them to force the revert through.
+- Never inherit another project's mutation cache or generator-domain fixtures.
 
 ## Lessons
 
-Record a lesson only when it prevents a repeated mistake. Give its recorded date, last-seen date
-and exit item (or permanent); keep at most ten. An upstream-tool gap belongs upstream, after
-checking versions and existing reports, not in a workaround here.
+New lessons name a recorded date, last-seen date and exit item (or permanent); keep at most ten.
+Report an upstream-tool gap upstream after checking releases and existing reports, rather than
+working around it in this template.
