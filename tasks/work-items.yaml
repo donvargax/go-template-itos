@@ -135,3 +135,22 @@ items:
       implementation, not a docs or lint task disguised as a fix. Reconcile non-domain unit tests
       with the agreed scenario/testing policy before removing tests. Correct CLI-branch bootstrap
       documentation without claiming dormant releases run.
+  - id: made-project-policy
+    title: Give generated projects fresh governance with the inherited quality policy
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Split by branch before implementation: language-independent policy source and setup
+      declaration on main, Go gates/proof/test selection on stack/go, CLI scenario and command
+      policy on go/cli. The manifest correctly excludes template itos.yaml and tasks; do not restore
+      template history or copy mutation caches into renders. itos init produces only a generic
+      starter, not the template custom gates. Decide with the person how fresh setup receives
+      reusable policy through supported tooling, retaining the generator boundary that it knows no
+      itos. Coordinate with source itos-template items new-steps and new-itos-setup, which are not
+      implemented yet. Prove a fresh generated project has its own adoption/work history and the
+      selected branches quality rules, and that running setup does not silently weaken CI or
+      regenerate rules from a weaker starter. Any missing itos capability is reported upstream
+      rather than worked around here.
