@@ -62,17 +62,20 @@ A commit's type is one of `feat`, `fix`, `refactor`, `perf`, `test`, `build`, `c
 ### Footers
 
 - `Task:` names tasks of the ledger, `tasks/phase-{group}.yaml`.
+- `Scenarios:` names `scenario` tests by their IDs, live ones only (not `@wip`).
+- `Upgrading:` is free text.
+- `Item:` names items of the work registry, `tasks/work-items.yaml`.
 
 The footers each type needs:
 
-- `feat`: none.
-- `fix`: none.
+- `feat`: `Scenarios:` and `Upgrading:`.
+- `fix`: `Scenarios:` and `Upgrading:`.
 - `refactor`: `Task:`.
 - `perf`: `Task:`.
-- `test`: `Task:`.
+- `test`: `Task:` or `Item:`.
 - `build`: `Task:`.
 - `ci`: `Task:`.
-- `chore`: `Task:`.
+- `chore`: `Task:` or `Item:`.
 - `docs`: none.
 - `style`: `Task:`.
 - `revert`: `Task:`.
@@ -88,6 +91,7 @@ The commit-msg hook, `itos hook commit-msg`, runs these on every commit, the fir
 
 - itos's own data, when the commit stages any of it (the config, the ledger, the work registry and the smoke sets), as `itos config check` judges it.
 - The paths the commit's type may touch.
+- The `scenario-moves` rule: outside `feat` and `fix`, the `scenario` tests may only move between files, unchanged.
 - The header and the footers.
 - The static checks of the tasks `Task:` names: a failure refuses the commit once the task's work item is done, and is only printed while it is not.
 
@@ -100,16 +104,18 @@ CI runs its plan, `itos ci run`, on every push, in this order, stopping at the f
 - `itos config check`
 - `tools/bin/doc-caps`
 - `test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md && test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md && test -f docs/architecture.md && test -f docs/security.md && test -f docs/upgrading.md && test -f LICENSE && test -f .gitattributes && test -f .gitignore && test -f .github/workflows/ci.yml && test -f .github/renovate.json5 && test -x tools/bin/doc-caps`
-- `! gofmt -l internal | grep .`
+- `! gofmt -l cmd internal features | grep .`
 - `go build ./...`
 - `go vet ./...`
 - `go mod verify`
 - `go mod tidy -diff`
+- `itos tests smoke check scenario`
 - `tools/bin/pinned golangci-lint run ./...`
 - The static checks of the tasks the push's commits name.
 - `go tool govulncheck -test ./...`
-- `RAPID_CHECKS=1 go test ./...`
+- `RAPID_CHECKS=1 go test ./cmd/... ./internal/...`
 - `tools/bin/domain-coverage`
+- The `scenario` tests of the smoke set and those the push's commits name, in one run.
 - `tools/bin/pinned itos-cc mutation sample --count 10`
 - The other checks of the tasks the push's commits name.
 
