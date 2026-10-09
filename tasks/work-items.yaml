@@ -61,30 +61,6 @@ items:
     title: Enforce the Go domain, ports, adapter and mock-free test boundaries
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Implement only on stack/go. The root shared policy is docs/engineering.md; language-specific
-      enforcement belongs beside its Go code and will merge downward into go/cli after exact-head
-      CI, never upward into main. Harvest the existing depguard approach from
-      donvargax/itos-template/.golangci.yml, adapting the real target module and layout. Domain and
-      ports, including tests, must not import the application/command layer or concrete disk/input
-      adapters. Production domain and ports perform no OS/network I/O; tests may read fixtures.
-      Production adapters may import project ports but no project domain/application or other
-      adapter implementations; adapter tests may use porttest fakes. Ban the five source
-      mock-library families in every package/test and preserve Rapid-only-in-domain-tests and all
-      existing lint/SAST/coverage/proof gates. Add a small architecture-check self-test driven by
-      the actual checksum-pinned golangci-lint and this branch actual configuration, with
-      compile-valid isolated positive/negative fixtures, local stubs where needed rather than new
-      third-party dependencies, and no custom analyzer or copied generator package names. A negative
-      case must fail for its intended depguard violation, not invalid Go/import cycles/loading
-      errors; positive port/fake imports and fixture I/O in tests must pass. Commit the self-test
-      first as a test commit and see it expose the missing rules before adding enforcement; hooks
-      run the configured checks, and the task implementation commits are pushed together only once
-      the checks pass. Install this self-test in stack/go CI, with checks preserving
-      Windows/macOS/Linux portability; do not change a public interface, CLI scenario, root
-      manifest, or CLI-only Kong/exit-type rules. Root manifest registration and CLI integration
-      adjustments get separate items. If any existing test contradicts the agreed boundary, stop
-      with evidence rather than deleting coverage or broadening the rule. Source harvest provenance
-      and MIT permission remain as documented.
