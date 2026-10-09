@@ -24,9 +24,9 @@ func TestFilesReadExistingFile(t *testing.T) {
 	if string(got) != string(want) {
 		t.Errorf("Read() = %q, want %q", got, want)
 	}
-	contents, err := os.ReadFile(path)
-	if err != nil || string(contents) != string(want) {
-		t.Errorf("Read() changed the input to %q, %v", contents, err)
+	contents, readErr := os.ReadFile(path)
+	if readErr != nil || string(contents) != string(want) {
+		t.Errorf("Read() changed the input to %q, %v", contents, readErr)
 	}
 }
 

@@ -27,9 +27,9 @@ func Count(data []byte) Result {
 
 // File counts the contents of path through the Files port.
 func File(files port.Files, path string) (Result, error) {
-	data, err := files.Read(path)
-	if err != nil {
-		return Result{}, err
+	data, failure := files.Read(path)
+	if failure != nil {
+		return Result{}, failure
 	}
 	return Count(data), nil
 }

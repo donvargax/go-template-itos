@@ -50,7 +50,7 @@ func TestFileReturnsTypedMissingAndUnreadableFailures(t *testing.T) {
 		wantMissing bool
 	}{
 		{name: "missing", files: porttest.Files{}, wantMissing: true},
-		{name: "unreadable", files: porttest.Files{Failures: map[string]error{"notes": porttest.Unreadable("notes")}}, wantMissing: false},
+		{name: "unreadable", files: porttest.Files{Failures: map[string]port.ReadFailure{"notes": porttest.Unreadable("notes")}}, wantMissing: false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			_, err := domain.File(test.files, "notes")

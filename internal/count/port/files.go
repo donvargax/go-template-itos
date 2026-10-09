@@ -1,8 +1,6 @@
 // Package port defines the files the counting domain can read.
 package port
 
-import "errors"
-
 // ReadFailure describes a file-read failure without exposing operating-system
 // error types to the domain.
 type ReadFailure interface {
@@ -25,12 +23,5 @@ func (e *Unreadable) Error() string { return "unreadable file: " + e.Path }
 // Files reads the bytes at a path. Implementations return a typed ReadFailure
 // for missing and unreadable inputs.
 type Files interface {
-	Read(path string) ([]byte, error)
-}
-
-// IsReadFailure reports whether err is one of the failures defined by this
-// port.
-func IsReadFailure(err error) bool {
-	var failure ReadFailure
-	return errors.As(err, &failure)
+	Read(path string) ([]byte, ReadFailure)
 }

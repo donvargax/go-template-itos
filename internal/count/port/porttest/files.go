@@ -6,15 +6,15 @@ import "github.com/itos-corp/go-template-itos/internal/count/port"
 // Files holds test inputs and configured read failures in memory.
 type Files struct {
 	Data     map[string][]byte
-	Failures map[string]error
+	Failures map[string]port.ReadFailure
 }
 
 var _ port.Files = Files{}
 
 // Read returns a copy of the configured file, or its configured failure.
-func (f Files) Read(path string) ([]byte, error) {
-	if err, ok := f.Failures[path]; ok {
-		return nil, err
+func (f Files) Read(path string) ([]byte, port.ReadFailure) {
+	if failure, ok := f.Failures[path]; ok {
+		return nil, failure
 	}
 	data, ok := f.Data[path]
 	if !ok {
@@ -24,4 +24,4 @@ func (f Files) Read(path string) ([]byte, error) {
 }
 
 // Unreadable returns a configured unreadable-file failure.
-func Unreadable(path string) error { return &port.Unreadable{Path: path} }
+func Unreadable(path string) port.ReadFailure { return &port.Unreadable{Path: path} }
