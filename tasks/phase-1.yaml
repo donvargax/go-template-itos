@@ -89,30 +89,22 @@
   done_when:
     - run: "d=$(mktemp -d) && trap 'rm -rf \"$d\"' EXIT && git clone --quiet --depth 1 https://github.com/donvargax/itos-template.git \"$d/g\" && (cd \"$d/g\" && go build -o \"$d/itos-template\" ./cmd/itos-template) && t=https://github.com/donvargax/go-template-itos.git && a=\"--answer name=blue-fox --answer owner=acme --answer module=example.com/blue/fox\" && \"$d/itos-template\" check \"$t\" $a > \"$d/check.txt\" 2>&1; cat \"$d/check.txt\"; ! grep -q warning \"$d/check.txt\" && grep -q '2 of 2 combinations passed' \"$d/check.txt\" && \"$d/itos-template\" new \"$t\" \"$d/p\" --stack go --feature cli $a >/dev/null && test ! -e \"$d/p/itos.yaml\" && test ! -e \"$d/p/tasks\" && git -C \"$d/p\" log --format=%B -1 | grep -q 'chore: start the generated project' && ! git -C \"$d/p\" log --format=%B -1 | grep -q 'Task:' && (cd \"$d/p\" && go build ./...) && (cd \"$d/p\" && go vet ./...) && (cd \"$d/p\" && go test ./...) && (cd \"$d/p\" && go run ./cmd/blue-fox count README.md --json)"
 - id: T-8
-  type: ci
-  title: Enforce the reusable Go architecture and mock-free test boundaries
+  type: docs
+  title: Document the shared engineering practices every project inherits
   why: >
-    The counting example already follows a thin command/domain/ports design, but the existing
-    depguard rules allow the domain and ports to import UI or adapters, allow adapters to import
-    project implementation packages, and do not ban mocking libraries. Harvest the existing depguard
-    approach from /home/yorch/src/os/github/donvargax/itos-template/.golangci.yml, adapting only
-    package names and the target layout, with no generator imports or generator-specific gosec
-    exclusions. Implement on stack/go, then merge downward into go/cli without rewriting history.
-    Domain and ports, including their tests, must not import command, internal/cli, disk, input, or
-    kong. Production domain code performs no OS/network I/O; domain tests may read fixtures.
-    Production adapters import no project implementation package beyond the ports they implement;
-    adapter tests may use porttest fakes. Kong remains in cmd, internal/cli and count/command. Ban
-    the five source mock-library families everywhere and preserve Rapid placement. Preserve all
-    existing lint, coverage, property, scenario and mutation gates. A small self-test must use the
-    actual pinned linter and the actual branch configuration against compile-valid isolated negative
-    fixtures, prove the intended depguard diagnostic for each boundary rather than an unrelated
-    loading error, and prove permitted port/fake imports still pass. No new analyzer, dependency,
-    public command behavior or scenario change. Add the self-test to each Go branch CI plan and the
-    manifest Go checks so render validation exercises it too; the root remains language-neutral.
-    Cross-slice isolation and exhaustive error classification are separately tracked work.
+    Put language- and interface-independent practices on main, so every stack inherits them.
+    The person explicitly wants this split: shared engineering policy on main, Go-specific policy
+    and tooling on stack/go, and CLI-specific policy and tooling on go/cli. Harvest the general
+    design and testing rules already used by donvargax/itos-template: vertical slices with thin
+    entry points, domain-owned behavior through ports, no copying domain types into options or
+    DTOs, adapters translating outside models only where needed, outcome-based domain tests with
+    fakes rather than mocks, public-entry-point acceptance tests, person-owned library choices,
+    OS differences as values, and honest claims about checks. Keep AGENTS.md short and point it
+    to docs/engineering.md. The guide distinguishes policy from what a branch currently enforces;
+    it adds no Go tool, CLI contract, scenario, workflow, or new quality gate to the root.
+    Go enforcement, CLI guidance, generated-project setup and releases are separate items. Shared
+    docs merge downward without rewriting history; child branches retain their own gates and work
+    history. Do not copy the generator's domain, task IDs, mutation cache or historical decisions.
   done_when:
-    - run: test -x tools/bin/architecture-check && grep -q architecture-check itos.yaml && grep -q architecture-check itos-template.yaml
-    - run: tools/bin/architecture-check
-      timeout: 180
-    - run: tools/bin/pinned golangci-lint run ./...
-      timeout: 300
+    - run: test -f docs/engineering.md && grep -q 'docs/engineering.md' AGENTS.md
+    - run: grep -q '## Design' docs/engineering.md && grep -q '## Tests' docs/engineering.md && grep -q '## Dependencies' docs/engineering.md && grep -q '## What is enforced' docs/engineering.md
