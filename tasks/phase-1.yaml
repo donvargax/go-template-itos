@@ -29,12 +29,21 @@
   type: build
   title: Build the Go foundation and its proof gates
   why: >
-    Add a working Go module with the specified private counting example and its
-    domain, port, disk adapter, fake and property tests. Retarget Go tooling and
-    CI to this branch, keep it buildable without the later CLI, and prove changed
-    code with fresh mutation evidence.
+    Add a working Go module with a private counting domain, Files port, read-only
+    disk adapter, in-memory fake, examples and rapid property. Count logical lines:
+    empty input is zero, LF separates lines, CRLF is one separator, and a nonempty
+    unterminated final line counts. Words are non-whitespace runs under Go's
+    standard-library Unicode tokenization, punctuation stays in words, and
+    invalid UTF-8 is non-whitespace. Do not use Scanner's default limit. Missing
+    and unreadable files are typed port failures, never raw OS models in domain
+    behavior. The additive property joins newline-terminated pieces; arbitrary
+    concatenation is not promised additive. Use no OS permission assumptions or
+    runtime.GOOS logic. Keep only actual dependencies/tools, retain Rapid, and
+    omit the future CLI and scenario runner. Add branch-specific Go CI and 80%
+    domain coverage; prove changed code with fresh fail-uncovered mutation data.
   done_when:
     - run: go mod verify
     - run: go mod tidy -diff
+    - run: go vet ./...
     - run: go test ./...
     - run: tools/bin/domain-coverage
