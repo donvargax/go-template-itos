@@ -208,3 +208,26 @@ items:
       passes. This is a checked lint/refactor task, not a public behavior slice; keep it separate
       from duplicate flags and documentation. Obtain the persons approval of the reused linter when
       specifying this item, as the library-choice policy requires.
+  - id: renovate-branches
+    title: Renovate updates the branches that hold the code, not only main
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Moved from itos-template, where it was T-29; its why there assumed a separate itos branch,
+      which ADR-0032 there dropped. Renovate works on the default branch, main, and reads its config
+      from there. Main enables only github-actions and renovate-config and holds no go.mod, so the
+      Go modules on stack/go and go/cli get no updates and nobody is told. Name the branches holding
+      code in baseBranches (main, stack/go, go/cli): one pull request per base branch, each judged
+      by that branch's own CI and automerged once it is green, so no workflow has to carry an update
+      down. Each branch reads its own workflows and module, which differ, so weigh
+      useBaseBranchConfig merge against one config on main enabling gomod. Group the requests for
+      one dependency with a groupName so they move together; skew between branches is acceptable,
+      since each branch's CI keeps it honest. Two strings are wrong for this layout: commitBody says
+      an update lands on main, but most land on stack/go or go/cli; commitTrailers names Task: T-1,
+      and itos verify in each branch's CI needs a task that branch's own ledger holds. Keep the
+      owner presets, the pinned action digests, the cooldown and the automerge on green. A config
+      proves nothing about the app being installed or the bot running (docs/upgrading.md), so verify
+      on a real request.
