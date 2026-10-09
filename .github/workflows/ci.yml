@@ -73,3 +73,5 @@ jobs:
         run: go test ./... -count=1
         env:
           RAPID_CHECKS: 1
+      - name: Import boundary self-test
+        run: tools/bin/architecture-check

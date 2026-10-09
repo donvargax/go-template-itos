@@ -6,25 +6,73 @@ linters:
     - gosec
     - revive
   settings:
+    # Layer/production-I/O/mock rules harvested from
+    # github.com/donvargax/itos-template/.golangci.yml with owner MIT
+    # permission (CONTRIBUTORS.md), adapted to this module and layout.
+    # tools/bin/architecture-check proves these with compile-valid fixtures.
     depguard:
       rules:
         domain:
+          list-mode: lax
           files:
             - "**/internal/count/domain/**"
+          allow:
+            - github.com/itos-corp/go-template-itos/internal/count/domain$
+            - github.com/itos-corp/go-template-itos/internal/count/domain/
+            - github.com/itos-corp/go-template-itos/internal/count/port$
+            - github.com/itos-corp/go-template-itos/internal/count/port/
+          deny:
+            - pkg: github.com/itos-corp/go-template-itos
+              desc: "domain code and tests import domain/ports, never application, commands or concrete adapters"
+        # Separate from domain so domain-coverage still measures behavior,
+        # not the ports/fakes. Includes porttest and tests in both layers.
+        ports:
+          list-mode: lax
+          files:
+            - "**/internal/count/port/**"
+          allow:
+            - github.com/itos-corp/go-template-itos/internal/count/domain$
+            - github.com/itos-corp/go-template-itos/internal/count/domain/
+            - github.com/itos-corp/go-template-itos/internal/count/port$
+            - github.com/itos-corp/go-template-itos/internal/count/port/
+          deny:
+            - pkg: github.com/itos-corp/go-template-itos
+              desc: "ports and their tests import no application, commands or concrete adapters"
+        domain-io:
+          files:
+            - "**/internal/count/domain/**"
+            - "**/internal/count/port/**"
+            - "!$test"
           deny:
             - pkg: os
-              desc: "the domain reaches files through its port"
+              desc: "production domain/ports reach files and processes through ports; tests may read fixtures"
             - pkg: net
-              desc: "the domain does no I/O"
+              desc: "production domain/ports reach networks through ports"
         infra:
           list-mode: lax
           files:
             - "**/internal/count/disk/**"
+            - "**/internal/count/input/**"
+            - "!$test"
           allow:
             - github.com/itos-corp/go-template-itos/internal/count/port$
           deny:
-            - pkg: github.com/itos-corp/go-template-itos/internal/count/domain$
-              desc: "infrastructure imports only the port it implements"
+            - pkg: github.com/itos-corp/go-template-itos
+              desc: "production adapters import only project ports, not domain, application, other adapters or test fakes"
+        mocks:
+          files:
+            - $all
+          deny:
+            - pkg: github.com/golang/mock
+              desc: "use our own porttest fakes/stubs, never mocking libraries"
+            - pkg: go.uber.org/mock
+              desc: "use our own porttest fakes/stubs, never mocking libraries"
+            - pkg: github.com/stretchr/testify/mock
+              desc: "use our own porttest fakes/stubs, never mocking libraries"
+            - pkg: github.com/vektra/mockery
+              desc: "use our own porttest fakes/stubs, never mocking libraries"
+            - pkg: github.com/maxbrunsfeld/counterfeiter
+              desc: "use our own porttest fakes/stubs, never mocking libraries"
         rapid:
           files:
             - $all
