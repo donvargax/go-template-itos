@@ -58,8 +58,8 @@ items:
   - id: T-8
     title: Document the shared engineering practices every project inherits
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
