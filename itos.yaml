@@ -38,6 +38,15 @@ ci:
         test -f .gitignore && test -f .github/workflows/ci.yml &&
         test -f .github/renovate.json5 && test -x tools/bin/doc-caps
       cost: static
+    - { run: "! gofmt -l internal | grep .", cost: static }
+    - { run: go vet ./..., cost: static }
+    - { run: go mod verify, cost: static }
+    - { run: go mod tidy -diff, cost: static }
+    - { run: tools/bin/pinned golangci-lint run ./..., cost: static }
+    - { run: go tool govulncheck -test ./..., cost: late }
+    - { run: "RAPID_CHECKS=1 go test ./...", cost: late }
+    - { run: tools/bin/domain-coverage, cost: late }
+    - { run: tools/bin/pinned itos-cc mutation sample --count 10, cost: late }
   prose:
     paths: ["**/*.md", "docs/**", "tasks/**"]
     steps:
@@ -51,3 +60,8 @@ ci:
         test -f .gitignore && test -f .github/workflows/ci.yml &&
         test -f .github/renovate.json5 && test -x tools/bin/doc-caps
   watch: { provider: github }
+
+proof:
+  code:
+    paths: ["{cmd,internal}/**/*.go"]
+    check: "tools/bin/pinned itos-cc mutation check --since {base} --fail-uncovered --json cmd internal"

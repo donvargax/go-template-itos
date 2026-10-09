@@ -24,6 +24,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        if: >-
+          startsWith(github.head_ref, 'stack/') || startsWith(github.head_ref, 'go/') ||
+          startsWith(github.head_ref, 'renovate/') || startsWith(github.ref, 'refs/heads/stack/') ||
+          startsWith(github.ref, 'refs/heads/go/') || startsWith(github.ref, 'refs/heads/renovate/')
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
       - uses: donvargax/itos@1b9f1f9995be5d20aed3b4f8877a453bbd1e98a3 # v7.0.0-rc.1
         with:
           version: 6.0.0
@@ -38,3 +46,28 @@ jobs:
           echo "FROM=$from" >> "$GITHUB_ENV"
       - run: itos verify "$FROM" "$TO"
       - run: itos ci run "$FROM" "$TO"
+
+  platform:
+    name: Go tests (${{ matrix.os }})
+    if: >-
+      startsWith(github.head_ref, 'stack/') || startsWith(github.head_ref, 'go/') ||
+      startsWith(github.head_ref, 'renovate/') || startsWith(github.ref, 'refs/heads/stack/') ||
+      startsWith(github.ref, 'refs/heads/go/') || startsWith(github.ref, 'refs/heads/renovate/')
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: Tests
+        run: go test ./... -count=1
+        env:
+          RAPID_CHECKS: 1
