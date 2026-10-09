@@ -1,0 +1,27 @@
+# The ledger's phase 1: the tasks that drive every commit but a feat, a fix or
+# a docs, each named in its commit's Task footer (itos commit --task T-2).
+# A task:
+#
+#   - id: T-2
+#     type: chore # one of commits.types
+#     title: What it is
+#     why: Why it is worth doing. # optional
+#     done_when: # the checks that prove it, which itos task T-2 runs
+#       - run: a command that exits 0 once it is done
+- id: T-1
+  type: chore
+  title: Bootstrap the language-neutral template root
+  why: >
+    Establish the shared root policy, documentation, Renovate setup and root-only CI
+    before the Go stack or CLI exists. Checks deliberately omit itos-template.yaml,
+    which is template metadata excluded from made projects.
+  done_when:
+    - run: itos config check
+    - run: tools/bin/doc-caps
+    - run: >-
+        test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md &&
+        test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md &&
+        test -f docs/architecture.md && test -f docs/security.md &&
+        test -f docs/upgrading.md && test -f LICENSE && test -f .gitattributes &&
+        test -f .gitignore && test -f .github/workflows/ci.yml &&
+        test -f .github/renovate.json5 && test -x tools/bin/doc-caps
