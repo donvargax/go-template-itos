@@ -53,9 +53,12 @@ func TestFileReturnsTypedMissingAndUnreadableFailures(t *testing.T) {
 		{name: "unreadable", files: porttest.Files{Failures: map[string]port.ReadFailure{"notes": porttest.Unreadable("notes")}}, wantMissing: false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			_, err := domain.File(test.files, "notes")
+			got, err := domain.File(test.files, "notes")
 			if err == nil {
 				t.Fatal("File() returned no failure")
+			}
+			if got != (domain.Result{}) {
+				t.Errorf("File() result on failure = %+v, want zero result", got)
 			}
 			var missing *port.Missing
 			var unreadable *port.Unreadable
