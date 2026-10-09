@@ -1,7 +1,8 @@
 #!/bin/sh
 # Runs a release tool at the version and SHA-256 pinned below. Adapted from
-# github.com/donvargax/itos-template; only lint and mutation-proof tools are
-# retained. govulncheck is pinned as a Go tool in go.mod.
+# github.com/donvargax/itos-template, keeping its goreleaser case, which the release
+# workflow runs; the lint and mutation-proof cases are the ones this branch's CI
+# needs. govulncheck is pinned as a Go tool in go.mod.
 set -eu
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)
 
@@ -47,6 +48,19 @@ golangci-lint)
 	esac
 	url=https://github.com/golangci/golangci-lint/releases/download/v$version/$asset
 	member=golangci-lint-$version-$platform/golangci-lint$exe
+	;;
+goreleaser)
+	# v2.18.2, 2026-09-17.
+	version=2.18.2
+	case "$platform" in
+	linux-amd64) asset=goreleaser_Linux_x86_64.tar.gz sum=0a96edc9d9bc594e4a41cc4d59467c182062910ab24d9d1f6dd7b667d32606d3 ;;
+	linux-arm64) asset=goreleaser_Linux_arm64.tar.gz sum=a71681b29194f08f057a68cfcaa5c6b15d907a83a2622c51900c4faff828f322 ;;
+	darwin-amd64) asset=goreleaser_Darwin_x86_64.tar.gz sum=5e97d6517f73a0b6f71675a2911b15d3136c03c8907650c2b18e114b1c0f5205 ;;
+	darwin-arm64) asset=goreleaser_Darwin_arm64.tar.gz sum=a811ff154fe136a0cfb55d00126c151fc39ec370a663d805a9ca5547445aa70c ;;
+	*) die "no pinned $tool for $platform" ;;
+	esac
+	url=https://github.com/goreleaser/goreleaser/releases/download/v$version/$asset
+	member=goreleaser exe=
 	;;
 itos-cc)
 	version=0.5.0
