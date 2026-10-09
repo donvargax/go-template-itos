@@ -29,7 +29,7 @@ items:
     title: Build the public count CLI, its scenario runner and its release machinery
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-2]
     kind: task
   - id: count-cli
