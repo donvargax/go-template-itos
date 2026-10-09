@@ -8,10 +8,10 @@ Pinned tools keep their upstream identities and licenses. Upgrades must preserve
 provenance verification; the source owner's permission to distribute copied infrastructure under
 MIT does not grant permission to change third-party licenses.
 
-At the root-bootstrap stage, CI verifies commits, configuration and documentation caps. It does
-not yet scan rendered projects for credentials. The template-check piece installs a pinned
-credential scanner and proves its checks for every supported combination before claiming that
-protection. Code-specific checks arrive with their code.
+Every render is scanned for credentials: gitleaks is pinned in tools/bin/pinned as the other
+tools are, and the manifest names it as the root check, so itos-template check runs it on every
+supported combination and stops warning about a render nothing scans. Code-specific checks
+arrive with their code.
 
 itos's hooks and commit rules are workflow controls, not a security sandbox. A template's own
 check commands can execute programs; run them only in an environment appropriate to that trust.

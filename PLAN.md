@@ -25,7 +25,7 @@ merging branches. MIT is the template's license; owner attribution is an answer,
    words; its detailed behavior must be specified before implementation. Joined-pieces
    properties must respect word boundaries, not assume arbitrary concatenation is additive.
 4. Template CI: render and check both combinations, with pinned gitleaks marked as a credential
-   scan. Only after this passes is the template advertised as ready.
+   scan. This was the last piece and it passed, so the template is advertised as ready.
 
 Keep the completed Go/CLI project's machinery whole: three-platform CI, itos gates, code proof,
 rapid properties, godog scenarios, pinned tools, Renovate and attested binary releases. Attach

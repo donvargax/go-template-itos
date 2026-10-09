@@ -5,9 +5,11 @@ maintained by itos-corp. Answers replace real project values; no template langua
 
 ## Status
 
-This is the root bootstrap, not yet a usable Go template. The Go stack, CLI feature and checks
-of their rendered combinations are the next pieces. Do not advertise a working count command,
-credential scanner or binary release before those pieces pass their checks.
+The template is ready. Every combination its manifest allows, `go` and `go + cli`, renders from
+the public branches and passes every check the manifest names, the pinned credential scan
+among them, so itos-template check reports 2 of 2 combinations and no warning. A project made
+from the public template builds, vets and tests, runs its own `count` command, and carries
+none of this repository's own itos data.
 
 ## Branches
 
