@@ -30,8 +30,9 @@ by the source project's T-25 until this new repository has its own usable regist
   to select a stack or provider: selection is a branch choice before rendering.
 - Look for an existing library before building what one likely solves; the person settles that
   choice in the spec. Preserve thin entry points and domain-owned behavior through ports.
-- No credentials belong in answers, fixtures, logs or committed files. No credential scan is
-  installed at this root-bootstrap stage; the template-check piece adds and proves it.
+- No credentials belong in answers, fixtures, logs or committed files. Every render is scanned
+  for them by gitleaks, pinned in tools/bin/pinned and marked as the manifest's root check, so
+  itos-template check proves it on every combination.
 - Preserve third-party license notices. MIT permission for the owner's harvested infrastructure
   does not change dependencies' licenses or the original source projects' licenses.
 
