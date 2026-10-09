@@ -15,9 +15,6 @@ items:
     title: Bootstrap the language-neutral template root
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Establish shared root policy, documentation, Renovate setup and root-only CI before the Go
-      stack or CLI exists.
