@@ -22,7 +22,9 @@ questions:
     question: What is the Go module path?
     pattern: "[a-z0-9.-]+(/[a-z0-9._-]+)+"
 
+template_only:
+  - itos.yaml
+  - tasks
+
 first_commit: |-
   chore: start the generated project
-
-  Task: T-1
