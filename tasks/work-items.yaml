@@ -56,7 +56,7 @@ items:
       from its public source and proves the template against the public URL, so it proves what a
       person can actually get rather than a local copy.
   - id: T-8
-    title: Enforce the reusable Go architecture and mock-free test boundaries
+    title: Document the shared engineering practices every project inherits
     phase: 1
     owner: null
     status: todo
