@@ -306,12 +306,6 @@ func linkAllBut(folder, links string, entries []os.DirEntry, hidden func(os.DirE
 
 // When steps.
 
-// A program run in the folder dir, its exit code and output what the Then
-// steps read.
-func (w *world) run(dir, program string, args ...string) error {
-	return w.runEnv(dir, w.env(), program, args...)
-}
-
 // runWith runs go-template-itos in the scratch folder with args, split as a
 // scenario wrote them, in the environment env.
 func (w *world) runWith(env []string, args string) error {

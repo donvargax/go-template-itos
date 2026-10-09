@@ -20,3 +20,7 @@
 #     scenarios:
 #       - id: "@ID-CLI-01"
 #         why: what it exercises, and why it was chosen
+- file: count.feature
+  scenarios:
+    - id: "@ID-COUNT-01"
+      why: count's whole path in one run, the counts on stdout and the hint on stderr, the file read through the disk adapter and the output shaped
