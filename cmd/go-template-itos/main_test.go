@@ -207,7 +207,14 @@ func TestCountReadsALineWholePastAnyTokenLimit(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("run of count returned %d: %s", code, stderr.String())
 	}
-	want := `{"schema":1,"ok":true,"file":"` + path + `","lines":1,"words":1}` + "\n"
+	// The file is written as JSON writes it, whose escaping is the encoder's
+	// and not this test's: a Windows path holds backslashes, and the answer a
+	// script reads is the one with them escaped.
+	name, err := json.Marshal(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := `{"schema":1,"ok":true,"file":` + string(name) + `,"lines":1,"words":1}` + "\n"
 	if got := stdout.String(); got != want {
 		t.Errorf("standard output = %q, want %q", got, want)
 	}
