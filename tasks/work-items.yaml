@@ -22,19 +22,6 @@ items:
     title: Keep the template's itos data out of every render, and drop first_commit's footer
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Each branch already keeps its own config, ledger and registry, scoped to the work that
-      happened on it: main holds T-1, stack/go adds T-2, go/cli adds T-3 and the count-cli slice,
-      and no branch holds another's work. Nothing is duplicated that ought to be one thing, so no
-      branch is added, nothing merges up into anything, and no CI plan moves: every branch keeps the
-      gates, the plan, the proof and the task checks it has today. What a render would inherit is
-      the problem, and the fix is two lines of the manifest. Add to it a template_only naming
-      itos.yaml and tasks, the two paths a render has no use for, which IsTemplateOnly already
-      excludes from every render beside the manifest itself. Drop the Task footer from first_commit:
-      a render is committed before the made project has any ledger, so the footer names nothing, and
-      in a made project T-1 means Adopt itos rather than anything this repository decides. The made
-      project's own setup comes from the template's declared setup steps per ADR-0031, a later
-      piece.
