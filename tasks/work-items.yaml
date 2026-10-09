@@ -60,8 +60,8 @@ items:
   - id: T-9
     title: Enforce the Go domain, ports, adapter and mock-free test boundaries
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
