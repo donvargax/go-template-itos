@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "file": "internal/count/disk/files.go",
+  "language": "go",
+  "tests": {
+    "internal/count/disk/files_test.go": "286f827bf8e420d66753805041777fa06209fe6fa058555a29a46c3c56f071a4"
+  },
+  "units": [
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/count/disk.Files",
+      "name": "Read",
+      "hash": "cb1dd5f86eb82680",
+      "start_line": 20,
+      "end_line": 26,
+      "killed": 1,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 1,
+      "mutants": [
+        {
+          "line": 22,
+          "column": 9,
+          "offset": 171,
+          "original": "!=",
+          "replacement": "==",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/count/disk",
+      "name": "classifyReadError",
+      "hash": "bd8761ded9feaff3",
+      "start_line": 28,
+      "end_line": 33,
+      "killed": 0,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 0,
+      "mutants": []
+    }
+  ]
+}

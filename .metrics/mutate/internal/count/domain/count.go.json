@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "file": "internal/count/domain/count.go",
+  "language": "go",
+  "tests": {
+    "internal/count/domain/count_test.go": "48a3c28ffe7e3194ab29dce6a1d8e3cdebee96a675485800737462ff44ab9c05"
+  },
+  "units": [
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/count/domain",
+      "name": "Count",
+      "hash": "17eeb382f0b740c4",
+      "start_line": 20,
+      "end_line": 26,
+      "killed": 6,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 6,
+      "mutants": [
+        {
+          "line": 22,
+          "column": 15,
+          "offset": 89,
+          "original": ">",
+          "replacement": ">=",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 22,
+          "column": 17,
+          "offset": 91,
+          "original": "0",
+          "replacement": "1",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 22,
+          "column": 19,
+          "offset": 93,
+          "original": "&&",
+          "replacement": "||",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 22,
+          "column": 36,
+          "offset": 110,
+          "original": "-",
+          "replacement": "+",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 22,
+          "column": 37,
+          "offset": 111,
+          "original": "1",
+          "replacement": "0",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 22,
+          "column": 40,
+          "offset": 114,
+          "original": "!=",
+          "replacement": "==",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/count/domain",
+      "name": "File",
+      "hash": "9e88079a33a1e3e1",
+      "start_line": 29,
+      "end_line": 35,
+      "killed": 1,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 1,
+      "mutants": [
+        {
+          "line": 31,
+          "column": 13,
+          "offset": 106,
+          "original": "!=",
+          "replacement": "==",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    }
+  ]
+}
