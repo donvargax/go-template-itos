@@ -18,6 +18,7 @@ func TestCountCountsLogicalLinesAndUnicodeWhitespaceWords(t *testing.T) {
 		want  domain.Result
 	}{
 		{name: "empty", input: "", want: domain.Result{}},
+		{name: "one-byte unterminated line", input: "x", want: domain.Result{Lines: 1, Words: 1}},
 		{name: "one unterminated line", input: "one", want: domain.Result{Lines: 1, Words: 1}},
 		{name: "terminated line", input: "one\n", want: domain.Result{Lines: 1, Words: 1}},
 		{name: "empty lines", input: "\n\n", want: domain.Result{Lines: 2}},
@@ -65,8 +66,14 @@ func TestFileReturnsTypedMissingAndUnreadableFailures(t *testing.T) {
 			if test.wantMissing && !errors.As(err, &missing) {
 				t.Errorf("failure %T = %v, want typed Missing", err, err)
 			}
+			if test.wantMissing && missing != nil && missing.Error() != "missing file: notes" {
+				t.Errorf("missing error = %q, want path-specific message", missing.Error())
+			}
 			if !test.wantMissing && !errors.As(err, &unreadable) {
 				t.Errorf("failure %T = %v, want typed Unreadable", err, err)
+			}
+			if !test.wantMissing && unreadable != nil && unreadable.Error() != "unreadable file: notes" {
+				t.Errorf("unreadable error = %q, want path-specific message", unreadable.Error())
 			}
 		})
 	}
