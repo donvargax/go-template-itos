@@ -29,27 +29,9 @@ items:
     title: The manifest declares what every render must pass, so check proves something
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      check runs and passes today and proves nothing: the manifest names no checks, so every
-      combination renders and has nothing to run, and its only output is the warning that no check
-      is marked as scanning the renders for credentials. Declare the checks beside what they check,
-      per branch as docs/manifest.md says: the root's, stack/go's own, the cli feature's own, and a
-      combination running the root's then the stack's then the features' in order. What each branch
-      already runs in its CI is what its renders must pass, so a render is proved as strongly as the
-      branch it came from. Checks run with no shell, so the gofmt pipeline is written as [sh, -c, …]
-      and every other is a plain word list, each word's literals replaced by the answers as a file's
-      contents are. No check is an itos one: after T-4 a render carries none of this repository's
-      itos data, so itos config check and the like would have nothing to read, and the made
-      project's own setup comes from the template's declared setup steps per ADR-0031. Pin gitleaks
-      the way tools/bin/pinned pins the others, at a version and its release's own checksum, and
-      mark it scans: [credentials] as the root's check, so every render is scanned and check stops
-      warning. itos-template scans no render itself and knows no tool that does: the template names
-      its own. The pin lands on the Go stack with the other tools itos.yaml's plan runs, never on
-      the root, which has no toolchain; the manifest is one file on the root and merges down, so
-      every render of a stack already carries the tool the root's check runs.
   - id: T-7
     title: Prove the first template end to end and say it is ready
     phase: 1
