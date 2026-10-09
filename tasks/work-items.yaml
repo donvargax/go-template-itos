@@ -100,3 +100,18 @@ items:
       or Go gate. CLI-only error exhaustiveness and command rules are separate. Configure the Go
       self-test in the Go branch CI; root manifest declarations are a separate root-owned
       integration change.
+  - id: go-engineering
+    title: Document the reusable Go design and quality contract
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Belongs on stack/go and merges into go/cli, building on root docs/engineering.md rather than
+      duplicating it. Explain the actual package layout, ports/fakes, property tests, OS handling,
+      locked dependencies, checksum-pinned tools, lint/SAST/vulnerability checks, domain coverage
+      and changed-code mutation proof. Distinguish proof at work-item closure from CI mutation
+      sampling, and active checks from plans. Keep Go-specific commands out of the base guide,
+      remove stale bootstrap claims on this branch, and preserve all gates. The template branch and
+      emitted project must be discussed separately until emitted-project setup and CI are verified.
