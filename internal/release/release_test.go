@@ -1,6 +1,7 @@
 package release
 
 import (
+	"errors"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -55,6 +56,18 @@ func TestNewest(t *testing.T) {
 		{[]string{"v01.0.0", "v0.1.0"}, "v01.0.0"},
 		{[]string{"v01.0.0", "v1.0.0", "v001.0.0"}, "v1.0.0"},
 		{[]string{"v1.0.0", "v01.0.0"}, "v1.0.0"},
+		// One version spelled two ways and neither longer: length cannot tell
+		// them apart, so the name does, else the order they are listed in
+		// would decide which release the cut reads as the last one.
+		{[]string{"v01.0.0", "v1.0.00"}, "v1.0.00"},
+		// And the same two spellings the other way round, where the shorter is
+		// also the later by name: length decides before the name is read, or a
+		// leading zero would make a version the higher one.
+		{[]string{"v1.0.0", "v1.00.0"}, "v1.0.0"},
+		// Only the patch number differs: it is compared too, or a patch
+		// release would never read as the one after the minor it follows.
+		{[]string{"v1.2.0", "v1.2.1"}, "v1.2.1"},
+		{[]string{"v1.2.0", "v1.2.10"}, "v1.2.10"},
 		{[]string{"v99999999999999999999.0.0", "v9.0.0"}, "v99999999999999999999.0.0"},
 	}
 	for _, c := range cases {
@@ -128,3 +141,47 @@ func TestBinaryMoved(t *testing.T) {
 		t.Errorf("BinaryMoved from a tag that is not there: %v, want an error naming it", err)
 	}
 }
+
+// The modules are read for every system the release builds for, so a
+// dependency only some of them link is among the modules Moved compares. Read
+// on the host alone, a module that left the binary for one system would never
+// read as moved, and the cut would miss it.
+func TestGoInRunsForTheSystemItIsGiven(t *testing.T) {
+	got, err := goIn(t.TempDir(), "windows", "env", "GOOS")
+	if err != nil {
+		t.Fatalf("goIn for windows: %v", err)
+	}
+	if goos := strings.TrimSpace(got); goos != "windows" {
+		t.Errorf("goIn for windows ran for %q, want windows", goos)
+	}
+}
+
+// A go.mod with no toolchain line: the go line is the toolchain then, or a
+// module whose toolchain never moved would read as a move and cut a release.
+func TestBuiltAtReadsTheGoLineWhereNoToolchainLineIs(t *testing.T) {
+	repo := releasetest.Example(t, true)
+	releasetest.Change(t, filepath.Join(repo, "go.mod"), "\ntoolchain go1.24.0\n", "")
+	releasetest.Commit(t, repo, "build: drop the toolchain line")
+	t.Chdir(repo)
+	build, err := BuiltAt("HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if build.Toolchain != "go1.24" {
+		t.Errorf("Toolchain = %q, want go1.24, the go line", build.Toolchain)
+	}
+}
+
+// A reader that fails is a disk with no room left: the error is the caller's,
+// so a tree is never left half written with the failure dropped.
+func TestWriteReportsAFailedCopy(t *testing.T) {
+	err := write(filepath.Join(t.TempDir(), "half"), failingReader{}, 0o600)
+	if err == nil || !strings.Contains(err.Error(), "no room left") {
+		t.Errorf("write with a failing reader = %v, want the reader's own error", err)
+	}
+}
+
+// failingReader is a reader that always fails, as a disk with no room left.
+type failingReader struct{}
+
+func (failingReader) Read([]byte) (int, error) { return 0, errors.New("no room left") }

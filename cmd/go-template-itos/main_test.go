@@ -212,3 +212,32 @@ func TestCountReadsALineWholePastAnyTokenLimit(t *testing.T) {
 		t.Errorf("standard output = %q, want %q", got, want)
 	}
 }
+
+// The command a line names, as the usage failure about it is written: the
+// first word that is neither a flag nor a flag's value, and "" where the line
+// names none. No scenario begins a line with a flag, so nothing else reads
+// this.
+func TestCommandNameSkipsFlagsAndTheirValues(t *testing.T) {
+	for _, c := range []struct {
+		args []string
+		want string
+	}{
+		{nil, ""},
+		{[]string{"count", "notes.txt"}, "count"},
+		{[]string{"--", "count"}, ""},
+		// A flag's value is the next word unless the flag took it as
+		// --flag=value, which is one word: a word after a bare flag is that
+		// flag's value, and never names the command.
+		{[]string{"--json", "count", "notes.txt"}, "notes.txt"},
+		{[]string{"--json=yes", "count", "notes.txt"}, "count"},
+		{[]string{"--json", "count"}, ""},
+		{[]string{"--json"}, ""},
+		// A lone - is a command's argument, the file read from standard
+		// input, and not a flag.
+		{[]string{"-", "notes.txt"}, "-"},
+	} {
+		if got := commandName(c.args); got != c.want {
+			t.Errorf("commandName(%q) = %q, want %q", c.args, got, c.want)
+		}
+	}
+}
