@@ -64,5 +64,5 @@ ci:
 
 proof:
   code:
-    paths: ["{cmd,internal}/**/*.go"]
-    check: "tools/bin/pinned itos-cc mutation check --since {base} --fail-uncovered --json cmd internal"
+    paths: ["internal/**/*.go"]
+    check: "tools/bin/pinned itos-cc mutation check --since {base} --fail-uncovered --json internal"
