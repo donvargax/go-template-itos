@@ -432,5 +432,3 @@
     version command if it already has a JSON form, rather than inventing a second shape. Keep the
     domain untouched: this is internal/cli and cmd only. The mutation proof and coverage gates of
     the branch hold.
-  done_when:
-    - run: test ! -d features || grep -q 'version --json' features/cli.feature

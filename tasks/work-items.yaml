@@ -421,25 +421,6 @@ items:
     title: version --json prints the version and commit as one object
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      A small, additive feature for the example CLI on go/cli, chosen by the coordinator when the
-      person asked for any small new feat (q-27) so that go-template-itos-sample can take it as its
-      first release (T-33). Scripts that read a made project's version get it as JSON, as count
-      already offers. version gains the --json switch (with its --no-json pair, given once like
-      every switch, ID-CLI-08 and ID-CLI-09), and GO_TEMPLATE_ITOS_JSON turns it on as it does for
-      count, so a shell that set it gets JSON from both commands. The object is one line on stdout:
-      {"schema":1,"ok":true,"version":"<stamped version>","commit":"<stamped commit>"}, the commit
-      key absent when the build has no commit, as the text form then has no second line. --version
-      stays plain text: it is kong's flag, not the command, and gains no JSON. version's help names
-      the JSON shape, as count's names its own. Scenarios, in features/cli.feature with IDs claimed
-      through itos tests next-id, each tagged @T-34: version --json prints one object with the
-      stamped version and commit; GO_TEMPLATE_ITOS_JSON turns version's JSON on; --no-json declines
-      the JSON the environment turns on for version; version's help names its JSON shape. Red first:
-      the steps and @wip scenarios in a test commit, then the feat, which is a plain feat with
-      Upgrading none and no breaking mark, since no commit is marked breaking before v1 (q-26).
-      Harvest from itos-template's version command if it already has a JSON form, rather than
-      inventing a second shape. Keep the domain untouched: this is internal/cli and cmd only. The
-      mutation proof and coverage gates of the branch hold.
