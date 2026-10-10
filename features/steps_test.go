@@ -114,6 +114,8 @@ func initializeScenario(sc *godog.ScenarioContext, root, bin string) {
 	sc.Step(`^its JSON output names the problem "([^"]*)"$`, w.jsonNamesProblem)
 	sc.Step(`^its JSON output gives file "([^"]*)", (\d+) lines and (\d+) words$`, w.jsonGivesCounts)
 	sc.Step(`^its JSON output gives each problem a rule, a message and a fix$`, w.jsonProblemsComplete)
+	sc.Step(`^its JSON output gives the stamped version and commit$`, w.jsonGivesBuild)
+	sc.Step(`^its standard output is one line$`, w.stdoutIsOneLine)
 
 	// The fixtures a scenario asks for. godog takes one parameter per
 	// capturing group and none variadic, so the second text is its own
@@ -509,6 +511,38 @@ func (w *world) jsonGivesCounts(file string, lines, words int) error {
 		if want.got != want.want {
 			return fmt.Errorf("the JSON output's %s is %v, not %v\n%s", want.key, want.got, want.want, w.report())
 		}
+	}
+	return nil
+}
+
+// jsonGivesBuild is whether the success object of version --json is schema
+// 1 and ok, and gives the version and the commit the harness stamped.
+func (w *world) jsonGivesBuild() error {
+	object, err := w.json()
+	if err != nil {
+		return err
+	}
+	for _, want := range []struct {
+		key  string
+		want any
+	}{
+		{"schema", 1.0},
+		{"ok", true},
+		{"version", stampedVersion},
+		{"commit", stampedCommit},
+	} {
+		if got := object[want.key]; got != want.want {
+			return fmt.Errorf("the JSON output's %s is %v, not %v\n%s", want.key, got, want.want, w.report())
+		}
+	}
+	return nil
+}
+
+// stdoutIsOneLine is whether standard output is exactly one line, ended by
+// its newline, as --json prints its object.
+func (w *world) stdoutIsOneLine() error {
+	if strings.Count(w.stdout, "\n") != 1 || !strings.HasSuffix(w.stdout, "\n") {
+		return fmt.Errorf("standard output is not one line\n%s", w.report())
 	}
 	return nil
 }

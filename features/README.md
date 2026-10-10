@@ -113,6 +113,8 @@ with the program named as the built binary is.
 | `its JSON output names the problem "…"`                                               | That the object lists a problem with that rule.                  |
 | `its JSON output gives file "…", <n> lines and <n> words`                             | The success object's file, lines and words.                      |
 | `its JSON output gives each problem a rule, a message and a fix`                      | That no problem is missing one of the three.                     |
+| `its JSON output gives the stamped version and commit`                                | version's object: schema 1, ok, the stamped version and commit.  |
+| `its standard output is one line`                                                     | Exactly one line, as `--json` prints its object.                 |
 | `the file "…" contains "…", "…"`                                                      | Each text is in the file.                                         |
 | `the file "…" holds a line of <n> characters`                                         | A file written for the scenario, long enough to beat a token limit. |
 | `standard input holds "…"`                                                            | The text the run reads from its standard input.                   |

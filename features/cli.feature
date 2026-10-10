@@ -75,3 +75,38 @@ Feature: The command line
     When go-template-itos runs with "version extra"
     Then it exits with code 2
     And its error output says "extra"
+
+  # A script reads the version as JSON, as it reads count's: one object on one
+  # line, schema 1, with the version and the commit the build was stamped with.
+  # A build that knows no commit leaves the commit key out, as its text has no
+  # second line; the harness always stamps one, so the unit tests show that.
+  @ID-CLI-10 @T-34 @wip
+  Scenario: version --json prints one object with the stamped version and commit
+    When go-template-itos runs with "version --json"
+    Then it exits with code 0
+    And its JSON output gives the stamped version and commit
+    And its standard output is one line
+
+  # A shell that set the variable gets JSON from every command that has --json.
+  @ID-CLI-11 @T-34 @wip
+  Scenario: GO_TEMPLATE_ITOS_JSON turns version's JSON on
+    When go-template-itos runs with "version" and the environment "GO_TEMPLATE_ITOS_JSON=1"
+    Then it exits with code 0
+    And its JSON output gives the stamped version and commit
+
+  # The variable is not the flag, so declining it on the command line is giving
+  # the switch once, and the text --version prints comes back.
+  @ID-CLI-12 @T-34 @wip
+  Scenario: --no-json declines the JSON the environment turns on for version
+    When go-template-itos runs with "version --no-json" and the environment "GO_TEMPLATE_ITOS_JSON=1"
+    Then it exits with code 0
+    And the first line of its standard output is "go-template-itos" and the stamped version
+    And the second line of its standard output is "commit" and the stamped commit
+
+  # As count's help does, version's names the shape of its --json object, so a
+  # script's author needs no source to read it.
+  @ID-CLI-13 @T-34 @wip
+  Scenario: version's help names its JSON shape
+    When go-template-itos runs with "version --help"
+    Then it exits with code 0
+    And its standard output says "--json prints one object: schema 1, ok true, version, and commit when the build knows it."
