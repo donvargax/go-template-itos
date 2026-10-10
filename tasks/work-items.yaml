@@ -425,3 +425,18 @@ items:
       docs/go.md also links decision 2, which renders leave out. The coordinator's docs commits
       bring these user-facing guides in step, keeping the claim about CI on a made main withheld
       until made-project-ci.
+  - id: made-project-agent-rules
+    title: A made project's AGENTS.md rules describe its adopted policy
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found by T-27: a render's AGENTS.md carries the rules block generated from the template
+      branch's itos.yaml, naming the check of PLAN.md and docs/ORCHESTRATING.md, the drift check and
+      a Task footer on build and ci. After itos init --policy, init reports that the block no longer
+      matches itos.yaml and rewrites it only when the person answers its agent rules offer, so a
+      person who declines keeps rules that are not the project's. Options to settle with the person:
+      generate the shipped block from itos-policy.yaml, or have the drift check also hold the block
+      to the policy.
