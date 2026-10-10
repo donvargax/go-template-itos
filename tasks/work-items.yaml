@@ -396,3 +396,17 @@ items:
     status: done
     depends_on: []
     kind: task
+  - id: made-project-doc-caps
+    title: Keep doc-caps quiet and true in a made project
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found by T-27: tools/bin/doc-caps caps docs/ORCHESTRATING.md, which every render leaves out
+      (template_only), and both rendering branches' itos-policy.yaml keep doc-caps in a made
+      project's plan. In a made project the redirect fails, the size is empty and the test errors,
+      so the script prints two shell errors and still exits 0: the step passes while saying
+      something broke. Cap only the documents that exist, or keep the template's own cap out of what
+      renders run.
