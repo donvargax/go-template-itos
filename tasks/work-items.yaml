@@ -81,14 +81,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: cli-once-only-flags
-    title: Reject repeated non-cumulative flags in the default CLI
+  - id: T-14
+    title: A non-cumulative flag given twice is a usage error
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was cli-once-only-flags.
       Belongs on go/cli. The person selected q-1: match itos-template by refusing each
       non-cumulative flag repeated with usage exit 2, including --json --no-json, while explicitly
       cumulative flags remain repeatable. Current ID-COUNT-06 specifies last-negation-wins, so
