@@ -381,3 +381,26 @@
     passages in docs commits, main first and merged down, saying what setup adopts and what a made
     main's CI runs, and leaving the real release unclaimed, since cli-releases has not proved one.
     Wording the rest of these guides for the made project is guides-template-wording's.
+- id: T-33
+  type: ci
+  title: A made CLI project publishes a real, attested release
+  why: >
+    Was cli-releases. T-20 built the release machinery on go/cli (release-version, release-notes,
+    pinned git-cliff and GoReleaser, release.yml and ci.yml's release job), and T-31 made it live on
+    a made project's main, but no made project has published with it: go-template-itos-sample's
+    first push released nothing, its two commits being chore commits. q-23 put the real release here
+    and q-24 settled how: one small fix commit in the sample, made through the sample's own itos
+    rules, cutting its first release and staying as the sample's only own commit. That fix is the
+    sample's stale docs/go.md Made projects section, rendered before T-32: replace it with the text
+    go/cli's docs/go.md has now, literals replaced by the sample's answers, so a later itos-template
+    update bringing the same change meets identical text. Before pushing, run tools/bin/release-version
+    as release.yml runs it and see it name the version it will cut. Push the sample's main with itos
+    push; that run's ci job, three platform jobs and release job must pass, and the release must
+    hold the five archives and checksums.txt GoReleaser makes. Verify one archive with gh attestation
+    verify against donvargax/go-template-itos-sample, unpack the Linux amd64 one and run its binary's
+    version and count commands. Then the template's docs stop saying no made project has released:
+    go/cli's docs/CLI.md, docs/upgrading.md, docs/ORCHESTRATING.md and TEMPLATE.md, in a docs commit
+    naming the release and its run. Push nothing else to the sample and change none of its settings.
+    A release step that fails is a finding to report with its run, not a step to weaken or skip.
+  done_when:
+    - run: "git ls-remote --tags https://github.com/donvargax/go-template-itos-sample.git | grep -q 'refs/tags/v'"
