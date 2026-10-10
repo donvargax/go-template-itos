@@ -43,3 +43,6 @@ questions:
     question: "How should CI get itos-template for the recurring check? Recommended: go install github.com/donvargax/itos-template/cmd/itos-template@v0.19.0, a fixed version verified by Go's checksum database and movable by Renovate. Or: the v0.19.0 release archive checked against SHA-256 sums in the workflow. Or: build itos-template's default branch from source, as T-7 does, never pinned."
     answer: "go install of itos-template at a fixed version, v0.19.0 today, verified by Go's checksum database."
     decision: none
+  - id: q-10
+    item: "template-check-rerun"
+    question: "A push that adds a ledger entry on main or stack/go leaves that head's Template check red, since the render merges the branches and their ledgers conflict until the merge down reaches go/cli, and nothing runs it again. Recommended: when Template check passes on any branch's push, it re-runs the latest failed Template check of main's and stack/go's heads. Or: rely on the weekly run. Or: the coordinator re-runs it by hand after each merge down. Or: give each branch its own ledger file so the render's merge never conflicts there."
