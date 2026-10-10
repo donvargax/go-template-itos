@@ -5,8 +5,8 @@
 ## Start of a session
 
 - Read `PLAN.md` and this branch's actual `itos.yaml`. The public count CLI, its scenarios and
-  godog runner are here. The release workflow runs only on a made project's `main`; this branch
-  cuts no binary release until `cli-releases` finishes it.
+  godog runner are here. ci.yml's release job runs only on a push to `main`, so this branch never
+  releases, and a made project's `main` cuts none until `made-project-ci` makes its CI run there.
 - Root is `main`; stacks and features remain real projects. Merge common changes downward,
   never rebase published history. Made-project binary releases are not template release tags.
 - Infrastructure is harvested from the owner's itos-template and itos repositories. Preserve

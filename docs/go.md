@@ -28,7 +28,9 @@ Around the slice:
 - `internal/cli` is the UI. It turns a typed failure into its exit code and prints the
   plain or JSON answer.
 - `internal/release` and `internal/version` are build helpers outside the slice. No
-  boundary rule lists them.
+  boundary rule lists them. `tools/bin/release-version` and `tools/bin/release-notes`,
+  which the release workflow runs, read commits and what moved beneath the binary
+  through `internal/release`.
 
 `.golangci.yml` enforces these boundaries with depguard, one rule per layer:
 
@@ -96,7 +98,8 @@ list them exactly:
 - `tools/bin/architecture-check`, the self-test above.
 - `go tool govulncheck -test ./...`, covering the dependencies in use, test-only ones and
   the standard library.
-- The unit tests of `cmd` and `internal` with `RAPID_CHECKS=1`.
+- The unit tests of `cmd` and `internal` with `RAPID_CHECKS=1`, then the release helpers'
+  tests, over example repositories.
 - `tools/bin/domain-coverage`, which requires each domain package to reach 80% statement
   coverage from its own tests.
 - The scenarios, run once: the smoke set and those the push's range names.
@@ -113,8 +116,9 @@ survives or is uncovered.
 Tools are pinned:
 
 - The Go toolchain is pinned in `go.mod`, and govulncheck is a `tool` dependency there.
-- `tools/bin/pinned` fetches golangci-lint, itos-cc and gitleaks at fixed versions and
-  checks each against its release's own SHA-256.
+- `tools/bin/pinned` fetches golangci-lint, itos-cc, gitleaks, GoReleaser and git-cliff at
+  fixed versions and checks each against a pinned SHA-256, copied from its release's own
+  checksums or, for git-cliff, taken once the archive matched its release's `.sha512`.
 - Workflow actions are pinned by digest.
 
 `docs/upgrading.md` says how to move any of these pins.
@@ -133,5 +137,5 @@ branch's commit rules, CI plan or code-proof gate until fresh-project setup inst
 policy of its own. That setup waits on upstream itos support
 ([decision 2](decisions/0002-made-projects-inherit-quality-policy-through-upstream-itos-initialization.md)). The workflow
 also runs its Go steps only on `stack/`, `go/` and `renovate/` branches, so a made
-project's ordinary `main` does not run them yet. Separate items close both gaps. Until
+project's ordinary `main` does not run them yet, nor the release job, which needs them. Separate items close both gaps. Until
 those items verify an emitted project, do not describe these gates as inherited.

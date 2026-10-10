@@ -17,5 +17,10 @@ does not by itself prove its GitHub App is installed or the bot is running.
 Fresh mutation records are required when code or relevant test imports change. Use the item's
 actual first-commit parent as the proof base; do not assume its take commit is first.
 
-This branch has no CLI binary release yet. Template releases and the generator's adoption/update
-workflow are separate from made-project binary release tooling and are not claimed here.
+git-cliff publishes a `.sha512` file per archive rather than a checksums file: move its pin by
+checking each archive against that file first, then pinning the archive's SHA-256.
+
+The release job in `ci.yml` runs only on a push to `main`, so this branch cuts no CLI binary
+release, and a made project's `main` cuts none until `made-project-ci` makes its CI run there.
+Template releases and the generator's adoption/update workflow are separate from made-project
+binary release tooling and are not claimed here.
