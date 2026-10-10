@@ -162,6 +162,12 @@ items:
       Delivered on go/cli as T-20 (CI run 38019557469): helpers, git-cliff pin and the release job,
       dormant on the template. A real release on a generated main waits for made-project-ci (q-6).
       Kept open as main's template-wide index entry.
+
+      q-23 moved the real release proof here from made-project-ci: once made-project-ci has the Go
+      jobs passing on donvargax/go-template-itos-sample's main, push a feat or fix there, see the
+      release job publish v0.1.0 with its five archives and checksums.txt, and verify an archive
+      with gh attestation verify. The release job is live in made projects from made-project-ci on,
+      so this follows it directly.
   - id: cli-once-only-flags
     title: Reject repeated non-cumulative flags in the default CLI
     phase: 1
