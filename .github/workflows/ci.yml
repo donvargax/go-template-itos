@@ -84,9 +84,9 @@ jobs:
   # beneath it (release.yml says how). Harvested from itos-template's ci.yml, which calls its
   # release as itos's does. The only job with write access, granted here and to nothing else; a
   # pull request or a Renovate branch never releases. The template's branches are never main, so
-  # it never runs here. On a made project's main it cannot run yet: the platform jobs run only on
-  # stack/, go/ and renovate/ branches, so it is skipped with them, and a render carries no
-  # itos.yaml for the ci job's plan. made-project-ci makes the Go jobs and the plan run there.
+  # it never runs in the template. On a made project's main it runs after the ci job and the
+  # platform jobs pass, which they can once the project's setup has given it its itos.yaml for
+  # the ci job's plan.
   release:
     needs: [ci, platform]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
