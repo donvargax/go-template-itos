@@ -46,9 +46,10 @@ working around it in this template.
 - After merging a parent branch down, compare the items both registries hold. The merge keeps the
   child's status, so close an item finished upstream with `itos work done` on the child too.
   Recorded 2026-10-09; last seen 2026-10-09; permanent while registries share items.
-- A task's checks run in CI on every push that names it, so a check that passes only once the
-  work is whole turns an early push red. Push all of the task's commits together. Recorded
-  2026-10-09; last seen 2026-10-09 (T-11); permanent.
+- A task's checks run in CI on every push that names it, and on each branch's next push whose
+  range holds the naming commit, so a check that passes only once the work is whole turns an
+  early push red. Push all of the task's commits together, and never name a waiting task in a
+  footer. Recorded 2026-10-09; last seen 2026-10-10 (T-42); permanent.
 - An agent never answers a question, not even one a decision command needs: it stops and the
   coordinator asks the person. Recorded 2026-10-10; last seen 2026-10-10 (T-24's q-11, which the
   person then confirmed); permanent.
