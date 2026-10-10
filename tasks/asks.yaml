@@ -66,3 +66,4 @@ questions:
   - id: q-14
     item: "made-project-policy"
     question: "How is each branch's itos-policy.yaml kept in step with its own itos.yaml, which holds the same gates plus template-only steps? Recommended: a CI step on each branch fails when their commit rules or Go and CLI steps differ beyond a listed set of template-only steps. Or: a script generates the policy from itos.yaml. Or: by hand."
+    answer: "A CI step on each branch compares itos-policy.yaml with the branch's itos.yaml and fails when they differ beyond a listed set of template-only steps."
