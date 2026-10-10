@@ -410,3 +410,18 @@ items:
       so the script prints two shell errors and still exits 0: the step passes while saying
       something broke. Cap only the documents that exist, or keep the template's own cap out of what
       renders run.
+  - id: made-project-setup-docs
+    title: Say in the made project's guides how its policy is adopted
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found by T-27: docs/go.md's Made projects section on stack/go and go/cli, and
+      docs/engineering.md on main, still say fresh-project setup waits on upstream itos and that a
+      made project has none of the branch's rules. Since T-27 a render ships itos-policy.yaml and
+      itos-template new prints the setup steps that adopt it with itos init --policy and remove it.
+      docs/go.md also links decision 2, which renders leave out. The coordinator's docs commits
+      bring these user-facing guides in step, keeping the claim about CI on a made main withheld
+      until made-project-ci.
