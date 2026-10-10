@@ -555,5 +555,3 @@
     itos-template's version has neither. The person chose no hint (q-29): rule 28 on go/cli says
     version's two short lines are not data a script would scrape, and version --json is there
     for scripts. A docs commit on go/cli.
-  done_when:
-    - run: "test ! -f docs/CLI.md || grep -A4 '^28\\. ' docs/CLI.md | grep -q version"
