@@ -573,7 +573,7 @@
   why: >
     A made project gets this template's gates in its files but none of its itos data: renders drop
     itos.yaml and tasks, so it has no commit rules, CI plan or code proof until it adopts a policy.
-    itos 7.0.0-rc.5's init --policy (donvargax/itos#33, slice-108) makes a fresh project from a
+    itos 7.0.0's init --policy (donvargax/itos#33, slice-108) makes a fresh project from a
     complete itos config: it copies the commit rules, CI plan and proof config, resets commits.since
     to the project's HEAD and drops footers' since, and starts an empty registry and a ledger
     holding only its adoption task T-1, importing none of the template's tasks, questions, decisions
@@ -598,16 +598,18 @@
     policy.yaml. The init offers (plugin, git shim, agent rules) stay the person's to answer when
     they run it. itos-policy.yaml is not in template_only. Prove it on both combinations: render
     with itos-template new at the version the Template check pins, run the printed steps with itos
-    7.0.0-rc.5 in the made project, then itos config check, itos task, itos ci plan over the made
+    7.0.0 in the made project, then itos config check, itos task, itos ci plan over the made
     project's first commits, and the made project's own go build and tests. The made project's CI on
     an ordinary main is made-project-ci's, not this item's: its Go jobs still skip main, so do not
     claim it runs. Template check stays green on every head. Tried on a go + cli render before this
     was specified (itos-template 0.19.0, itos 7.0.0-rc.5): init --policy refused, because the render
     ships features/smoke.yaml and init never writes over itos data. The person keeps the smoke set
     in renders: it is part of the template's code, its selections and reasons reviewed like code,
-    and a derived set loses every reason. So itos must adopt an existing valid smoke set, reported
-    as donvargax/itos#39; go + cli waits on it, and no setup step moves the file aside to work
-    around it. With the file removed, init otherwise passed: itos.yaml, a ledger holding T-1, an
+    and a derived set loses every reason. So itos had to adopt an existing valid smoke set,
+    reported as donvargax/itos#39 and fixed in 7.0.0 (6c72b7f keeps a smoke set the project has
+    when the smoke check passes), which every branch pins since T-30. No setup step moves the file
+    aside; if 7.0.0 still refuses it, stop and report rather than work around it. With the file
+    removed, init otherwise passed: itos.yaml, a ledger holding T-1, an
     empty registry and a smoke set over the 3 feature files, with itos config check and the smoke
     check green. go/cli's tests use the built-in gherkin adapter, so slice-110's command-adapter
     case does not apply. The render also ships .metrics/mutate/ and itos-cc.yaml's reviewed
@@ -667,5 +669,3 @@
     independently; merge main down afterwards for the ledger, as earlier items did, keeping each
     branch's itos.yaml, ci.yml and registry. A gate 7.0.0 refuses on existing work is a finding, not
     a check to weaken. Push each branch's commits together and see its CI and Template check green.
-  done_when:
-    - run: "grep -q 'version: \"7.0.0\"' itos.yaml && ! grep -rq 'v7.0.0-rc' .github/workflows"

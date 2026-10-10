@@ -1,0 +1,53 @@
+# The commit rules, the checks CI runs and the proof of the Go code.
+version: 1
+
+# The source project's pin and checksum, copied with its workflow action.
+pin:
+  version: "7.0.0"
+  checksums: "fdff7164d0711138ea119cc86f72bd4c3676efb455a7cfc1c4aa469d8ffc786c" # SHA-256 of checksums.txt
+
+ledger:
+  files: "tasks/phase-{group}.yaml"
+  id: "T-\\d+"
+
+commits:
+  types: [feat, fix, refactor, perf, test, build, ci, chore, docs, style, revert]
+  header_lint: { use: builtin }
+  footers:
+    Task:
+      source: ledger
+      required_for: [refactor, perf, test, chore, style, revert]
+      validate_for: all
+      read_at: commit
+  scopes:
+    docs: { only: ["**/*.md", "docs/**", "tasks/**"] }
+
+hooks:
+  bin: itos
+
+ci:
+  steps:
+    - { run: itos config check, cost: static }
+    - { run: tools/bin/doc-caps, cost: static }
+    - { run: "! gofmt -l internal | grep .", cost: static }
+    - { run: go build ./..., cost: static }
+    - { run: go vet ./..., cost: static }
+    - { run: go mod verify, cost: static }
+    - { run: go mod tidy -diff, cost: static }
+    - { run: tools/bin/pinned golangci-lint run ./..., cost: static }
+    - { run: tools/bin/architecture-check, cost: static }
+    - { run: go tool govulncheck -test ./..., cost: late }
+    - { run: "RAPID_CHECKS=1 go test ./...", cost: late }
+    - { run: tools/bin/domain-coverage, cost: late }
+    - { run: tools/bin/pinned itos-cc mutation sample --count 10, cost: late }
+  prose:
+    paths: ["**/*.md", "docs/**", "tasks/**"]
+    steps:
+      - itos config check
+      - tools/bin/doc-caps
+  watch: { provider: github }
+
+proof:
+  code:
+    paths: ["internal/**/*.go"]
+    check: "tools/bin/pinned itos-cc mutation check --since {base} --fail-uncovered --json internal"
