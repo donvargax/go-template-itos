@@ -66,16 +66,35 @@ items:
     title: Enforce the Go domain, ports, adapter and fake-test boundaries
     phase: 1
     owner: null
-    status: dropped
+    status: todo
     depends_on: []
     kind: idea
+    why: >
+      Belongs on stack/go, then merges downward into go/cli. Harvest the existing depguard rules
+      from donvargax/itos-template, adapting the target module and count layout. Domain and ports
+      must not import UI, command or concrete adapters; production domain code performs no
+      OS/network I/O. Adapters depend on project ports, with fake-backed tests allowed to use
+      porttest. Ban the existing source mock-library families, preserve Rapid placement, and keep UI
+      libraries out of lower layers. Prove permitted and forbidden imports with compile-valid
+      fixtures against the real pinned linter, not just grep checks. Root main gets no Go analyzer
+      or Go gate. CLI-only error exhaustiveness and command rules are separate. Configure the Go
+      self-test in the Go branch CI; root manifest declarations are a separate root-owned
+      integration change.
   - id: go-engineering
     title: Document the reusable Go design and quality contract
     phase: 1
     owner: null
-    status: dropped
+    status: todo
     depends_on: []
     kind: idea
+    why: >
+      Belongs on stack/go and merges into go/cli, building on root docs/engineering.md rather than
+      duplicating it. Explain the actual package layout, ports/fakes, property tests, OS handling,
+      locked dependencies, checksum-pinned tools, lint/SAST/vulnerability checks, domain coverage
+      and changed-code mutation proof. Distinguish proof at work-item closure from CI mutation
+      sampling, and active checks from plans. Keep Go-specific commands out of the base guide,
+      remove stale bootstrap claims on this branch, and preserve all gates. The template branch and
+      emitted project must be discussed separately until emitted-project setup and CI are verified.
   - id: cli-contract
     title: Document the reusable CLI contract on go/cli
     phase: 1
