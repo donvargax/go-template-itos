@@ -420,8 +420,8 @@ items:
   - id: T-34
     title: version --json prints the version and commit as one object
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
