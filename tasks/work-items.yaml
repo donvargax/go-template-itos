@@ -95,14 +95,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: cli-exhaustive-errors
-    title: Lint the sealed CLI failure-to-exit classification exhaustively
+  - id: T-17
+    title: The linter refuses an error switch that leaves a failure kind out
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was cli-exhaustive-errors.
       Belongs on go/cli, not main or a Go library stack with no process exits. Harvest the existing
       gochecksumtype gate and annotations from itos-template, using the linter already bundled in
       pinned golangci-lint rather than adding a custom analyzer or dependency. Annotate the existing
