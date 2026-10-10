@@ -46,8 +46,8 @@ work; an implementing agent uses `itos guide work`.
 
 ## License and provenance
 
-The project is MIT licensed; see [LICENSE](LICENSE). Its infrastructure comes from the
-copyright owner's [itos](https://github.com/donvargax/itos) and
-[itos-template](https://github.com/donvargax/itos-template), with permission to distribute that
-owner's copied work under MIT. The original projects and third-party dependencies retain their
-own licenses and notices; [CONTRIBUTORS.md](CONTRIBUTORS.md) records the provenance.
+The project is MIT licensed; see [LICENSE](LICENSE). Its infrastructure comes from
+donvargax's [itos](https://github.com/donvargax/itos) and
+[itos-template](https://github.com/donvargax/itos-template), with donvargax's permission to
+distribute that copied work under MIT. The original projects and third-party dependencies retain
+their own licenses and notices; [CONTRIBUTORS.md](CONTRIBUTORS.md) records the provenance.
