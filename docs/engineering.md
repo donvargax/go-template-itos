@@ -72,7 +72,7 @@ run and what they establish. A configured workflow is not proof that its externa
 is active, and a sample of mutation results is not a complete changed-code proof.
 
 Template checks and made-project checks are different evidence. This template excludes
-its own configuration and work history from renders. Until fresh-project setup installs
-the selected policy, the template branch's gates must not be advertised as inherited
-project gates. Verify the emitted project after setup, including its own ordinary branch
-and CI, before claiming that it carries those guarantees.
+its own configuration and work history from renders; a made project adopts the selected
+branch's policy at setup, through the steps `itos-template new` prints. Claim a guarantee
+for made projects only once an emitted project, after setup, has shown it on its own
+ordinary branch and CI.
