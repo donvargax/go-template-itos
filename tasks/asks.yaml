@@ -28,3 +28,6 @@ questions:
     question: "cli-releases harvests the release helpers and adds the release job to ci.yml, but on a generated main the Go jobs are gated to stack/ and go/ branches and the ci job needs itos data a render drops, so the release cannot run there until made-project-ci lands. Recommended: split, harvesting the helpers and pin now and moving the caller and its generated-main proof to an idea depending on made-project-ci. Or: all in one now, the caller dormant on the template and unproven on a generated main until made-project-ci. Or: wait for made-project-ci."
     answer: "All in one now: harvest the helpers, the git-cliff pin and the release job in ci.yml together. The caller stays dormant on the template, whose go/cli branch is never main, and its proof on a generated main belongs to made-project-ci."
     decision: none
+  - id: q-7
+    item: "cli-releases"
+    question: "release-notes groups a release's commits with git-cliff, a new checksum-pinned tool like golangci-lint and goreleaser. Recommended: pin git-cliff with itos-template's version and cliff.toml. Or: group the commits in release-notes itself from git log, diverging from the source."
