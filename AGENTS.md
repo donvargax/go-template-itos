@@ -1,7 +1,10 @@
 # Working rules
 
-Read `PLAN.md` first. This repository is itself the template; each branch stays a real project.
-This branch has the Go foundation and a private counting example, not the public CLI yet.
+If `TEMPLATE.md` exists, read it first: this repository is then the template projects are made
+from, and that file says how to work on it.
+
+This project is a Go module with a private counting example: a domain counting lines and words
+through a Files port, a read-only disk adapter and an in-memory fake. It has no command line.
 
 Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
 stack and interface; stack and feature guides add only what is specific to them.
@@ -14,9 +17,9 @@ with `itos work`; never edit owners or statuses by hand.
 
 ## Changes and commits
 
-- Specify behavior before building it. The private foundation is a checked bootstrap task. The
-  public CLI's features and fixes follow black-box scenarios when its entry point and runner
-  arrive, with red steps committed first; never add unspecified behavior meanwhile.
+- Specify behavior before building it. A public entry point's features and fixes follow
+  black-box scenarios, with red steps committed first; until there is one, work is a checked
+  task. Never add unspecified behavior.
 - Other work names a ledger task. Decide each commit's type and paths before editing.
 - Commit with `itos commit -F <file>`, never `git commit`. Bodies explain what changed and why;
   no body line starts with a word and a colon, or with `with #,`.
@@ -27,7 +30,7 @@ with `itos work`; never edit owners or statuses by hand.
 - Gates run through their configured hooks and CI, not manually before committing. Fix a valid
   check's failure in the work, not by weakening the check; stop on a wrong gate.
 
-## Code and template boundaries
+## Code boundaries
 
 - Keep thin entry points over domain-owned behavior through ports. The domain knows no UI,
   filesystem implementation, JSON or exit codes. Use our fakes in its tests, never mocks.
@@ -37,13 +40,11 @@ with `itos work`; never edit owners or statuses by hand.
   OS, with no mutation site; never branch on runtime.GOOS inside logic.
 - The additive counting property uses newline-terminated pieces. Arbitrary concatenation can
   join words and is not additive.
-- Templates are real projects. Never introduce a template language or runtime switches merely
-  to pick a stack or provider. Select branches before rendering.
-- No credentials in answers, fixtures, logs or committed files. Go vulnerability checks are not
-  credential scans; every render is scanned separately by gitleaks, pinned in tools/bin/pinned
-  and marked as the manifest's root check, so itos-template check proves it on every combination.
-- Preserve third-party notices. Owner permission for copied infrastructure does not relicense
-  dependencies or the original source projects.
+- No credentials in fixtures, logs or committed files. Go vulnerability checks are not
+  credential scans; the pinned gitleaks is, `tools/bin/pinned gitleaks dir . --redact`.
+- Preserve third-party notices, `CONTRIBUTORS.md` and the comments naming where harvested code
+  came from. Owner permission for copied infrastructure does not relicense dependencies or the
+  original source projects.
 
 ## Finishing
 

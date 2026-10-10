@@ -45,3 +45,15 @@ branch adds to this file a section of its own.
   licenses or third-party dependencies' and tools'. `CONTRIBUTORS.md`, license notices and the
   harvest comments ship with every made project; keep them true.
 - Do not replace real upstream tool and preset identities when substituting project identity.
+
+## The Go stack
+
+`stack/go` adds the Go module: the private counting example under `internal/count`, its tests,
+the Go gates and the tools they pin. It has no command line; `go/cli` adds one. The manifest's
+`go` checks are the plan this branch's `itos.yaml` runs, less its itos commands. `README.md` and
+`AGENTS.md` here describe the project a `go` render makes, with the manifest's literals written
+as the code has them.
+
+A render carries no itos data, so its gates are evidence about the template, not a made
+project's: until fresh-project setup (T-27) and a made project's own CI (made-project-ci) land,
+do not claim a made project inherits them.
