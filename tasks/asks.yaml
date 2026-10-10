@@ -38,3 +38,6 @@ questions:
     question: "No workflow runs itos-template check, so a manifest or branch change can break a render while every branch stays green. Recommended: a root-owned workflow, .github/workflows/template-check.yml, merged down unchanged and excluded from renders by template_only, running on every push to main, stack/** and go/** and weekly. Or: the same workflow weekly only, cheaper but up to a week late. Or: a job in go/cli's ci.yml, which a push to main or stack/go does not run until merged down."
     answer: "A root-owned .github/workflows/template-check.yml, merged down unchanged and listed in template_only, run on every push to main, stack/** and go/** and weekly."
     decision: none
+  - id: q-9
+    item: "template-check-ci"
+    question: "How should CI get itos-template for the recurring check? Recommended: go install github.com/donvargax/itos-template/cmd/itos-template@v0.19.0, a fixed version verified by Go's checksum database and movable by Renovate. Or: the v0.19.0 release archive checked against SHA-256 sums in the workflow. Or: build itos-template's default branch from source, as T-7 does, never pinned."
