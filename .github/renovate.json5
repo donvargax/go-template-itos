@@ -4,13 +4,19 @@
 	extends: ["github>donvargax/renovate-config#v1.3.0"],
 	enabledManagers: ["github-actions", "renovate-config"],
 
+	// Renovate reads this file from the default branch only. Each branch holding code is a base
+	// branch: its own renovate.json5 is merged over this one, and its own CI judges its requests,
+	// so no update is carried down from main. These keys stay in main's file, since a render ships
+	// a branch's file to a made project, which has only main.
+	baseBranchPatterns: ["main", "stack/go", "go/cli"],
+	useBaseBranchConfig: "merge",
+
 	// itos moves with its config pin and workflow action, not through Renovate.
 	ignoreDeps: ["donvargax/itos"],
 	automergeType: "branch",
 	automergeSchedule: ["at any time"],
 	semanticCommits: "enabled",
-	commitBody: "Renovate's update, landed on main once CI passed on its branch.\n\n{{#each upgrades}}{{#unless @first}}\n{{/unless}}- {{{depName}}} {{#if (equals updateType 'digest')}}{{{currentDigestShort}}} to {{{newDigestShort}}}{{else}}{{{currentVersion}}} to {{{newVersion}}}{{#if newDigestShort}} ({{{newDigestShort}}}){{/if}}{{/if}}{{/each}}",
-	commitTrailers: ["Task: T-1"],
+	commitBody: "Renovate's update, landed on {{{baseBranch}}} once CI passed on its branch.\n\n{{#each upgrades}}{{#unless @first}}\n{{/unless}}- {{{depName}}} {{#if (equals updateType 'digest')}}{{{currentDigestShort}}} to {{{newDigestShort}}}{{else}}{{{currentVersion}}} to {{{newVersion}}}{{#if newDigestShort}} ({{{newDigestShort}}}){{/if}}{{/if}}{{/each}}",
 
 	packageRules: [
 		{
@@ -21,6 +27,21 @@
 		{
 			matchManagers: ["github-actions"],
 			pinDigests: true,
+		},
+		// commitTrailers adds up rather than replaces when a branch's file merges over this one, so
+		// the branch files carry none and each base branch gets a task its own ledger holds here.
+		{
+			matchBaseBranches: ["main"],
+			commitTrailers: ["Task: T-1"],
+		},
+		{
+			matchBaseBranches: ["stack/go", "go/cli"],
+			commitTrailers: ["Task: T-2"],
+		},
+		{
+			// One dependency's updates share a branch name on every base branch, so they move together.
+			matchPackageNames: ["*"],
+			groupName: "{{depName}}",
 		},
 	],
 }
