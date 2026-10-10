@@ -108,6 +108,7 @@ CI runs its plan, `itos ci run`, on every push, in this order, stopping at the f
 - `itos config check`
 - `tools/bin/doc-caps`
 - `test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md && test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md && test -f docs/architecture.md && test -f docs/security.md && test -f docs/upgrading.md && test -f LICENSE && test -f .gitattributes && test -f .gitignore && test -f .github/workflows/ci.yml && test -f .github/renovate.json5 && test -x tools/bin/doc-caps`
+- `tools/bin/policy-drift`
 - `! gofmt -l internal | grep .`
 - `go build ./...`
 - `go vet ./...`

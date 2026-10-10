@@ -16,7 +16,7 @@ commits:
   footers:
     Task:
       source: ledger
-      required_for: [refactor, perf, test, build, ci, chore, style, revert]
+      required_for: [refactor, perf, test, chore, style, revert]
       validate_for: all
       read_at: commit
   scopes:
@@ -29,15 +29,6 @@ ci:
   steps:
     - { run: itos config check, cost: static }
     - { run: tools/bin/doc-caps, cost: static }
-    - run: >-
-        test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md &&
-        test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md &&
-        test -f docs/architecture.md && test -f docs/security.md &&
-        test -f docs/upgrading.md && test -f LICENSE && test -f .gitattributes &&
-        test -f .gitignore && test -f .github/workflows/ci.yml &&
-        test -f .github/renovate.json5 && test -x tools/bin/doc-caps
-      cost: static
-    - { run: tools/bin/policy-drift, cost: static } # itos-policy.yaml is this file less the template's own
     - { run: "! gofmt -l internal | grep .", cost: static }
     - { run: go build ./..., cost: static }
     - { run: go vet ./..., cost: static }
@@ -54,13 +45,6 @@ ci:
     steps:
       - itos config check
       - tools/bin/doc-caps
-      - >-
-        test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md &&
-        test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md &&
-        test -f docs/architecture.md && test -f docs/security.md &&
-        test -f docs/upgrading.md && test -f LICENSE && test -f .gitattributes &&
-        test -f .gitignore && test -f .github/workflows/ci.yml &&
-        test -f .github/renovate.json5 && test -x tools/bin/doc-caps
   watch: { provider: github }
 
 proof:

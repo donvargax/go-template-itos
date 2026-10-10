@@ -1,0 +1,40 @@
+#!/bin/sh
+# policy-drift: holds itos-policy.yaml, the policy a made project adopts at
+# setup (itos-template.yaml's setup steps run itos init --policy on it), to
+# this branch's own itos.yaml (q-14). It edits a copy of itos.yaml by the
+# list below, the differences that are the template's alone, and fails,
+# printing the rest, unless the result is itos-policy.yaml exactly, comments
+# included, since init copies them too. Run by CI's plan on every push that
+# is not docs alone (itos.yaml's ci.steps); a docs commit can change neither
+# file. Change the two together; list a new difference here, with its reason,
+# only when it is the template's alone. The manifest keeps this file from
+# made projects, which have no itos-policy.yaml once set up.
+#
+# The ledger's files and ID pattern and the work registry's default path are
+# those a fresh project uses, and itos.yaml sets no since, which init would
+# drop, so none of them is a difference.
+set -eu
+cd -- "$(dirname -- "$0")/../.."
+
+# The Task footer: a made project's build and ci commits need none, so
+# Renovate's requests, whose configs on the rendering branches add no
+# trailer, pass its rules (q-15). The template's own requests get theirs from
+# main's Renovate config, so its build and ci commits keep needing one.
+task='/^    Task:$/,/^      required_for:/s/^      required_for: \[refactor, perf, test, build, ci, chore, style, revert\]$/      required_for: [refactor, perf, test, chore, style, revert]/'
+
+# The check of the template's own document list, in the plan and in its
+# docs-only plan: it names PLAN.md and docs/ORCHESTRATING.md, which renders
+# leave out, so a made project would fail it. It is the plan's one folded
+# run (- run: >-), so a second one dropped by mistake makes this fail too.
+# No step reads the template's ledger, so none is dropped for that.
+docs_step='/^    - run: >-$/,/^      cost: static$/d'
+docs_prose='/^      - >-$/,/ test -x tools\/bin\/doc-caps$/d'
+
+# This check: a made project has no itos-policy.yaml once set up.
+drift='/^    - { run: tools\/bin\/policy-drift, cost: static }/d'
+
+if ! sed -e "$task" -e "$docs_step" -e "$docs_prose" -e "$drift" itos.yaml |
+	diff -u - itos-policy.yaml >&2; then
+	echo "policy-drift: itos-policy.yaml differs from itos.yaml beyond the template's own differences (- is itos.yaml less them): change both, or list the template's in tools/bin/policy-drift" >&2
+	exit 1
+fi
