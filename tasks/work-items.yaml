@@ -272,14 +272,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: template-only-docs
+  - id: T-28
     title: Keep the template's own records and notes out of made projects
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was template-only-docs.
       A render drops only itos.yaml and tasks (the manifest's template_only), so a made project
       ships docs/decisions, docs/ORCHESTRATING.md and AGENTS.md as its own rules. Decisions 2 to 4
       and most of the notes govern running this template's three branches (questions on main, task
