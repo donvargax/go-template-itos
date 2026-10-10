@@ -390,7 +390,7 @@
     scenario, output or classification changes in this task.
   done_when:
     - run: test -f docs/CLI.md && grep -q docs/CLI.md AGENTS.md
-    - run: grep -q GO_TEMPLATE_ITOS_JSON docs/CLI.md && grep -q COUNT_INPUT_MISSING docs/CLI.md && grep -q cli-exhaustive-errors docs/CLI.md && grep -q docs/CONFIG.md docs/CLI.md
+    - run: grep -q GO_TEMPLATE_ITOS_JSON docs/CLI.md && grep -q COUNT_INPUT_MISSING docs/CLI.md && grep -q cli-releases docs/CLI.md && grep -q docs/CONFIG.md docs/CLI.md
     - run: '! grep -qE "itos-template [a-z]|ITOS_TEMPLATE_|manifest|decision (4|17|25|35)" docs/CLI.md'
 - id: T-17
   type: ci
