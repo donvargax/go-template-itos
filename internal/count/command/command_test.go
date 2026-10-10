@@ -6,7 +6,6 @@ import (
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
 	"github.com/itos-corp/go-template-itos/internal/count/command"
-	"github.com/itos-corp/go-template-itos/internal/count/input"
 	"github.com/itos-corp/go-template-itos/internal/count/port"
 	"github.com/itos-corp/go-template-itos/internal/count/port/porttest"
 )
@@ -16,22 +15,24 @@ type ends struct {
 	stdout, stderr strings.Builder
 }
 
-// ui is a UI writing to ends, with stdin held as the run's input.
-func ui(e *ends, stdin string) *cli.UI {
-	return &cli.UI{In: strings.NewReader(stdin), Stdout: &e.stdout, Stderr: &e.stderr}
+// ui is a UI writing to ends.
+func ui(e *ends) *cli.UI {
+	return &cli.UI{In: strings.NewReader(""), Stdout: &e.stdout, Stderr: &e.stderr}
 }
 
-// count runs the command over files named in data, reading stdin for -.
-func count(e *ends, stdin string, file string, data map[string][]byte, asJSON bool) int {
-	files := input.Files{Disk: porttest.Files{Data: data}, In: strings.NewReader(stdin)}
-	return command.CLI{Files: files, File: file, JSON: asJSON}.Run(ui(e, stdin))
+// count runs the command over the fake's files named in data. Standard input
+// is the fake's - key: the command hands the argument to the port as given,
+// and turning - into a reader is the input adapter's, held by its own tests
+// and the scenarios.
+func count(e *ends, file string, data map[string][]byte, asJSON bool) int {
+	return command.CLI{Files: porttest.Files{Data: data}, File: file, JSON: asJSON}.Run(ui(e))
 }
 
 // A person reads the counts and the path as given on stdout, and is told to
 // use --json on stderr: the two are the plain output's whole contract here.
 func TestPlainOutputIsTheCountsAndTheHint(t *testing.T) {
 	var e ends
-	if code := count(&e, "", "notes.txt", map[string][]byte{"notes.txt": []byte("one two three\nfour five")}, false); code != 0 {
+	if code := count(&e, "notes.txt", map[string][]byte{"notes.txt": []byte("one two three\nfour five")}, false); code != 0 {
 		t.Fatalf("Run exit = %d, want 0", code)
 	}
 	if got, want := e.stdout.String(), "notes.txt: lines 2, words 5\n"; got != want {
@@ -46,7 +47,7 @@ func TestPlainOutputIsTheCountsAndTheHint(t *testing.T) {
 // not reach the output.
 func TestPlainOutputNeverPrintsWhatItRead(t *testing.T) {
 	var e ends
-	if code := count(&e, "", "secret.txt", map[string][]byte{"secret.txt": []byte("hunter2")}, false); code != 0 {
+	if code := count(&e, "secret.txt", map[string][]byte{"secret.txt": []byte("hunter2")}, false); code != 0 {
 		t.Fatalf("Run exit = %d, want 0", code)
 	}
 	if strings.Contains(e.stdout.String(), "hunter2") {
@@ -58,7 +59,7 @@ func TestPlainOutputNeverPrintsWhatItRead(t *testing.T) {
 // hint nowhere, so a script's output is only what it reads.
 func TestJSONOutputIsOneObjectAndNoHint(t *testing.T) {
 	var e ends
-	if code := count(&e, "", "notes.txt", map[string][]byte{"notes.txt": []byte("one two three\nfour five")}, true); code != 0 {
+	if code := count(&e, "notes.txt", map[string][]byte{"notes.txt": []byte("one two three\nfour five")}, true); code != 0 {
 		t.Fatalf("Run exit = %d, want 0", code)
 	}
 	want := `{"schema":1,"ok":true,"file":"notes.txt","lines":2,"words":5}` + "\n"
@@ -74,7 +75,7 @@ func TestJSONOutputIsOneObjectAndNoHint(t *testing.T) {
 // rule to tell where the counts came from.
 func TestJSONOutputNamesStandardInputAsTheArgument(t *testing.T) {
 	var e ends
-	if code := count(&e, "one two three", "-", nil, true); code != 0 {
+	if code := count(&e, "-", map[string][]byte{"-": []byte("one two three")}, true); code != 0 {
 		t.Fatalf("Run exit = %d, want 0", code)
 	}
 	want := `{"schema":1,"ok":true,"file":"-","lines":1,"words":3}` + "\n"
@@ -88,7 +89,7 @@ func TestJSONOutputNamesStandardInputAsTheArgument(t *testing.T) {
 // to do about it.
 func TestAMissingFileIsTheEnvironments(t *testing.T) {
 	var e ends
-	if code := count(&e, "", "absent.txt", nil, true); code != 3 {
+	if code := count(&e, "absent.txt", nil, true); code != 3 {
 		t.Fatalf("Run exit = %d, want 3", code)
 	}
 	want := `{"schema":1,"ok":false,"problems":[{"rule":"COUNT_INPUT_MISSING",` +
@@ -106,7 +107,7 @@ func TestAMissingFileIsTheEnvironments(t *testing.T) {
 // failure's.
 func TestAFailureWithoutJSONIsALineForAPerson(t *testing.T) {
 	var e ends
-	if code := count(&e, "", "absent.txt", nil, false); code != 3 {
+	if code := count(&e, "absent.txt", nil, false); code != 3 {
 		t.Fatalf("Run exit = %d, want 3", code)
 	}
 	if e.stdout.Len() != 0 {
@@ -121,11 +122,8 @@ func TestAFailureWithoutJSONIsALineForAPerson(t *testing.T) {
 // names its own rule rather than the missing one's.
 func TestAnUnreadableInputIsTheEnvironments(t *testing.T) {
 	var e ends
-	files := input.Files{
-		Disk: porttest.Files{Failures: map[string]port.ReadFailure{"adir": porttest.Unreadable("adir")}},
-		In:   strings.NewReader(""),
-	}
-	if code := (command.CLI{Files: files, File: "adir", JSON: true}).Run(ui(&e, "")); code != 3 {
+	files := porttest.Files{Failures: map[string]port.ReadFailure{"adir": porttest.Unreadable("adir")}}
+	if code := (command.CLI{Files: files, File: "adir", JSON: true}).Run(ui(&e)); code != 3 {
 		t.Fatalf("Run exit = %d, want 3", code)
 	}
 	if !strings.Contains(e.stdout.String(), `"rule":"COUNT_INPUT_UNREADABLE"`) {
