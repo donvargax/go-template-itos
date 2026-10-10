@@ -130,14 +130,15 @@ items:
 
       Delivered on go/cli as T-16, docs/CLI.md (CI run 38015944815). Kept open as main's
       template-wide index entry.
-  - id: made-project-policy
-    title: Give generated projects fresh governance with the inherited quality policy
+  - id: T-27
+    title: A made project adopts the template's quality policy at setup
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was made-project-policy.
       Split by branch before implementation: language-independent policy source and setup
       declaration on main, Go gates/proof/test selection on stack/go, CLI scenario and command
       policy on go/cli. The manifest correctly excludes template itos.yaml and tasks; do not restore
