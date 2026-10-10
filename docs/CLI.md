@@ -124,7 +124,8 @@ may repeat, but no command has one yet.
     for stdin), `lines` and `words`. `version --json` prints `ok`, `version` and `commit`, the
     commit left out when the build knows none. (CLIG `#output`; ITOS.)
 28. When the plain output looks like data, write a line on stderr telling the reader to use
-    `--json` in scripts.
+    `--json` in scripts. `version`'s two short lines are not data a script scrapes, so it prints
+    no hint; `version --json` is there for scripts.
 29. With `--json`, print an object for every failure too, a usage error included: `"ok": false`
     and a `problems` list, each with its `rule`, `message` and `fix`. (CLIG `#output`; ITOS.)
 30. Do not use colour, and pass `NO_COLOR` on to any program the CLI runs. (CLIG `#output`,
