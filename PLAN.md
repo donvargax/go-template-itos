@@ -9,7 +9,7 @@ rendering, manifest-reading or update domain code.
 
 The default/root branch is `main`. `stack/go` branches off it; `go/cli` branches off the stack.
 Common changes merge downward without rebasing published history. The supported combinations
-will be `go` and `go + cli`, proved by rendering both and running their checks.
+are `go` and `go + cli`, proved by rendering both and running their checks.
 
 The manifest's literals are real values: `go-template-itos` for the project name, with its five
 case forms; `itos-corp` for the attribution owner; and

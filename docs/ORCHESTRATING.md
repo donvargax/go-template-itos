@@ -20,6 +20,9 @@
 - Main's registry is the template-wide index of every idea. When the work lands on a stack or
   feature branch, leave main's copy open with an `itos work edit --note` naming where; never
   drop it, since dropped reads as unwanted.
+- A need only this template has (its branch layout, renders, the decisions it ships) is solved
+  here or asked of itos-template; itos gets only what any project adopting a policy needs.
+  itos#31 was withdrawn for this; #33 and #39 stay, as general adoption features.
 
 ## Briefs and proof
 
