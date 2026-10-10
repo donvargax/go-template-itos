@@ -31,3 +31,4 @@ questions:
   - id: q-7
     item: "cli-releases"
     question: "release-notes groups a release's commits with git-cliff, a new checksum-pinned tool like golangci-lint and goreleaser. Recommended: pin git-cliff with itos-template's version and cliff.toml. Or: group the commits in release-notes itself from git log, diverging from the source."
+    answer: "Pin git-cliff with itos-template's version, release checksums and cliff.toml; it runs only in the release workflow and the notes helper's tests."
