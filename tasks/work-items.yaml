@@ -278,14 +278,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: template-check-ci
-    title: CI re-proves every render when the manifest or a branch it renders changes
+  - id: T-21
+    title: CI re-proves every render on each template push and weekly
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was template-check-ci.
       itos-template check is what proves each combination's render passes the manifest's checks, but
       no workflow on any branch runs it: T-7's done_when runs it only on a push naming T-7, and T-13
       had to run it by hand at the merged heads and copy the output into a commit body. A later push
