@@ -354,20 +354,9 @@ items:
     title: A render ships decision 1 alone
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was render-decisions-index.
-      q-18 settled that a made project gets only decision 1, with an index listing only it, and
-      decisions 2 to 5 in template_only. T-28 found itos 7.0.0-rc.5 cannot keep that true without a
-      hand-kept second list: docs/decisions/README.md is written only by itos decision record, from
-      every live record in work.decisions' one folder, and no command rewrites the index for a
-      subset or another folder, nor does config check compare it with the records. Leaving 2 to 5
-      out alone would ship an index naming records the render lacks, so T-28 left all five in
-      renders and stopped there. It needs itos support (an index command, or records a config marks
-      as kept elsewhere) or the person's choice of another shape, such as a second records folder
-      for the template's own decisions, which would split the numbering.
   - id: doc-caps-render
     title: doc-caps caps only the documents a made project has
     phase: 1

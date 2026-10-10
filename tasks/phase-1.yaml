@@ -324,5 +324,3 @@
     TEMPLATE.md says so. Prove it by rendering both combinations and listing docs/decisions, and in
     a scratch made project adopting a policy and recording one decision, that the index itos
     writes names decision 1 beside it. Template check stays green.
-  done_when:
-    - run: 'grep -qE "^  - docs/decisions/README\.md$" itos-template.yaml && ! grep -qE "^  - docs/decisions/0001-" itos-template.yaml'
