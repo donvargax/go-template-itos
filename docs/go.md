@@ -79,12 +79,14 @@ list them exactly:
 - `itos-cc mutation sample --count 10`, a sample of recorded mutation results. It is not
   proof of the changed code.
 
-Changed-code proof happens when an item closes. Before the last push, run
+Changed-code proof is judged in CI. Before pushing code, run
 `tools/bin/pinned itos-cc mutation run --since <base> --fail-uncovered --all-tests
---no-annotate internal`, where the base is the parent of the item's first commit, and
-commit `.metrics/mutate/`. `itos work done` then runs `itos.yaml`'s `proof.code` check
-over `internal/**/*.go` and refuses to close the item while a mutant survives or is
-uncovered.
+--no-annotate internal`, where the base is the push's range start, the nearest ancestor with
+a green CI run (`itos ci range --head HEAD` prints it, given GITHUB_REPOSITORY and
+GITHUB_TOKEN), and commit `.metrics/mutate/`. When a push's range touches
+`internal/**/*.go`, `itos ci run` runs `itos.yaml`'s `proof.code` check from that base as a
+static step, before the tests, and fails while a mutant survives, is uncovered or has no
+result. `itos work done` runs no proof; it needs that green run.
 
 Tools are pinned:
 

@@ -21,8 +21,8 @@ go test ./...
 ```
 
 CI runs the Go gates and tests on Linux, macOS and Windows. Domain coverage must stay at least
-80 percent. Changed code needs fresh mutation proof before its item closes; recorded mutants
-are sampled in CI. Properties run one random case per CI push, and more in ordinary local runs.
+80 percent. Changed code needs fresh mutation proof, recorded before it is pushed and judged
+by CI over each push's range; recorded mutants are sampled in CI. Properties run one random case per CI push, and more in ordinary local runs.
 
 ## The example
 

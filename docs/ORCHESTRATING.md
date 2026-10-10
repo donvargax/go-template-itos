@@ -26,8 +26,9 @@
   user-facing docs; each branch's claims must match its implemented stage.
 - The count example uses standard-library Unicode whitespace and logical lines. Its additive
   property uses newline-terminated pieces, not arbitrary concatenation.
-- The proof base is the parent of the item's actual first commit, specs included. Adding tests
-  can stale imported-code snapshots: refresh the records the gate requires, not the gate.
+- The proof base is the push's range start, the nearest ancestor with a green CI run: `itos ci
+  run` judges the proof from there, and `itos work done` runs none. Adding tests can stale
+  imported-code snapshots: refresh the records the gate requires, not the gate.
 - This branch's proof covers `internal/`; add `cmd/` with the public CLI, not as an empty placeholder.
 - Pick a representative smoke scenario when the CLI runner makes each feature live. Keep live
   scenarios as explained wip on a revert; never delete them to force the revert through.

@@ -47,13 +47,14 @@ with `itos work`; never edit owners or statuses by hand.
 
 ## Finishing
 
-Close with `itos work done` only after the actual pushed head is green and its code proof passes.
-Before the last push, record changed-code proof with the pinned itos-cc, all-tests,
-fail-uncovered and no-annotate; commit `.metrics/mutate/`. Use the parent of the item's actual
-first commit, specs included, not an assumed take commit. Kill each survivor with a test; only
-truly equivalent mutants may be excepted with a reason for the person to review. An uncovered
-mutant needs a test, never an exception. Never reshape code merely to remove mutation sites or
-copy another project's cache. Generated rules below describe this branch's actual configuration.
+Close with `itos work done` only after the actual pushed head is green: its `itos ci run` judged the
+code proof over the push's range, and work done runs none. Before pushing code, record changed-code
+proof with the pinned itos-cc, all-tests, fail-uncovered and no-annotate, from the range's start,
+the nearest ancestor with a green CI run (`itos ci range --head HEAD` prints it, given
+GITHUB_REPOSITORY and GITHUB_TOKEN); commit `.metrics/mutate/`. Kill each survivor with a test; only
+truly equivalent mutants may be excepted with a reason for the person to review. An uncovered mutant
+needs a test, never an exception. Never reshape code merely to remove mutation sites or copy another
+project's cache. Generated rules below describe this branch's actual configuration.
 
 <!-- itos:begin -->
 
