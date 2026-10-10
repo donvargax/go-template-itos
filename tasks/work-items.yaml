@@ -119,8 +119,8 @@ items:
   - id: T-27
     title: A made project adopts the template's quality policy at setup
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
