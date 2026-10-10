@@ -460,3 +460,18 @@ items:
       project, for example a setup step that reruns the mutation proof and re-excepts its survivors
       before the adoption commit, or records that do not hash literals, asked of itos-cc or
       itos-template if that is where it belongs.
+  - id: sample-engineering-doc
+    title: The sample's docs/engineering.md takes main's T-32 text
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      T-33 replaced only the sample's docs/go.md Made projects section with the template's current
+      text. A render of the current heads also differs from go-template-itos-sample in
+      docs/engineering.md, whose paragraph on made projects T-32 rewrote on main after the sample
+      was rendered: the sample still says the template branch's gates must not be advertised as
+      inherited until setup installs a policy. Bring it to the rendered text, literals replaced, in
+      a docs commit or through itos-template update, so the sample stays the template's render plus
+      replays of its changes.
