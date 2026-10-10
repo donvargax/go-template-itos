@@ -182,6 +182,10 @@ items:
       binary releases distinct from template branch/tag releases, and never publish a nonexistent
       root binary. Preserve GoReleaser checksums and attestation, prove the wiring on a generated
       main, and make docs say what runs rather than what the dormant scaffold promises.
+
+      Delivered on go/cli as T-20 (CI run 38019557469): helpers, git-cliff pin and the release job,
+      dormant on the template. A real release on a generated main waits for made-project-ci (q-6).
+      Kept open as main's template-wide index entry.
   - id: cli-once-only-flags
     title: Reject repeated non-cumulative flags in the default CLI
     phase: 1
