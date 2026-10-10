@@ -414,6 +414,13 @@ items:
       speak as the template. T-40 covered only the guides; the feature descriptions sit beside
       scenarios that the scenario-moves rule guards outside feat and fix, so rewording them needs
       its own decision on the commit type that may touch them.
+
+      The person chose on 2026-10-10: reword each feature's description in the next real feat or fix
+      that touches that file (features/cli.feature, features/count.feature). itos's moves rule
+      refuses even a description-only change in a test commit ('a test commit changes the header or
+      Background'), and a fix needs a Scenarios footer naming scenarios it turns green, which a
+      wording change cannot honestly carry. itos was asked to let a docs or test commit change a
+      feature's free-text description alone.
   - id: T-43
     title: README's provenance names the itos owner, not the copyright owner
     phase: 1
