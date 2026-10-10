@@ -186,8 +186,8 @@
     finding to report before changing it, not a rule to loosen. Update go/cli's docs/go.md to
     describe its actual entry point, packages and these rules instead of the stack's no-cmd
     sentence; interface contract prose belongs to cli-contract, not here. No behavior, scenario or
-    dependency changes; the root manifest's check lists are separate main work. The task ids T-11
-    and up are reserved on go/cli until main and stack/go use higher ones.
+    dependency changes; the root manifest's check lists are separate main work. Ledgers merge downward, so main and
+    stack/go must never reuse T-11.
   done_when:
     - run: grep -q "tools/bin/architecture-check" itos.yaml && test -x tools/bin/architecture-check
     - run: grep -q "internal/count/command" .golangci.yml && grep -q "alecthomas/kong" .golangci.yml
