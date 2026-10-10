@@ -309,8 +309,8 @@ items:
   - id: T-38
     title: doc-caps caps only the documents a made project has
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
