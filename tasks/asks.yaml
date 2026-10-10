@@ -46,3 +46,4 @@ questions:
   - id: q-10
     item: "template-check-rerun"
     question: "A push that adds a ledger entry on main or stack/go leaves that head's Template check red, since the render merges the branches and their ledgers conflict until the merge down reaches go/cli, and nothing runs it again. Recommended: when Template check passes on any branch's push, it re-runs the latest failed Template check of main's and stack/go's heads. Or: rely on the weekly run. Or: the coordinator re-runs it by hand after each merge down. Or: give each branch its own ledger file so the render's merge never conflicts there."
+    answer: "Build the automatic rerun: a passing Template check re-runs the latest failed one on the parent branches' heads. Mark it deprecated in favour of per-branch ledger files: if each branch ever gets its own ledger file, and the render's merge no longer conflicts, the rerun is removed."
