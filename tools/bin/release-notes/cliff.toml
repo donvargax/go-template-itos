@@ -7,11 +7,12 @@
 
 [changelog]
 body = """
+{%- set repository = "itos-corp/go-template-itos" -%}
 {% for group, commits in commits | group_by(attribute="group") %}
 ### {{ group | striptags | trim }}
 {% for commit in commits %}
 - {% if commit.scope %}**{{ commit.scope }}:** {% endif %}{{ commit.message | split(pat="\n") | first | trim | upper_first }} \
-  ([`{{ commit.id | truncate(length=7, end="") }}`](https://github.com/itos-corp/go-template-itos/commit/{{ commit.id }}))
+  ([`{{ commit.id | truncate(length=7, end="") }}`](https://github.com/{{ repository }}/commit/{{ commit.id }}))
 {%- endfor %}
 {% endfor %}
 """
