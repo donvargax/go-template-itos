@@ -12,10 +12,10 @@ from the public template builds, vets and tests, runs its own `count` command, a
 none of this repository's own itos data.
 
 Ready means a made project starts out building and passing its checks. What a made project
-does not get yet:
+gets, and what it does not get yet:
 
 - [ ] Its CI runs the Go checks on its own `main` branch, on Linux, macOS and Windows.
-- [ ] Setup gives it its own commit rules and checks, the ones this template is held to.
+- [x] Setup gives it its own commit rules and checks, the ones this template is held to.
 - [ ] A CLI project publishes its binaries when it makes a release.
 - [ ] Every guide it ships speaks to the made project, not to the template.
 - [ ] Automatic dependency updates are proven running on every branch.
