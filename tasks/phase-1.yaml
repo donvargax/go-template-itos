@@ -435,3 +435,26 @@
     it now asks for cli-releases, which rule and contract still name, instead.
   done_when:
     - run: itos task T-16
+- id: T-20
+  type: build
+  title: Complete the made CLI binary release pipeline
+  why: >
+    .github/workflows/release.yml calls tools/bin/release-version and tools/bin/release-notes,
+    which do not exist here, and no job calls it. Harvest both helpers with their tests and
+    release-notes' cliff.toml from itos-template's tools/bin, adapted to this module and binary
+    and keeping provenance and license notices; they use internal/release, which is already here.
+    Pin git-cliff in tools/bin/pinned at itos-template's version with its release's own checksums
+    (q-7). Add the release job to ci.yml as itos-template has it: after the ci and platform jobs,
+    only on a push to main, the only job with write, id-token and attestation permissions, so a
+    pull request or a Renovate branch never releases (q-6). On the template it never runs, since
+    go/cli is never main. On a generated main it cannot run until made-project-ci makes the Go
+    jobs and the itos plan work there; that proof belongs to made-project-ci, and docs say so
+    rather than claim releases run. Run the helpers' tests in go/cli's CI plan, which today tests
+    only cmd and internal. Keep .goreleaser.yaml's archives, checksums and attestation as they are.
+    Update release.yml's header, docs/CLI.md's contract and the go/cli notes to say what now exists
+    and what waits on made-project-ci; T-16's check, which looks for cli-releases in docs/CLI.md,
+    then looks for made-project-ci. Never publish anything from the template.
+  done_when:
+    - run: test -f tools/bin/release-version/main.go && test -f tools/bin/release-notes/main.go && test -f tools/bin/release-notes/cliff.toml
+    - run: 'grep -q "git-cliff)" tools/bin/pinned && grep -q "uses: ./.github/workflows/release.yml" .github/workflows/ci.yml && grep -q "tools/bin/release" itos.yaml'
+    - run: itos task T-16
