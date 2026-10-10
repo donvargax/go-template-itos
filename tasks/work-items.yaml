@@ -123,3 +123,21 @@ items:
     status: done
     depends_on: []
     kind: task
+  - id: T-22
+    title: The release notes tests pass in a render
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      T-21's check found go + cli failing at go test ./... in a render:
+      tools/bin/release-notes/main_test.go expects the literal
+      https://github.com/itos-corp/go-template-itos/compare/..., which holds the module literal, so
+      a render turns it into https://example.com/blue/fox/compare/..., while main.go builds the
+      address from repository, itos-corp/go-template-itos, which renders as acme/blue-fox. The tests
+      came with T-20 (8579733). Build each expected address in the tests from repository as the code
+      does, so they name what the code prints under any answers. Search the helpers' other tests and
+      the whole branch for the same pattern, a literal that holds the module path where the code
+      builds from owner and name, and fix each. Prove it with itos-template check (v0.19.0) passing
+      both combinations at the pushed heads. No behaviour change in the helpers.
