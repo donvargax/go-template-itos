@@ -166,6 +166,9 @@ items:
       emitted-project CI. Verify actual generated-project workflow behavior and exact-head CI, not
       only YAML strings or template-branch green runs. Common manifest declarations land on root
       main and merge downward separately.
+
+      Since T-20 this also owns proving a real binary release on a generated main: the release job
+      needs the ci and platform jobs, which a made main does not run yet (q-6).
   - id: cli-releases
     title: Complete the generated CLI binary release pipeline
     phase: 1
