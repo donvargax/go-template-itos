@@ -354,3 +354,15 @@ items:
       render merge conflicts at all, which also needs those docs to stop diverging per branch or to
       merge cleanly. Ids are now minted by itos (decision 5), so the id-range part of this idea is
       moot.
+  - id: renovate-proof
+    title: Prove Renovate on a real request on every branch
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      T-25 landed the baseBranches configuration while Renovate had never run on this repository
+      (q-12). Once Renovate runs, by the Mend app or a self-hosted action, check a real request on
+      main, stack/go and go/cli: each judged by its own CI, automerged on green with the right type
+      and trailer, and docs/upgrading.md updated to say the automation runs.
