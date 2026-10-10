@@ -711,5 +711,56 @@
     passages in docs commits, main first and merged down, saying what setup adopts and what a made
     main's CI runs, and leaving the real release unclaimed, since cli-releases has not proved one.
     Wording the rest of these guides for the made project is guides-template-wording's.
+- id: T-33
+  type: ci
+  title: A made CLI project publishes a real, attested release
+  why: >
+    Was cli-releases. T-20 built the release machinery on go/cli (release-version, release-notes,
+    pinned git-cliff and GoReleaser, release.yml and ci.yml's release job), and T-31 made it live on
+    a made project's main, but no made project has published with it: go-template-itos-sample's
+    first push released nothing, its two commits being chore commits. q-23 put the real release
+    here. q-24's docs-only fix could not pass the sample's own rules, which give every feat and fix
+    a Scenarios footer naming the live scenarios it turns green, and q-25's flag change was already
+    in the sample (T-14), so q-27 settled it: the template gains a small feat, version --json
+    (T-34), and the sample takes that same change as one feat commit, literals replaced by the
+    sample's answers, with the same Scenarios footer and Upgrading none, never marked breaking
+    before v1 (q-26). A feat from 0.0.0 cuts v0.1.0. Beside it, a docs commit replaces the sample's
+    stale docs/go.md Made projects section with go/cli's current text, literals replaced, so a later
+    itos-template update meets identical text. Before pushing, run tools/bin/release-version as
+    release.yml runs it and see it name v0.1.0. Push the sample's main with itos push; that run's ci
+    job, three platform jobs and release job must pass, and the release must hold the five archives
+    and checksums.txt GoReleaser makes. If a release step fails, fix its cause in the template on
+    go/cli (a fix or ci commit, with its own red evidence where a scenario or test can show it),
+    replay that same fix in the sample, and push again, until a release is published; never weaken
+    or skip a step, and never delete a tag or release. Verify one archive with gh attestation
+    verify against donvargax/go-template-itos-sample, unpack the Linux amd64 one and run its
+    binary's version --json and count commands. Then the template's docs stop saying no made
+    project has released: go/cli's docs/CLI.md, docs/upgrading.md, docs/ORCHESTRATING.md and
+    TEMPLATE.md, in a docs commit naming the release and its run. The sample stays the template's
+    render, its setup and replays of the template's own changes; change none of its settings.
   done_when:
-    - run: "! grep -rqiE 'waits on upstream itos|not registered there yet|until fresh-project setup' docs"
+    - run: "git ls-remote --tags https://github.com/donvargax/go-template-itos-sample.git | grep -q 'refs/tags/v'"
+- id: T-34
+  type: feat
+  title: version --json prints the version and commit as one object
+  why: >
+    A small, additive feature for the example CLI on go/cli, chosen by the coordinator when the
+    person asked for any small new feat (q-27) so that go-template-itos-sample can take it as its
+    first release (T-33). Scripts that read a made project's version get it as JSON, as count
+    already offers. version gains the --json switch (with its --no-json pair, given once like every
+    switch, ID-CLI-08 and ID-CLI-09), and GO_TEMPLATE_ITOS_JSON turns it on as it does for count, so
+    a shell that set it gets JSON from both commands. The object is one line on stdout:
+    {"schema":1,"ok":true,"version":"<stamped version>","commit":"<stamped commit>"}, the commit key
+    absent when the build has no commit, as the text form then has no second line. --version stays
+    plain text: it is kong's flag, not the command, and gains no JSON. version's help names the JSON
+    shape, as count's names its own. Scenarios, in features/cli.feature with IDs claimed through
+    itos tests next-id, each tagged @T-34: version --json prints one object with the stamped version
+    and commit; GO_TEMPLATE_ITOS_JSON turns version's JSON on; --no-json declines the JSON the
+    environment turns on for version; version's help names its JSON shape. Red first: the steps and
+    @wip scenarios in a test commit, then the feat, which is a plain feat with Upgrading none and no
+    breaking mark, since no commit is marked breaking before v1 (q-26). Harvest from itos-template's
+    version command if it already has a JSON form, rather than inventing a second shape. Keep the
+    domain untouched: this is internal/cli and cmd only. The mutation proof and coverage gates of
+    the branch hold.
+  done_when:
+    - run: test ! -d features || grep -q 'version --json' features/cli.feature
