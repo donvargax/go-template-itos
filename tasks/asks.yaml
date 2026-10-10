@@ -21,3 +21,4 @@ questions:
   - id: q-5
     item: "cli-exhaustive-errors"
     question: "cli-exhaustive-errors makes the linter refuse an error switch that leaves a sealed failure kind out; today readProblem's switch over port.ReadFailure is complete only by review. Recommended: gochecksumtype, bundled in the pinned golangci-lint and proven in itos-template, with port.ReadFailure annotated //sumtype:decl, default-signifies-exhaustive false and a compile-valid fixture proving an omitted kind is refused. Or: exhaustive, which checks enum constants rather than interface type switches and would need the failures remodelled. Or: not now, leaving the switch to review."
+    answer: "gochecksumtype, as recommended: no new dependency or tool, the pinned golangci-lint already bundles it."
