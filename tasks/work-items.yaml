@@ -374,3 +374,20 @@ items:
       the owner answer the template's illustrative owner. Rewrite them for the made project as T-28
       did README.md and AGENTS.md, keeping the harvest provenance, and move what only the template
       needs to TEMPLATE.md.
+  - id: self-made-project
+    title: This repository is both the template and its own made project
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      The owner's original aim for itos-template: real projects that are themselves the templates,
+      stripped of project-specific things, so a new project starts ready to work and follows
+      everything already done. go-template-itos exists because itos-template's
+      live-template-scenarios needed a real template; q-22 then put the made-project proof in a
+      third repository, donvargax/go-template-itos-sample, meant as the last one. Try again once the
+      machinery exists: itos-template update (update-merges) keeps a made project current, and
+      itos-template's template-beside-project, with itos's branch-aware rules and itos-cc's
+      per-branch baselines, lets a made main live beside the template branches here. Until then the
+      sample repository is the made project, kept current with update when that lands.
