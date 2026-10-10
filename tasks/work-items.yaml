@@ -13,6 +13,7 @@ phases:
 queue:
   - T-33
   - T-38
+  - T-39
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
