@@ -304,3 +304,16 @@
     - run: grep -q "tools/bin/architecture-check" itos.yaml && test -x tools/bin/architecture-check
     - run: grep -q "internal/count/command" .golangci.yml && grep -q "alecthomas/kong" .golangci.yml
     - run: test -f docs/go.md && grep -q docs/go.md AGENTS.md && test -f docs/decisions/0003-every-question-is-asked-and-recorded-on-main.md
+- id: T-12
+  type: docs
+  title: Say in go/cli agent and orchestration notes that the public CLI is here
+  why: >
+    AGENTS.md said this branch has no public CLI yet, and docs/ORCHESTRATING.md that it has no
+    public CLI, godog runner or binary release job and that cmd/ joins the proof later. On go/cli
+    the CLI, its scenarios and runner exist and the proof covers cmd and internal, so an agent
+    reading the notes started from the stack stage. The release workflow is present but runs only
+    on a made project's main; this branch cuts no binary release and cli-releases finishes that
+    wiring, so the notes say so rather than claiming releases. PLAN.md's order of work describes
+    the stack stage as a stage and stays. Found while merging stack/go for T-11.
+  done_when:
+    - run: '! grep -q "not the public CLI yet" AGENTS.md && ! grep -q "no public CLI" docs/ORCHESTRATING.md && ! grep -q "add .cmd/. with the public CLI" docs/ORCHESTRATING.md'
