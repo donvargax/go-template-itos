@@ -366,5 +366,3 @@
     pure render plus its setup, with no other commits (self-made-project). Template check stays
     green on every head. A made-project gate that fails on this push is a finding to report, not a
     check to weaken; doc-caps erroring but exiting 0 is doc-caps-render's.
-  done_when:
-    - run: "! grep -q \"startsWith(github\" .github/workflows/ci.yml"

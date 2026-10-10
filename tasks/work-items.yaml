@@ -127,23 +127,9 @@ items:
     title: A made project's CI runs its Go checks on its own main
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was made-project-ci.
-      Belongs on stack/go for Go CI, with CLI scenario additions on go/cli. Keep root main
-      language-neutral. Current Go workflows condition Go setup and platform jobs on template branch
-      names, so ordinary generated main skips them. Each emitted workflow must exercise the code it
-      carries without needing the template branch names; retain Linux/macOS/Windows tests,
-      dependency checks, lint, vulnerability checks, coverage and mutation sampling. Coordinate with
-      made-project-policy for configured itos gates rather than treating template render checks as
-      emitted-project CI. Verify actual generated-project workflow behavior and exact-head CI, not
-      only YAML strings or template-branch green runs. Common manifest declarations land on root
-      main and merge downward separately.
-
-      Since T-20 this also owns proving a real binary release on a generated main: the release job
-      needs the ci and platform jobs, which a made main does not run yet (q-6).
   - id: cli-releases
     title: Complete the generated CLI binary release pipeline
     phase: 1
