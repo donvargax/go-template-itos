@@ -258,8 +258,8 @@ items:
   - id: T-24
     title: Move every branch to itos 7.0.0-rc.4 and retire decision 4
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
