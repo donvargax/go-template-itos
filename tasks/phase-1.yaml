@@ -535,9 +535,6 @@
     ci.yml are each branch's own; merge main down afterwards for the shared docs, as earlier
     items did. A gate that rc.4 refuses on existing work is a finding to report, not a check to
     weaken.
-  done_when:
-    - run: grep -q '7.0.0-rc.4' itos.yaml && grep -q 'v7.0.0-rc.4' .github/workflows/ci.yml
-    - run: '! grep -q "git grep -hoE" docs/ORCHESTRATING.md'
 - id: T-25
   type: ci
   title: Renovate updates every branch that holds code
@@ -559,5 +556,18 @@
     installed while this was specified, but no request has landed, so docs/upgrading.md says so
     until renovate-proof. Change main's file, then stack/go's and go/cli's, merging main down as
     earlier items did.
+- id: T-26
+  type: build
+  title: Move every branch to itos 7.0.0-rc.5
+  why: >
+    itos 7.0.0-rc.5 adds itos init --policy (slice-108, closing donvargax/itos#33), which
+    made-project-policy needs: a made project's setup step runs it over the branch's
+    itos-policy.yaml (q-13). Every branch pins 7.0.0-rc.4, and the release adds no breaking change
+    past what T-24 applied; its Upgrading section is read anyway and any step the branches' configs
+    meet is applied. On each of main, stack/go and go/cli, move the pin with itos pin 7.0.0-rc.5 and
+    the itos workflow action with it, go/cli's release.yml included, pinned by the release's commit,
+    and regenerate the agent rules. Branches move independently; merge main down afterwards for the
+    ledger, as earlier items did, keeping each branch's itos.yaml, ci.yml and registry. A gate rc.5
+    refuses on existing work is a finding, not a check to weaken.
   done_when:
-    - run: 'f=.github/renovate.json5 && ! grep -q "landed on main" "$f" && if test -f go.mod; then ! grep -qE "^[[:space:]]*(baseBranchPatterns|baseBranches|useBaseBranchConfig|commitTrailers)[[:space:]]*:" "$f"; else grep -qE "^[[:space:]]*baseBranchPatterns[[:space:]]*:" "$f" && grep -qE "^[[:space:]]*useBaseBranchConfig[[:space:]]*:" "$f" && grep -q "Task: T-2" "$f"; fi'
+    - run: grep -q "7.0.0-rc.5" itos.yaml && grep -q "v7.0.0-rc.5" .github/workflows/ci.yml && ! grep -rq "v7.0.0-rc.4" .github/workflows
