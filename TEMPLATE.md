@@ -60,5 +60,6 @@ A render carries none of the template's itos data. It ships `itos-policy.yaml`, 
 manifest's setup steps make the project's own `itos.yaml` through `itos init --policy` and then
 remove: this branch's `itos.yaml` less the differences `tools/bin/policy-drift` lists as the
 template's alone, each with its reason. Change the two files together; the drift check in the
-plan fails when they part. Until a made project's own CI runs on its main (made-project-ci), do
-not claim its CI runs these gates.
+plan fails when they part. Once set up, a made project's CI runs these gates on its own main: the
+ci job sets up Go for the plan and the platform jobs test on Linux, macOS and Windows, with no
+condition on branch names, which only the template has.
