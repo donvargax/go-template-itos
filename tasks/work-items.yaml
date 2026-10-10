@@ -135,8 +135,8 @@ items:
   - id: T-18
     title: Say in the guides that a lint holds every sealed failure set
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
