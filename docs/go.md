@@ -100,15 +100,14 @@ Tools are pinned:
 ## Made projects
 
 `itos-template.yaml` declares what every render must pass. The root check is the pinned
-gitleaks credential scan. The `go` stack's checks repeat this branch's Go checks, except
-the import-boundary self-test, which is not registered there yet. `itos-template check`
-runs them on each supported render. That is evidence about the template, not about a
-project's own CI.
+gitleaks credential scan. The `go` stack's checks repeat this branch's Go checks, the
+import-boundary self-test included. `itos-template check` runs them on each supported render.
+That is evidence about the template, not about a project's own CI.
 
-A render leaves out `itos.yaml` and `tasks`. A made project therefore has none of this
-branch's commit rules, CI plan or code-proof gate until fresh-project setup installs a
-policy of its own. That setup waits on upstream itos support
-([decision 2](decisions/0002-made-projects-inherit-quality-policy-through-upstream-itos-initialization.md)). The workflow
-also runs its Go steps only on `stack/`, `go/` and `renovate/` branches, so a made
-project's ordinary `main` does not run them yet. Separate items close both gaps. Until
-those items verify an emitted project, do not describe these gates as inherited.
+A render leaves out `itos.yaml` and `tasks` but ships `itos-policy.yaml`: this branch's
+commit rules, CI plan and code-proof gate, less what only the template needs. `itos-template
+new` prints the setup steps that adopt it. `itos init --policy itos-policy.yaml` gives the made
+project its own `itos.yaml` and a fresh ledger, then the policy file is removed. Run
+`itos init --agent-rules` after them, so `AGENTS.md` describes the project's own config. From
+then on the workflow runs the Go steps and the Linux, macOS and Windows tests on the made
+project's own `main`.
