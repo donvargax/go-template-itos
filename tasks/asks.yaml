@@ -16,3 +16,4 @@ questions:
     decision: 3
   - id: q-4
     question: "Task ids are per branch: each ledger numbers its own tasks, ledgers merge only downward, and main cannot see T-9 to T-11, so its next id would reuse T-9. Recommended: specify a task on the branch that implements it, with an id one above the highest in any branch's ledger on origin (main, stack/go, go/cli). Or: specify every task on main and merge it down before work starts. Or: give each branch its own id prefix."
+    answer: "Specify a task on the branch that implements it, with an id one above the highest in any branch's ledger on origin: main, stack/go and go/cli. One coordinator per repository keeps the choice free of races."
