@@ -520,6 +520,15 @@
     --ref v0.1.0 passes both combinations, and itos-template new from the public URL with no ref
     renders v0.1.0 and its .itos-template.yaml names the release. Main's README says how to make a
     project from the released template, in a docs commit.
+
+    Waiting, by the person's choice in q-30: itos-template 0.24.1 has no release command (its
+    idea template-release-command is still open, and the 2026-10-09 call rules out tagging by
+    hand), so this item waits until itos-template ships it; the person follows that up there.
+    Template check's move from v0.19.0 to v0.24.1 left this item for T-46. It stays in progress
+    under donvargax only because itos cannot give an item back to todo for deferring
+    (donvargax/itos#42); nobody works it until the command exists. Note for when it does: itos-
+    template's idea gives the root a bare v1.2.0 tag while its manifest guide says main/v1.2.0;
+    build to whichever the command does.
   done_when:
     - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.1.0'
 - id: T-43
