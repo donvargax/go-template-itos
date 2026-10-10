@@ -56,6 +56,11 @@ it. When you add a domain package, a slice or an adapter:
 3. A new domain package is measured by `tools/bin/domain-coverage`, which reads its list
    from the `domain` rule's `files`.
 
+A new sealed failure set, an interface with an unexported marker method like
+`port.ReadFailure`, is annotated `//sumtype:decl` and given its exit codes in one switch in
+`internal/cli` that names every kind. gochecksumtype then refuses the switch when a kind is
+added and left out; without the annotation nothing checks it.
+
 Code that differs by OS takes the OS as a value. Logic never branches on `runtime.GOOS`.
 A build-tagged file holds only a call that one OS lacks, with no mutation site. The
 counting example has no OS-specific logic.
@@ -85,8 +90,9 @@ list them exactly:
 - `gofmt` over `cmd`, `internal` and `features`, `go build`, `go vet`, `go mod verify`
   against `go.sum`, and `go mod tidy -diff` so the module files match the code.
 - `itos tests smoke check scenario`, so every feature file has a smoke scenario.
-- golangci-lint: the standard linters plus depguard, gosec on non-test code, and revive's
-  file-length limit.
+- golangci-lint: the standard linters plus depguard, gosec on non-test code, revive's
+  file-length limit and gochecksumtype, which refuses a type switch over a sealed set that
+  leaves a kind out, a default arm not counting.
 - `tools/bin/architecture-check`, the self-test above.
 - `go tool govulncheck -test ./...`, covering the dependencies in use, test-only ones and
   the standard library.

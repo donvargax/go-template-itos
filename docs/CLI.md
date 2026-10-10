@@ -134,7 +134,9 @@ may repeat, but no command has one yet.
 32. Derive the exit code from the kind of error, in the UI alone. The domain's and adapters'
     errors are sealed sets, and each kind gets its code in one switch with no default. Only an
     error no switch classified, a bug, exits 70. Read the kind of a failure of a program you run
-    from what it says; never pass its own exit code through. (CLIG `#the-basics`.)
+    from what it says; never pass its own exit code through. A sealed set is annotated
+    `//sumtype:decl`, and gochecksumtype refuses a switch that leaves one of its kinds out.
+    (CLIG `#the-basics`.)
 33. Start each error line with `go-template-itos:`. Write it for people: say what happened and
     what to do next. Do not show a raw command line as the message. (GNU-ERR; CLIG `#errors`.)
 34. Keep the help and the code in agreement on each exit code; a scenario checks each code the
