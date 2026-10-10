@@ -34,7 +34,7 @@ holds the shared engineering rules, [docs/go.md](docs/go.md) Go's,
 [docs/security.md](docs/security.md) the trust boundaries,
 [docs/upgrading.md](docs/upgrading.md) how to move dependency pins,
 [docs/CONFIG.md](docs/CONFIG.md) the rules for a configuration file the project owns, and
-[docs/decisions/](docs/decisions/README.md) its decision records. `itos go` coordinates the
+[docs/decisions/](docs/decisions/) its decision records. `itos go` coordinates the
 work; an implementing agent uses `itos guide work`.
 
 ## License and provenance
