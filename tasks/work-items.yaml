@@ -346,3 +346,10 @@ items:
       two branches append to the same file. Each branch also keeps its own tasks/work-items.yaml and
       plan, which can conflict the same way, so cover them too or confirm they cannot. When this
       lands and no render merge conflicts, remove T-23's rerun (q-10).
+
+      T-24 showed the render merge also conflicts on shared docs each branch words its own way:
+      stack/go run 38024177199 went red on docs/ORCHESTRATING.md and docs/go.md, with no ledger
+      involved. Per-branch ledgers alone therefore do not retire T-23's rerun; it goes only once no
+      render merge conflicts at all, which also needs those docs to stop diverging per branch or to
+      merge cleanly. Ids are now minted by itos (decision 5), so the id-range part of this idea is
+      moot.
