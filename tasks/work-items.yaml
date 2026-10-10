@@ -423,3 +423,17 @@ items:
     status: done
     depends_on: []
     kind: task
+  - id: version-json-hint
+    title: Decide whether version's plain output hints at --json
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found by T-34. docs/CLI.md rule 28 asks for a line on stderr telling the reader to use --json
+      in scripts when the plain output looks like data, and count prints one. Since T-34 version has
+      a --json form, yet its plain text, the same as --version prints, carries no hint, so a script
+      author reading version's text is not pointed at the object. Either version prints the hint
+      (never --version, kong's action, which T-34 kept plain) with a scenario, or rule 28 says why
+      version's two lines are not data. Lands on go/cli.
