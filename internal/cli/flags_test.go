@@ -50,7 +50,7 @@ func TestAFlagGivenNoValueIsRefusedNamingIt(t *testing.T) {
 }
 
 func TestAValueGivenAsAFlagsOwnIsTaken(t *testing.T) {
-	l, err := parse(t, "made", "--stack=go", "--stack=--json")
+	l, err := parse(t, "made", "--stack=--json")
 	if err != nil {
 		t.Fatal(err)
 	}
