@@ -310,3 +310,19 @@
     branches' file-list check in itos.yaml keeps holding the template's own files; T-27's policy
     leaves it out. Prove it by rendering both combinations and reading what ships, and by
     Template check staying green.
+- id: T-29
+  type: build
+  title: A render ships decision 1 alone
+  why: >
+    T-28 left decisions 2 to 5 in renders: itos writes docs/decisions/README.md from every record in
+    the folder, so excluding records alone would ship an index linking files the render lacks. The
+    person chose a template-only fix (q-19, revising q-18's index clause): decisions 2 to 5 and
+    docs/decisions/README.md join the manifest's template_only, with a comment saying why, so a
+    render ships decision 1, the one record that binds a made CLI, and the made project's index
+    appears when it records its first decision. A decision the template records later that binds
+    made projects stays out of template_only; one about running the template joins it, and
+    TEMPLATE.md says so. Prove it by rendering both combinations and listing docs/decisions, and in
+    a scratch made project adopting a policy and recording one decision, that the index itos
+    writes names decision 1 beside it. Template check stays green.
+  done_when:
+    - run: 'grep -qE "^  - docs/decisions/README\.md$" itos-template.yaml && ! grep -qE "^  - docs/decisions/0001-" itos-template.yaml'
