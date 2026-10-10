@@ -14,11 +14,10 @@ The Go toolchain is pinned too: its standard library is part of the resulting co
 patches matter even when module versions stay unchanged.
 
 The owner's tools can be pinned on release. Other updates normally wait seven days, with
-security fixes following the existing security-update policy. In the template, main's Renovate
-configuration names this branch as a base branch and merges this branch's
-`.github/renovate.json5` over it, so its requests follow this branch's managers and are judged by
-its own CI. The Renovate app is installed, but no request has landed yet, so the automation stays
-unverified until one lands on this branch.
+security fixes following the existing security-update policy. Renovate reads
+`.github/renovate.json5` from `main`, so its requests follow that file's managers and are judged
+by the project's own CI. The file alone does not make Renovate run: the automation stays
+unverified until the Renovate app is installed and a request has landed.
 
 Fresh mutation records are required when code or relevant test imports change. Record them
 from the push's range start, the nearest ancestor with a green CI run, since `itos ci run`
@@ -27,9 +26,7 @@ judges the proof from there.
 git-cliff publishes a `.sha512` file per archive rather than a checksums file: move its pin by
 checking each archive against that file first, then pinning the archive's SHA-256.
 
-The release job in `ci.yml` runs only on a push to `main`, so this branch cuts no CLI binary
-release. On a made project's `main` it runs after the ci and platform jobs pass and cuts a release
-when the commits since the last tag call for one: GoReleaser's five archives and `checksums.txt`,
-the archives attested, published with the notes `tools/bin/release-notes` writes.
-Template releases and the generator's adoption/update workflow are separate from made-project
-binary release tooling and are not claimed here.
+The release job in `ci.yml` runs only on a push to `main`, after the ci and platform jobs pass,
+and cuts a release when the commits since the last tag call for one: GoReleaser's five archives
+and `checksums.txt`, the archives attested, published with the notes `tools/bin/release-notes`
+writes.

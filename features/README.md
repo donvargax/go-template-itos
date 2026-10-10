@@ -1,13 +1,13 @@
 # Feature files
 
-Every `feat:` and `fix:` commit of a project made from this template is driven by scenarios in
-this folder. Nothing else belongs here. The harness is harvested from itos's
+Every `feat:` and `fix:` commit of this project is driven by scenarios in this folder.
+Nothing else belongs here. The harness is harvested from itos's
 (github.com/donvargax/itos, `features/`) and itos-template's, without either one's own
 generator behaviour.
 
 ## What goes in a feature file
 
-Only behaviour a user of the made project can observe: what a command does to a folder, its exit
+Only behaviour a user of the project can observe: what a command does to a folder, its exit
 code, and what it prints.
 
 Never here:
@@ -95,7 +95,7 @@ same commit.
 - **Say why beside the scenario** when a setup would make a reader ask: a comment above the tag
   line.
 
-## The steps this branch's scenarios use
+## The steps this project's scenarios use
 
 These are the ones the harness must define. Each is a regular expression over the step's text,
 with the program named as the built binary is.

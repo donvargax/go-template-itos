@@ -97,11 +97,15 @@ condition on branch names, which only the template has.
 
 `go/cli` adds the command line on top of the stack: `cmd/go-template-itos`, `internal/cli`, the
 scenarios in `features/` and their godog runner, and the release workflow and its tools. The
-manifest's `cli` checks are the plan this branch's `itos.yaml` runs, less its itos commands.
-`README.md` and `AGENTS.md` here describe the project a `go + cli` render makes. The release job
-runs only on a push to main, which no template branch is. On a made project's main it runs after
-the ci job and the platform jobs pass, as the stack's gates do there, and cuts a release when the
-commits since the last tag call for one. A made project has published one: go-template-itos-sample
+manifest's `cli` checks are the plan this branch's `itos.yaml` runs, less its itos commands:
+the scenarios and the import-boundary self-test included, but not the smoke-set check, an itos
+command that a render's checks cannot run. `itos-template check` runs them after the root's
+gitleaks scan on each supported render, which is evidence about the template, not about a made
+project's own CI. `README.md`, `AGENTS.md` and the shipped guides here describe the project a
+`go + cli` render makes. The release job runs only on a push to main, which no template branch
+is, so this branch cuts no CLI binary release. On a made project's main it runs after the ci job
+and the platform jobs pass, as the stack's gates do there, and cuts a release when the commits
+since the last tag call for one. A made project has published one: go-template-itos-sample
 cut v0.1.0 (<https://github.com/donvargax/go-template-itos-sample/releases/tag/v0.1.0>) from its
 version --json feat, with its five archives, `checksums.txt` and the archives' attestations, in
 run <https://github.com/donvargax/go-template-itos-sample/actions/runs/38088380189> (T-33).
