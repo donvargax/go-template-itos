@@ -84,6 +84,13 @@ items:
       inheritance blocked on a person-approved supported initialization design, not a custom
       workaround; the generator remains unaware of itos. Source new-steps/new-itos-setup are also
       prerequisites. The policy decision is being drafted while T-9 owns the checkout.
+
+      The person selected upstream support rather than a custom workaround. Filed donvargax/itos#33
+      after reproducing generic-starter and existing-policy diagnostic behavior on 7.0.0-rc.3 and
+      checking releases/issues. Automatic quality-policy initialization waits for that supported
+      upstream capability; independent template guidance, Go enforcement, CI and release work
+      continue. The report evidence is tasks/upstream-policy-init-report.md.
+    refs: [https://github.com/donvargax/itos/issues/33]
   - id: config-guidelines
     title: Carry shared configuration-format guidance on the base template
     phase: 1
