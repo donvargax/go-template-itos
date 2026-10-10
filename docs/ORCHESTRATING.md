@@ -41,3 +41,6 @@ working around it in this template.
 - After merging a parent branch down, compare the items both registries hold. The merge keeps the
   child's status, so close an item finished upstream with `itos work done` on the child too.
   Recorded 2026-10-09; last seen 2026-10-09; permanent while registries share items.
+- A task's checks run in CI on every push that names it, so a check that passes only once the
+  work is whole turns an early push red. Push all of the task's commits together. Recorded
+  2026-10-09; last seen 2026-10-09 (T-11); permanent.

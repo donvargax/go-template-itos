@@ -12,6 +12,11 @@ checks:
   # the template scans its renders for credentials, so it stops warning.
   - {run: [tools/bin/pinned, gitleaks, dir, ., --redact], scans: [credentials]}
 
+# Each stack's and feature's list is the plan its branch's itos.yaml runs, less
+# its itos commands. tools/bin/architecture-check follows golangci-lint, as it
+# does there: it runs go test over fixtures the pinned linter must refuse or
+# allow, so a render proves its import boundaries still catch what they should,
+# not only that its own code passes them.
 stacks:
   - name: go
     checks:
@@ -21,6 +26,7 @@ stacks:
       - [go, mod, verify]
       - [go, mod, tidy, -diff]
       - [tools/bin/pinned, golangci-lint, run, ./...]
+      - [tools/bin/architecture-check]
       - [go, tool, govulncheck, -test, ./...]
       - [go, test, ./...]
       - [tools/bin/domain-coverage]
@@ -36,6 +42,7 @@ features:
       - [go, mod, verify]
       - [go, mod, tidy, -diff]
       - [tools/bin/pinned, golangci-lint, run, ./...]
+      - [tools/bin/architecture-check]
       - [go, tool, govulncheck, -test, ./...]
       - [go, test, ./cmd/..., ./internal/...]
       - [tools/bin/domain-coverage]

@@ -317,3 +317,20 @@
     the stack stage as a stage and stays. Found while merging stack/go for T-11.
   done_when:
     - run: '! grep -q "not the public CLI yet" AGENTS.md && ! grep -q "no public CLI" docs/ORCHESTRATING.md && ! grep -q "add .cmd/. with the public CLI" docs/ORCHESTRATING.md'
+- id: T-13
+  type: build
+  title: Every Go render runs the import-boundary self-test
+  why: >
+    T-9 added tools/bin/architecture-check to stack/go's CI and T-11 to go/cli's, but the manifest's
+    go and cli check lists still copy the plans from before them, so itos-template check proves a
+    render's lint rules without proving those rules still catch what they should. Add
+    [tools/bin/architecture-check] to both lists, right after golangci-lint where the branches'
+    plans run it; it runs go test over fixtures and the pinned linter, no shell and no itos. The
+    smoke check stays out: it is an itos command, and a render carries no itos data (T-5). The
+    manifest is one root file, so the change lands on main and merges down into stack/go and then
+    go/cli with normal merge commits, each keeping the receiving branch's registry and config,
+    merging ledgers additively in id order. Prove it with itos-template check on both combinations
+    at the merged heads, and record what it printed. A render whose fixtures fail after the literals
+    are replaced is a finding to report, not a check to drop.
+  done_when:
+    - run: test "$(grep -c "tools/bin/architecture-check" itos-template.yaml)" -ge 2
