@@ -80,6 +80,10 @@ items:
       or Go gate. CLI-only error exhaustiveness and command rules are separate. Configure the Go
       self-test in the Go branch CI; root manifest declarations are a separate root-owned
       integration change.
+
+      Delivered on stack/go as T-9 (CI run 37983078990), extended on go/cli by T-11 with the
+      application and kong rules, and run in every Go render since T-13. Kept open as main's
+      template-wide index entry.
   - id: go-engineering
     title: Document the reusable Go design and quality contract
     phase: 1
