@@ -77,3 +77,4 @@ questions:
     item: "made-project-policy"
     question: "Renders ship the template's mutation records (.metrics/mutate/) and reviewed exceptions (itos-cc.yaml). Should a made project start with them? Recommended: keep them as its baseline, since its code starts as the template's, renamed, and its own proof judges only its changes after setup. Or: exclude them through template_only, so its mutation sample has nothing until a first full run."
     answer: "Keep them as the made project's baseline. Its code starts as the template's, renamed, so the records and reviewed exceptions describe it, and its own code proof judges only what it changes after setup. The rule against copying another project's cache by hand stands."
+    decision: none
