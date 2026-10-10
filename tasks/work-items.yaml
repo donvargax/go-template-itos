@@ -398,14 +398,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: made-project-agent-rules
-    title: A made project's AGENTS.md rules describe its adopted policy
+  - id: T-39
+    title: Setup regenerates a made project's agent rules
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was made-project-agent-rules.
       Found by T-27: a render's AGENTS.md carries the rules block generated from the template
       branch's itos.yaml, naming the check of PLAN.md and docs/ORCHESTRATING.md, the drift check and
       a Task footer on build and ci. After itos init --policy, init reports that the block no longer
