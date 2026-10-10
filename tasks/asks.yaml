@@ -82,3 +82,4 @@ questions:
     item: "template-only-docs"
     question: "Renders ship PLAN.md and docs/ORCHESTRATING.md, which only make sense for the template, and README.md and AGENTS.md mix template text with project rules. Recommended: split files by audience, putting PLAN.md and docs/ORCHESTRATING.md in template_only, rewriting stack/go's and go/cli's README.md and AGENTS.md for the made project, and moving their template-facing parts to a template_only TEMPLATE.md that AGENTS.md points to only while it exists. Or: a setup step deletes the template-only files, leaving the mixed ones as they are."
     answer: "Split files by audience: PLAN.md and docs/ORCHESTRATING.md in template_only; the rendering branches' README.md and AGENTS.md written for the made project; their template-facing parts in a template_only TEMPLATE.md, pointed to only while it exists. main's README stays the template's front page."
+    decision: none
