@@ -564,3 +564,19 @@
     itos-template's version has neither. The person chose no hint (q-29): rule 28 on go/cli says
     version's two short lines are not data a script would scrape, and version --json is there
     for scripts. A docs commit on go/cli.
+- id: T-46
+  type: ci
+  title: Template check runs itos-template v0.24.1
+  why: >
+    Split from T-42 by q-30. The Template check workflow installs itos-template v0.19.0 with go
+    install; the newest is v0.24.1. Its notes from 0.19.1 to 0.24.1 carry no breaking change and ask
+    nothing of itos-template.yaml or the workflow (a record holds no URL credential; check names the
+    template and records it by path; new renders the newest complete release, check takes --ref and
+    a record names its release; adopt is new; a template path holding an invisible character is
+    refused). Move the go install line to v0.24.1 in .github/workflows/template-check.yml, the same
+    file on main, stack/go and go/cli, in a ci commit on main merged down, entry by entry for the
+    ledger, each branch keeping its own itos.yaml, ci.yml, README.md and registry. See Template
+    check green on every head with the new version. Its renders still come from the branch heads,
+    since the template has no release yet (T-42).
+  done_when:
+    - run: grep -q 'itos-template@v0.24.1' .github/workflows/template-check.yml

@@ -450,3 +450,22 @@ items:
       it: itos-template check --ref v0.1.0 passes both combinations, and itos-template new from the
       public URL with no ref renders v0.1.0 and its .itos-template.yaml names the release. Main's
       README says how to make a project from the released template, in a docs commit.
+  - id: T-46
+    title: Template check runs itos-template v0.24.1
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      Split from T-42 by q-30. The Template check workflow installs itos-template v0.19.0 with go
+      install; the newest is v0.24.1. Its notes from 0.19.1 to 0.24.1 carry no breaking change and
+      ask nothing of itos-template.yaml or the workflow (a record holds no URL credential; check
+      names the template and records it by path; new renders the newest complete release, check
+      takes --ref and a record names its release; adopt is new; a template path holding an invisible
+      character is refused). Move the go install line to v0.24.1 in
+      .github/workflows/template-check.yml, the same file on main, stack/go and go/cli, in a ci
+      commit on main merged down, entry by entry for the ledger, each branch keeping its own
+      itos.yaml, ci.yml, README.md and registry. See Template check green on every head with the new
+      version. Its renders still come from the branch heads, since the template has no release yet
+      (T-42).
