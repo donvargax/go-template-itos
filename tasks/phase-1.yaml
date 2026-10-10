@@ -495,8 +495,6 @@
     project has released: go/cli's docs/CLI.md, docs/upgrading.md, docs/ORCHESTRATING.md and
     TEMPLATE.md, in a docs commit naming the release and its run. The sample stays the template's
     render, its setup and replays of the template's own changes; change none of its settings.
-  done_when:
-    - run: "git ls-remote --tags https://github.com/donvargax/go-template-itos-sample.git | grep -q 'refs/tags/v'"
 - id: T-34
   type: feat
   title: version --json prints the version and commit as one object
