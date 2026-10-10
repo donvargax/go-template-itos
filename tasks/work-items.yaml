@@ -99,3 +99,27 @@ items:
       permits, preservation of -- and data arguments, and cumulative semantics only where the real
       CLI offers them. Commit failing steps first and confirm behavior failures, then build;
       describe the intentional upgrade change. No extra future flags or unrelated command behavior.
+  - id: cli-contract
+    title: Document the reusable CLI contract on go/cli
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Belongs on go/cli only. Adapt the general contract from donvargax/itos-template/docs/CLI.md,
+      not generator commands or domain types: output channels, stable machine fields and exit kinds,
+      schema-1 JSON successes and failures, help, flags/environment/negation, argument separators,
+      quiet structured logging, version/commit and four-shell completion. Preserve the current
+      working features rather than adding unused abstractions. Sealed failure classification is
+      present but not lint-enforced; consider the source gochecksumtype approach with the person
+      before introducing its gate and annotations. Duplicate flags require an explicit decision
+      because ID-COUNT-06 currently accepts --json --no-json while the source rejects repeated
+      once-only flags. Behavior changes need coordinator-authored wip scenarios and red-first
+      implementation, not a docs or lint task disguised as a fix. Reconcile non-domain unit tests
+      with the agreed scenario/testing policy before removing tests. Correct CLI-branch bootstrap
+      documentation without claiming dormant releases run. Split before implementation: this item
+      now owns documentation only. Exhaustive error linting is cli-exhaustive-errors; the q-1
+      behavior change is cli-once-only-flags. Describe the current behavior accurately and identify
+      the selected change as pending until its slice lands. Do not change live scenarios, flags or
+      error classification in the documentation item.
