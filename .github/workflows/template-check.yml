@@ -1,0 +1,68 @@
+name: Template check
+
+# Renders every combination the manifest allows and runs its checks in each, so a change to the
+# manifest or to a branch a render carries cannot break a render while every branch's own CI stays
+# green. check renders the branch heads (the pushed one, origin's for the rest), so a push to any
+# of them re-proves every combination; the weekly run catches what moves beneath unchanged code.
+# The file is root-owned and merges down; the manifest lists it in template_only.
+on:
+  push:
+    branches: [main, "stack/**", "go/**"]
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: template-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      # Every branch, so check finds origin's heads beside the one checked out.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: template
+          fetch-depth: 0
+          persist-credentials: false
+      # go/cli's go.mod names the toolchain the renders build with; reading it from that branch
+      # keeps this job's Go moving with the code rather than with a number copied here.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: go/cli
+          path: go-cli
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go-cli/go.mod
+          cache-dependency-path: go-cli/go.sum
+      # go install verifies the module against Go's checksum database.
+      - run: go install github.com/donvargax/itos-template/cmd/itos-template@v0.19.0
+      # The output goes to a file and check's own exit status is kept, so nothing reading it can
+      # hide a failure. A warning (a render left unscanned for credentials) or anything short of
+      # every combination passing fails the job as a non-zero exit does.
+      - name: Check every combination
+        working-directory: template
+        run: |
+          out="$RUNNER_TEMP/check.txt"
+          status=0
+          itos-template check --answer name=blue-fox --answer owner=acme \
+            --answer module=example.com/blue/fox > "$out" 2>&1 || status=$?
+          cat "$out"
+          if [ "$status" -ne 0 ]; then
+            echo "::error::itos-template check exited $status"
+            exit 1
+          fi
+          if grep -qi warning "$out"; then
+            echo "::error::itos-template check printed a warning"
+            exit 1
+          fi
+          if ! grep -qE '^([1-9][0-9]*) of \1 combinations passed\.$' "$out"; then
+            echo "::error::itos-template check did not report every combination passing"
+            exit 1
+          fi
