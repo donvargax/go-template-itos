@@ -106,19 +106,9 @@ items:
     title: Complete the made CLI binary release pipeline
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was cli-releases.
-      Belongs on go/cli, not the Go library stack or language-neutral root. Harvest the proven
-      generic version and notes helpers, release tests and checksum-pinned git-cliff from
-      donvargax/itos-template, retaining license notices and real publishing identity. The existing
-      reusable workflow references missing tools/bin/release-version and release-notes and has no
-      caller; complete the caller after actual CI/platform checks pass. Keep generated-project
-      binary releases distinct from template branch/tag releases, and never publish a nonexistent
-      root binary. Preserve GoReleaser checksums and attestation, prove the wiring on a generated
-      main, and make docs say what runs rather than what the dormant scaffold promises.
   - id: T-19
     title: Fix T-16's check that T-17 made stale
     phase: 1
