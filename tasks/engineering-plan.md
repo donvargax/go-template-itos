@@ -75,7 +75,12 @@ branch's actual code in view, not by copying root bootstrap claims into finished
   supported fresh-project initialization mechanism, not an invented workaround around itos.
 - `made-project-ci` makes Go CI work on a generated ordinary `main`, with scenario additions
   only on `go/cli`. The root workflow must remain language-neutral.
-- `cli-releases` finishes the generic binary-release helpers, pins and caller on `go/cli`.
+- T-20 (`cli-releases`) harvested the release-version and release-notes helpers with their
+  tests, pinned git-cliff 2.14.2 (q-7) and added the release job to `ci.yml`, the only job with
+  write permissions, on a push to `main` only (q-6). Its
+  [CI passed](https://github.com/donvargax/go-template-itos/actions/runs/38019557469) with the
+  release job skipped, as it always is on the template. On a generated `main` it waits for
+  `made-project-ci`, which owns proving a real release there. The item is closed.
 
 Each idea is specified and promoted on the branch that owns its implementation. Split
 cross-branch integration into separate items where the checks differ. The manifest is a
