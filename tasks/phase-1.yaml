@@ -288,3 +288,27 @@
     adoption commit stay the person's; the setup steps end after the policy file is removed.
   done_when:
     - run: 'grep -qE "^version: 5$" itos-template.yaml && grep -q "itos-policy.yaml" itos-template.yaml && ! grep -qE "^  - itos-policy\.yaml$" itos-template.yaml'
+- id: T-28
+  type: docs
+  title: Keep the template's own records and notes out of made projects
+  why: >
+    A render drops only itos.yaml, tasks and the template-check workflow, so a made project ships
+    PLAN.md (the template's plan and branch layout), docs/ORCHESTRATING.md (the coordination notes
+    for three branches), a README.md that calls it a template, an AGENTS.md mixing template rules
+    with project rules, and decisions 2 to 5, which govern running the template. The person chose
+    to split by audience (q-17): PLAN.md and docs/ORCHESTRATING.md join template_only; on stack/go
+    and go/cli, README.md and AGENTS.md are written for the made project, and their template-facing
+    parts (provenance and harvest rules, the branch layout, merging down, template boundaries, the
+    reading order that starts at PLAN.md) move to TEMPLATE.md, also in template_only. AGENTS.md
+    tells a reader to read TEMPLATE.md first only while that file exists, so the sentence is true
+    in both places. main's README.md stays the template's front page, since main never renders
+    alone. Provenance that a project must keep (CONTRIBUTORS.md, notices, harvest comments in code
+    and guides) stays. A made project gets only decision 1, which binds its CLI, with a decisions
+    index that lists only it (q-18): decisions 2 to 5 join template_only, and the index a render
+    ships must name exactly the records it ships, without a second hand-kept list that can drift
+    from itos's own. If itos cannot keep that true, stop and report before improvising. The
+    branches' file-list check in itos.yaml keeps holding the template's own files; T-27's policy
+    leaves it out. Prove it by rendering both combinations and reading what ships, and by
+    Template check staying green.
+  done_when:
+    - run: 'for p in PLAN.md docs/ORCHESTRATING.md TEMPLATE.md; do grep -qE "^  - ${p}$" itos-template.yaml || exit 1; done'
