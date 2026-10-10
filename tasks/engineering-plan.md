@@ -25,20 +25,24 @@ branch's actual code in view, not by copying root bootstrap claims into finished
   The item is closed. The guide reached `stack/go` in merge
   `5b7a38cc26cff141db752c456ea155126e3e1760`, preserving that branch's registry and
   Go configuration. Its [CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/37981702016).
-  Propagation into `go/cli` remains.
+  T-11 carried it into `go/cli`.
 - T-10 wrote `docs/go.md`, the Go stack's guide, and its agent-rule reference on `stack/go`.
   The guide commit is `a8a8c2093f4ab2b8a3ecb5b51e5a8ede360683a7`; its
   [exact-head CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/38010453331).
-  The item is closed. The root manifest's `go` checks still omit the import-boundary
-  self-test. Propagation into `go/cli` remains.
+  The item is closed. T-11 carried it into `go/cli`.
 - `go-architecture` strengthens existing depguard enforcement on `stack/go`, then inherits
   into `go/cli`. Additions needed only for the CLI stay in the feature's configuration.
   The stack-owned implementation is T-9, specified in its ledger; reserve that ID across
   branches. T-9 is closed. Its final code head is
   `376037fe8f2cd925c6f4c07b5136a10a90e752ab`; [exact-head CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/37983078990).
   The self-test compiles 99 positive/negative fixtures before checking the actual pinned
-  linter and configuration. No configured `internal` code-proof path changed. Root manifest
-  registration and propagation into `go/cli` remain separate work.
+  linter and configuration. No configured `internal` code-proof path changed. T-11 carried it
+  into `go/cli`.
+- T-13 added the import-boundary self-test to the manifest's `go` and `cli` checks. itos-template
+  check passed both combinations at the merged heads; the main
+  [run](https://github.com/donvargax/go-template-itos/actions/runs/38012832848) and the
+  [go/cli run](https://github.com/donvargax/go-template-itos/actions/runs/38013111934) passed.
+  No CI runs that check yet (`template-check-ci`).
 - `cli-contract` writes the reusable CLI guide on `go/cli`, without changing behavior.
 - `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
 - `cli-once-only-flags` implements q-1: reject repeated non-cumulative flags with usage exit
