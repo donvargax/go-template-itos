@@ -56,6 +56,9 @@ the Go gates and the tools they pin. It has no command line; `go/cli` adds one. 
 `AGENTS.md` here describe the project a `go` render makes, with the manifest's literals written
 as the code has them.
 
-A render carries no itos data, so its gates are evidence about the template, not a made
-project's: until fresh-project setup (T-27) and a made project's own CI (made-project-ci) land,
-do not claim a made project inherits them.
+A render carries none of the template's itos data. It ships `itos-policy.yaml`, which the
+manifest's setup steps make the project's own `itos.yaml` through `itos init --policy` and then
+remove: this branch's `itos.yaml` less the differences `tools/bin/policy-drift` lists as the
+template's alone, each with its reason. Change the two files together; the drift check in the
+plan fails when they part. Until a made project's own CI runs on its main (made-project-ci), do
+not claim its CI runs these gates.
