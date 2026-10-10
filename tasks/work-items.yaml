@@ -144,3 +144,17 @@ items:
       failing though its work is done and nothing regressed. No gate runs it today, since CI runs
       only the checks of the tasks a push names, but a later push naming T-16 would go red. The
       ledger's T-16 check should stop requiring a sentence that described an interim state.
+  - id: go-guide-sumtype
+    title: docs/go.md names gochecksumtype and how a new sealed set joins it
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      T-17 enabled gochecksumtype on go/cli and annotated port.ReadFailure with //sumtype:decl,
+      proven in the architecture self-test. docs/go.md's quality checks still list golangci-lint as
+      the standard linters plus depguard, gosec and revive, and its steps for adding a package say
+      nothing of annotating a new sealed failure set or giving it one exhaustive switch in
+      internal/cli, so a set added without the annotation would go unchecked silently. The guide
+      should say both, as the CLI feature's stage now behaves.
