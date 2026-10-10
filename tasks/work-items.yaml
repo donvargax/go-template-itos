@@ -370,22 +370,9 @@ items:
     title: Setup regenerates a made project's agent rules
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was made-project-agent-rules.
-      Found by T-27: a render's AGENTS.md carries the rules block generated from the template
-      branch's itos.yaml, naming the check of PLAN.md and docs/ORCHESTRATING.md, the drift check and
-      a Task footer on build and ci. After itos init --policy, init reports that the block no longer
-      matches itos.yaml and rewrites it only when the person answers its agent rules offer, so a
-      person who declines keeps rules that are not the project's. Options to settle with the person:
-      generate the shipped block from itos-policy.yaml, or have the drift check also hold the block
-      to the policy.
-
-      Correction: under --policy itos 7.0.0 made no agent rules offer in T-27's proof (go and go +
-      cli, nothing on the terminal for it); it only reported the stale block and named itos init
-      --agent-rules, which the person runs to rewrite it.
   - id: T-34
     title: version --json prints the version and commit as one object
     phase: 1

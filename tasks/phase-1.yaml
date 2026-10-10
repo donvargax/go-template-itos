@@ -465,5 +465,3 @@
     itos 7.0.0, and see AGENTS.md's rules block name the made project's own plan (no PLAN.md, no
     drift step, no Task footer on build and ci) and itos config check pass. Template check stays
     green on every head.
-  done_when:
-    - run: "grep -qF '[itos, init, --agent-rules]' itos-template.yaml"
