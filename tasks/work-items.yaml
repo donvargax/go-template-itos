@@ -400,6 +400,11 @@ items:
       inherited until setup installs a policy. Bring it to the rendered text, literals replaced, in
       a docs commit or through itos-template update, so the sample stays the template's render plus
       replays of its changes.
+
+      The person chose on 2026-10-10 not to replay template changes into the sample by hand: it is
+      now behind on more than this paragraph (T-38, T-39, T-40, T-43 to T-45, the itos 7.1.2 pin).
+      It is brought current in one step once itos-template can update a made project; 0.24.1 has
+      adopt but no update command, and adopt needs a template release (T-42).
   - id: feature-text-template-wording
     title: Feature descriptions speak to the made project
     phase: 1
