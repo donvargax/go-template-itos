@@ -197,6 +197,9 @@ items:
       permits, preservation of -- and data arguments, and cumulative semantics only where the real
       CLI offers them. Commit failing steps first and confirm behavior failures, then build;
       describe the intentional upgrade change. No extra future flags or unrelated command behavior.
+
+      Delivered on go/cli as T-14 (feat da0a56e, CI run 38015302591). Kept open as main's
+      template-wide index entry.
   - id: cli-exhaustive-errors
     title: Lint the sealed CLI failure-to-exit classification exhaustively
     phase: 1
