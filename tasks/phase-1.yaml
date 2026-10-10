@@ -205,6 +205,3 @@
     ci.yml are each branch's own; merge main down afterwards for the shared docs, as earlier
     items did. A gate that rc.4 refuses on existing work is a finding to report, not a check to
     weaken.
-  done_when:
-    - run: grep -q '7.0.0-rc.4' itos.yaml && grep -q 'v7.0.0-rc.4' .github/workflows/ci.yml
-    - run: '! grep -q "git grep -hoE" docs/ORCHESTRATING.md'

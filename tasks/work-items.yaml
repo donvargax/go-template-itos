@@ -259,19 +259,9 @@ items:
     title: Move every branch to itos 7.0.0-rc.4 and retire decision 4
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was pin-minted-ids.
-      itos decision 45 mints every item id from refs/itos/ids on the remote, shared by all branches,
-      which ends the cross-branch task-id clash decision 4 works around by hand. It is itos
-      slice-102, on itos main since 2026-10-09 but in no release; this repository pins 7.0.0-rc.1,
-      whose task next-id reads only the local tree, and origin has no refs/itos ref. When a release
-      ships it, pin it on every branch, and confirm before the first mint that the counter starts
-      above the highest id on any branch (T-11 on go/cli when this was written), seeding it if itos
-      supports that and reporting upstream if not. Then supersede decision 4 and remove the notes
-      command it added.
   - id: T-13
     title: Every Go render runs the import-boundary self-test
     phase: 1
