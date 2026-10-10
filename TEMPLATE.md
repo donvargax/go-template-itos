@@ -76,10 +76,14 @@ request has landed yet, so the automation stays unverified until one lands on ea
 ## The Go stack
 
 `stack/go` adds the Go module: the private counting example under `internal/count`, its tests,
-the Go gates and the tools they pin. It has no command line; `go/cli` adds one. The manifest's
-`go` checks are the plan this branch's `itos.yaml` runs, less its itos commands. `README.md` and
-`AGENTS.md` here describe the project a `go` render makes, with the manifest's literals written
-as the code has them.
+the Go gates and the tools they pin. It has no command line; `go/cli` adds one, with its own
+interface contract and checks, and the handler and `input` adapter over this domain that the
+stack's guides call what a command line adds. The manifest's `go` checks are the plan this
+branch's `itos.yaml` runs, less its itos commands, the import-boundary self-test included;
+`itos-template check` runs them after the root's gitleaks scan on each supported render. That is
+evidence about the template, not about a made project's own CI, which runs no standing
+credential scan. `README.md` and the shipped guides here describe the project a `go` render
+makes, with the manifest's literals written as the code has them.
 
 A render carries none of the template's itos data. It ships `itos-policy.yaml`, which the
 manifest's setup steps make the project's own `itos.yaml` through `itos init --policy` and then

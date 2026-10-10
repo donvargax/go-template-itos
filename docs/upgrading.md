@@ -14,15 +14,13 @@ The Go toolchain is pinned too: its standard library is part of the resulting co
 patches matter even when module versions stay unchanged.
 
 The owner's tools can be pinned on release. Other updates normally wait seven days, with
-security fixes following the existing security-update policy. In the template, main's Renovate
-configuration names this branch as a base branch and merges this branch's
-`.github/renovate.json5` over it, so its requests follow this branch's managers and are judged by
-its own CI. The Renovate app is installed, but no request has landed yet, so the automation stays
-unverified until one lands on this branch.
+security fixes following the existing security-update policy. Renovate reads
+`.github/renovate.json5` from `main`, so its requests follow that file's managers and are judged
+by the project's own CI. The file alone does not make Renovate run: the automation stays
+unverified until the Renovate app is installed and a request has landed.
 
 Fresh mutation records are required when code or relevant test imports change. Record them
 from the push's range start, the nearest ancestor with a green CI run, since `itos ci run`
 judges the proof from there.
 
-This branch has no CLI binary release yet. Template releases and the generator's adoption/update
-workflow are separate from made-project binary release tooling and are not claimed here.
+This project has no CLI binary release yet.

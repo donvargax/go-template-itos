@@ -1,11 +1,10 @@
 # Go design and quality
 
 This guide adds what is specific to Go to `docs/engineering.md`, which it does not repeat.
-It describes what `stack/go` actually holds and checks. The `go/cli` feature adds its own
-interface contract and checks on top. The policy is harvested from
+It describes what this project actually holds and checks. The policy is harvested from
 [itos-template](https://github.com/donvargax/itos-template) (its decisions on thin layers
 over a domain, unit tests with fakes, rapid properties and the OS as a value), adapted to
-this module with the owner's permission (`CONTRIBUTORS.md`).
+this module with its owner's permission (`CONTRIBUTORS.md`).
 
 ## Packages
 
@@ -17,8 +16,8 @@ The counting example is one slice under `internal/count`:
 - `disk` is the concrete adapter. It reads real files and translates OS errors into the
   port's failures.
 
-There is no `cmd/` package yet. The public entry point arrives with `go/cli`, which adds
-its own handler and input adapter over this domain.
+There is no `cmd/` package and no public entry point yet. A command line adds its own
+handler and input adapter over this domain.
 
 `.golangci.yml` enforces these boundaries with depguard, one rule per layer:
 
@@ -26,7 +25,7 @@ its own handler and input adapter over this domain.
 - `domain-io` denies `os` and `net` to production domain and port code. Their tests may
   still read fixtures.
 - `infra` lets a production adapter import only the ports, never the domain, another
-  adapter or a fake. It names `disk` here and `input`, which `go/cli` adds.
+  adapter or a fake. It names `disk`, and `input`, the adapter a command line adds.
 - `mocks` denies mocking libraries everywhere. Fakes live in `porttest`.
 - `rapid` limits the property library to the domain's tests.
 
@@ -56,7 +55,7 @@ Properties use `pgregory.net/rapid` and live in the domain's tests. The counting
 joins newline-terminated pieces and checks that their counts add. Arbitrary concatenation
 can join two words, so it is not promised to be additive. Every run sets
 `RAPID_CHECKS=1`: one new random case per property, as fast as an example test, with the
-seed printed on failure. This branch has no scheduled high-count run.
+seed printed on failure. This project has no scheduled high-count run.
 
 Tests run on Linux, macOS and Windows in CI's platform jobs. The import-boundary self-test
 runs there as well, because it checks paths and diagnostics that differ by platform.
@@ -97,17 +96,11 @@ Tools are pinned:
 
 `docs/upgrading.md` says how to move any of these pins.
 
-## Made projects
+## Setup
 
-`itos-template.yaml` declares what every render must pass. The root check is the pinned
-gitleaks credential scan. The `go` stack's checks repeat this branch's Go checks, the
-import-boundary self-test included. `itos-template check` runs them on each supported render.
-That is evidence about the template, not about a project's own CI.
-
-A render leaves out `itos.yaml` and `tasks` but ships `itos-policy.yaml`: this branch's
-commit rules, CI plan and code-proof gate, less what only the template needs. `itos-template
-new` prints the setup steps that adopt it. `itos init --policy itos-policy.yaml` gives the made
-project its own `itos.yaml` and a fresh ledger, then the policy file is removed. The last step,
-`itos init --agent-rules`, rewrites `AGENTS.md`'s rules to describe the project's own config. From
-then on the workflow runs the Go steps and the Linux, macOS and Windows tests on the made
-project's own `main`.
+A new project has no `itos.yaml` or `tasks` yet but has `itos-policy.yaml`: its commit rules,
+CI plan and code-proof gate. `itos-template new` prints the setup steps that adopt it.
+`itos init --policy itos-policy.yaml` gives the project its own `itos.yaml` and a fresh ledger,
+then the policy file is removed. The last step, `itos init --agent-rules`, rewrites
+`AGENTS.md`'s rules to describe the project's own config. From then on the workflow runs the Go
+steps and the Linux, macOS and Windows tests on the project's own `main`.
