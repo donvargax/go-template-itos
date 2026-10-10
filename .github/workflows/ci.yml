@@ -88,3 +88,5 @@ jobs:
         env:
           RAPID_CHECKS: 1
           GOCOVERDIR: ${{ runner.temp }}/cover
+      - name: Import boundary self-test
+        run: tools/bin/architecture-check
