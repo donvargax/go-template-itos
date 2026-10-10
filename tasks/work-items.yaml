@@ -282,21 +282,9 @@ items:
     title: CI re-proves every render on each template push and weekly
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was template-check-ci.
-      itos-template check is what proves each combination's render passes the manifest's checks, but
-      no workflow on any branch runs it: T-7's done_when runs it only on a push naming T-7, and T-13
-      had to run it by hand at the merged heads and copy the output into a commit body. A later push
-      that edits itos-template.yaml, or changes stack/go or go/cli code a render carries, can break
-      a render while every branch's own CI stays green. Decide where a recurring check belongs (a
-      root workflow, a scheduled job, or a check the manifest-touching tasks share), build the
-      generator from its public source as T-7 does, and fail the run on any failed combination,
-      leftover or credential-scan warning. Note that go + cli runs the stack's checks and then the
-      feature's, so most checks run twice per render; weigh that cost when choosing how often it
-      runs.
   - id: T-15
     title: Write the shared configuration-format guide
     phase: 1
