@@ -84,8 +84,8 @@ items:
   - id: T-14
     title: A non-cumulative flag given twice is a usage error
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
