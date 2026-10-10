@@ -38,7 +38,7 @@ type commandLine struct {
 	ShowVersion kong.VersionFlag `name:"version" help:"Print the version and the commit it was built from, and exit."`
 
 	Count      command.CLI    `cmd:"" help:"Count the lines and words of a file, or of standard input."`
-	Version    struct{}       `cmd:"" help:"Print the version and the commit it was built from."`
+	Version    cli.Version    `cmd:"" help:"Print the version and the commit it was built from."`
 	Completion cli.Completion `cmd:"" help:"Print a shell completion script."`
 	Complete   struct{}       `cmd:"" name:"__complete" hidden:""`
 }
@@ -92,9 +92,9 @@ func run(args []string, in io.Reader, stdout, stderr io.Writer) int {
 	case "count":
 		return c.Count.Run(ui)
 	case "version":
-		// What --version prints, as kong prints it.
-		_, _ = fmt.Fprintln(stdout, parser.Model.Vars()["version"])
-		return 0
+		// What --version prints, as kong prints it, or with --json the
+		// version and commit that text is made of.
+		return c.Version.Run(ui, parser.Model.Vars()["version"], version.Version(), version.Commit())
 	case "completion":
 		return c.Completion.Run(ui)
 	}

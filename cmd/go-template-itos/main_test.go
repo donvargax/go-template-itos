@@ -10,6 +10,8 @@ import (
 	"testing"
 
 	"golang.org/x/term"
+
+	"github.com/itos-corp/go-template-itos/internal/version"
 )
 
 // The logs are held here: a run is quiet by default, and nothing count
@@ -191,6 +193,27 @@ func TestRunPrintsTheStampVersionAndCommand(t *testing.T) {
 	}
 	if !strings.HasPrefix(stdout.String(), "go-template-itos ") {
 		t.Errorf("version printed %q", stdout.String())
+	}
+}
+
+// version --json gives the version and commit internal/version reads, the
+// commit left out where this test binary knows none, so the object and the
+// text are made of the same two values.
+func TestRunOfVersionJSONGivesTheBuildsVersionAndCommit(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+	if code := run([]string{"version", "--json"}, strings.NewReader(""), &stdout, &stderr); code != 0 {
+		t.Fatalf("run of version --json returned %d, want 0", code)
+	}
+	var object map[string]any
+	if err := json.Unmarshal(stdout.Bytes(), &object); err != nil {
+		t.Fatalf("version --json printed %q: %v", stdout.String(), err)
+	}
+	if object["version"] != version.Version() {
+		t.Errorf("version = %v, want %q", object["version"], version.Version())
+	}
+	commit, has := object["commit"]
+	if want := version.Commit(); has != (want != "") || has && commit != want {
+		t.Errorf("commit = %v (present %v), want %q", commit, has, want)
 	}
 }
 

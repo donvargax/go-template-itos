@@ -80,7 +80,7 @@ Feature: The command line
   # line, schema 1, with the version and the commit the build was stamped with.
   # A build that knows no commit leaves the commit key out, as its text has no
   # second line; the harness always stamps one, so the unit tests show that.
-  @ID-CLI-10 @T-34 @wip
+  @ID-CLI-10 @T-34
   Scenario: version --json prints one object with the stamped version and commit
     When go-template-itos runs with "version --json"
     Then it exits with code 0
@@ -88,7 +88,7 @@ Feature: The command line
     And its standard output is one line
 
   # A shell that set the variable gets JSON from every command that has --json.
-  @ID-CLI-11 @T-34 @wip
+  @ID-CLI-11 @T-34
   Scenario: GO_TEMPLATE_ITOS_JSON turns version's JSON on
     When go-template-itos runs with "version" and the environment "GO_TEMPLATE_ITOS_JSON=1"
     Then it exits with code 0
@@ -96,7 +96,7 @@ Feature: The command line
 
   # The variable is not the flag, so declining it on the command line is giving
   # the switch once, and the text --version prints comes back.
-  @ID-CLI-12 @T-34 @wip
+  @ID-CLI-12 @T-34
   Scenario: --no-json declines the JSON the environment turns on for version
     When go-template-itos runs with "version --no-json" and the environment "GO_TEMPLATE_ITOS_JSON=1"
     Then it exits with code 0
@@ -105,7 +105,7 @@ Feature: The command line
 
   # As count's help does, version's names the shape of its --json object, so a
   # script's author needs no source to read it.
-  @ID-CLI-13 @T-34 @wip
+  @ID-CLI-13 @T-34
   Scenario: version's help names its JSON shape
     When go-template-itos runs with "version --help"
     Then it exits with code 0

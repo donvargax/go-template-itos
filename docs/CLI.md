@@ -75,10 +75,11 @@ the same code apart by their rule IDs, such as `COUNT_INPUT_MISSING` and `COUNT_
    stdout and exit 0. (CLIG `#help`; GNU-HELP.) Not yet: there is no `help <command>`, which
    exits 2 as an unknown command.
 10. In the help of each command, give the shape of its `--json` output and its exit codes.
-    `count --help` does both.
+    `count --help` and `version --help` do both.
 11. Support `--version` and `version`, printing the same. The first line is
     `go-template-itos <version>`. A second line, `commit <full commit id>`, follows when the build
-    knows the commit it was built from. (GNU-CLI; GNU-VER; CLIG `#arguments-and-flags`.)
+    knows the commit it was built from. `version --json` gives the two as one object (rule 27);
+    `--version` is an action and stays plain text. (GNU-CLI; GNU-VER; CLIG `#arguments-and-flags`.)
 12. For an unknown command, exit 2. If you can guess the command the person meant, name it.
     (CLIG `#help`.)
 13. For a group with no subcommand, name the subcommands the group takes.
@@ -120,7 +121,8 @@ may repeat, but no command has one yet.
     `#the-basics`.)
 27. Print JSON only with `--json`. `--json` prints one object with `"schema": 1`, and a later
     release only adds keys to it. `count --json` prints `ok`, `file` (the argument as given, `-`
-    for stdin), `lines` and `words`. (CLIG `#output`; ITOS.)
+    for stdin), `lines` and `words`. `version --json` prints `ok`, `version` and `commit`, the
+    commit left out when the build knows none. (CLIG `#output`; ITOS.)
 28. When the plain output looks like data, write a line on stderr telling the reader to use
     `--json` in scripts.
 29. With `--json`, print an object for every failure too, a usage error included: `"ok": false`
@@ -147,8 +149,8 @@ may repeat, but no command has one yet.
 
 35. Start each environment variable the CLI reads with `GO_TEMPLATE_ITOS_`, in uppercase with
     underscores. Give one to a flag only where it is worth setting once for a shell, through
-    kong's `env` tag. `GO_TEMPLATE_ITOS_JSON` is the one there is. (CLIG
-    `#environment-variables`.)
+    kong's `env` tag. `GO_TEMPLATE_ITOS_JSON` is the one there is, read by `count` and
+    `version`. (CLIG `#environment-variables`.)
 36. Read settings in this order: flag, then environment variable, then configuration file. A flag
     overrides its variable: `GO_TEMPLATE_ITOS_JSON=1` with `--no-json` prints the plain output.
     There is no configuration file yet. (CLIG `#configuration`.)
