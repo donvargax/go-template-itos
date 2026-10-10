@@ -32,10 +32,10 @@ Scripts can rely on two things only (ITOS):
 
 All plain output is for people and can change in any release. A script reads `--json` and the
 exit code, never the plain output and never a `message`. A change to the contract is a breaking
-change, and a breaking change makes a major release. Once there is a release, CI is meant to run
-the last release's scenarios against the new binary. Not yet: CI's release job runs only on a
-push to `main`, after the ci and platform jobs pass there, and no release has been cut from a
-made project's `main` yet, so there is no release to run them against.
+change, and a breaking change makes a major release. CI is meant to run the last release's
+scenarios against the new binary. Not yet: CI's release job cuts a release on a push to `main`,
+after the ci and platform jobs pass there, but no job runs the last release's scenarios against
+the binary that follows it.
 
 ### Exit codes
 

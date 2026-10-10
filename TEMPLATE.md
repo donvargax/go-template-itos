@@ -72,5 +72,7 @@ manifest's `cli` checks are the plan this branch's `itos.yaml` runs, less its it
 `README.md` and `AGENTS.md` here describe the project a `go + cli` render makes. The release job
 runs only on a push to main, which no template branch is. On a made project's main it runs after
 the ci job and the platform jobs pass, as the stack's gates do there, and cuts a release when the
-commits since the last tag call for one; no made project has published one yet, so a real release
-is still unproven (cli-releases).
+commits since the last tag call for one. A made project has published one: go-template-itos-sample
+cut v0.1.0 (<https://github.com/donvargax/go-template-itos-sample/releases/tag/v0.1.0>) from its
+version --json feat, with its five archives, `checksums.txt` and the archives' attestations, in
+run <https://github.com/donvargax/go-template-itos-sample/actions/runs/38088380189> (T-33).

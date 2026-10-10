@@ -6,8 +6,8 @@
 
 - Read `PLAN.md` and this branch's actual `itos.yaml`. The public count CLI, its scenarios and
   godog runner are here. ci.yml's release job runs only on a push to `main`, so this branch never
-  releases. A made project's `main` runs the ci and platform jobs and then the release job, but a
-  real release there is still unproven (cli-releases).
+  releases. A made project's `main` runs the ci and platform jobs and then the release job, which
+  published go-template-itos-sample's v0.1.0 in its run 38088380189 (T-33).
 - Root is `main`; stacks and features remain real projects. Merge common changes downward,
   never rebase published history. Made-project binary releases are not template release tags.
 - Infrastructure is harvested from the owner's itos-template and itos repositories. Preserve
