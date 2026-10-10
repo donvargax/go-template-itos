@@ -1,4 +1,4 @@
-version: 4
+version: 5
 
 # The root's checks, run in every render first, then the stack's, then the
 # features' (docs/manifest.md). A check is a list of words and no shell runs
@@ -19,6 +19,14 @@ checks:
 # not only that its own code passes them.
 stacks:
   - name: go
+    # What new prints for the person to run in the made project, never running it
+    # (decision 2): itos adopts the branch's itos-policy.yaml as the project's own
+    # itos.yaml, with a fresh ledger and registry (q-13), and asks its offers then;
+    # the file is removed after, so the project has one config. The steps sit on
+    # the stack, so a go + cli render prints them once, adopting go/cli's file.
+    setup:
+      - [itos, init, --policy, itos-policy.yaml]
+      - [rm, itos-policy.yaml]
     checks:
       - [sh, -c, "! gofmt -l internal | grep ."]
       - [go, build, ./...]
@@ -76,6 +84,10 @@ template_only:
   - PLAN.md
   - docs/ORCHESTRATING.md
   - TEMPLATE.md
+  # Compares itos-policy.yaml with this repository's itos.yaml (q-14); a made
+  # project has neither the template's itos.yaml nor, after setup, the policy.
+  # itos-policy.yaml itself ships: the setup steps read it, then remove it.
+  - tools/bin/policy-drift
   # The decisions about running the template, and the index itos writes from
   # every record in the folder (q-19): a render ships decision 1 alone, the one
   # binding a made CLI, and itos writes the made project's own index, naming 1
