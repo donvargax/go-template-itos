@@ -99,3 +99,6 @@ items:
       options belong on go/cli, which may add interface-specific sections or links, without
       duplicating common policy. This is a branch-local integration index; the actual documentation
       task must be specified on root main.
+
+      Delivered on main as T-15, docs/CONFIG.md (CI run 38015304113), merged here in 8daac4c. Left
+      open like main's index copies; nothing remains to do on this branch.
