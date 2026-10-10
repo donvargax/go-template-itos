@@ -388,20 +388,26 @@
     Was cli-releases. T-20 built the release machinery on go/cli (release-version, release-notes,
     pinned git-cliff and GoReleaser, release.yml and ci.yml's release job), and T-31 made it live on
     a made project's main, but no made project has published with it: go-template-itos-sample's
-    first push released nothing, its two commits being chore commits. q-23 put the real release here
-    and q-24 settled how: one small fix commit in the sample, made through the sample's own itos
-    rules, cutting its first release and staying as the sample's only own commit. That fix is the
-    sample's stale docs/go.md Made projects section, rendered before T-32: replace it with the text
-    go/cli's docs/go.md has now, literals replaced by the sample's answers, so a later itos-template
-    update bringing the same change meets identical text. Before pushing, run tools/bin/release-version
-    as release.yml runs it and see it name the version it will cut. Push the sample's main with itos
-    push; that run's ci job, three platform jobs and release job must pass, and the release must
-    hold the five archives and checksums.txt GoReleaser makes. Verify one archive with gh attestation
-    verify against donvargax/go-template-itos-sample, unpack the Linux amd64 one and run its binary's
-    version and count commands. Then the template's docs stop saying no made project has released:
-    go/cli's docs/CLI.md, docs/upgrading.md, docs/ORCHESTRATING.md and TEMPLATE.md, in a docs commit
-    naming the release and its run. Push nothing else to the sample and change none of its settings.
-    A release step that fails is a finding to report with its run, not a step to weaken or skip.
+    first push released nothing, its two commits being chore commits. q-23 put the real release
+    here. q-24's docs-only fix could not pass the sample's own rules, which give every feat and fix
+    a Scenarios footer naming the live scenarios it turns green, and q-25's flag change was already
+    in the sample (T-14), so q-27 settled it: the template gains a small feat, version --json
+    (T-34), and the sample takes that same change as one feat commit, literals replaced by the
+    sample's answers, with the same Scenarios footer and Upgrading none, never marked breaking
+    before v1 (q-26). A feat from 0.0.0 cuts v0.1.0. Beside it, a docs commit replaces the sample's
+    stale docs/go.md Made projects section with go/cli's current text, literals replaced, so a later
+    itos-template update meets identical text. Before pushing, run tools/bin/release-version as
+    release.yml runs it and see it name v0.1.0. Push the sample's main with itos push; that run's ci
+    job, three platform jobs and release job must pass, and the release must hold the five archives
+    and checksums.txt GoReleaser makes. If a release step fails, fix its cause in the template on
+    go/cli (a fix or ci commit, with its own red evidence where a scenario or test can show it),
+    replay that same fix in the sample, and push again, until a release is published; never weaken
+    or skip a step, and never delete a tag or release. Verify one archive with gh attestation
+    verify against donvargax/go-template-itos-sample, unpack the Linux amd64 one and run its
+    binary's version --json and count commands. Then the template's docs stop saying no made
+    project has released: go/cli's docs/CLI.md, docs/upgrading.md, docs/ORCHESTRATING.md and
+    TEMPLATE.md, in a docs commit naming the release and its run. The sample stays the template's
+    render, its setup and replays of the template's own changes; change none of its settings.
   done_when:
     - run: "git ls-remote --tags https://github.com/donvargax/go-template-itos-sample.git | grep -q 'refs/tags/v'"
 - id: T-34
