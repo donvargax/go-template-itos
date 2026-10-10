@@ -334,3 +334,22 @@
     are replaced is a finding to report, not a check to drop.
   done_when:
     - run: test "$(grep -c "tools/bin/architecture-check" itos-template.yaml)" -ge 2
+- id: T-14
+  type: feat
+  title: A non-cumulative flag given twice is a usage error
+  why: >
+    Decision 1 (q-1): the default CLI refuses a non-cumulative flag given twice with usage exit 2,
+    as itos-template does, a switch and its --no- pair counting as one flag, so --json --json and
+    --json --no-json are both refused, naming the flag. Explicitly cumulative flags stay
+    repeatable, but count, version and completion have none, so no scenario claims one. Today
+    every repeated form exits 0, and --no-json --json even prints the plain output, so the last
+    flag does not reliably win either. The environment variable is not the flag given twice:
+    GO_TEMPLATE_ITOS_JSON=1 with --no-json still prints the plain output. Live ID-COUNT-06 says
+    --json --no-json prints the plain output; the feat commit rewrites it to that environment
+    case, which holds before and after, and says the change is intentional for anyone upgrading.
+    -- still ends the options and a data argument is never read as a flag (ID-CLI and ID-COUNT
+    scenarios already hold that). Harvest the once-only tracing from itos-template's
+    internal/cli/flags.go, which go/cli's flags.go comment already claims and does not do, rather
+    than writing a second parser. No new flag, and no change to the JSON usage-error shape.
+  done_when:
+    - run: '! grep -q "@wip" features/cli.feature && grep -q "@T-14" features/cli.feature'

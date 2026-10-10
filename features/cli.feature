@@ -51,6 +51,25 @@ Feature: The command line
     And its error output says "--json"
     And its error output does not say "EOL"
 
+  # Decision 1: a flag that is not cumulative is given once. A switch and its
+  # --no- pair count as one flag, so giving both is giving it twice; the
+  # environment variable is not the flag, and still takes a value beside it.
+  @ID-CLI-08 @wip @T-14
+  Scenario: a switch given twice exits 2, naming it
+    Given the file "notes.txt" contains "one two"
+    When go-template-itos runs with "count notes.txt --json --json"
+    Then it exits with code 2
+    And its error output says "--json"
+    And its standard output does not say "words"
+
+  @ID-CLI-09 @wip @T-14
+  Scenario: a switch with its --no- pair exits 2, naming it
+    Given the file "notes.txt" contains "one two"
+    When go-template-itos runs with "count notes.txt --no-json --json"
+    Then it exits with code 2
+    And its error output says "--json"
+    And its standard output does not say "words"
+
   @ID-CLI-07 @count-cli
   Scenario: version takes no argument and refuses one
     When go-template-itos runs with "version extra"
