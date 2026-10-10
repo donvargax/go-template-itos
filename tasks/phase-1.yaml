@@ -795,5 +795,28 @@
     itos 7.0.0, and see AGENTS.md's rules block name the made project's own plan (no PLAN.md, no
     drift step, no Task footer on build and ci) and itos config check pass. Template check stays
     green on every head.
+- id: T-40
+  type: docs
+  title: Shipped guides speak to the made project, not the template
+  why: >
+    Was guides-template-wording. After T-28 a render's README.md and AGENTS.md speak to the made
+    project, but the other guides a render ships still speak as the template or name its
+    branches: docs/go.md, docs/architecture.md, docs/engineering.md, docs/CONFIG.md,
+    docs/security.md, docs/upgrading.md, features/README.md and CONTRIBUTORS.md, on whichever
+    branches carry them. Rewrite each passage that speaks as the template (this template,
+    renders, the branches stack/go and go/cli as places, main's Renovate, the owner answer as
+    the template's illustrative owner) for the made project's reader, as T-28 did README.md and
+    AGENTS.md, and move what only someone working on the template needs into TEMPLATE.md, which
+    no render ships. Mind the literals: a render replaces go-template-itos in its five case
+    forms, itos-corp and github.com/itos-corp/go-template-itos in every shipped file, so a
+    shipped sentence naming this template by name or URL ends up naming the made project; a
+    shipped guide never names the template, and the record .itos-template.yaml a made project
+    keeps already says where it came from. Keep every harvest provenance note, every third-party
+    notice and CONTRIBUTORS.md's attribution, worded so they stay true after the owner literal
+    is replaced. Main's copies of the shared guides change on main and merge down; a branch's
+    own copy changes on that branch. Change only wording that speaks as the template: rules,
+    commands and claims about what runs stay as they are, and a claim moved to TEMPLATE.md keeps
+    its meaning. Prove it by rendering both combinations with itos-template v0.19.0 new and
+    reading the shipped guides, and by Template check staying green.
   done_when:
-    - run: "grep -qF '[itos, init, --agent-rules]' itos-template.yaml"
+    - run: "for f in docs/go.md docs/architecture.md docs/engineering.md docs/CONFIG.md docs/security.md docs/upgrading.md features/README.md CONTRIBUTORS.md; do test ! -f \"$f\" || ! grep -qiE 'stack/go|go/cli|renders?\\b|this template' \"$f\" || exit 1; done"

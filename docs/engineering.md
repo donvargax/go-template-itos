@@ -1,9 +1,9 @@
 # Engineering practices
 
-These rules apply to every project made from this template, regardless of language or
-public interface. Stack and feature guides add their own tooling and interface contracts.
-The rules describe the intended design; the configuration and CI of a particular branch
-say which rules a command can enforce.
+These rules apply to the whole project, regardless of language or public interface.
+Language and interface guides add their own tooling and interface contracts. The rules
+describe the intended design; the project's configuration and CI say which rules a command
+can enforce.
 
 ## Design
 
@@ -70,9 +70,3 @@ needs a reason a person can review. Never copy another project's proof cache.
 No credentials belong in committed files, fixtures or logs. State which scans actually
 run and what they establish. A configured workflow is not proof that its external service
 is active, and a sample of mutation results is not a complete changed-code proof.
-
-Template checks and made-project checks are different evidence. This template excludes
-its own configuration and work history from renders; a made project adopts the selected
-branch's policy at setup, through the steps `itos-template new` prints. Claim a guarantee
-for made projects only once an emitted project, after setup, has shown it on its own
-ordinary branch and CI.

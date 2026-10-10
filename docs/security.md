@@ -1,8 +1,7 @@
 # Security and trust boundaries
 
-Use templates you trust: a made project contains their files and workflows. Do not put
-credentials in answers, committed files, fixtures or logs. Owner and module answers identify a
-public project, not authentication data.
+Do not put credentials in committed files, fixtures or logs. The project's owner and module
+path identify a public project, not authentication data.
 
 The counting domain accesses input through its Files port. Its disk adapter reads files without
 executing or modifying their contents. It is not a filesystem sandbox; a caller must decide
@@ -14,8 +13,5 @@ upstream identities, licenses and notices. Go's vulnerability scan examines used
 including test dependencies and the standard library. Mutation proof and its CI sample judge
 recorded behavior; these controls do not isolate untrusted programs.
 
-The manifest declares pinned gitleaks as a root credential check, so itos-template check
-scans every supported render. This does not establish a standing credential scan in a made
-project's own CI. A template's check commands can execute programs, so run them only in an
-environment appropriate to that trust. itos's hooks and commit rules are workflow controls,
-not a security sandbox.
+gitleaks is pinned in `tools/bin/pinned`, but the project's own CI runs no standing credential
+scan. itos's hooks and commit rules are workflow controls, not a security sandbox.
