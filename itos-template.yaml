@@ -67,6 +67,8 @@ questions:
 template_only:
   - itos.yaml
   - tasks
+  # Re-proves this template's renders; a made project has no renders to prove.
+  - .github/workflows/template-check.yml
 
 first_commit: |-
   chore: start the generated project
