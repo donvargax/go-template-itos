@@ -1,9 +1,10 @@
 #!/bin/sh
 # Runs a release tool at the version and SHA-256 pinned below. Adapted from
-# github.com/donvargax/itos-template, keeping its goreleaser case, which the
-# release workflow runs; the lint, mutation-proof and credential-scan cases are
-# the ones this branch's CI and its renders need. govulncheck is pinned as a Go
-# tool in go.mod.
+# github.com/donvargax/itos-template, keeping its goreleaser and git-cliff
+# cases, which the release workflow runs (git-cliff through
+# tools/bin/release-notes); the lint, mutation-proof and credential-scan cases
+# are the ones this branch's CI and its renders need. govulncheck is pinned as
+# a Go tool in go.mod.
 set -eu
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)
 
@@ -80,6 +81,23 @@ goreleaser)
 	esac
 	url=https://github.com/goreleaser/goreleaser/releases/download/v$version/$asset
 	member=goreleaser exe=
+	;;
+git-cliff)
+	# v2.14.2, 2026-09-18, as itos-template pins it. git-cliff publishes a
+	# .sha512 file per archive and no Windows one: each SHA-256 below is the
+	# archive's, computed after it matched that .sha512. A release is cut on
+	# Linux.
+	version=2.14.2
+	case "$platform" in
+	linux-amd64) target=x86_64-unknown-linux-gnu sum=24f397c733add5390fdceee3a2088588ab0d5f944ce00d34cb7029b888cf2db4 ;;
+	linux-arm64) target=aarch64-unknown-linux-gnu sum=69e208f6e4baef3a0f9b759d5f44223aa9336b86c691072a3d0c98d35a816e69 ;;
+	darwin-amd64) target=x86_64-apple-darwin sum=4e647d2deb152aca1e987f225cf42b080b991dd98f3bce4027ef95446d982ac3 ;;
+	darwin-arm64) target=aarch64-apple-darwin sum=a0be97e237d440d34c5e508ec21d070b2c85cbb8be48a46a56f9a4e8bd247f05 ;;
+	*) die "no pinned $tool for $platform" ;;
+	esac
+	asset=git-cliff-$version-$target.tar.gz
+	url=https://github.com/orhun/git-cliff/releases/download/v$version/$asset
+	member=git-cliff-$version/git-cliff exe=
 	;;
 itos-cc)
 	version=0.5.0
