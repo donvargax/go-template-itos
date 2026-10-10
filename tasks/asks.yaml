@@ -33,3 +33,6 @@ questions:
     question: "release-notes groups a release's commits with git-cliff, a new checksum-pinned tool like golangci-lint and goreleaser. Recommended: pin git-cliff with itos-template's version and cliff.toml. Or: group the commits in release-notes itself from git log, diverging from the source."
     answer: "Pin git-cliff with itos-template's version, release checksums and cliff.toml; it runs only in the release workflow and the notes helper's tests."
     decision: none
+  - id: q-8
+    item: "template-check-ci"
+    question: "No workflow runs itos-template check, so a manifest or branch change can break a render while every branch stays green. Recommended: a root-owned workflow, .github/workflows/template-check.yml, merged down unchanged and excluded from renders by template_only, running on every push to main, stack/** and go/** and weekly. Or: the same workflow weekly only, cheaper but up to a week late. Or: a job in go/cli's ci.yml, which a push to main or stack/go does not run until merged down."
