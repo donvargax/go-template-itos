@@ -379,3 +379,15 @@ items:
       renders and stopped there. It needs itos support (an index command, or records a config marks
       as kept elsewhere) or the person's choice of another shape, such as a second records folder
       for the template's own decisions, which would split the numbering.
+  - id: doc-caps-render
+    title: doc-caps caps only the documents a made project has
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      tools/bin/doc-caps caps AGENTS.md and docs/ORCHESTRATING.md and ships in every render, but
+      since T-28 renders leave out docs/ORCHESTRATING.md, so in a made project the script stops at
+      the missing file instead of checking AGENTS.md. Nothing runs it in a made project yet; T-27's
+      policy or made-project-ci would, and should find it working.
