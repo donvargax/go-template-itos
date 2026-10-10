@@ -84,3 +84,26 @@ items:
       inheritance blocked on a person-approved supported initialization design, not a custom
       workaround; the generator remains unaware of itos. Source new-steps/new-itos-setup are also
       prerequisites. The policy decision is being drafted while T-9 owns the checkout.
+  - id: config-guidelines
+    title: Carry shared configuration-format guidance on the base template
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      User asked for docs/CLI.md and docs/CONFIG.md in the generated CLI. CLI.md is already
+      cli-contract on go/cli. Source docs/CONFIG.md is primarily language- and interface-independent
+      application-format policy, so implementation belongs on main and merges downward into stack/go
+      and go/cli; every generated CLI will inherit it without withholding generic config practices
+      from other interfaces. Harvest only general rules from donvargax/itos-template/docs/CONFIG.md:
+      explicit visible defaults, plain JSON data with YAML spelling when that format is selected,
+      strict unknown/duplicate-key and unsafe-feature rejection, whole-input validation, key-path
+      diagnostics, versioned compatibility, consistent shape, secret handling, format documentation
+      and schemas. Remove manifests/render records, generator task IDs and historical ADR
+      references. Distinguish desired policy from an implemented loader/schema/defaults command. Do
+      not impose these conventions on third-party tool-owned formats. No new runtime config file or
+      parser is introduced by the doc task. CLI flag/environment/precedence and current supported
+      options belong on go/cli, which may add interface-specific sections or links, without
+      duplicating common policy. This is a branch-local integration index; the actual documentation
+      task must be specified on root main.
