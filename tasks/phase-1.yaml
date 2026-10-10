@@ -583,3 +583,24 @@
     ledger, each branch keeping its own itos.yaml, ci.yml, README.md and registry. See Template
     check green on every head with the new version. Its renders still come from the branch heads,
     since the template has no release yet (T-42).
+- id: T-47
+  type: build
+  title: Lint the sealed CLI failure-to-exit classification exhaustively
+  why: >
+    Was cli-exhaustive-errors. internal/cli's readProblem classifies the count port's sealed
+    failure set (port.ReadFailure: *port.Missing and *port.Unreadable) into exit codes and JSON
+    problems with no default case, a kind it misses falling to the internal 70; nothing checks
+    that a new kind gets its case. The person approved the reused linter (q-31): gochecksumtype,
+    already bundled in the pinned golangci-lint, harvested from itos-template's .golangci.yml
+    with default-signifies-exhaustive false, and //sumtype:decl on the sealed interface, so a
+    switch over it must name every variant and a default arm does not count. Add the linter to
+    go/cli's golangci-lint configuration (and stack/go's only if the stack owns a sealed set a
+    switch classifies; if not, say so), annotate the sealed set, and keep every switch over it
+    naming each variant. Prove an omitted variant is refused by the configured linter, with a
+    compile-valid negative case in tools/bin/architecture-check's fixtures as the import-
+    boundary rules are proved, and that the complete switch passes. Preserve exit codes, JSON
+    envelopes and every live scenario: this is a checked lint and refactor, not a behaviour
+    change, so its commits are build and refactor commits with Task, never feat or fix. The
+    mutation proof and coverage gates hold.
+  done_when:
+    - run: "test ! -f .golangci.yml || grep -q gochecksumtype .golangci.yml"
