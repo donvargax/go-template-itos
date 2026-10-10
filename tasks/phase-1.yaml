@@ -366,3 +366,20 @@
     pure render plus its setup, with no other commits (self-made-project). Template check stays
     green on every head. A made-project gate that fails on this push is a finding to report, not a
     check to weaken; doc-caps erroring but exiting 0 is doc-caps-render's.
+- id: T-32
+  type: docs
+  title: Say in the made project's guides how its policy is adopted
+  why: >
+    Was made-project-setup-docs. T-27 gave a render itos-policy.yaml and the setup steps that adopt
+    it, and T-31 made a made main's CI set up Go and run the platform tests, proved on
+    go-template-itos-sample's run 38081894211. The guides a made project ships still say otherwise:
+    docs/engineering.md on main says the template's gates must not be advertised as inherited until
+    setup installs a policy, and docs/go.md's Made projects section on stack/go and go/cli says
+    setup waits on upstream itos, links decision 2 (which renders leave out), and says the workflow
+    runs its Go steps only on template branches. Its first paragraph also says the import-boundary
+    self-test is not in the manifest's checks, which T-13 made false. The coordinator rewrites those
+    passages in docs commits, main first and merged down, saying what setup adopts and what a made
+    main's CI runs, and leaving the real release unclaimed, since cli-releases has not proved one.
+    Wording the rest of these guides for the made project is guides-template-wording's.
+  done_when:
+    - run: "! grep -rqiE 'waits on upstream itos|not registered there yet|until fresh-project setup' docs"
