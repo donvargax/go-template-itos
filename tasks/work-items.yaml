@@ -337,19 +337,9 @@ items:
     title: A passing Template check clears the parents' stale red runs
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was template-check-rerun.
-      itos-template check renders go + cli by merging go/cli into stack/go, and refuses the render
-      when that merge conflicts. Each branch appends to tasks/phase-1.yaml, so a push to main or
-      stack/go that adds a ledger entry leaves the template-check run of its head red until the
-      merge down reaches go/cli, and nothing runs it again: during T-21, stack/go run 38021113542
-      failed with a ledger conflict and passed only on a manual rerun after go/cli took the merge.
-      Decide whether a push to a child branch should also re-run the check for its parents, the
-      weekly run is enough, or the coordinator re-runs it by hand after each merge down, and write
-      that down.
   - id: per-branch-ledgers
     title: Give each branch its own ledger file so a render's merge never conflicts there
     phase: 1
