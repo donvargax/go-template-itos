@@ -90,3 +90,20 @@ jobs:
           GOCOVERDIR: ${{ runner.temp }}/cover
       - name: Import boundary self-test
         run: tools/bin/architecture-check
+
+  # A push to main whose ci job and platform jobs are green cuts a release when its commits since
+  # the last tag carry a feat, a fix or a breaking change, or the binary is built from what moved
+  # beneath it (release.yml says how). Harvested from itos-template's ci.yml, which calls its
+  # release as itos's does. The only job with write access, granted here and to nothing else; a
+  # pull request or a Renovate branch never releases. The template's branches are never main, so
+  # it never runs here. On a made project's main it cannot run yet: the platform jobs run only on
+  # stack/, go/ and renovate/ branches, so it is skipped with them, and a render carries no
+  # itos.yaml for the ci job's plan. made-project-ci makes the Go jobs and the plan run there.
+  release:
+    needs: [ci, platform]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/release.yml

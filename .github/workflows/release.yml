@@ -4,10 +4,14 @@ name: Release
 #
 # Harvested from the owner's itos-template .github/workflows/release.yml, which
 # took it from itos's, keeping the upstream identities (the actions and the itos
-# release it runs) and retargeting the binary this repository builds. The tools
-# the steps call, tools/bin/release-version and tools/bin/release-notes, belong
-# to a rendered project's main: this branch runs no binary release, so its CI
-# never calls this workflow.
+# release it runs) and retargeting the binary this repository builds. ci.yml's
+# release job calls it on a push to main, after the ci and platform jobs pass;
+# the steps run tools/bin/release-version and tools/bin/release-notes, both
+# harvested from itos-template too. The template's branches are never main, so
+# it never runs here and nothing is published from the template. On a made
+# project's main it waits for made-project-ci: the platform jobs run only on
+# stack/, go/ and renovate/ branches, so the release job is skipped with them,
+# and a render carries no itos.yaml for the ci job's plan.
 #
 # It runs when ci.yml calls it on a push to main, and releases when the commits since the last
 # vX.Y.Z tag carry a feat, a fix or a breaking change, or the binary is built from other modules
