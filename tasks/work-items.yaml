@@ -255,14 +255,15 @@ items:
       owner presets, the pinned action digests, the cooldown and the automerge on green. A config
       proves nothing about the app being installed or the bot running (docs/upgrading.md), so verify
       on a real request.
-  - id: pin-minted-ids
-    title: Pin the first itos release that mints ids on the remote, and retire decision 4
+  - id: T-24
+    title: Move every branch to itos 7.0.0-rc.4 and retire decision 4
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was pin-minted-ids.
       itos decision 45 mints every item id from refs/itos/ids on the remote, shared by all branches,
       which ends the cross-branch task-id clash decision 4 works around by hand. It is itos
       slice-102, on itos main since 2026-10-09 but in no release; this repository pins 7.0.0-rc.1,
