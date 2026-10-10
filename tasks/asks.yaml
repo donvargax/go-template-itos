@@ -72,3 +72,4 @@ questions:
     item: "made-project-policy"
     question: "Renovate's branch configs carry Task: T-2, which a made project's fresh ledger will not hold. Recommended: a made project's policy does not require Task on build and ci commits, the branch renovate.json5 files drop the trailer, and main's config adds the template's trailers per base branch. Or: setup creates a dependencies task that the made project's Renovate config names."
     answer: "A made project's policy requires no Task on build and ci commits, and the branch renovate.json5 files carry no trailer; main's config gives the template's own requests their Task trailer per base branch."
+    decision: none
