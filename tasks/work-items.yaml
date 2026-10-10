@@ -232,14 +232,15 @@ items:
       Delivered on go/cli as T-17 with gochecksumtype, the person's choice in q-5 (CI run
       38016604269); T-18 named the lint in the guides and T-19 fixed the T-16 check it made stale.
       Kept open as main's template-wide index entry.
-  - id: renovate-branches
-    title: Renovate updates the branches that hold the code, not only main
+  - id: T-25
+    title: Renovate updates every branch that holds code
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was renovate-branches.
       Moved from itos-template, where it was T-29; its why there assumed a separate itos branch,
       which ADR-0032 there dropped. Renovate works on the default branch, main, and reads its config
       from there. Main enables only github-actions and renovate-config and holds no go.mod, so the
