@@ -51,12 +51,13 @@ func TestImportBoundaries(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	for _, path := range []string{"internal/count/domain", "internal/count/port", "internal/count/port/porttest", "internal/count/disk", "internal/count/input", "internal/count/app", "internal/cli", "cmd/probe", "internal/other"} {
+	for _, path := range []string{"internal/count/domain", "internal/count/port", "internal/count/port/porttest", "internal/count/disk", "internal/count/input", "internal/count/app", "internal/count/command", "internal/cli", "cmd/probe", "internal/other"} {
 		write(path+"/stub.go", "package probe\n\nconst Value = 1\n")
 	}
 	mocks := []string{"github.com/golang/mock/gomock", "go.uber.org/mock/gomock", "github.com/stretchr/testify/mock", "github.com/vektra/mockery/v2", "github.com/maxbrunsfeld/counterfeiter/v6"}
 	mod := "module " + module + "\n\ngo 1.27\n"
-	for i, path := range append(mocks, "pgregory.net/rapid") {
+	const kong = "github.com/alecthomas/kong"
+	for i, path := range append(mocks, "pgregory.net/rapid", kong) {
 		stub := fmt.Sprintf("stubs/library%d", i)
 		version := "v0.0.0"
 		if strings.HasSuffix(path, "/v2") {
@@ -103,7 +104,7 @@ func TestImportBoundaries(t *testing.T) {
 			if test {
 				kind = "test"
 			}
-			for _, target := range []string{"internal/count/disk", "internal/count/input", "internal/count/app", "internal/cli", "cmd/probe"} {
+			for _, target := range []string{"internal/count/disk", "internal/count/input", "internal/count/app", "internal/count/command", "internal/cli", "cmd/probe"} {
 				add(strings.ReplaceAll(target, "/", "_")+"_"+kind, base, module+"/"+target, "Value", rule, test)
 			}
 			add("port_allowed_"+kind, base, module+"/internal/count/port", "Value", "", test)
@@ -117,7 +118,7 @@ func TestImportBoundaries(t *testing.T) {
 	}
 	for _, adapter := range []string{"disk", "input"} {
 		base := "internal/count/" + adapter
-		for _, target := range []string{"internal/count/domain", "internal/count/app", "internal/count/disk", "internal/count/input", "internal/count/port/porttest", "internal/cli", "cmd/probe", "internal/other"} {
+		for _, target := range []string{"internal/count/domain", "internal/count/app", "internal/count/command", "internal/count/disk", "internal/count/input", "internal/count/port/porttest", "internal/cli", "cmd/probe", "internal/other"} {
 			add(strings.ReplaceAll(target, "/", "_"), base, module+"/"+target, "Value", "infra", false)
 		}
 		add("port_allowed", base, module+"/internal/count/port", "Value", "", false)
@@ -125,6 +126,22 @@ func TestImportBoundaries(t *testing.T) {
 		add("os_allowed", base, "os", "ReadFile", "", false)
 		add("fixture_io_allowed", base, "os", "ReadFile", "", true)
 	}
+	// go/cli's application handler, its code and tests alike: the domain,
+	// its ports and internal/cli, never a concrete adapter or the entry point.
+	for _, test := range []bool{false, true} {
+		kind := "code"
+		if test {
+			kind = "test"
+		}
+		base := "internal/count/command"
+		for _, target := range []string{"internal/count/disk", "internal/count/input", "internal/count/app", "cmd/probe", "internal/other"} {
+			add(strings.ReplaceAll(target, "/", "_")+"_"+kind, base, module+"/"+target, "Value", "application", test)
+		}
+		for _, target := range []string{"internal/count/domain", "internal/count/port", "internal/cli"} {
+			add(strings.ReplaceAll(target, "/", "_")+"_allowed_"+kind, base, module+"/"+target, "Value", "", test)
+		}
+	}
+	add("fake_allowed", "internal/count/command", module+"/internal/count/port/porttest", "Value", "", true)
 	add("disk_allowed", "internal/other", module+"/internal/count/disk", "Value", "", false)
 	for i, imported := range mocks {
 		for _, test := range []bool{false, true} {
@@ -132,6 +149,15 @@ func TestImportBoundaries(t *testing.T) {
 		}
 	}
 	add("rapid_allowed", "internal/count/domain", "pgregory.net/rapid", "Value", "", true)
+	// kong is the UI's: the entry point and internal/cli, nowhere else.
+	for _, test := range []bool{false, true} {
+		for _, layer := range []string{"cmd/probe", "internal/cli"} {
+			add(fmt.Sprintf("kong_allowed_%t", test), layer, kong, "Value", "", test)
+		}
+		for _, layer := range []string{"internal/count/command", "internal/count/domain", "internal/count/port", "internal/count/port/porttest", "internal/count/disk", "internal/count/input", "internal/other"} {
+			add(fmt.Sprintf("kong_%t", test), layer, kong, "Value", "kong", test)
+		}
+	}
 	for _, layer := range []string{"internal/count/domain", "internal/count/port", "internal/count/port/porttest", "internal/count/disk", "internal/other"} {
 		add("rapid_code", layer, "pgregory.net/rapid", "Value", "rapid", false)
 		if layer != "internal/count/domain" {

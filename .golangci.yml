@@ -48,6 +48,24 @@ linters:
               desc: "production domain/ports reach files and processes through ports; tests may read fixtures"
             - pkg: net
               desc: "production domain/ports reach networks through ports"
+        # The count command is the slice's application handler: it carries
+        # the command line's values to the domain through its ports and hands
+        # the result to internal/cli. Its code and tests import no concrete
+        # adapter; cmd wires disk and input into it.
+        application:
+          list-mode: lax
+          files:
+            - "**/internal/count/command/**"
+          allow:
+            - github.com/itos-corp/go-template-itos/internal/count/command$
+            - github.com/itos-corp/go-template-itos/internal/count/domain$
+            - github.com/itos-corp/go-template-itos/internal/count/domain/
+            - github.com/itos-corp/go-template-itos/internal/count/port$
+            - github.com/itos-corp/go-template-itos/internal/count/port/
+            - github.com/itos-corp/go-template-itos/internal/cli$
+          deny:
+            - pkg: github.com/itos-corp/go-template-itos
+              desc: "the count command imports the domain, its ports and internal/cli, never a concrete adapter; cmd wires those"
         infra:
           list-mode: lax
           files:
@@ -80,6 +98,17 @@ linters:
           deny:
             - pkg: pgregory.net/rapid
               desc: "rapid is used only by domain property tests"
+        # kong is the UI's, harvested from itos-template's kong rule: here
+        # the UI is the entry point and internal/cli. The count command
+        # carries kong's struct tags, which need no import of kong.
+        kong:
+          files:
+            - $all
+            - "!**/cmd/**"
+            - "!**/internal/cli/**"
+          deny:
+            - pkg: github.com/alecthomas/kong
+              desc: "kong stays in the UI: cmd and internal/cli"
     revive:
       rules:
         - name: file-length-limit
