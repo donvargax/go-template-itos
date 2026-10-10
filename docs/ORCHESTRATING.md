@@ -42,3 +42,6 @@ checking versions and existing reports, not in a workaround here.
 - A task's checks run in CI on every push that names it, so a check that passes only once the
   work is whole turns an early push red. Push all of the task's commits together. Recorded
   2026-10-09; last seen 2026-10-09 (T-11); permanent.
+- An agent never answers a question, not even one a decision command needs: it stops and the
+  coordinator asks the person. Recorded 2026-10-10; last seen 2026-10-10 (T-24's q-11, which the
+  person then confirmed); permanent.
