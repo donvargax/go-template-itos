@@ -39,6 +39,13 @@ branch's actual code in view, not by copying root bootstrap claims into finished
   The self-test compiles 99 positive/negative fixtures before checking the actual pinned
   linter and configuration. No configured `internal` code-proof path changed. Root manifest
   registration and propagation into `go/cli` remain separate work.
+- T-11 merged `stack/go` into `go/cli` (`cc3d9b7`), bringing the shared and Go guides, T-9's
+  boundaries and decisions 1 to 4. It named the feature's packages: an application rule over
+  `internal/count/command`, code and tests, and a kong rule keeping kong in `cmd` and
+  `internal/cli`, proved by 142 fixtures. The command's tests now use the porttest fake alone.
+  [CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/38012155015)
+  at `5799049`, and the item is closed. The root manifest's `cli` checks still omit the smoke
+  check and the import-boundary self-test.
 - `cli-contract` writes the reusable CLI guide on `go/cli`, without changing behavior.
 - `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
 - `cli-once-only-flags` implements q-1: reject repeated non-cumulative flags with usage exit
