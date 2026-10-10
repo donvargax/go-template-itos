@@ -33,9 +33,7 @@ jobs:
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
-      - uses: donvargax/itos@1b9f1f9995be5d20aed3b4f8877a453bbd1e98a3 # v7.0.0-rc.1
-        with:
-          version: 6.0.0
+      - uses: donvargax/itos@2389524f0fe6515436b66a395ad4677bee394107 # v7.0.0-rc.4
       - name: Range
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
