@@ -101,6 +101,7 @@ questions:
   - id: q-21
     item: "made-project-ci"
     question: "A made project's CI cannot pass on its main today: the ci job's itos steps fail with no itos.yaml (a render ships none until T-27's setup), and setup-go and the three platform jobs skip main because stack/go's and go/cli's ci.yml gate them on template branch names, which those files never need since template main runs its own ci.yml. Recommended order: pin itos 7.0.0 on every branch (its init --policy keeps an existing smoke set, fixing donvargax/itos#39), then lift and land T-27 so a made project gets its itos.yaml, then made-project-ci drops the branch-name conditions. Or: made-project-ci first, dropping the conditions so Go and platform jobs run while the ci job stays red until T-27."
+    answer: "The recommended order: pin itos 7.0.0 on every branch, then lift and land T-27 so a made project gets its itos.yaml, then made-project-ci drops the branch-name conditions."
   - id: q-22
     item: "made-project-ci"
     question: "made-project-ci must be proved on a real made project's exact-head CI, which needs a GitHub repository rendered from the template. Recommended: one public repository, donvargax/go-template-itos-sample, made with itos-template new (go + cli) and set up as T-27 says, kept afterwards so the run addresses stay readable; public keeps Actions free and lets a later release proof attest. Or: a private repository. Or: a fresh repository per proof, deleted after the run is recorded."
