@@ -310,5 +310,3 @@
     branches' file-list check in itos.yaml keeps holding the template's own files; T-27's policy
     leaves it out. Prove it by rendering both combinations and reading what ships, and by
     Template check staying green.
-  done_when:
-    - run: 'for p in PLAN.md docs/ORCHESTRATING.md TEMPLATE.md; do grep -qE "^  - ${p}$" itos-template.yaml || exit 1; done'

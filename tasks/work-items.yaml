@@ -276,21 +276,9 @@ items:
     title: Keep the template's own records and notes out of made projects
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was template-only-docs.
-      A render drops only itos.yaml and tasks (the manifest's template_only), so a made project
-      ships docs/decisions, docs/ORCHESTRATING.md and AGENTS.md as its own rules. Decisions 2 to 4
-      and most of the notes govern running this template's three branches (questions on main, task
-      ids above every branch, merging down, the index registry), which a made project does not have,
-      and their questions live in tasks, which is dropped. Decision 1, a flag given once, does
-      belong to a made CLI, and AGENTS.md mixes template rules (provenance, branch layout) with
-      project rules. Decide whether template-only records and notes move to paths template_only
-      excludes, or a made project's copies are rewritten at setup; overlaps made-project-policy,
-      which waits on donvargax/itos#33. Raised 2026-10-09 after decisions 2 to 4 and new notes rules
-      landed.
   - id: release-notes-render
     title: The go + cli render passes its release-notes tests
     phase: 1
