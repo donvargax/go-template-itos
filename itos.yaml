@@ -1,5 +1,5 @@
-# Shared commit rules and checks. Stack branches add language gates with the
-# code they prove; the root remains language-neutral.
+# The commit rules, the scenarios and their runner, the checks CI runs and the
+# proof of the Go code.
 version: 1
 
 # The source project's pin and checksum, copied with its workflow action.
@@ -29,7 +29,7 @@ commits:
       validate_for: [feat, fix]
       must_be_live: true
       read_at: commit
-    # What a user of a project made from this template must change for the commit, or none
+    # What a user of this project must change for the commit, or none
     # (itos commit --upgrading none): feat and fix are what a user can feel, and the release
     # notes quote it.
     Upgrading:
@@ -88,6 +88,7 @@ ci:
         test -f .gitignore && test -f .github/workflows/ci.yml &&
         test -f .github/renovate.json5 && test -x tools/bin/doc-caps
       cost: static
+    - { run: tools/bin/policy-drift, cost: static } # itos-policy.yaml is this file less the template's own
     - { run: "! gofmt -l cmd internal features | grep .", cost: static } # names each file gofmt would change
     - { run: go build ./..., cost: static }
     - { run: go vet ./..., cost: static }
