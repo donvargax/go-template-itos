@@ -141,3 +141,4 @@ questions:
   - id: q-31
     item: "cli-exhaustive-errors"
     question: "cli-exhaustive-errors needs the person's approval of a reused linter, as the library-choice policy requires. Recommended: gochecksumtype, already bundled in the pinned golangci-lint and used by itos-template with default-signifies-exhaustive false and //sumtype:decl markers, so no new dependency or tool. Or: a custom analyzer. Or: leave the classification unchecked."
+    answer: "gochecksumtype, as bundled in the pinned golangci-lint, harvested from itos-template's configuration: default-signifies-exhaustive false and //sumtype:decl on the sealed failure set."
