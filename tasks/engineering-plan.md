@@ -55,7 +55,13 @@ branch's actual code in view, not by copying root bootstrap claims into finished
   item for each rule it does not follow yet.
   [CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/38015944815),
   and the item is closed.
-- `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
+- T-17 (`cli-exhaustive-errors`) enabled gochecksumtype, as the person chose (q-5), and
+  annotated `port.ReadFailure` `//sumtype:decl`, so a switch leaving a failure kind out is
+  refused and a default arm does not count. The self-test holds 145 fixtures, three of them for
+  this lint. [CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/38016604269).
+  T-18 named the lint in `docs/go.md` and `docs/CLI.md`, and T-19 repointed T-16's check that
+  T-17 made stale ([CI](https://github.com/donvargax/go-template-itos/actions/runs/38017515555)).
+  All three are closed.
 - T-14 (`cli-once-only-flags`) implements decision 1. A non-cumulative flag given twice exits
   2, a switch and its `--no-` pair counting as one, through the tracing harvested from
   itos-template; the environment variable is not the flag. ID-CLI-08 and ID-CLI-09 are live,
