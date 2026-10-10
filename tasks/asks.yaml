@@ -62,3 +62,4 @@ questions:
     item: "made-project-policy"
     question: "itos 7.0.0-rc.5's init --policy copies a complete itos config once into a fresh project. Where does a made project's policy file live, and what happens to it after setup? Recommended: a complete itos-policy.yaml at each branch's top, which the setup step passes to itos init --policy and then deletes. Or: the same file kept after setup. Or: .itos/policy.yaml."
     answer: "A complete itos-policy.yaml at each branch's top; the setup step runs itos init --policy itos-policy.yaml and then deletes the file, so a made project has one config, its itos.yaml."
+    decision: none
