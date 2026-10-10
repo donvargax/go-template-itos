@@ -26,7 +26,11 @@ branch's actual code in view, not by copying root bootstrap claims into finished
   `5b7a38cc26cff141db752c456ea155126e3e1760`, preserving that branch's registry and
   Go configuration. Its [CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/37981702016).
   Propagation into `go/cli` remains.
-- `go-engineering` describes the actual Go policy on `stack/go`.
+- T-10 wrote `docs/go.md`, the Go stack's guide, and its agent-rule reference on `stack/go`.
+  The guide commit is `a8a8c2093f4ab2b8a3ecb5b51e5a8ede360683a7`; its
+  [exact-head CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/38010453331).
+  The item is closed. The root manifest's `go` checks still omit the import-boundary
+  self-test. Propagation into `go/cli` remains.
 - `go-architecture` strengthens existing depguard enforcement on `stack/go`, then inherits
   into `go/cli`. Additions needed only for the CLI stay in the feature's configuration.
   The stack-owned implementation is T-9, specified in its ledger; reserve that ID across
