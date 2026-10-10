@@ -438,8 +438,8 @@ items:
   - id: T-43
     title: README's provenance names the itos owner, not the copyright owner
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
