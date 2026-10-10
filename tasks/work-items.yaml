@@ -135,8 +135,8 @@ items:
   - id: T-33
     title: A made CLI project publishes a real, attested release
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-34]
     kind: task
     why: >
