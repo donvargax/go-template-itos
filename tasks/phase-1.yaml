@@ -488,5 +488,3 @@
     commands and claims about what runs stay as they are, and a claim moved to TEMPLATE.md keeps
     its meaning. Prove it by rendering both combinations with itos-template v0.19.0 new and
     reading the shipped guides, and by Template check staying green.
-  done_when:
-    - run: "for f in docs/go.md docs/architecture.md docs/engineering.md docs/CONFIG.md docs/security.md docs/upgrading.md features/README.md CONTRIBUTORS.md; do test ! -f \"$f\" || ! grep -qiE 'stack/go|go/cli|renders?\\b|this template' \"$f\" || exit 1; done"

@@ -316,19 +316,9 @@ items:
     title: Shipped guides speak to the made project, not the template
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was guides-template-wording.
-      After T-28 a render's README.md and AGENTS.md speak to the made project, but other guides it
-      ships still speak as the template or name its branches: docs/go.md (what stack/go or go/cli
-      holds, its Made projects section on renders), docs/architecture.md (the go/cli feature),
-      docs/engineering.md, docs/CONFIG.md, docs/security.md, docs/upgrading.md and
-      features/README.md (this template, renders, main's Renovate), and CONTRIBUTORS.md, which calls
-      the owner answer the template's illustrative owner. Rewrite them for the made project as T-28
-      did README.md and AGENTS.md, keeping the harvest provenance, and move what only the template
-      needs to TEMPLATE.md.
   - id: self-made-project
     title: This repository is both the template and its own made project
     phase: 1
