@@ -5,6 +5,7 @@ This branch has the Go foundation and a private counting example, not the public
 
 Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
 stack and interface; stack and feature guides add only what is specific to them.
+Go's packages, boundary lists, tests and quality checks are in `docs/go.md`.
 
 The person's session coordinates with `itos go`. An implementing agent runs `itos guide work`,
 takes its item with `itos work take`, does the work itself and starts no agents. Read the registry
