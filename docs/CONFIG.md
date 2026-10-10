@@ -1,18 +1,18 @@
 # Configuration format guidelines
 
-These rules cover every file a project made from this template reads or writes as its own
-configuration. They apply whatever the project's language or interface. Formats that belong to
-other tools, such as `go.mod`, a linter's settings, CI workflows or `itos.yaml`, follow those
-tools' rules instead.
+These rules cover every file this project reads or writes as its own configuration. They
+apply whatever the project's language or interface. Formats that belong to other tools, such
+as `go.mod`, a linter's settings, CI workflows or `itos.yaml`, follow those tools' rules
+instead.
 
-The template has no configuration file of its own yet. A project applies these rules when it adds
-its first one. Nothing here is implemented in this template: it has no loader, no schema and no
-command that prints defaults. Each rule's source is named. An interface's own guide covers how
-configuration is found and how flags and environment variables override it. On the CLI feature,
-that guide is `docs/CLI.md`.
+The project has no configuration file of its own yet, and applies these rules when it adds its
+first one. Nothing here is implemented yet: there is no loader, no schema and no command that
+prints defaults. Each rule's source is named. An interface's own guide covers how configuration
+is found and how flags and environment variables override it. Where the project has a command
+line, that guide is `docs/CLI.md`.
 
 The rules are adapted from [itos-template](https://github.com/donvargax/itos-template)'s
-`docs/CONFIG.md` with the owner's permission (`CONTRIBUTORS.md`).
+`docs/CONFIG.md` with its owner's permission (`CONTRIBUTORS.md`).
 
 ## Sources
 
@@ -24,7 +24,7 @@ The rules are adapted from [itos-template](https://github.com/donvargax/itos-tem
 | JSON   | RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format, <https://www.rfc-editor.org/rfc/rfc8259>                        |
 | YAML   | YAML Ain't Markup Language, version 1.2.2, <https://yaml.org/spec/1.2.2/>                                                               |
 | SCHEMA | JSON Schema, <https://json-schema.org>                                                                                                   |
-| OWNER  | The template owner's principles, carried from itos-template                                                                              |
+| OWNER  | The principles of itos-template's owner, carried from itos-template                                                                      |
 
 ## Principles
 
