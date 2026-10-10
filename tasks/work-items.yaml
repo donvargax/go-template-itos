@@ -371,14 +371,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: version-json-hint
+  - id: T-45
     title: Decide whether version's plain output hints at --json
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was version-json-hint.
       Found by T-34. docs/CLI.md rule 28 asks for a line on stderr telling the reader to use --json
       in scripts when the plain output looks like data, and count prints one. Since T-34 version has
       a --json form, yet its plain text, the same as --version prints, carries no hint, so a script
