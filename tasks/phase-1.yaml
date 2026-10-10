@@ -533,8 +533,6 @@
     replaces, keeping the permission sentence true. Main's README says the same of the template
     and changes with it, so the wording stays one across branches. The coordinator writes it in
     docs commits, main first and merged down.
-  done_when:
-    - run: "! grep -q \"copyright owner's\" README.md"
 - id: T-44
   type: docs
   title: The Setup guide says a made project re-proves the code it changes

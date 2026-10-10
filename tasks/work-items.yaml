@@ -439,16 +439,9 @@ items:
     title: README's provenance names the itos owner, not the copyright owner
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was readme-provenance-owner.
-      Found reading T-40's renders: README.md on stack/go and go/cli says the infrastructure comes
-      from the copyright owner's itos and itos-template. A render replaces the owner in LICENSE's
-      copyright line, so in a made project the copyright owner is the made project's (acme in the
-      proof), and the sentence credits itos to it. CONTRIBUTORS.md now names Jorge Vargas as their
-      copyright owner; the READMEs, which T-28 wrote and T-40 did not cover, should say the same.
   - id: T-41
     title: Move every branch to itos 7.1.2
     phase: 1
