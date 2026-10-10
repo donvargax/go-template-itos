@@ -97,3 +97,4 @@ questions:
     item: "renovate-proof"
     question: "Renovate updates stack/go and go/cli separately (T-25). The same version on both merges cleanly, but different versions, from one request failing CI or landing after a newer release, conflict in go.mod and go.sum, so the merge down and Template check's go + cli render fail until a person resolves the merge. Recommended: keep per-branch updates and resolve a clash in a routine merge down. Or: go/cli takes the stack's modules only through the merge down, its config leaving them alone."
     answer: "Keep per-branch updates. A go.mod or go.sum clash between stack/go and go/cli is resolved in a routine merge down; if clashes keep happening, revisit letting go/cli take the stack's modules only by merge."
+    decision: none
