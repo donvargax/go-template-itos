@@ -107,7 +107,7 @@ That is evidence about the template, not about a project's own CI.
 A render leaves out `itos.yaml` and `tasks` but ships `itos-policy.yaml`: this branch's
 commit rules, CI plan and code-proof gate, less what only the template needs. `itos-template
 new` prints the setup steps that adopt it. `itos init --policy itos-policy.yaml` gives the made
-project its own `itos.yaml` and a fresh ledger, then the policy file is removed. Run
-`itos init --agent-rules` after them, so `AGENTS.md` describes the project's own config. From
+project its own `itos.yaml` and a fresh ledger, then the policy file is removed. The last step,
+`itos init --agent-rules`, rewrites `AGENTS.md`'s rules to describe the project's own config. From
 then on the workflow runs the Go steps and the Linux, macOS and Windows tests on the made
 project's own `main`.
