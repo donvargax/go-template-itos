@@ -342,6 +342,12 @@ items:
       since T-28 renders leave out docs/ORCHESTRATING.md, so in a made project the script stops at
       the missing file instead of checking AGENTS.md. Nothing runs it in a made project yet; T-27's
       policy or made-project-ci would, and should find it working.
+
+      T-27 found more (folded in from made-project-ci's duplicate idea made-project-doc-caps): both
+      rendering branches' itos-policy.yaml keep doc-caps in a made project's plan, and there the
+      missing file's redirect fails, the size is empty and the test errors, so the script prints two
+      shell errors and still exits 0: the step passes while saying something broke. Cap only the
+      documents that exist, or keep the template's own cap out of what renders run.
   - id: guides-template-wording
     title: Shipped guides speak to the made project, not the template
     phase: 1
