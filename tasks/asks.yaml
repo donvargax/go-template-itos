@@ -133,3 +133,4 @@ questions:
   - id: q-29
     item: "version-json-hint"
     question: "Does version's plain text print the --json hint docs/CLI.md rule 28 asks for when plain output looks like data? itos-template's version has no --json and no hint. Recommended: no hint; rule 28 says version's two short lines are not data a script would scrape. Or: version prints the hint, with a scenario."
+    answer: "No hint: rule 28 says version's two short lines are not data a script would scrape, and version --json is there for scripts."
