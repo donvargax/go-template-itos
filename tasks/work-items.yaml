@@ -279,14 +279,15 @@ items:
       leftover or credential-scan warning. Note that go + cli runs the stack's checks and then the
       feature's, so most checks run twice per render; weigh that cost when choosing how often it
       runs.
-  - id: config-guidelines
-    title: Carry shared configuration-format guidance on the base template
+  - id: T-15
+    title: Write the shared configuration-format guide
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was config-guidelines.
       User asked for docs/CLI.md and docs/CONFIG.md in the generated CLI. CLI.md is already
       cli-contract on go/cli. Source docs/CONFIG.md is primarily language- and interface-independent
       application-format policy, so implementation belongs on main and merges downward into stack/go
