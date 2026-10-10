@@ -413,3 +413,25 @@
     - run: grep -q gochecksumtype .golangci.yml && grep -q "default-signifies-exhaustive. false" .golangci.yml
     - run: grep -q "//sumtype:decl" internal/count/port/files.go && grep -q gochecksumtype tools/testdata/architecture/check_test.go
     - run: '! grep -q "cli-exhaustive-errors" docs/CLI.md'
+- id: T-18
+  type: docs
+  title: Say in the guides that a lint holds every sealed failure set
+  why: >
+    T-17 enabled gochecksumtype, but docs/go.md still lists golangci-lint as the standard linters
+    plus depguard, gosec and revive, and never says that a new sealed failure set needs
+    //sumtype:decl and one exhaustive switch in internal/cli, so a set added without the
+    annotation would go unchecked unnoticed. docs/CLI.md rule 32 lost its not-yet sentence with
+    T-17 and no longer says a lint enforces the switch, as itos-template's rule does. Name the
+    linter in both, with the step for a new sealed set.
+  done_when:
+    - run: grep -q gochecksumtype docs/go.md && grep -q "sumtype:decl" docs/go.md && grep -q gochecksumtype docs/CLI.md
+- id: T-19
+  type: docs
+  title: Fix T-16's check that T-17 made stale
+  why: >
+    T-16's second check required docs/CLI.md to name cli-exhaustive-errors, the item then pending,
+    and T-17 rightly removed that sentence, so itos task T-16 reports failing and any later commit
+    naming T-16 would be refused. The check meant that the guide names the items still pending;
+    it now asks for cli-releases, which rule and contract still name, instead.
+  done_when:
+    - run: itos task T-16
