@@ -136,29 +136,9 @@ items:
     title: A made CLI project publishes a real, attested release
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-34]
     kind: task
-    why: >
-      Was cli-releases.
-      Belongs on go/cli, not the Go library stack or language-neutral root. Harvest the proven
-      generic version and notes helpers, release tests and checksum-pinned git-cliff from
-      donvargax/itos-template, retaining license notices and real publishing identity. The existing
-      reusable workflow references missing tools/bin/release-version and release-notes and has no
-      caller; complete the caller after actual CI/platform checks pass. Keep generated-project
-      binary releases distinct from template branch/tag releases, and never publish a nonexistent
-      root binary. Preserve GoReleaser checksums and attestation, prove the wiring on a generated
-      main, and make docs say what runs rather than what the dormant scaffold promises.
-
-      Delivered on go/cli as T-20 (CI run 38019557469): helpers, git-cliff pin and the release job,
-      dormant on the template. A real release on a generated main waits for made-project-ci (q-6).
-      Kept open as main's template-wide index entry.
-
-      q-23 moved the real release proof here from made-project-ci: once made-project-ci has the Go
-      jobs passing on donvargax/go-template-itos-sample's main, push a feat or fix there, see the
-      release job publish v0.1.0 with its five archives and checksums.txt, and verify an archive
-      with gh attestation verify. The release job is live in made projects from made-project-ci on,
-      so this follows it directly.
   - id: cli-once-only-flags
     title: Reject repeated non-cumulative flags in the default CLI
     phase: 1
