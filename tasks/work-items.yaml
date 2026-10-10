@@ -121,8 +121,8 @@ items:
   - id: T-19
     title: Fix T-16's check that T-17 made stale
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
