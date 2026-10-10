@@ -373,8 +373,6 @@
     exceptions, kept as the made project's baseline (q-16): its code starts as the template's,
     renamed, and its own proof judges only its changes after setup. Init's offers and its printed
     adoption commit stay the person's; the setup steps end after the policy file is removed.
-  done_when:
-    - run: 'grep -qE "^version: 5$" itos-template.yaml && grep -q "itos-policy.yaml" itos-template.yaml && ! grep -qE "^  - itos-policy\.yaml$" itos-template.yaml'
 - id: T-28
   type: docs
   title: Keep the template's own records and notes out of made projects
@@ -426,3 +424,34 @@
     independently; merge main down afterwards for the ledger, as earlier items did, keeping each
     branch's itos.yaml, ci.yml and registry. A gate 7.0.0 refuses on existing work is a finding, not
     a check to weaken. Push each branch's commits together and see its CI and Template check green.
+- id: T-31
+  type: ci
+  title: A made project's CI runs its Go checks on its own main
+  why: >
+    A project made from the template and set up as T-27 says has its itos.yaml, but its CI still
+    cannot prove its code on its own main. stack/go's and go/cli's ci.yml gate the ci job's setup-go
+    step and the whole platform job on template branch names (stack/, go/, renovate/), so on a made
+    main Go is never set up for the itos plan's Go steps and the Linux, macOS and Windows tests are
+    skipped. Those conditions do nothing in the template: its main runs main's own root-only
+    ci.yml, and these files only ever run on stack/go, go/cli and branches based on them. Remove
+    the conditions from the setup-go step and the platform job on both branches, and keep the
+    release job's own condition (a push to main) as it is. The comments that say a made main waits
+    for made-project-ci change with the code they describe: ci.yml's and release.yml's in the ci
+    commit, and TEMPLATE.md, docs/CLI.md, docs/upgrading.md and docs/ORCHESTRATING.md in a docs
+    commit, saying what now runs and that a real release is still unproven (cli-releases). The
+    workflow change lands on stack/go first and merges down into go/cli, each keeping its own
+    itos.yaml and registry; main's ci.yml does not change. Prove it on a real made project's
+    exact-head CI (q-22): render go + cli with itos-template v0.19.0 new from the public URL,
+    answers name=go-template-itos-sample, owner=donvargax and
+    module=github.com/donvargax/go-template-itos-sample, into the empty public repository
+    donvargax/go-template-itos-sample; run the setup steps new prints with itos 7.0.0, answering
+    init's offers no, make init's adoption commit, and push its main. That run's ci job and all
+    three platform jobs must pass. The release job will run on that push: before pushing, run
+    tools/bin/release-version in the made project to see whether it would release, since its first
+    commits are chore commits; publishing a real release is cli-releases's proof (q-23), so if it
+    would release, stop and report instead of pushing. The sample repository is kept afterwards, a
+    pure render plus its setup, with no other commits (self-made-project). Template check stays
+    green on every head. A made-project gate that fails on this push is a finding to report, not a
+    check to weaken; doc-caps erroring but exiting 0 is doc-caps-render's.
+  done_when:
+    - run: "! grep -q \"startsWith(github\" .github/workflows/ci.yml"
