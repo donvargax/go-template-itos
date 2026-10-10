@@ -295,3 +295,26 @@
   done_when:
     - run: grep -q '7.0.0-rc.4' itos.yaml && grep -q 'v7.0.0-rc.4' .github/workflows/ci.yml
     - run: '! grep -q "git grep -hoE" docs/ORCHESTRATING.md'
+- id: T-25
+  type: ci
+  title: Renovate updates every branch that holds code
+  why: >
+    Renovate reads its config from the default branch, main, which enables only github-actions and
+    renovate-config, so the Go modules on stack/go and go/cli get no updates, and the branches' own
+    configs, which enable gomod, are never read. main's file names baseBranchPatterns (main,
+    stack/go, go/cli; Renovate renamed baseBranches, and strict validation refuses the old key)
+    with useBaseBranchConfig merge, so each base branch's request is shaped by that branch's own
+    renovate.json5 and judged by its own CI. Those two keys live in main's file only: a render
+    ships the bottom branch's file to a made project, which has only main, and Renovate reads them
+    from the default branch alone. Group one dependency's requests with groupName {{depName}} so
+    they move together; skew between branches is acceptable. commitBody names the base branch, not
+    main, in every file. Trailers follow q-15: commitTrailers is mergeable, so the branch files
+    carry none, and main's file gives Task T-1 to main's requests and Task T-2 to stack/go's and
+    go/cli's through package rules matching each base branch; a made project's file then has no
+    trailer. Keep the owner presets, ignoreDeps for itos, the pinned action digests, the cooldown
+    and automerge on green. Each file passes renovate-config-validator --strict. Renovate was
+    installed while this was specified, but no request has landed, so docs/upgrading.md says so
+    until renovate-proof. Change main's file, then stack/go's and go/cli's, merging main down as
+    earlier items did.
+  done_when:
+    - run: 'f=.github/renovate.json5 && ! grep -q "landed on main" "$f" && if test -f go.mod; then ! grep -qE "^[[:space:]]*(baseBranchPatterns|baseBranches|useBaseBranchConfig|commitTrailers)[[:space:]]*:" "$f"; else grep -qE "^[[:space:]]*baseBranchPatterns[[:space:]]*:" "$f" && grep -qE "^[[:space:]]*useBaseBranchConfig[[:space:]]*:" "$f" && grep -q "Task: T-2" "$f"; fi'
