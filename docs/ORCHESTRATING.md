@@ -15,6 +15,9 @@ template; do not repeat the generic guide here.
   a committed configuration alone proves neither.
 - Ask, answer and record every question on `main`, even one specific to a stack or feature
   (decision 3). Question and record numbers are per branch; asked anywhere else, main reuses them.
+- A new task's id is one above the highest on any branch (decision 4), never `itos task next-id`
+  alone: `git fetch` and `git grep -hoE 'id: T-[0-9]+' origin/main origin/stack/go origin/go/cli
+  -- 'tasks/phase-*.yaml' | sort -t- -k2n | tail -1`.
 
 ## Briefs
 
