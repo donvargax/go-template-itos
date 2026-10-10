@@ -250,8 +250,8 @@ items:
   - id: T-13
     title: Every Go render runs the import-boundary self-test
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
