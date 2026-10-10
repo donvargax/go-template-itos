@@ -12,6 +12,8 @@
   provenance and real upstream identities; do not globally substitute the owner's handle.
 - A Renovate configuration does not prove App installation or bot activity. Verify before
   claiming the automation runs.
+- Ask, answer and record every question on `main`, even one specific to a stack or feature
+  (decision 3). Question and record numbers are per branch; asked anywhere else, main reuses them.
 
 ## Briefs and proof
 
@@ -31,3 +33,7 @@
 New lessons name a recorded date, last-seen date and exit item (or permanent); keep at most ten.
 Report an upstream-tool gap upstream after checking releases and existing reports, rather than
 working around it in this template.
+
+- After merging a parent branch down, compare the items both registries hold. The merge keeps the
+  child's status, so close an item finished upstream with `itos work done` on the child too.
+  Recorded 2026-10-09; last seen 2026-10-09; permanent while registries share items.
