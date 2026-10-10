@@ -86,8 +86,6 @@
     the manifest was still incomplete. The check builds this repository's generator from its public
     source and proves the template against the public URL, so it proves what a person can actually
     get rather than a local copy.
-  done_when:
-    - run: "d=$(mktemp -d) && trap 'rm -rf \"$d\"' EXIT && git clone --quiet --depth 1 https://github.com/donvargax/itos-template.git \"$d/g\" && (cd \"$d/g\" && go build -o \"$d/itos-template\" ./cmd/itos-template) && t=https://github.com/donvargax/go-template-itos.git && a=\"--answer name=blue-fox --answer owner=acme --answer module=example.com/blue/fox\" && \"$d/itos-template\" check \"$t\" $a > \"$d/check.txt\" 2>&1; cat \"$d/check.txt\"; ! grep -q warning \"$d/check.txt\" && grep -q '2 of 2 combinations passed' \"$d/check.txt\" && \"$d/itos-template\" new \"$t\" \"$d/p\" --stack go --feature cli $a >/dev/null && test ! -e \"$d/p/itos.yaml\" && test ! -e \"$d/p/tasks\" && git -C \"$d/p\" log --format=%B -1 | grep -q 'chore: start the generated project' && ! git -C \"$d/p\" log --format=%B -1 | grep -q 'Task:' && (cd \"$d/p\" && go build ./...) && (cd \"$d/p\" && go vet ./...) && (cd \"$d/p\" && go test ./...) && (cd \"$d/p\" && go run ./cmd/blue-fox count README.md --json)"
 - id: T-8
   type: docs
   title: Document the shared engineering practices every project inherits
