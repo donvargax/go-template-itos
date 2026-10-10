@@ -48,10 +48,14 @@ branch's actual code in view, not by copying root bootstrap claims into finished
   check and the import-boundary self-test.
 - `cli-contract` writes the reusable CLI guide on `go/cli`, without changing behavior.
 - `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
-- `cli-once-only-flags` implements q-1: reject repeated non-cumulative flags with usage exit
-  2, matching the source contract. Specify the replacement of last-negation-wins before
-  building the change; explicitly cumulative flags remain repeatable. Do not change this
-  behavior in a documentation or lint commit.
+- T-14 (`cli-once-only-flags`) implements decision 1. A non-cumulative flag given twice exits
+  2, a switch and its `--no-` pair counting as one, through the tracing harvested from
+  itos-template; the environment variable is not the flag. ID-CLI-08 and ID-CLI-09 are live,
+  and ID-COUNT-06 now covers the environment case. The feat `da0a56e` carries an `Upgrading`
+  footer. `--help --help` also exits 2 now, which no scenario holds. Four mutants were killed and
+  none survived, and
+  [CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/38015302591)
+  at `de61d59`. The item is closed.
 - `made-project-policy` separates reusable rules from template history. Common policy
   belongs on the root; Go and CLI additions belong on their branches. It depends on a
   supported fresh-project initialization mechanism, not an invented workaround around itos.
