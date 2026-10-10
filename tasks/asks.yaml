@@ -57,3 +57,4 @@ questions:
     item: "renovate-branches"
     question: "Renovate has never run on this repository, nor on itos or itos-template: no request, branch, dashboard or commit, so the app is likely not installed. renovate-branches can only be proven on a real request. Recommended: the person installs the Mend Renovate app and the item closes on a real request per branch. Or: a self-hosted renovatebot/github-action on a schedule with a stored token. Or: land the baseBranches config now and defer the proof until Renovate runs."
     answer: "Config only for now: land the baseBranches configuration, and defer proving it on a real request, as its own idea, until Renovate runs. The docs keep saying the automation is unverified."
+    decision: none
