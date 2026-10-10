@@ -293,6 +293,13 @@
     sentence; interface contract prose belongs to cli-contract, not here. No behavior, scenario or
     dependency changes; the root manifest's check lists are separate main work. Ledgers merge downward, so main and
     stack/go must never reuse T-11.
+    The application rule covers tests too, as the domain and ports rules do: command_test.go
+    wrapped porttest.Files in the input adapter to feed standard input, which the rule flags, so
+    that test uses the porttest fake directly, standard input being its "-" key; the input
+    adapter's tests and the scenarios hold standard input. The fixtures add internal/count/command
+    beside the stack's stand-in internal/count/app as a reject target of the domain, ports and
+    infra rules. The task's checks pass only once the rules land, so its commits are pushed
+    together; cc3d9b7 was pushed alone and its run is red on that check alone.
   done_when:
     - run: grep -q "tools/bin/architecture-check" itos.yaml && test -x tools/bin/architecture-check
     - run: grep -q "internal/count/command" .golangci.yml && grep -q "alecthomas/kong" .golangci.yml
