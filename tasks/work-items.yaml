@@ -158,14 +158,15 @@ items:
 
       Delivered on go/cli as T-14 (feat da0a56e, CI run 38015302591). Kept open as main's
       template-wide index entry.
-  - id: cli-exhaustive-errors
+  - id: T-47
     title: Lint the sealed CLI failure-to-exit classification exhaustively
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was cli-exhaustive-errors.
       Belongs on go/cli, not main or a Go library stack with no process exits. Harvest the existing
       gochecksumtype gate and annotations from itos-template, using the linter already bundled in
       pinned golangci-lint rather than adding a custom analyzer or dependency. Annotate the existing
