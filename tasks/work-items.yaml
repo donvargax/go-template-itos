@@ -74,14 +74,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: cli-stage-wording
+  - id: T-12
     title: Say in go/cli agent and orchestration notes that the public CLI is here
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was cli-stage-wording.
       AGENTS.md says this branch has no public CLI yet, and docs/ORCHESTRATING.md says it has no
       public CLI, godog runner or binary release job and that cmd/ joins the proof later. On go/cli
       all three exist and the proof already covers cmd and internal, so an agent reading these notes
