@@ -221,6 +221,10 @@ items:
       passes. This is a checked lint/refactor task, not a public behavior slice; keep it separate
       from duplicate flags and documentation. Obtain the persons approval of the reused linter when
       specifying this item, as the library-choice policy requires.
+
+      Delivered on go/cli as T-17 with gochecksumtype, the person's choice in q-5 (CI run
+      38016604269); T-18 named the lint in the guides and T-19 fixed the T-16 check it made stale.
+      Kept open as main's template-wide index entry.
   - id: renovate-branches
     title: Renovate updates the branches that hold the code, not only main
     phase: 1
