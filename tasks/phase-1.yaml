@@ -859,8 +859,13 @@
     (donvargax/itos#42); nobody works it until the command exists. Note for when it does: itos-
     template's idea gives the root a bare v1.2.0 tag while its manifest guide says main/v1.2.0;
     build to whichever the command does.
-  done_when:
-    - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.1.0'
+
+    Its check is off while it waits, since CI runs a named task's check on every push and the
+    tags cannot exist yet: 5cef394 named it and turned stack/go and go/cli red. When the release
+    command exists, restore it as done_when: t=$(git ls-remote --tags
+    https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q
+    'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" |
+    grep -q 'refs/tags/go/cli/v0.1.0'
 - id: T-43
   type: docs
   title: README credits itos and itos-template to their author, not the project's owner
