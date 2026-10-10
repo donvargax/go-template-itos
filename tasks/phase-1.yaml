@@ -144,3 +144,25 @@
   done_when:
     - run: test -f docs/CONFIG.md && grep -q docs/CONFIG.md AGENTS.md
     - run: '! grep -qiE "decision [0-9]|manifest|T-[0-9]|\.itos-template" docs/CONFIG.md'
+- id: T-21
+  type: ci
+  title: CI re-proves every render on each template push and weekly
+  why: >
+    No workflow runs itos-template check, so a change to the manifest or to a branch a render
+    carries can break a render while every branch's own CI stays green; T-13 had to run it by
+    hand. Add .github/workflows/template-check.yml on main (q-8): on every push to main, stack/**
+    and go/**, and on a weekly schedule, with contents read only and runs of one ref cancelling
+    older ones. The check renders origin's branch heads, so any branch's push re-proves both
+    combinations. Install itos-template with go install at v0.19.0 (q-9), verified by Go's
+    checksum database; Go comes from actions/setup-go, pinned by digest as the other workflows
+    pin it, at the toolchain go/cli's go.mod names, read from that branch so it moves with the
+    code. Run check over the repository with fixed sample answers, as T-7 does, and fail on a
+    non-zero exit, any warning, or anything but every combination passing. List the workflow in
+    the manifest's template_only so a made project never gets it. The file is root-owned, like
+    the manifest: merge main into stack/go and then go/cli with normal merge commits, each keeping
+    the receiving branch's registry and config, so every branch carries the same file. Main's
+    ci.yml and the branches' own ci.yml stay as they are. Prove it with the workflow's own green
+    run on each branch's head.
+  done_when:
+    - run: test -f .github/workflows/template-check.yml && grep -q "itos-template@v0.19.0" .github/workflows/template-check.yml && grep -q "schedule" .github/workflows/template-check.yml
+    - run: grep -qE "^  - \.github/workflows/template-check\.yml$" itos-template.yaml
