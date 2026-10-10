@@ -388,14 +388,15 @@ items:
     status: dropped
     depends_on: []
     kind: idea
-  - id: made-project-setup-docs
+  - id: T-32
     title: Say in the made project's guides how its policy is adopted
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was made-project-setup-docs.
       Found by T-27: docs/go.md's Made projects section on stack/go and go/cli, and
       docs/engineering.md on main, still say fresh-project setup waits on upstream itos and that a
       made project has none of the branch's rules. Since T-27 a render ships itos-policy.yaml and
