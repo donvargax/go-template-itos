@@ -66,3 +66,56 @@ jobs:
             echo "::error::itos-template check did not report every combination passing"
             exit 1
           fi
+
+  # Deprecated in favour of per-branch-ledgers (q-10): once each branch has its own ledger file and
+  # no render merge conflicts, remove this job and its actions write.
+  #
+  # Every branch appends to one ledger file, so a parent's new entry conflicts with its children's
+  # until the merge down reaches go/cli, and the Template check run of that parent's head stays red
+  # with nothing to run it again. After check passes, this job re-runs the failed jobs of the latest
+  # run on main's and stack/go's current heads. A run that is this one, still in progress or passed
+  # is left alone; go/cli has no children, so it is never re-run here.
+  #
+  # It cannot loop or storm. A rerun is no push and no schedule, so it starts no new run. --failed
+  # re-runs only the failed jobs and what depends on them, and only a passing check reaches this
+  # job, so each failed head run is re-run at most once per passing run. When a re-run attempt
+  # passes, its own job skips its run as the current one and finds the other head's run passed or
+  # already in progress from the run that re-ran both, so it has nothing left to re-run; a red
+  # attempt never reaches this job.
+  rerun-parents:
+    needs: check
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # The only job that may re-run runs; check keeps the workflow's read-only contents.
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Re-run the parents' failed runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          CURRENT_RUN: ${{ github.run_id }}
+        run: |
+          for branch in main stack/go; do
+            sha=$(gh api "repos/$GH_REPO/branches/$branch" --jq .commit.sha)
+            latest=$(gh run list --workflow template-check.yml --branch "$branch" --commit "$sha" \
+              --limit 1 --json databaseId,status,conclusion \
+              --jq '.[] | "\(.databaseId) \(.status) \(.conclusion)"')
+            if [ -z "$latest" ]; then
+              echo "$branch $sha has no Template check run"
+              continue
+            fi
+            read -r id state conclusion <<< "$latest"
+            if [ "$id" = "$CURRENT_RUN" ]; then
+              echo "$branch $sha: run $id is this run"
+            elif [ "$state" != completed ]; then
+              echo "$branch $sha: run $id is $state"
+            elif [ "$conclusion" != failure ]; then
+              echo "$branch $sha: run $id ended $conclusion"
+            else
+              echo "$branch $sha: re-running the failed jobs of run $id"
+              gh run rerun "$id" --failed
+            fi
+          done

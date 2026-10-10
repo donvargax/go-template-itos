@@ -496,3 +496,20 @@
     combinations at the pushed heads. No behaviour change in the helpers.
   done_when:
     - run: "! grep -q \"https://github.com/itos-corp/go-template-itos/compare\" tools/bin/release-notes/main_test.go"
+- id: T-23
+  type: ci
+  title: A passing Template check clears the parents' stale red runs
+  why: >
+    The render merges the branches, and a parent's new ledger entry conflicts with its children's
+    until the merge down reaches go/cli, so that parent head's Template check run stays red and
+    nothing runs it again (T-21, run 38021113542). The person chose an automatic rerun (q-10):
+    when Template check passes on a push, a job re-runs the latest failed Template check of
+    main's and stack/go's heads, other than its own run, using gh with the workflow's token. Only
+    that job gets actions write; the check job stays contents read. A run that is not the head's
+    latest, or a head whose latest passed, is left alone, and it never loops: a rerun is not a
+    push and starts no rerun of its own. The rerun is deprecated in favour of per-branch-ledgers:
+    the workflow says so beside the job, and that idea removes it once no render merge
+    conflicts. The workflow is root-owned, so merge main into stack/go and then go/cli as T-21
+    did. Prove it by a parent's red run turning green through the job, not by hand.
+  done_when:
+    - run: grep -q "actions. write" .github/workflows/template-check.yml && grep -q "per-branch-ledgers" .github/workflows/template-check.yml && grep -q "gh run rerun" .github/workflows/template-check.yml
