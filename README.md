@@ -14,7 +14,8 @@ none of this repository's own itos data.
 Ready means a made project starts out building and passing its checks. What a made project
 gets, and what it does not get yet:
 
-- [ ] Its CI runs the Go checks on its own `main` branch, on Linux, macOS and Windows.
+- [x] Its CI runs the Go checks on its own `main` branch, on Linux, macOS and Windows: see
+  [the sample project's run](https://github.com/donvargax/go-template-itos-sample/actions/runs/38081894211).
 - [x] Setup gives it its own commit rules and checks, the ones this template is held to.
 - [ ] A CLI project publishes its binaries when it makes a release.
 - [ ] Every guide it ships speaks to the made project, not to the template.
