@@ -118,14 +118,15 @@ items:
       binary releases distinct from template branch/tag releases, and never publish a nonexistent
       root binary. Preserve GoReleaser checksums and attestation, prove the wiring on a generated
       main, and make docs say what runs rather than what the dormant scaffold promises.
-  - id: cli-guide-check-stale
-    title: T-16's check still requires the not-yet sentence T-17 removed
+  - id: T-19
+    title: Fix T-16's check that T-17 made stale
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was cli-guide-check-stale.
       T-16's second done_when check greps docs/CLI.md for cli-exhaustive-errors, the not-yet
       sentence of rule 32 naming the item that would add the exhaustive error lint. T-17 added that
       lint and, as its spec required, removed the sentence, so itos task T-16 now reports T-16
