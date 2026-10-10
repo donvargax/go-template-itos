@@ -350,14 +350,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: render-decisions-index
-    title: A render ships only decision 1, with an index naming exactly it
+  - id: T-29
+    title: A render ships decision 1 alone
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was render-decisions-index.
       q-18 settled that a made project gets only decision 1, with an index listing only it, and
       decisions 2 to 5 in template_only. T-28 found itos 7.0.0-rc.5 cannot keep that true without a
       hand-kept second list: docs/decisions/README.md is written only by itos decision record, from
