@@ -73,3 +73,18 @@ questions:
     question: "Renovate's branch configs carry Task: T-2, which a made project's fresh ledger will not hold. Recommended: a made project's policy does not require Task on build and ci commits, the branch renovate.json5 files drop the trailer, and main's config adds the template's trailers per base branch. Or: setup creates a dependencies task that the made project's Renovate config names."
     answer: "A made project's policy requires no Task on build and ci commits, and the branch renovate.json5 files carry no trailer; main's config gives the template's own requests their Task trailer per base branch."
     decision: none
+  - id: q-16
+    item: "made-project-policy"
+    question: "Renders ship the template's mutation records (.metrics/mutate/) and reviewed exceptions (itos-cc.yaml). Should a made project start with them? Recommended: keep them as its baseline, since its code starts as the template's, renamed, and its own proof judges only its changes after setup. Or: exclude them through template_only, so its mutation sample has nothing until a first full run."
+    answer: "Keep them as the made project's baseline. Its code starts as the template's, renamed, so the records and reviewed exceptions describe it, and its own code proof judges only what it changes after setup. The rule against copying another project's cache by hand stands."
+    decision: none
+  - id: q-17
+    item: "template-only-docs"
+    question: "Renders ship PLAN.md and docs/ORCHESTRATING.md, which only make sense for the template, and README.md and AGENTS.md mix template text with project rules. Recommended: split files by audience, putting PLAN.md and docs/ORCHESTRATING.md in template_only, rewriting stack/go's and go/cli's README.md and AGENTS.md for the made project, and moving their template-facing parts to a template_only TEMPLATE.md that AGENTS.md points to only while it exists. Or: a setup step deletes the template-only files, leaving the mixed ones as they are."
+    answer: "Split files by audience: PLAN.md and docs/ORCHESTRATING.md in template_only; the rendering branches' README.md and AGENTS.md written for the made project; their template-facing parts in a template_only TEMPLATE.md, pointed to only while it exists. main's README stays the template's front page."
+    decision: none
+  - id: q-18
+    item: "template-only-docs"
+    question: "Which decision records does a made project get? Decision 1 binds a made CLI; decisions 2 to 5 are about running the template. Recommended: ship them all, as records of why the code is as it is. Or: ship only decision 1, with an index listing only it."
+    answer: "Ship only decision 1, with an index that lists only it."
+    decision: none
