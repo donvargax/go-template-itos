@@ -607,6 +607,15 @@
     --ref v0.1.0 passes both combinations, and itos-template new from the public URL with no ref
     renders v0.1.0 and its .itos-template.yaml names the release. Main's README says how to make a
     project from the released template, in a docs commit.
+
+    Waiting, by the person's choice in q-30: itos-template 0.24.1 has no release command (its
+    idea template-release-command is still open, and the 2026-10-09 call rules out tagging by
+    hand), so this item waits until itos-template ships it; the person follows that up there.
+    Template check's move from v0.19.0 to v0.24.1 left this item for T-46. It stays in progress
+    under donvargax only because itos cannot give an item back to todo for deferring
+    (donvargax/itos#42); nobody works it until the command exists. Note for when it does: itos-
+    template's idea gives the root a bare v1.2.0 tag while its manifest guide says main/v1.2.0;
+    build to whichever the command does.
   done_when:
     - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.1.0'
 - id: T-43
@@ -620,8 +629,6 @@
     replaces, keeping the permission sentence true. Main's README says the same of the template
     and changes with it, so the wording stays one across branches. The coordinator writes it in
     docs commits, main first and merged down.
-  done_when:
-    - run: "! grep -q \"copyright owner's\" README.md"
 - id: T-44
   type: docs
   title: The Setup guide says a made project re-proves the code it changes
@@ -635,8 +642,6 @@
     docs/go.md's Setup section on stack/go and go/cli says so, in a docs commit; donvargax/itos-
     cc#32 asks itos-cc for renewal of an unchanged exception, which would let a later setup step
     re-prove a made project unattended.
-  done_when:
-    - run: "test ! -f docs/go.md || grep -q 'starting point' docs/go.md"
 - id: T-45
   type: docs
   title: docs/CLI.md rule 28 says why version prints no --json hint
@@ -646,5 +651,19 @@
     itos-template's version has neither. The person chose no hint (q-29): rule 28 on go/cli says
     version's two short lines are not data a script would scrape, and version --json is there
     for scripts. A docs commit on go/cli.
+- id: T-46
+  type: ci
+  title: Template check runs itos-template v0.24.1
+  why: >
+    Split from T-42 by q-30. The Template check workflow installs itos-template v0.19.0 with go
+    install; the newest is v0.24.1. Its notes from 0.19.1 to 0.24.1 carry no breaking change and ask
+    nothing of itos-template.yaml or the workflow (a record holds no URL credential; check names the
+    template and records it by path; new renders the newest complete release, check takes --ref and
+    a record names its release; adopt is new; a template path holding an invisible character is
+    refused). Move the go install line to v0.24.1 in .github/workflows/template-check.yml, the same
+    file on main, stack/go and go/cli, in a ci commit on main merged down, entry by entry for the
+    ledger, each branch keeping its own itos.yaml, ci.yml, README.md and registry. See Template
+    check green on every head with the new version. Its renders still come from the branch heads,
+    since the template has no release yet (T-42).
   done_when:
-    - run: "test ! -f docs/CLI.md || grep -A4 '^28\\. ' docs/CLI.md | grep -q version"
+    - run: grep -q 'itos-template@v0.24.1' .github/workflows/template-check.yml

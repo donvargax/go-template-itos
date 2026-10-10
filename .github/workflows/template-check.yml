@@ -42,7 +42,7 @@ jobs:
           go-version-file: go-cli/go.mod
           cache-dependency-path: go-cli/go.sum
       # go install verifies the module against Go's checksum database.
-      - run: go install github.com/donvargax/itos-template/cmd/itos-template@v0.19.0
+      - run: go install github.com/donvargax/itos-template/cmd/itos-template@v0.24.1
       # The output goes to a file and check's own exit status is kept, so nothing reading it can
       # hide a failure. A warning (a render left unscanned for credentials) or anything short of
       # every combination passing fails the job as a non-zero exit does.
