@@ -389,8 +389,8 @@ items:
   - id: T-44
     title: A render's mutation records match its own code
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
