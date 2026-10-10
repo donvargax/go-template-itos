@@ -15,10 +15,8 @@
   claiming the automation runs.
 - Ask, answer and record every question on `main`, even one specific to a stack or feature
   (decision 3). Question and record numbers are per branch; asked anywhere else, main reuses them.
-- A new task's id is one above the highest on any branch (decision 4), never `itos task next-id`
-  alone: `git fetch` and `git grep -hoE 'id: T-[0-9]+' main stack/go go/cli origin/main
-  origin/stack/go origin/go/cli -- 'tasks/phase-*.yaml' | sort -t- -k2n | tail -1`, local
-  branches included for ids not pushed yet.
+- itos mints each new task and numbered item id from refs/itos/ids, which every branch shares
+  (decision 5); `itos task add` and `itos work add --kind` refuse an id given by hand.
 - Main's registry is the template-wide index of every idea. When the work lands on a stack or
   feature branch, leave main's copy open with an `itos work edit --note` naming where; never
   drop it, since dropped reads as unwanted.
@@ -29,8 +27,9 @@
   user-facing docs; each branch's claims must match its implemented stage.
 - The count example uses standard-library Unicode whitespace and logical lines. Its additive
   property uses newline-terminated pieces, not arbitrary concatenation.
-- The proof base is the parent of the item's actual first commit, specs included. Adding tests
-  can stale imported-code snapshots: refresh the records the gate requires, not the gate.
+- The proof base is the push's range start, the nearest ancestor with a green CI run: `itos ci
+  run` judges the proof from there, and `itos work done` runs none. Adding tests can stale
+  imported-code snapshots: refresh the records the gate requires, not the gate.
 - This branch's code proof covers `cmd/` and `internal/`.
 - Pick a representative smoke scenario when the CLI runner makes each feature live. Keep live
   scenarios as explained wip on a revert; never delete them to force the revert through.

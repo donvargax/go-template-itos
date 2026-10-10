@@ -513,3 +513,28 @@
     did. Prove it by a parent's red run turning green through the job, not by hand.
   done_when:
     - run: grep -q "actions. write" .github/workflows/template-check.yml && grep -q "per-branch-ledgers" .github/workflows/template-check.yml && grep -q "gh run rerun" .github/workflows/template-check.yml
+- id: T-24
+  type: build
+  title: Move every branch to itos 7.0.0-rc.4 and retire decision 4
+  why: >
+    itos 7.0.0-rc.4 mints every item and scenario id through the counter refs/itos/ids on the
+    remote, shared by all branches (itos decision 45, slice-102), which ends the cross-branch id
+    clash decision 4 works around by hand. Every branch pins 7.0.0-rc.1. The person approved
+    moving to rc.4, a pre-release as rc.1 is. On each of main, stack/go and go/cli, move the pin
+    with itos pin and the workflow action with it, as docs/upgrading.md and the release's
+    Upgrading section say, and apply every Upgrading step since rc.1 that the branch's config
+    meets: rc.3 moves the code proof from work done into itos ci run, and rc.2 has work done drop
+    a closed task's checks. Regenerate the agent rules with itos init --agent-rules, and correct
+    the prose that describes the old flow (AGENTS.md, docs/ORCHESTRATING.md, docs/go.md,
+    docs/upgrading.md) on each branch where it says so. A mint takes one past the higher of the
+    counter and the highest id the branch holds; every branch holds T-24, so the first mint is
+    T-25 or above. Do not mint an id to test it: record refs/itos/ids' absence before, and the
+    coordinator checks the counter on its next real mint. Supersede decision 4 with a record
+    saying ids are minted by itos, and remove its command from the notes. Questions are not
+    counter-minted, so decision 3 stands. Branches move independently, since itos.yaml and
+    ci.yml are each branch's own; merge main down afterwards for the shared docs, as earlier
+    items did. A gate that rc.4 refuses on existing work is a finding to report, not a check to
+    weaken.
+  done_when:
+    - run: grep -q '7.0.0-rc.4' itos.yaml && grep -q 'v7.0.0-rc.4' .github/workflows/ci.yml
+    - run: '! grep -q "git grep -hoE" docs/ORCHESTRATING.md'
