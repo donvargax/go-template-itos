@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "file": "internal/cli/version.go",
+  "language": "go",
+  "tests": {
+    "cmd/go-template-itos/main_test.go": "818584786d3ee213fbf511ab56f24862a1c4bf9f554a0e2f1b2720f4201947ee",
+    "internal/cli/cli_test.go": "52abace9ae31e82ba96750e462a1c12d1e1c36a43e786795a58ebe9cb141a96b",
+    "internal/cli/completion_test.go": "e5a2efb94994d45b2580e11e919af565e5650f39d7116c388c78fbba98e626e3",
+    "internal/cli/flags_test.go": "6a74267a3b1eaaf1f6d1997f40918a4155028e2b2f2a1c2b3a762020888a68fd",
+    "internal/cli/version_test.go": "290ca6a0bbcc01c23160f93dee4f3e69d860ad04b7fc10ecf1d8c01f8861efb9",
+    "internal/count/command/command_test.go": "2f205437e0cfcec287ea28df530c923ceb5c7aedc26b3dc246e5341e46312ea3"
+  },
+  "units": [
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/cli.Version",
+      "name": "Help",
+      "hash": "fafb661968a77dce",
+      "start_line": 18,
+      "end_line": 24,
+      "killed": 4,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 4,
+      "mutants": [
+        {
+          "line": 19,
+          "column": 95,
+          "offset": 125,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 20,
+          "column": 101,
+          "offset": 227,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 21,
+          "column": 23,
+          "offset": 251,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 22,
+          "column": 24,
+          "offset": 276,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/cli.Version",
+      "name": "Run",
+      "hash": "001f94f7ae11ded2",
+      "start_line": 39,
+      "end_line": 46,
+      "killed": 4,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 4,
+      "mutants": [
+        {
+          "line": 41,
+          "column": 25,
+          "offset": 102,
+          "original": "1",
+          "replacement": "0",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 41,
+          "column": 32,
+          "offset": 109,
+          "original": "true",
+          "replacement": "false",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 42,
+          "column": 10,
+          "offset": 159,
+          "original": "0",
+          "replacement": "1",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 45,
+          "column": 9,
+          "offset": 210,
+          "original": "0",
+          "replacement": "1",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    }
+  ]
+}
