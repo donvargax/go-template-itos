@@ -418,6 +418,13 @@ items:
       docs/go.md also links decision 2, which renders leave out. The coordinator's docs commits
       bring these user-facing guides in step, keeping the claim about CI on a made main withheld
       until made-project-ci.
+
+      T-31 made a made main's CI set up Go and run the platform jobs, proved on
+      go-template-itos-sample's run 38081894211, so the CI claim need no longer be withheld.
+      docs/go.md's Made projects section on stack/go and go/cli still says the workflow runs its Go
+      steps only on stack/, go/ and renovate/ branches, which is now false; T-31's docs commits left
+      it to this item, as its spec named only TEMPLATE.md, docs/CLI.md, docs/upgrading.md and
+      docs/ORCHESTRATING.md.
   - id: made-project-agent-rules
     title: A made project's AGENTS.md rules describe its adopted policy
     phase: 1
