@@ -28,6 +28,8 @@ git-cliff publishes a `.sha512` file per archive rather than a checksums file: m
 checking each archive against that file first, then pinning the archive's SHA-256.
 
 The release job in `ci.yml` runs only on a push to `main`, so this branch cuts no CLI binary
-release, and a made project's `main` cuts none until `made-project-ci` makes its CI run there.
+release. On a made project's `main` it runs after the ci and platform jobs pass and cuts a release
+when the commits since the last tag call for one, but none has been published that way yet, so a
+real release is still unproven.
 Template releases and the generator's adoption/update workflow are separate from made-project
 binary release tooling and are not claimed here.

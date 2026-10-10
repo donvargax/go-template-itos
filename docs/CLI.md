@@ -34,8 +34,8 @@ All plain output is for people and can change in any release. A script reads `--
 exit code, never the plain output and never a `message`. A change to the contract is a breaking
 change, and a breaking change makes a major release. Once there is a release, CI is meant to run
 the last release's scenarios against the new binary. Not yet: CI's release job runs only on a
-push to `main`, and a made project's `main` cuts no release until `made-project-ci` makes its CI
-run there, so there is no release.
+push to `main`, after the ci and platform jobs pass there, and no release has been cut from a
+made project's `main` yet, so there is no release to run them against.
 
 ### Exit codes
 
