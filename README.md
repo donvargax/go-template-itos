@@ -17,7 +17,8 @@ gets, and what it does not get yet:
 - [x] Its CI runs the Go checks on its own `main` branch, on Linux, macOS and Windows: see
   [the sample project's run](https://github.com/donvargax/go-template-itos-sample/actions/runs/38081894211).
 - [x] Setup gives it its own commit rules and checks, the ones this template is held to.
-- [ ] A CLI project publishes its binaries when it makes a release.
+- [x] A CLI project publishes its binaries when it makes a release: see
+  [the sample project's v0.1.0](https://github.com/donvargax/go-template-itos-sample/releases/tag/v0.1.0).
 - [ ] Every guide it ships speaks to the made project, not to the template.
 - [ ] Automatic dependency updates are proven running on every branch.
 
