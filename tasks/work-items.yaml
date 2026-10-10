@@ -127,6 +127,9 @@ items:
       is cli-exhaustive-errors; the q-1 behavior change is cli-once-only-flags. Describe the current
       behavior accurately and identify the selected change as pending until its slice lands. Do not
       change live scenarios, flags or error classification in the documentation item.
+
+      Delivered on go/cli as T-16, docs/CLI.md (CI run 38015944815). Kept open as main's
+      template-wide index entry.
   - id: made-project-policy
     title: Give generated projects fresh governance with the inherited quality policy
     phase: 1
