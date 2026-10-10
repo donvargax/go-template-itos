@@ -22,10 +22,15 @@ branch's actual code in view, not by copying root bootstrap claims into finished
 - T-8 wrote `docs/engineering.md` and its short agent-rule reference on `main`.
   The guide commit is `9a58617892771a6eb9d67b3d04f9ac3c16b1f9cb`; its
   [exact-head CI passed](https://github.com/donvargax/go-template-itos/actions/runs/37980659570).
-  The item is closed. The guide still needs downward propagation into the Go branches.
-- `go-engineering` describes the actual Go policy on `stack/go`.
-- `go-architecture` strengthens existing depguard enforcement on `stack/go`, then inherits
-  into `go/cli`. Additions needed only for the CLI stay in the feature's configuration.
+  The item is closed. It reached `stack/go` and then `go/cli` through T-11.
+- `go-engineering` was delivered as T-10 (`docs/go.md`) and `go-architecture` as T-9 on
+  `stack/go`. T-11 merged both into `go/cli`, adding the feature's application and kong rules;
+  their results are in that branch's copy of this plan.
+- T-13 added the import-boundary self-test to the manifest's `go` and `cli` checks. itos-template
+  check passed both combinations at the merged heads; the main
+  [run](https://github.com/donvargax/go-template-itos/actions/runs/38012832848) and the
+  [go/cli run](https://github.com/donvargax/go-template-itos/actions/runs/38013111934) passed.
+  No CI runs that check yet (`template-check-ci`).
 - `cli-contract` writes the reusable CLI guide on `go/cli`, without changing behavior.
 - `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
 - `cli-once-only-flags` implements q-1: reject repeated non-cumulative flags with usage exit
