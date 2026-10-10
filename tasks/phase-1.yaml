@@ -392,3 +392,24 @@
     - run: test -f docs/CLI.md && grep -q docs/CLI.md AGENTS.md
     - run: grep -q GO_TEMPLATE_ITOS_JSON docs/CLI.md && grep -q COUNT_INPUT_MISSING docs/CLI.md && grep -q cli-exhaustive-errors docs/CLI.md && grep -q docs/CONFIG.md docs/CLI.md
     - run: '! grep -qE "itos-template [a-z]|ITOS_TEMPLATE_|manifest|decision (4|17|25|35)" docs/CLI.md'
+- id: T-17
+  type: ci
+  title: The linter refuses an error switch that leaves a failure kind out
+  why: >
+    docs/CLI.md rule 32 says each sealed failure set gets its exit code in one switch with no
+    default and a lint refusing a switch that leaves a kind out; today internal/cli's readProblem
+    switch over port.ReadFailure is complete only by review. The person chose gochecksumtype (q-5):
+    it is bundled in the pinned golangci-lint, so no tool or dependency is added, and itos-template
+    uses it. Enable it in go/cli's .golangci.yml with default-signifies-exhaustive false and a
+    comment in the existing style, harvested with provenance. Annotate port.ReadFailure with
+    //sumtype:decl; that file is the stack's, so the one comment line is the only change to it here,
+    and any other sealed set the CLI switches over is annotated the same way. Prove it in
+    tools/testdata/architecture's self-test, which runs the pinned linter with this configuration:
+    a compile-valid fixture whose switch omits a kind is refused, and one naming every kind passes.
+    The switch keeps starting from the internal error, so an unclassified error still exits 70.
+    Exit codes, JSON envelopes and every live scenario stay as they are. Once green, docs/CLI.md
+    rule 32 drops its not-yet sentence in the same item.
+  done_when:
+    - run: grep -q gochecksumtype .golangci.yml && grep -q "default-signifies-exhaustive. false" .golangci.yml
+    - run: grep -q "//sumtype:decl" internal/count/port/files.go && grep -q gochecksumtype tools/testdata/architecture/check_test.go
+    - run: '! grep -q "cli-exhaustive-errors" docs/CLI.md'
