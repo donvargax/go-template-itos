@@ -86,3 +86,4 @@ questions:
   - id: q-18
     item: "template-only-docs"
     question: "Which decision records does a made project get? Decision 1 binds a made CLI; decisions 2 to 5 are about running the template. Recommended: ship them all, as records of why the code is as it is. Or: ship only decision 1, with an index listing only it."
+    answer: "Ship only decision 1, with an index that lists only it."
