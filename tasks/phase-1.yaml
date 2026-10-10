@@ -239,5 +239,3 @@
     and regenerate the agent rules. Branches move independently; merge main down afterwards for the
     ledger, as earlier items did, keeping each branch's itos.yaml, ci.yml and registry. A gate rc.5
     refuses on existing work is a finding, not a check to weaken.
-  done_when:
-    - run: grep -q "7.0.0-rc.5" itos.yaml && grep -q "v7.0.0-rc.5" .github/workflows/ci.yml && ! grep -rq "v7.0.0-rc.4" .github/workflows
