@@ -281,8 +281,8 @@ items:
   - id: T-21
     title: CI re-proves every render on each template push and weekly
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
