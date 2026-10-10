@@ -311,14 +311,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: guides-template-wording
+  - id: T-40
     title: Shipped guides speak to the made project, not the template
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was guides-template-wording.
       After T-28 a render's README.md and AGENTS.md speak to the made project, but other guides it
       ships still speak as the template or name its branches: docs/go.md (what stack/go or go/cli
       holds, its Made projects section on renders), docs/architecture.md (the go/cli feature),
