@@ -391,3 +391,19 @@ items:
       since T-28 renders leave out docs/ORCHESTRATING.md, so in a made project the script stops at
       the missing file instead of checking AGENTS.md. Nothing runs it in a made project yet; T-27's
       policy or made-project-ci would, and should find it working.
+  - id: guides-template-wording
+    title: Shipped guides speak to the made project, not the template
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      After T-28 a render's README.md and AGENTS.md speak to the made project, but other guides it
+      ships still speak as the template or name its branches: docs/go.md (what stack/go or go/cli
+      holds, its Made projects section on renders), docs/architecture.md (the go/cli feature),
+      docs/engineering.md, docs/CONFIG.md, docs/security.md, docs/upgrading.md and
+      features/README.md (this template, renders, main's Renovate), and CONTRIBUTORS.md, which calls
+      the owner answer the template's illustrative owner. Rewrite them for the made project as T-28
+      did README.md and AGENTS.md, keeping the harvest provenance, and move what only the template
+      needs to TEMPLATE.md.
