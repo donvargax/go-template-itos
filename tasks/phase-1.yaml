@@ -609,5 +609,3 @@
     Unreadable out, or ending in a default arm, is refused while the complete one passes. Main's
     idea copy was never noted as delivered, so it was promoted again; q-31's approval confirms
     the linter already in use, and this task closes on that work with no new commit.
-  done_when:
-    - run: "test ! -f .golangci.yml || grep -q gochecksumtype .golangci.yml"

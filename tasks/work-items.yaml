@@ -163,25 +163,9 @@ items:
     title: Lint the sealed CLI failure-to-exit classification exhaustively
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was cli-exhaustive-errors.
-      Belongs on go/cli, not main or a Go library stack with no process exits. Harvest the existing
-      gochecksumtype gate and annotations from itos-template, using the linter already bundled in
-      pinned golangci-lint rather than adding a custom analyzer or dependency. Annotate the existing
-      sealed failure set and require its UI switch to name every variant; a default arm does not
-      satisfy exhaustiveness and remains for genuinely unclassified errors. Preserve current exit
-      codes, JSON envelopes and all live scenarios. Prove an omitted variant is refused by the
-      actual configured linter using a compile-valid negative case, and prove the complete switch
-      passes. This is a checked lint/refactor task, not a public behavior slice; keep it separate
-      from duplicate flags and documentation. Obtain the persons approval of the reused linter when
-      specifying this item, as the library-choice policy requires.
-
-      Delivered on go/cli as T-17 with gochecksumtype, the person's choice in q-5 (CI run
-      38016604269); T-18 named the lint in the guides and T-19 fixed the T-16 check it made stale.
-      Kept open as main's template-wide index entry.
   - id: T-25
     title: Renovate updates every branch that holds code
     phase: 1
