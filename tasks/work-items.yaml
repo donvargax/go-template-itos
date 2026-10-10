@@ -333,3 +333,19 @@ items:
       module literal. Its CI run
       https://github.com/donvargax/go-template-itos/actions/runs/38020818584 passed, and
       itos-template check v0.19.0 at that head printed 2 of 2 combinations passed.
+  - id: template-check-rerun
+    title: A parent branch template-check run turns green once its merge down lands
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      itos-template check renders go + cli by merging go/cli into stack/go, and refuses the render
+      when that merge conflicts. Each branch appends to tasks/phase-1.yaml, so a push to main or
+      stack/go that adds a ledger entry leaves the template-check run of its head red until the
+      merge down reaches go/cli, and nothing runs it again: during T-21, stack/go run 38021113542
+      failed with a ledger conflict and passed only on a manual rerun after go/cli took the merge.
+      Decide whether a push to a child branch should also re-run the check for its parents, the
+      weekly run is enough, or the coordinator re-runs it by hand after each merge down, and write
+      that down.
