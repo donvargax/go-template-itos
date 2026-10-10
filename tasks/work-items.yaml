@@ -126,8 +126,8 @@ items:
   - id: T-22
     title: The release notes tests pass in a render
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
