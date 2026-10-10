@@ -150,6 +150,10 @@ items:
       selected branches quality rules, and that running setup does not silently weaken CI or
       regenerate rules from a weaker starter. Any missing itos capability is reported upstream
       rather than worked around here.
+    deferred: >
+      go + cli waits on donvargax/itos#39: init --policy must adopt the existing smoke set the
+      render ships. The person may lift this for the go-only half, since stack/go ships no smoke
+      set.
   - id: made-project-ci
     title: Run the inherited Go and CLI checks on a generated ordinary main branch
     phase: 1
