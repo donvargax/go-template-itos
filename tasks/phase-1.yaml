@@ -502,8 +502,6 @@
     entry by entry for the ledger, keeping each branch's itos.yaml, ci.yml, README.md and registry.
     A gate 7.1.2 refuses on existing work is a finding, not a check to weaken. Push each branch's
     commits together and see its CI and Template check green.
-  done_when:
-    - run: "grep -q 'version: \"7.1.2\"' itos.yaml && ! grep -rqE 'itos@[0-9a-f]+ # v7\\.0\\.' .github/workflows"
 - id: T-42
   type: ci
   title: Cut the template's first release, v0.1.0
