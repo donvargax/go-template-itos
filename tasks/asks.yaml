@@ -53,3 +53,23 @@ questions:
     question: "Decision 4 numbers a new task one above the highest id on any branch, found by hand with git grep, because rc.1's task next-id reads only the local tree. itos 7.0.0-rc.4 mints every task and numbered item id from the counter refs/itos/ids on the remote, shared by all branches (itos decision 45), one past the higher of the counter and the highest id the branch holds, and task add, numbered work add and work promote refuse an id given. Recommended, as T-24 specifies: supersede decision 4 with ids minted by itos, and remove its command from the notes. Or: keep decision 4 beside the counter as a hand check."
     answer: "Supersede decision 4, as the person approved with T-24: itos mints every task and numbered item id from refs/itos/ids, shared by all branches, so a new id is unique without a hand rule, and the notes lose decision 4's git grep command. Questions are not counter-minted, so decision 3 stands."
     decision: 5
+  - id: q-12
+    item: "renovate-branches"
+    question: "Renovate has never run on this repository, nor on itos or itos-template: no request, branch, dashboard or commit, so the app is likely not installed. renovate-branches can only be proven on a real request. Recommended: the person installs the Mend Renovate app and the item closes on a real request per branch. Or: a self-hosted renovatebot/github-action on a schedule with a stored token. Or: land the baseBranches config now and defer the proof until Renovate runs."
+    answer: "Config only for now: land the baseBranches configuration, and defer proving it on a real request, as its own idea, until Renovate runs. The docs keep saying the automation is unverified."
+    decision: none
+  - id: q-13
+    item: "made-project-policy"
+    question: "itos 7.0.0-rc.5's init --policy copies a complete itos config once into a fresh project. Where does a made project's policy file live, and what happens to it after setup? Recommended: a complete itos-policy.yaml at each branch's top, which the setup step passes to itos init --policy and then deletes. Or: the same file kept after setup. Or: .itos/policy.yaml."
+    answer: "A complete itos-policy.yaml at each branch's top; the setup step runs itos init --policy itos-policy.yaml and then deletes the file, so a made project has one config, its itos.yaml."
+    decision: none
+  - id: q-14
+    item: "made-project-policy"
+    question: "How is each branch's itos-policy.yaml kept in step with its own itos.yaml, which holds the same gates plus template-only steps? Recommended: a CI step on each branch fails when their commit rules or Go and CLI steps differ beyond a listed set of template-only steps. Or: a script generates the policy from itos.yaml. Or: by hand."
+    answer: "A CI step on each branch compares itos-policy.yaml with the branch's itos.yaml and fails when they differ beyond a listed set of template-only steps."
+    decision: none
+  - id: q-15
+    item: "made-project-policy"
+    question: "Renovate's branch configs carry Task: T-2, which a made project's fresh ledger will not hold. Recommended: a made project's policy does not require Task on build and ci commits, the branch renovate.json5 files drop the trailer, and main's config adds the template's trailers per base branch. Or: setup creates a dependencies task that the made project's Renovate config names."
+    answer: "A made project's policy requires no Task on build and ci commits, and the branch renovate.json5 files carry no trailer; main's config gives the template's own requests their Task trailer per base branch."
+    decision: none
