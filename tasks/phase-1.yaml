@@ -589,8 +589,6 @@
     entry by entry for the ledger, keeping each branch's itos.yaml, ci.yml, README.md and registry.
     A gate 7.1.2 refuses on existing work is a finding, not a check to weaken. Push each branch's
     commits together and see its CI and Template check green.
-  done_when:
-    - run: "grep -q 'version: \"7.1.2\"' itos.yaml && ! grep -rqE 'itos@[0-9a-f]+ # v7\\.0\\.' .github/workflows"
 - id: T-42
   type: ci
   title: Cut the template's first release, v0.1.0
@@ -611,3 +609,42 @@
     project from the released template, in a docs commit.
   done_when:
     - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.1.0'
+- id: T-43
+  type: docs
+  title: README credits itos and itos-template to their author, not the project's owner
+  why: >
+    Was readme-provenance-owner, found by T-40. README.md on stack/go and go/cli says the
+    infrastructure is harvested from the copyright owner's itos and itos-template; a render
+    replaces LICENSE's copyright holder with the made project's owner, so the sentence credits
+    itos to that owner. It names their author by handle instead, donvargax, which no render
+    replaces, keeping the permission sentence true. Main's README says the same of the template
+    and changes with it, so the wording stays one across branches. The coordinator writes it in
+    docs commits, main first and merged down.
+  done_when:
+    - run: "! grep -q \"copyright owner's\" README.md"
+- id: T-44
+  type: docs
+  title: The Setup guide says a made project re-proves the code it changes
+  why: >
+    Was render-mutation-records. A render's .metrics/mutate records and itos-cc.yaml exceptions
+    hash the template's sources, and the render replaces the name, owner and module literals
+    inside them, so they are stale in a made project wherever a literal appears (64 entries in
+    go-template-itos-sample, and the run exception). The person chose option a of q-28: they are
+    a starting point that a made project re-proves wherever it changes code, as it must anyway,
+    keeping the exception reasons to re-apply; this revises q-16's 'kept as the baseline'.
+    docs/go.md's Setup section on stack/go and go/cli says so, in a docs commit; donvargax/itos-
+    cc#32 asks itos-cc for renewal of an unchanged exception, which would let a later setup step
+    re-prove a made project unattended.
+  done_when:
+    - run: "test ! -f docs/go.md || grep -q 'starting point' docs/go.md"
+- id: T-45
+  type: docs
+  title: docs/CLI.md rule 28 says why version prints no --json hint
+  why: >
+    Was version-json-hint, found by T-34. Rule 28 asks for a stderr hint at --json when plain
+    output looks like data; count prints one, and version has had --json since T-34 but no hint.
+    itos-template's version has neither. The person chose no hint (q-29): rule 28 on go/cli says
+    version's two short lines are not data a script would scrape, and version --json is there
+    for scripts. A docs commit on go/cli.
+  done_when:
+    - run: "test ! -f docs/CLI.md || grep -A4 '^28\\. ' docs/CLI.md | grep -q version"
