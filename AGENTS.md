@@ -1,7 +1,7 @@
 # Working rules
 
 Read `PLAN.md` first. This repository is itself the template; each branch stays a real project.
-This branch has the Go foundation and a private counting example, not the public CLI yet.
+This branch is the Go stack with the public count CLI, its scenarios and their godog runner.
 
 Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
 stack and interface; stack and feature guides add only what is specific to them.

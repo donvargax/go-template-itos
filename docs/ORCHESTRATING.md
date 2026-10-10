@@ -4,8 +4,9 @@
 
 ## Start of a session
 
-- Read `PLAN.md` and this branch's actual `itos.yaml`. The Go foundation has private example
-  code and its Go/code-proof gates, but no public CLI, godog runner or binary release job yet.
+- Read `PLAN.md` and this branch's actual `itos.yaml`. The public count CLI, its scenarios and
+  godog runner are here. The release workflow runs only on a made project's `main`; this branch
+  cuts no binary release until `cli-releases` finishes it.
 - Root is `main`; stacks and features remain real projects. Merge common changes downward,
   never rebase published history. Made-project binary releases are not template release tags.
 - Infrastructure is harvested from the owner's itos-template and itos repositories. Preserve
@@ -26,7 +27,7 @@
   property uses newline-terminated pieces, not arbitrary concatenation.
 - The proof base is the parent of the item's actual first commit, specs included. Adding tests
   can stale imported-code snapshots: refresh the records the gate requires, not the gate.
-- This branch's proof covers `internal/`; add `cmd/` with the public CLI, not as an empty placeholder.
+- This branch's code proof covers `cmd/` and `internal/`.
 - Pick a representative smoke scenario when the CLI runner makes each feature live. Keep live
   scenarios as explained wip on a revert; never delete them to force the revert through.
 - Never inherit another project's mutation cache or generator-domain fixtures.
