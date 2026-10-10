@@ -135,3 +135,10 @@ keeping its smoke set, then the policy file is removed. The last step,
 From then on the workflow runs the Go steps, the scenarios and the Linux, macOS and Windows
 tests on the project's own `main`, and the release job after them, as `docs/CLI.md`
 describes.
+
+The project starts with the mutation records in `.metrics/mutate/` and the reviewed exceptions
+in `itos-cc.yaml` that came with its code. Their hashes were taken before its name, owner and
+module were filled in, so they are a starting point, not proof: re-prove each function you
+change with `itos-cc mutation run`, as the code proof asks of any change, and re-apply an
+exception's reviewed reason with `itos-cc mutation except` where the same equivalent mutant
+survives.
