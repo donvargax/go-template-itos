@@ -122,14 +122,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: made-project-ci
-    title: Run the inherited Go and CLI checks on a generated ordinary main branch
+  - id: T-31
+    title: A made project's CI runs its Go checks on its own main
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was made-project-ci.
       Belongs on stack/go for Go CI, with CLI scenario additions on go/cli. Keep root main
       language-neutral. Current Go workflows condition Go setup and platform jobs on template branch
       names, so ordinary generated main skips them. Each emitted workflow must exercise the code it
