@@ -583,5 +583,3 @@
     ledger, each branch keeping its own itos.yaml, ci.yml, README.md and registry. See Template
     check green on every head with the new version. Its renders still come from the branch heads,
     since the template has no release yet (T-42).
-  done_when:
-    - run: grep -q 'itos-template@v0.24.1' .github/workflows/template-check.yml
