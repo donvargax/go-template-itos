@@ -762,5 +762,42 @@
     version command if it already has a JSON form, rather than inventing a second shape. Keep the
     domain untouched: this is internal/cli and cmd only. The mutation proof and coverage gates of
     the branch hold.
+- id: T-38
+  type: build
+  title: doc-caps caps only the documents a made project has
+  why: >
+    Was doc-caps-render. tools/bin/doc-caps holds AGENTS.md and docs/ORCHESTRATING.md to a size
+    and ships in every render, and both rendering branches' itos-policy.yaml keep it in a made
+    project's plan (T-27). Renders leave docs/ORCHESTRATING.md out (T-28), so in a made project
+    the script's redirect fails, the size is empty and the test errors: go-template-itos-
+    sample's run 38081894211 printed cannot open docs/ORCHESTRATING.md and Illegal number, and
+    the step still passed. cap skips a document that is not there, so a made project checks
+    AGENTS.md alone and quietly; the template loses nothing, since its plan's test -f step
+    already fails when one of its own documents is missing. A cap that is exceeded still exits 1
+    naming the file. The script lives on main and merges down into stack/go and go/cli with
+    normal merge commits that keep each branch's own itos.yaml, README.md and registry; the
+    sample takes the fix later through itos-template update, not by hand.
   done_when:
-    - run: test ! -d features || grep -q 'version --json' features/cli.feature
+    - run: "d=$(mktemp -d) && trap 'rm -rf \"$d\"' EXIT && mkdir -p \"$d/tools/bin\" && cp tools/bin/doc-caps \"$d/tools/bin/\" && printf 'x\\n' > \"$d/AGENTS.md\" && \"$d/tools/bin/doc-caps\" 2>\"$d/err\" && test ! -s \"$d/err\" && awk 'BEGIN { for (i = 0; i < 9000; i++) printf \"x\" }' > \"$d/AGENTS.md\" && ! \"$d/tools/bin/doc-caps\" 2>/dev/null"
+- id: T-39
+  type: build
+  title: Setup regenerates a made project's agent rules
+  why: >
+    Was made-project-agent-rules. A render's AGENTS.md carries the rules block generated from
+    the template branch's itos.yaml: the check of the template's own documents, the drift check
+    and a Task footer on build and ci. After itos init --policy the block no longer matches the
+    made project's itos.yaml; itos 7.0.0 makes no offer to rewrite it under --policy, it only
+    reports the stale block and names itos init --agent-rules. The person chose the simplest
+    fix: the manifest's go stack lists a third setup step, [itos, init, --agent-rules], after
+    removing itos-policy.yaml, so itos-template new prints it and a person who runs the steps
+    gets rules that describe their project. The generator still runs nothing (decision 2). The
+    manifest lives on main and merges down into stack/go and go/cli with normal merge commits
+    keeping each branch's own itos.yaml, README.md and registry. docs/go.md's Made projects
+    section on both branches, which tells the reader to run the command after the steps, says
+    instead that the steps include it, in a docs commit. Prove it on both combinations: render
+    with itos-template v0.19.0 new from the pushed public branches, run the printed steps with
+    itos 7.0.0, and see AGENTS.md's rules block name the made project's own plan (no PLAN.md, no
+    drift step, no Task footer on build and ci) and itos config check pass. Template check stays
+    green on every head.
+  done_when:
+    - run: "grep -qF '[itos, init, --agent-rules]' itos-template.yaml"
