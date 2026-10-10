@@ -93,3 +93,19 @@ questions:
     question: "q-18 ships only decision 1 with an index listing only it, but itos writes docs/decisions/README.md from every record in the folder, so a render's index cannot list a subset without a second hand-kept index. Recommended: a template-only fix, adding decisions 2 to 5 and the index README.md to template_only, so a render ships decision 1 alone and the made project gets its index when it records its first decision. Or: ship a hand-kept one-line index for renders beside itos's."
     answer: "The template-only fix: decisions 2 to 5 and docs/decisions/README.md join template_only, so a render ships decision 1 alone; the made project's index appears with its first recorded decision. This revises q-18's index clause."
     decision: none
+  - id: q-20
+    item: "renovate-proof"
+    question: "Renovate updates stack/go and go/cli separately (T-25). The same version on both merges cleanly, but different versions, from one request failing CI or landing after a newer release, conflict in go.mod and go.sum, so the merge down and Template check's go + cli render fail until a person resolves the merge. Recommended: keep per-branch updates and resolve a clash in a routine merge down. Or: go/cli takes the stack's modules only through the merge down, its config leaving them alone."
+    answer: "Keep per-branch updates. A go.mod or go.sum clash between stack/go and go/cli is resolved in a routine merge down; if clashes keep happening, revisit letting go/cli take the stack's modules only by merge."
+    decision: none
+  - id: q-21
+    item: "made-project-ci"
+    question: "A made project's CI cannot pass on its main today: the ci job's itos steps fail with no itos.yaml (a render ships none until T-27's setup), and setup-go and the three platform jobs skip main because stack/go's and go/cli's ci.yml gate them on template branch names, which those files never need since template main runs its own ci.yml. Recommended order: pin itos 7.0.0 on every branch (its init --policy keeps an existing smoke set, fixing donvargax/itos#39), then lift and land T-27 so a made project gets its itos.yaml, then made-project-ci drops the branch-name conditions. Or: made-project-ci first, dropping the conditions so Go and platform jobs run while the ci job stays red until T-27."
+    answer: "The recommended order: pin itos 7.0.0 on every branch, then lift and land T-27 so a made project gets its itos.yaml, then made-project-ci drops the branch-name conditions."
+  - id: q-22
+    item: "made-project-ci"
+    question: "made-project-ci must be proved on a real made project's exact-head CI, which needs a GitHub repository rendered from the template. Recommended: one public repository, donvargax/go-template-itos-sample, made with itos-template new (go + cli) and set up as T-27 says, kept afterwards so the run addresses stay readable; public keeps Actions free and lets a later release proof attest. Or: a private repository. Or: a fresh repository per proof, deleted after the run is recorded."
+    answer: "One public repository, donvargax/go-template-itos-sample, made with itos-template new (go + cli) and set up as T-27 says, kept afterwards. It is the third repository and should be the last: the end goal stays this repository being both the template and its own made project, tried again once itos-template update and the per-branch machinery exist (idea self-made-project)."
+  - id: q-23
+    item: "made-project-ci"
+    question: "made-project-ci's note also owns proving a real binary release on a made main (since T-20). A release publishes tags and archives from the sample repository and is its own risk. Recommended: move the release proof to cli-releases, so made-project-ci closes when the Go jobs run green on a made main. Or: keep both in made-project-ci."
