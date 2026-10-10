@@ -68,3 +68,19 @@ items:
       source general Go policy and retain provenance, not generator imports, historical task IDs or
       mutation records. Update stack-specific agent/orchestration/upgrade prose only where it is
       inaccurate; it remains correct that this stack has no public CLI.
+  - id: made-project-policy
+    title: Give generated projects fresh governance with the inherited quality policy
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Branch-local integration index for the root made-project-policy idea. Common reusable policy
+      belongs on main, Go additions on stack/go and CLI additions on go/cli; no live template task
+      history or mutation cache is copied. Upstream itos has no supported initialization from
+      reusable policy that also creates fresh project work data. Plain init writes only generic
+      policy; supplied existing config is diagnosed rather than bootstrapped. Keep automatic
+      inheritance blocked on a person-approved supported initialization design, not a custom
+      workaround; the generator remains unaware of itos. Source new-steps/new-itos-setup are also
+      prerequisites. The policy decision is being drafted while T-9 owns the checkout.
