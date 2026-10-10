@@ -440,3 +440,7 @@ items:
       person who declines keeps rules that are not the project's. Options to settle with the person:
       generate the shipped block from itos-policy.yaml, or have the drift check also hold the block
       to the policy.
+
+      Correction: under --policy itos 7.0.0 made no agent rules offer in T-27's proof (go and go +
+      cli, nothing on the terminal for it); it only reported the stale block and named itos init
+      --agent-rules, which the person runs to rewrite it.
