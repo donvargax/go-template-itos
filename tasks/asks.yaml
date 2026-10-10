@@ -109,3 +109,4 @@ questions:
   - id: q-23
     item: "made-project-ci"
     question: "made-project-ci's note also owns proving a real binary release on a made main (since T-20). A release publishes tags and archives from the sample repository and is its own risk. Recommended: move the release proof to cli-releases, so made-project-ci closes when the Go jobs run green on a made main. Or: keep both in made-project-ci."
+    answer: "Split: made-project-ci closes when the ci job and the three platform jobs pass on the sample repository's main; the real binary release proof moves to cli-releases, done right after it, revising q-6's placement."
