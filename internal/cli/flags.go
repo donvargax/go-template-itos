@@ -11,7 +11,9 @@ package cli
 // flag before kong's own mapper reads it, and a hook before kong resets the
 // values, where the flags given are known, in kong's path of the command
 // line. Every flag is a switch (a bool, its --no- pair beside it) or takes
-// one value (a string); a flag of another kind is added here first.
+// one value (a string), and is given once; a flag of another kind is added
+// here first. A cumulative flag (a slice, as kong reads one) may be given
+// again, though no command has one yet.
 //
 // kong decodes a flag twice over: from the command line while it traces it,
 // then from its environment variable when it resets the values. A switch
@@ -42,10 +44,24 @@ func Flags() []kong.Option {
 // mapper reads is the command line's, not an environment variable's.
 type tracing struct{ over bool }
 
-// done ends the tracing. kong runs it once for each part of the path, before
-// it resets the values to their defaults and reads the environment.
-func (t *tracing) done(*kong.Context) error {
+// done ends the tracing, and refuses a flag the command line gives twice
+// that is not cumulative, a switch's --no- pair counting as the switch. kong
+// runs it once for each part of the path, each time judging it whole, before
+// it resets the values to their defaults and reads the environment, so an
+// environment variable beside its flag is never the flag given twice.
+func (t *tracing) done(ctx *kong.Context) error {
 	t.over = true
+	given := map[*kong.Flag]bool{}
+	for _, p := range ctx.Path {
+		f := p.Flag
+		if f == nil || f.IsCumulative() {
+			continue
+		}
+		if given[f] {
+			return fmt.Errorf("--%s%s: given more than once; give it once", f.Name, either(f))
+		}
+		given[f] = true
+	}
 	return nil
 }
 

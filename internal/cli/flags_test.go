@@ -7,10 +7,11 @@ import (
 	"github.com/alecthomas/kong"
 )
 
-// The scenarios (ID-CLI-05 to 07) hold the usage errors by their exit code
+// The scenarios (ID-CLI-05 to 09) hold the usage errors by their exit code
 // and the flag they name. These hold what no scenario reads: a flag given no
-// value, a flag's value never read as a flag, and a switch's environment
-// variable, which one scenario sets and none reads a refusal of.
+// value, a flag's value never read as a flag, each sentence whole, a flag
+// that takes a value given twice, a flag that may repeat, and a switch's
+// environment variable, which one scenario sets and none reads a refusal of.
 
 // line is a command line of every kind of flag Flags reads: a switch with
 // its --no- pair and a flag that takes one value.
@@ -74,12 +75,63 @@ func TestASwitchGivenAValueIsRefusedNamingItAndItsPair(t *testing.T) {
 }
 
 func TestSwitchesGivenAloneAreTaken(t *testing.T) {
-	l, err := parse(t, "--json", "--no-json")
+	for args, want := range map[string]bool{"--json": true, "--no-json": false} {
+		l, err := parse(t, args)
+		if err != nil {
+			t.Fatalf("%s: %v", args, err)
+		}
+		if l.JSON != want {
+			t.Errorf("%s: got %+v", args, l)
+		}
+	}
+}
+
+// Decision 1: a flag that is not cumulative is given once, a switch's --no-
+// pair counting as the switch, wherever the second one stands.
+func TestAOnceOnlyFlagGivenTwiceIsRefusedNamingIt(t *testing.T) {
+	cases := []struct {
+		args []string
+		want string
+	}{
+		{[]string{"--stack", "go", "--stack=python"}, "--stack: given more than once; give it once"},
+		{[]string{"--json", "--json"}, "--json or --no-json: given more than once; give it once"},
+		{[]string{"--no-json", "--json"}, "--json or --no-json: given more than once; give it once"},
+		{[]string{"--json", "made", "--no-json"}, "--json or --no-json: given more than once; give it once"},
+	}
+	for _, c := range cases {
+		if _, err := parse(t, c.args...); err == nil || err.Error() != c.want {
+			t.Errorf("%v: got %v, want %q", c.args, err, c.want)
+		}
+	}
+}
+
+// After --, a word is data, never the flag it looks like, so it is not the
+// flag given twice.
+func TestAFlagAfterDashDashIsNotGivenTwice(t *testing.T) {
+	l, err := parse(t, "--json", "--", "--json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if l.JSON {
+	if !l.JSON || l.Folder != "--json" {
 		t.Errorf("got %+v", l)
+	}
+}
+
+// A cumulative flag may be given again. No command has one, so a line of
+// its own declares one, as kong reads a slice.
+func TestACumulativeFlagMayBeGivenAgain(t *testing.T) {
+	var l struct {
+		Answer []string `sep:"none"`
+	}
+	parser, err := kong.New(&l, append(Flags(), kong.Exit(func(int) { t.Fatal("kong exited") }))...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := parser.Parse([]string{"--answer", "a", "--answer=b"}); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(l.Answer, []string{"a", "b"}) {
+		t.Errorf("got %q", l.Answer)
 	}
 }
 

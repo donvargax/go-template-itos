@@ -61,11 +61,12 @@ Feature: Count
     Then it exits with code 0
     And its JSON output gives file "-", 1 lines and 3 words
 
-  # A switch that can be declined, never --json [yes|no].
+  # A switch that can be declined, never --json [yes|no]. Its environment variable
+  # is not the flag, so declining it on the command line is giving it once.
   @ID-COUNT-06 @count-cli
-  Scenario: --no-json declines the switch and prints the plain output
+  Scenario: --no-json declines the switch its environment variable turns on
     Given the file "notes.txt" contains "one two three", "four five"
-    When go-template-itos runs with "count notes.txt --json --no-json"
+    When go-template-itos runs with "count notes.txt --no-json" and the environment "GO_TEMPLATE_ITOS_JSON=1"
     Then it exits with code 0
     And its standard output says "notes.txt: lines 2, words 5"
 
