@@ -397,19 +397,6 @@ items:
     title: Move every branch to itos 7.0.0
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      itos 7.0.0 is the final release after rc.5, which every branch pins since T-26. Its init
-      --policy keeps a smoke set the project already has when the smoke check passes (6c72b7f,
-      closing donvargax/itos#39), which T-27's go + cli setup was deferred on: a render ships
-      features/smoke.yaml and rc.5 refused to write over it. The person set the order in q-21: this
-      pin, then T-27, then made-project-ci. Read the notes of rc.6, rc.7 and 7.0.0 (their Upgrading
-      sections) and apply any step the branches' configs meet. On each of main, stack/go and go/cli,
-      move the pin with itos pin 7.0.0 and the itos workflow action with it, go/cli's release.yml
-      included, pinned by the release's commit, and regenerate the agent rules. Branches move
-      independently; merge main down afterwards for the ledger, as earlier items did, keeping each
-      branch's itos.yaml, ci.yml and registry. A gate 7.0.0 refuses on existing work is a finding,
-      not a check to weaken. Push each branch's commits together and see its CI and Template check
-      green.
