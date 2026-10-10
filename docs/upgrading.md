@@ -14,8 +14,11 @@ The Go toolchain is pinned too: its standard library is part of the resulting co
 patches matter even when module versions stay unchanged.
 
 The owner's tools can be pinned on release. Other updates normally wait seven days, with
-security fixes following the existing security-update policy. Renovate's committed configuration
-does not by itself prove its GitHub App is installed or the bot is running.
+security fixes following the existing security-update policy. In the template, main's Renovate
+configuration names this branch as a base branch and merges this branch's
+`.github/renovate.json5` over it, so its requests follow this branch's managers and are judged by
+its own CI. The Renovate app is installed, but no request has landed yet, so the automation stays
+unverified until one lands on this branch.
 
 Fresh mutation records are required when code or relevant test imports change. Record them
 from the push's range start, the nearest ancestor with a green CI run, since `itos ci run`
