@@ -322,3 +322,20 @@ items:
       excludes, or a made project's copies are rewritten at setup; overlaps made-project-policy,
       which waits on donvargax/itos#33. Raised 2026-10-09 after decisions 2 to 4 and new notes rules
       landed.
+  - id: release-notes-render
+    title: The go + cli render passes its release-notes tests
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      itos-template check at go/cli 366358c fails go + cli at go test ./... in
+      tools/bin/release-notes: TestRender and TestMovedNotes expect the compare address as the
+      literal https://github.com/itos-corp/go-template-itos/compare/..., which holds the module
+      literal, so a render with module example.com/blue/fox expects
+      https://example.com/blue/fox/compare/..., while main.go builds it from the repository literal
+      itos-corp/go-template-itos and prints https://github.com/acme/blue-fox/compare/.... The go
+      render passes. Found while building T-21, whose template-check workflow stays red on every
+      branch until the go/cli tests name the address the way the code builds it, from the repository
+      rather than the module.
