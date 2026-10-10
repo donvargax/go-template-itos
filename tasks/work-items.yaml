@@ -50,24 +50,9 @@ items:
     title: Document the Go design and quality contract on the Go stack
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Own this guide on stack/go and merge it downward into go/cli; main keeps only
-      docs/engineering.md. Write docs/go.md and a short AGENTS.md reference without duplicating the
-      shared design policy. Describe the actual domain/ports/disk/fake layout, import-boundary
-      enforcement and its self-test, Rapid properties, fixture I/O test exceptions,
-      platform-as-value rule, Go module verification/tidy checks, checksum-pinned tools,
-      lint/SAST/vulnerabilities, per-domain coverage, and changed-code proof at item closure versus
-      CI mutation sampling. Document how to update explicit package boundary lists when adding a
-      domain, slice or adapter. No CLI flags/output/exit contract, Kong rule or binary release claim
-      belongs here. No new tool, gate, dependency, code or acceptance scenario is installed by this
-      documentation task. State the generated-project policy and ordinary-main CI gaps accurately
-      until those separate items prove inheritance; keep active checks distinct from plans. Harvest
-      source general Go policy and retain provenance, not generator imports, historical task IDs or
-      mutation records. Update stack-specific agent/orchestration/upgrade prose only where it is
-      inaccurate; it remains correct that this stack has no public CLI.
   - id: made-project-policy
     title: Give generated projects fresh governance with the inherited quality policy
     phase: 1
