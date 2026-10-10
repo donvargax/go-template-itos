@@ -315,8 +315,8 @@ items:
   - id: T-40
     title: Shipped guides speak to the made project, not the template
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
