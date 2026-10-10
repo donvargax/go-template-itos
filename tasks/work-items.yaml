@@ -49,8 +49,8 @@ items:
   - id: T-10
     title: Document the Go design and quality contract on the Go stack
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
