@@ -488,3 +488,19 @@
     commands and claims about what runs stay as they are, and a claim moved to TEMPLATE.md keeps
     its meaning. Prove it by rendering both combinations with itos-template v0.19.0 new and
     reading the shipped guides, and by Template check staying green.
+- id: T-41
+  type: build
+  title: Move every branch to itos 7.1.2
+  why: >
+    The person asked on 2026-10-10 to move to itos 7.1.2, the newest release; every branch pins
+    7.0.0 since T-30. Read the notes of every release after 7.0.0 up to 7.1.2 (their Upgrading
+    sections) and apply any step the branches' configs meet. On each of main, stack/go and go/cli,
+    move the pin with itos pin 7.1.2 and the donvargax/itos workflow action with it, go/cli's
+    release.yml included, pinned by the release's commit, and regenerate the agent rules. stack/go's
+    and go/cli's itos-policy.yaml pin itos too: move them with the branch so policy-drift stays
+    green and a made project adopts 7.1.2. Branches move independently; merge main down afterwards,
+    entry by entry for the ledger, keeping each branch's itos.yaml, ci.yml, README.md and registry.
+    A gate 7.1.2 refuses on existing work is a finding, not a check to weaken. Push each branch's
+    commits together and see its CI and Template check green.
+  done_when:
+    - run: "grep -q 'version: \"7.1.2\"' itos.yaml && ! grep -rqE 'itos@[0-9a-f]+ # v7\\.0\\.' .github/workflows"
