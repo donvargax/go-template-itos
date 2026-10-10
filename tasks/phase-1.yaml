@@ -372,3 +372,23 @@
   done_when:
     - run: test -f docs/CONFIG.md && grep -q docs/CONFIG.md AGENTS.md
     - run: '! grep -qiE "decision [0-9]|manifest|T-[0-9]|\.itos-template" docs/CONFIG.md'
+- id: T-16
+  type: docs
+  title: Write the CLI design guide for the CLI feature
+  why: >
+    The person asked that a made CLI carry docs/CLI.md beside docs/CONFIG.md. Harvest the general
+    rules of itos-template's docs/CLI.md, itself taken from itos, keeping their sources and
+    provenance: the contract with scripts (exit code and --json less message and fix), the exit
+    codes, command grammar, help and version, flags and arguments with decision 1's once-only
+    rule (T-14), output channels and schema-1 JSON for successes and failures, errors, the
+    GO_TEMPLATE_ITOS_ environment variables and their order against flags, structured logs on
+    stderr, changing the interface, and four-shell completion. Leave out generator commands,
+    prompts, manifests and the itos extension entry point. Describe the CLI as it behaves: where it
+    falls short of a rule (no help command, no examples in the help, the exhaustive error lint of
+    cli-exhaustive-errors, no release and so no previous-release check until cli-releases), the
+    rule says so and names the item. Configuration-file rules stay in docs/CONFIG.md. No flag,
+    scenario, output or classification changes in this task.
+  done_when:
+    - run: test -f docs/CLI.md && grep -q docs/CLI.md AGENTS.md
+    - run: grep -q GO_TEMPLATE_ITOS_JSON docs/CLI.md && grep -q COUNT_INPUT_MISSING docs/CLI.md && grep -q cli-exhaustive-errors docs/CLI.md && grep -q docs/CONFIG.md docs/CLI.md
+    - run: '! grep -qE "itos-template [a-z]|ITOS_TEMPLATE_|manifest|decision (4|17|25|35)" docs/CLI.md'
