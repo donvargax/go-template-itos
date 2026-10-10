@@ -12,12 +12,10 @@ days, with security updates following the established security-update policy. Wh
 download checksums arrive, move their versions and verified checksums together. Dependencies
 retain their upstream licenses and notices.
 
-Renovate reads its configuration from main, whose `.github/renovate.json5` names main, stack/go
-and go/cli as base branches and merges each branch's own file over it, so each branch's requests
-follow that branch's managers and are judged by its own CI. The Renovate app is installed, but no
-request has landed yet, so the automation stays unverified until one lands on each branch.
+Renovate reads its configuration from main's `.github/renovate.json5`; `TEMPLATE.md` says how
+it reaches the other branches and what is verified of it.
 
 Go modules, binary release tooling and template combination checks are not installed at this
 root-bootstrap stage. Their upgrade instructions must be completed when the corresponding
-pieces are implemented. This template does not yet define template release tags or claim an
+pieces are implemented. The root does not yet define template release tags or claim an
 adoption/update command is available.
