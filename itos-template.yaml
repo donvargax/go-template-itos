@@ -69,6 +69,13 @@ template_only:
   - tasks
   # Re-proves this template's renders; a made project has no renders to prove.
   - .github/workflows/template-check.yml
+  # The template's plan, its coordination notes and the guidance for working on
+  # it as a template (q-17): a made project has no branches to merge down, no
+  # renders to prove and no coordinator's notes of this repository's, so its
+  # README.md and AGENTS.md speak to it alone and these stay here.
+  - PLAN.md
+  - docs/ORCHESTRATING.md
+  - TEMPLATE.md
 
 first_commit: |-
   chore: start the generated project
