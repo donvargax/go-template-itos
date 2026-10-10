@@ -205,3 +205,23 @@
     ci.yml are each branch's own; merge main down afterwards for the shared docs, as earlier
     items did. A gate that rc.4 refuses on existing work is a finding to report, not a check to
     weaken.
+- id: T-25
+  type: ci
+  title: Renovate updates every branch that holds code
+  why: >
+    Renovate reads its config from the default branch, main, which enables only github-actions and
+    renovate-config, so the Go modules on stack/go and go/cli would get no updates, and the
+    branches' own configs, which enable gomod, are never read. Name the branches in main's
+    baseBranches (main, stack/go, go/cli) with useBaseBranchConfig merge, so each base branch's
+    request is shaped by that branch's own renovate.json5 and judged by its own CI, and nothing
+    carries an update down. Group one dependency's requests with a groupName so they move
+    together; skew between branches is acceptable. commitBody says an update lands on main: name
+    the base branch instead. commitTrailers stays a task each branch's ledger holds (T-1 on main,
+    T-2 on stack/go and go/cli). Keep the owner presets, ignoreDeps for itos, the pinned action
+    digests, the cooldown and automerge on green. Renovate has never run here (q-12), so the
+    config is checked with renovate-config-validator, and docs/upgrading.md keeps saying the
+    automation is unverified until a real request lands; that proof is a separate idea. The file
+    differs per branch: change main's, stack/go's and go/cli's each, merging main down as earlier
+    items did.
+  done_when:
+    - run: grep -q baseBranches .github/renovate.json5 && grep -q useBaseBranchConfig .github/renovate.json5 && ! grep -q "landed on main" .github/renovate.json5
