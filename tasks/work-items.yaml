@@ -349,3 +349,18 @@ items:
       Decide whether a push to a child branch should also re-run the check for its parents, the
       weekly run is enough, or the coordinator re-runs it by hand after each merge down, and write
       that down.
+  - id: per-branch-ledgers
+    title: Give each branch its own ledger file so a render's merge never conflicts there
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Every branch appends to tasks/phase-1.yaml, so the render's merge of the branches conflicts
+      after a parent adds a task until the merge down lands (T-21, run 38021113542), and T-23
+      re-runs the parents' Template check to clear that. With one ledger file per branch
+      (ledger.files and its group, an id range or prefix per branch, decided with decision 4), no
+      two branches append to the same file. Each branch also keeps its own tasks/work-items.yaml and
+      plan, which can conflict the same way, so cover them too or confirm they cannot. When this
+      lands and no render merge conflicts, remove T-23's rerun (q-10).
