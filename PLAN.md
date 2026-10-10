@@ -9,7 +9,7 @@ rendering, manifest-reading or update domain code.
 
 The default/root branch is `main`. `stack/go` branches off it; `go/cli` branches off the stack.
 Common changes merge downward without rebasing published history. The supported combinations
-will be `go` and `go + cli`, proved by rendering both and running their checks.
+are `go` and `go + cli`, proved by rendering both and running their checks.
 
 The manifest's literals are real values: `go-template-itos` for the project name, with its five
 case forms; `itos-corp` for the attribution owner; and
@@ -26,6 +26,9 @@ merging branches. MIT is the template's license; owner attribution is an answer,
    properties must respect word boundaries, not assume arbitrary concatenation is additive.
 4. Template CI: render and check both combinations, with pinned gitleaks marked as a credential
    scan. This was the last piece and it passed, so the template is advertised as ready.
+
+That readiness claim concerns render validation. Fresh-project governance, ordinary-main CI
+and inherited engineering guarantees are separate work in `tasks/engineering-plan.md`.
 
 Keep the completed Go/CLI project's machinery whole: three-platform CI, itos gates, code proof,
 rapid properties, godog scenarios, pinned tools, Renovate and attested binary releases. Attach

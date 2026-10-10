@@ -11,13 +11,22 @@ among them, so itos-template check reports 2 of 2 combinations and no warning. A
 from the public template builds, vets and tests, runs its own `count` command, and carries
 none of this repository's own itos data.
 
+Ready means a made project starts out building and passing its checks. What a made project
+does not get yet:
+
+- [ ] Its CI runs the Go checks on its own `main` branch, on Linux, macOS and Windows.
+- [ ] Setup gives it its own commit rules and checks, the ones this template is held to.
+- [ ] A CLI project publishes its binaries when it makes a release.
+- [ ] Every guide it ships speaks to the made project, not to the template.
+- [ ] Automatic dependency updates are proven running on every branch.
+
 ## Branches
 
 - `main` holds the files every stack shares.
-- `stack/go` will add a working Go project.
-- `go/cli` will add a command line, with a small count command demonstrating the project's rules.
+- `stack/go` adds a working Go project: a private counting domain and the gates its code is held to.
+- `go/cli` adds a command line, with a small count command demonstrating the project's rules.
 
-The planned combinations are `go` and `go + cli`. Root changes merge down into the branches;
+The combinations are `go` and `go + cli`. Root changes merge down into the branches;
 published history is not rebased. A render merges its selected branches, then replaces the
 manifest's literals and excludes template-only files.
 
@@ -29,8 +38,8 @@ repository's own notes are [docs/ORCHESTRATING.md](docs/ORCHESTRATING.md). Hooks
 the repository's rules. Those three files, the itos data and the Template check workflow stay
 in the template: a made project's README.md and AGENTS.md speak to it alone.
 
-The root checks configuration, commit rules and documentation caps. Go-specific checks will
-arrive with their code; this root has no Go module or binary.
+The root checks configuration, commit rules and documentation caps. Go-specific checks travel
+with their code on `stack/go` and `go/cli`; this root has no Go module or binary.
 
 ## License and provenance
 
