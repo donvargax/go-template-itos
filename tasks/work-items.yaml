@@ -10,7 +10,8 @@
 #     depends_on: []
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
-queue: []
+queue:
+  - T-40
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
