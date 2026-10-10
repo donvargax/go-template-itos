@@ -13,7 +13,7 @@ verification and tidy-diff, and review code and vulnerability results before an 
 The Go toolchain is pinned too: its standard library is part of the resulting code, so security
 patches matter even when module versions stay unchanged.
 
-The owner's tools can be pinned on release. Other updates normally wait seven days, with
+Tools by itos's owner can be pinned on release. Other updates normally wait seven days, with
 security fixes following the existing security-update policy. Renovate reads
 `.github/renovate.json5` from `main`, so its requests follow that file's managers and are judged
 by the project's own CI. The file alone does not make Renovate run: the automation stays
