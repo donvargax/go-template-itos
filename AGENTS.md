@@ -6,6 +6,7 @@ with the code it checks; never claim a check runs before it exists.
 
 Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
 stack and interface; stack and feature guides add only what is specific to them.
+Rules for any configuration file a project owns are in `docs/CONFIG.md`.
 
 The person's session coordinates with `itos go`. An implementing agent runs `itos guide work`,
 takes its named item with `itos work take`, does the work itself and starts no agents. Read work
