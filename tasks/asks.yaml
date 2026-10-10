@@ -88,3 +88,6 @@ questions:
     question: "Which decision records does a made project get? Decision 1 binds a made CLI; decisions 2 to 5 are about running the template. Recommended: ship them all, as records of why the code is as it is. Or: ship only decision 1, with an index listing only it."
     answer: "Ship only decision 1, with an index that lists only it."
     decision: none
+  - id: q-19
+    item: "render-decisions-index"
+    question: "q-18 ships only decision 1 with an index listing only it, but itos writes docs/decisions/README.md from every record in the folder, so a render's index cannot list a subset without a second hand-kept index. Recommended: a template-only fix, adding decisions 2 to 5 and the index README.md to template_only, so a render ships decision 1 alone and the made project gets its index when it records its first decision. Or: ship a hand-kept one-line index for renders beside itos's."
