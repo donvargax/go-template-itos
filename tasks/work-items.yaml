@@ -470,7 +470,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: []
+    depends_on: [T-41, T-40]
     kind: task
     why: >
       The person approved on 2026-10-10 the template's first release, so a project is made from a
