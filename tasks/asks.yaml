@@ -41,3 +41,4 @@ questions:
   - id: q-9
     item: "template-check-ci"
     question: "How should CI get itos-template for the recurring check? Recommended: go install github.com/donvargax/itos-template/cmd/itos-template@v0.19.0, a fixed version verified by Go's checksum database and movable by Renovate. Or: the v0.19.0 release archive checked against SHA-256 sums in the workflow. Or: build itos-template's default branch from source, as T-7 does, never pinned."
+    answer: "go install of itos-template at a fixed version, v0.19.0 today, verified by Go's checksum database."
