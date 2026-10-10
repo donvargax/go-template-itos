@@ -50,7 +50,11 @@ branch's actual code in view, not by copying root bootstrap claims into finished
   [run](https://github.com/donvargax/go-template-itos/actions/runs/38012832848) and the
   [go/cli run](https://github.com/donvargax/go-template-itos/actions/runs/38013111934) passed.
   No CI runs that check yet (`template-check-ci`).
-- `cli-contract` writes the reusable CLI guide on `go/cli`, without changing behavior.
+- T-16 (`cli-contract`) wrote `docs/CLI.md` beside `docs/CONFIG.md`: the contract with
+  scripts, exit codes and command-line rules, describing the CLI as it behaves and naming the
+  item for each rule it does not follow yet.
+  [CI passed on all three platforms](https://github.com/donvargax/go-template-itos/actions/runs/38015944815),
+  and the item is closed.
 - `cli-exhaustive-errors` is a separate checked lint/refactor item on `go/cli`.
 - T-14 (`cli-once-only-flags`) implements decision 1. A non-cumulative flag given twice exits
   2, a switch and its `--no-` pair counting as one, through the tracing harvested from
