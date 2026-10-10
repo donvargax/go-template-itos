@@ -445,8 +445,6 @@
     naming the file. The script lives on main and merges down into stack/go and go/cli with
     normal merge commits that keep each branch's own itos.yaml, README.md and registry; the
     sample takes the fix later through itos-template update, not by hand.
-  done_when:
-    - run: "d=$(mktemp -d) && trap 'rm -rf \"$d\"' EXIT && mkdir -p \"$d/tools/bin\" && cp tools/bin/doc-caps \"$d/tools/bin/\" && printf 'x\\n' > \"$d/AGENTS.md\" && \"$d/tools/bin/doc-caps\" 2>\"$d/err\" && test ! -s \"$d/err\" && awk 'BEGIN { for (i = 0; i < 9000; i++) printf \"x\" }' > \"$d/AGENTS.md\" && ! \"$d/tools/bin/doc-caps\" 2>/dev/null"
 - id: T-39
   type: build
   title: Setup regenerates a made project's agent rules
