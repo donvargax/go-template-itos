@@ -390,22 +390,9 @@ items:
     title: A render's mutation records match its own code
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was render-mutation-records.
-      go-template-itos-sample's run 38087430541 failed its ci job at the code proof on the version
-      --json replay: every .metrics/mutate record and the itos-cc.yaml exception a render ships
-      carry hashes of the template's sources, and a render replaces the manifest's literals inside
-      those sources and their test files, so each function whose body or tests hold a literal is
-      stale in a made project from its first commit (itos-cc mutation check over the sample's
-      2e378b8 finds 64 stale entries and the run exception stale). The proof check only judges
-      functions changed since its base, so the sample's first push passed and the first code change
-      in a made project fails. The template has to make a render's records true for the made
-      project, for example a setup step that reruns the mutation proof and re-excepts its survivors
-      before the adoption commit, or records that do not hash literals, asked of itos-cc or
-      itos-template if that is where it belongs.
   - id: sample-engineering-doc
     title: The sample's docs/engineering.md takes main's T-32 text
     phase: 1

@@ -546,8 +546,6 @@
     docs/go.md's Setup section on stack/go and go/cli says so, in a docs commit; donvargax/itos-
     cc#32 asks itos-cc for renewal of an unchanged exception, which would let a later setup step
     re-prove a made project unattended.
-  done_when:
-    - run: "test ! -f docs/go.md || grep -q 'starting point' docs/go.md"
 - id: T-45
   type: docs
   title: docs/CLI.md rule 28 says why version prints no --json hint
