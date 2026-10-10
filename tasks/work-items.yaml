@@ -339,3 +339,9 @@ items:
       render passes. Found while building T-21, whose template-check workflow stays red on every
       branch until the go/cli tests name the address the way the code builds it, from the repository
       rather than the module.
+
+      Delivered on go/cli as T-22: 0abcd23 builds the release-notes tests' expected addresses from
+      repository, and 3fb0f90 links git-cliff's commits through the repository rather than the
+      module literal. Its CI run
+      https://github.com/donvargax/go-template-itos/actions/runs/38020818584 passed, and
+      itos-template check v0.19.0 at that head printed 2 of 2 combinations passed.
