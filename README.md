@@ -23,9 +23,11 @@ manifest's literals and excludes template-only files.
 
 ## Working here
 
-Read [AGENTS.md](AGENTS.md) and [PLAN.md](PLAN.md). `itos go` is the coordinator's entry point;
-an implementing agent uses `itos guide work`. The repository's own notes are
-[docs/ORCHESTRATING.md](docs/ORCHESTRATING.md). Hooks and CI judge the repository's rules.
+Read [TEMPLATE.md](TEMPLATE.md) first, then [PLAN.md](PLAN.md) and [AGENTS.md](AGENTS.md).
+`itos go` is the coordinator's entry point; an implementing agent uses `itos guide work`. The
+repository's own notes are [docs/ORCHESTRATING.md](docs/ORCHESTRATING.md). Hooks and CI judge
+the repository's rules. Those three files, the itos data and the Template check workflow stay
+in the template: a made project's README.md and AGENTS.md speak to it alone.
 
 The root checks configuration, commit rules and documentation caps. Go-specific checks will
 arrive with their code; this root has no Go module or binary.

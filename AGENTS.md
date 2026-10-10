@@ -1,8 +1,9 @@
 # Working rules
 
-Read `PLAN.md` first. This repository is itself the template: its branches must remain real
-projects. The root currently has no Go module or executable. Add each language-specific gate
-with the code it checks; never claim a check runs before it exists.
+If `TEMPLATE.md` exists, read it first: this repository is then the template projects are made
+from, and that file says how to work on it. The root currently has no Go module or executable.
+Add each language-specific gate with the code it checks; never claim a check runs before it
+exists.
 
 Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
 stack and interface; stack and feature guides add only what is specific to them.
@@ -28,17 +29,14 @@ by the source project's T-25 until this new repository has its own usable regist
 - Run slow gates through their configured hooks and CI, not by hand before committing. A valid
   check's failure is fixed in the work, not by weakening the check. Stop on a wrong gate.
 
-## Template boundaries
+## Boundaries
 
-- Templates are real projects. Never introduce a template language or runtime switches merely
-  to select a stack or provider: selection is a branch choice before rendering.
 - Look for an existing library before building what one likely solves; the person settles that
   choice in the spec. Preserve thin entry points and domain-owned behavior through ports.
-- No credentials belong in answers, fixtures, logs or committed files. Every render is scanned
-  for them by gitleaks, pinned in tools/bin/pinned and marked as the manifest's root check, so
-  itos-template check proves it on every combination.
-- Preserve third-party license notices. MIT permission for the owner's harvested infrastructure
-  does not change dependencies' licenses or the original source projects' licenses.
+- No credentials belong in fixtures, logs or committed files.
+- Preserve third-party license notices, `CONTRIBUTORS.md` and the comments naming where
+  harvested code came from. MIT permission for the owner's harvested infrastructure does not
+  change dependencies' licenses or the original source projects' licenses.
 
 ## Finishing
 
