@@ -77,8 +77,8 @@ items:
   - id: T-12
     title: Say in go/cli agent and orchestration notes that the public CLI is here
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
