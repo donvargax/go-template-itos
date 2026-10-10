@@ -602,5 +602,12 @@
     envelopes and every live scenario: this is a checked lint and refactor, not a behaviour
     change, so its commits are build and refactor commits with Task, never feat or fix. The
     mutation proof and coverage gates hold.
+
+    Already delivered on go/cli as its T-17 (20d5534, 2026-10-09): .golangci.yml enables
+    gochecksumtype with default-signifies-exhaustive false, internal/count/port's ReadFailure
+    carries //sumtype:decl, and tools/bin/architecture-check's fixtures prove a switch leaving
+    Unreadable out, or ending in a default arm, is refused while the complete one passes. Main's
+    idea copy was never noted as delivered, so it was promoted again; q-31's approval confirms
+    the linter already in use, and this task closes on that work with no new commit.
   done_when:
     - run: "test ! -f .golangci.yml || grep -q gochecksumtype .golangci.yml"
