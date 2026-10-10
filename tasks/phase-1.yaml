@@ -166,3 +166,29 @@
     and all-tests, and reshaping the fixture to hold no mutation site is not an option either.
   done_when:
     - run: d=$(mktemp -d); trap 'rm -rf "$d"' EXIT; rc=0; for n in x a-much-longer-project-name; do rm -rf "$d/$n"; mkdir -p "$d/$n"; for f in $(git ls-files "*.go"); do mkdir -p "$d/$n/$(dirname "$f")" || exit 1; sed "s/go-template-itos/$n/g" "$f" > "$d/$n/$f" || exit 1; done; out=$(gofmt -l "$d/$n") || exit 1; if [ -n "$out" ]; then echo "$out"; rc=1; fi; done; exit $rc
+- id: T-11
+  type: ci
+  title: Bring the Go stack boundaries, guide and records into the CLI feature
+  why: >
+    Merge stack/go (182d58c or later) into go/cli; it already carries main. Shared changes merge
+    downward only. Keep go/cli's own work registry, itos.yaml and docs wording where they describe
+    the feature, and merge task ledgers additively in id order so CI resolves footers of imported
+    commits. Take tasks/asks.yaml and docs/decisions from the merge whole: questions are asked and
+    recorded on main only (decision 3). go/cli gains the stack's CI plan step
+    tools/bin/architecture-check in its own itos.yaml, with the platform job and fixtures the merge
+    brings. T-9's depguard rules name only stack packages, so name go/cli's packages as docs/go.md
+    describes, with compile-valid accept and reject fixtures for each new rule in
+    tools/testdata/architecture. The input adapter is named by the infra rule already. Add an
+    application rule for internal/count/command, which may import the domain, its ports and
+    internal/cli but no concrete adapter (disk, input). Add a kong rule harvested from
+    itos-template: kong only in cmd/** and internal/cli/**. internal/release and internal/version
+    are build helpers outside the slice and stay unlisted. Existing code that a new rule flags is a
+    finding to report before changing it, not a rule to loosen. Update go/cli's docs/go.md to
+    describe its actual entry point, packages and these rules instead of the stack's no-cmd
+    sentence; interface contract prose belongs to cli-contract, not here. No behavior, scenario or
+    dependency changes; the root manifest's check lists are separate main work. The task ids T-11
+    and up are reserved on go/cli until main and stack/go use higher ones.
+  done_when:
+    - run: grep -q "tools/bin/architecture-check" itos.yaml && test -x tools/bin/architecture-check
+    - run: grep -q "internal/count/command" .golangci.yml && grep -q "alecthomas/kong" .golangci.yml
+    - run: test -f docs/go.md && grep -q docs/go.md AGENTS.md && test -f docs/decisions/0003-every-question-is-asked-and-recorded-on-main.md

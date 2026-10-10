@@ -67,3 +67,29 @@ items:
     status: done
     depends_on: []
     kind: task
+  - id: T-11
+    title: Bring the Go stack boundaries, guide and records into the CLI feature
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      Merge stack/go (182d58c or later) into go/cli; it already carries main. Shared changes merge
+      downward only. Keep go/cli's own work registry, itos.yaml and docs wording where they describe
+      the feature, and merge task ledgers additively in id order so CI resolves footers of imported
+      commits. Take tasks/asks.yaml and docs/decisions from the merge whole: questions are asked and
+      recorded on main only (decision 3). go/cli gains the stack's CI plan step
+      tools/bin/architecture-check in its own itos.yaml, with the platform job and fixtures the
+      merge brings. T-9's depguard rules name only stack packages, so name go/cli's packages as
+      docs/go.md describes, with compile-valid accept and reject fixtures for each new rule in
+      tools/testdata/architecture. The input adapter is named by the infra rule already. Add an
+      application rule for internal/count/command, which may import the domain, its ports and
+      internal/cli but no concrete adapter (disk, input). Add a kong rule harvested from
+      itos-template: kong only in cmd/** and internal/cli/**. internal/release and internal/version
+      are build helpers outside the slice and stay unlisted. Existing code that a new rule flags is
+      a finding to report before changing it, not a rule to loosen. Update go/cli's docs/go.md to
+      describe its actual entry point, packages and these rules instead of the stack's no-cmd
+      sentence; interface contract prose belongs to cli-contract, not here. No behavior, scenario or
+      dependency changes; the root manifest's check lists are separate main work. The task ids T-11
+      and up are reserved on go/cli until main and stack/go use higher ones.
