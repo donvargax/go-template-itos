@@ -98,8 +98,8 @@ items:
   - id: T-17
     title: The linter refuses an error switch that leaves a failure kind out
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
