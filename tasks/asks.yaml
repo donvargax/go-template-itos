@@ -93,3 +93,6 @@ questions:
     question: "q-18 ships only decision 1 with an index listing only it, but itos writes docs/decisions/README.md from every record in the folder, so a render's index cannot list a subset without a second hand-kept index. Recommended: a template-only fix, adding decisions 2 to 5 and the index README.md to template_only, so a render ships decision 1 alone and the made project gets its index when it records its first decision. Or: ship a hand-kept one-line index for renders beside itos's."
     answer: "The template-only fix: decisions 2 to 5 and docs/decisions/README.md join template_only, so a render ships decision 1 alone; the made project's index appears with its first recorded decision. This revises q-18's index clause."
     decision: none
+  - id: q-20
+    item: "renovate-proof"
+    question: "Renovate updates stack/go and go/cli separately (T-25). The same version on both merges cleanly, but different versions, from one request failing CI or landing after a newer release, conflict in go.mod and go.sum, so the merge down and Template check's go + cli render fail until a person resolves the merge. Recommended: keep per-branch updates and resolve a clash in a routine merge down. Or: go/cli takes the stack's modules only through the merge down, its config leaving them alone."
