@@ -141,3 +141,19 @@ items:
       passes. This is a checked lint/refactor task, not a public behavior slice; keep it separate
       from duplicate flags and documentation. Obtain the persons approval of the reused linter when
       specifying this item, as the library-choice policy requires.
+  - id: cli-releases
+    title: Complete the generated CLI binary release pipeline
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Belongs on go/cli, not the Go library stack or language-neutral root. Harvest the proven
+      generic version and notes helpers, release tests and checksum-pinned git-cliff from
+      donvargax/itos-template, retaining license notices and real publishing identity. The existing
+      reusable workflow references missing tools/bin/release-version and release-notes and has no
+      caller; complete the caller after actual CI/platform checks pass. Keep generated-project
+      binary releases distinct from template branch/tag releases, and never publish a nonexistent
+      root binary. Preserve GoReleaser checksums and attestation, prove the wiring on a generated
+      main, and make docs say what runs rather than what the dormant scaffold promises.
