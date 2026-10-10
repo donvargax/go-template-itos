@@ -24,9 +24,13 @@ stacks:
     # itos.yaml, with a fresh ledger and registry (q-13), and asks its offers then;
     # the file is removed after, so the project has one config. The steps sit on
     # the stack, so a go + cli render prints them once, adopting go/cli's file.
+    # AGENTS.md's rules block still describes the template's itos.yaml after
+    # init --policy, which in itos 7.0.0 makes no offer to rewrite it, so the
+    # last step regenerates it from the project's own config (T-39).
     setup:
       - [itos, init, --policy, itos-policy.yaml]
       - [rm, itos-policy.yaml]
+      - [itos, init, --agent-rules]
     checks:
       - [sh, -c, "! gofmt -l internal | grep ."]
       - [go, build, ./...]
