@@ -91,8 +91,8 @@ items:
   - id: T-16
     title: Write the CLI design guide for the CLI feature
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
