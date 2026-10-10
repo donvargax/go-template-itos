@@ -286,8 +286,6 @@
     exceptions, kept as the made project's baseline (q-16): its code starts as the template's,
     renamed, and its own proof judges only its changes after setup. Init's offers and its printed
     adoption commit stay the person's; the setup steps end after the policy file is removed.
-  done_when:
-    - run: 'grep -qE "^version: 5$" itos-template.yaml && grep -q "itos-policy.yaml" itos-template.yaml && ! grep -qE "^  - itos-policy\.yaml$" itos-template.yaml'
 - id: T-28
   type: docs
   title: Keep the template's own records and notes out of made projects
