@@ -429,3 +429,17 @@ items:
       inherited until setup installs a policy. Bring it to the rendered text, literals replaced, in
       a docs commit or through itos-template update, so the sample stays the template's render plus
       replays of its changes.
+  - id: feature-text-template-wording
+    title: Feature descriptions speak to the made project
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found reading T-40's go + cli render: go/cli's features/cli.feature describes 'The rules every
+      command of a project made from this template follows' and features/count.feature 'What a
+      person of a project made from this template observes', so a made project's scenarios still
+      speak as the template. T-40 covered only the guides; the feature descriptions sit beside
+      scenarios that the scenario-moves rule guards outside feat and fix, so rewording them needs
+      its own decision on the commit type that may touch them.
