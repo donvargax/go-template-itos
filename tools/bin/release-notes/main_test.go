@@ -58,7 +58,7 @@ func TestRender(t *testing.T) {
 	for _, want := range []string{
 		"# go-template-itos 1.0.0\n",
 		"Cut by CI from the 3 commits since v0.1.0: 1 feat, 1 fix and 1 breaking change,",
-		"https://github.com/itos-corp/go-template-itos/compare/v0.1.0...v1.0.0",
+		"https://github.com/" + repository + "/compare/v0.1.0...v1.0.0",
 		"## What changed\n\n### Features\n\n- A thing\n",
 		"   - Breaking, a1b2c3d `feat!: drop a flag`:\n     > use --x\n",
 		"   - a1b2c3d `feat!: drop a flag`:\n     > Use --x.\n",
@@ -105,7 +105,7 @@ func TestMovedNotes(t *testing.T) {
 	}{
 		{name: "a build commit moving a linked module and the toolchain", message: "build: move lib and Go",
 			says: []string{
-				"Cut by CI from the 1 commit since v0.1.0: no feat, no fix and no breaking change, but the binary is built from what moved beneath it, which makes a patch: " + moved + ". Every change: https://github.com/itos-corp/go-template-itos/compare/v0.1.0...v0.1.1\n",
+				"Cut by CI from the 1 commit since v0.1.0: no feat, no fix and no breaking change, but the binary is built from what moved beneath it, which makes a patch: " + moved + ". Every change: https://github.com/" + repository + "/compare/v0.1.0...v0.1.1\n",
 				"1. **What the commits ask.** Nothing to change: no commit since v0.1.0 is a breaking change, and none has an `Upgrading:` footer asking for anything.\n",
 			},
 			not: []string{"Every `feat` and `fix`"}},
