@@ -343,6 +343,11 @@ items:
       (q-12). Once Renovate runs, by the Mend app or a self-hosted action, check a real request on
       main, stack/go and go/cli: each judged by its own CI, automerged on green with the right type
       and trailer, and docs/upgrading.md updated to say the automation runs.
+
+      Per q-20, Renovate keeps updating stack/go and go/cli separately. If their go.mod or go.sum
+      land different versions, merging stack/go into go/cli conflicts and Template check's go + cli
+      render goes red; the rerun job cannot clear that. Resolve it in a routine merge down, and
+      revisit go/cli taking the stack's modules only by merge if it keeps happening.
   - id: T-26
     title: Move every branch to itos 7.0.0-rc.5
     phase: 1
