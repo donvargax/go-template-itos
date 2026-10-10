@@ -48,8 +48,8 @@ with their code on `stack/go` and `go/cli`; this root has no Go module or binary
 The template is MIT licensed. `itos-corp` is an illustrative owner literal, replaced with the
 made project's owner. [LICENSE](LICENSE) contains the license text.
 
-Infrastructure is harvested from the copyright owner's
+Infrastructure is harvested from donvargax's
 [itos](https://github.com/donvargax/itos) and
-[itos-template](https://github.com/donvargax/itos-template), with permission to distribute that
-owner's copied work under MIT in this template. Those source projects retain their own licenses.
+[itos-template](https://github.com/donvargax/itos-template), with donvargax's permission to
+distribute that copied work under MIT in this template. Those source projects retain their own licenses.
 Third-party dependencies and tools retain their licenses and notices.
