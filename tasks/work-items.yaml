@@ -385,14 +385,15 @@ items:
       author reading version's text is not pointed at the object. Either version prints the hint
       (never --version, kong's action, which T-34 kept plain) with a scenario, or rule 28 says why
       version's two lines are not data. Lands on go/cli.
-  - id: render-mutation-records
+  - id: T-44
     title: A render's mutation records match its own code
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was render-mutation-records.
       go-template-itos-sample's run 38087430541 failed its ci job at the code proof on the version
       --json replay: every .metrics/mutate record and the itos-cc.yaml exception a render ships
       carry hashes of the template's sources, and a render replaces the manifest's literals inside
