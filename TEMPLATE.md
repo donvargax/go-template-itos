@@ -34,6 +34,8 @@ branch adds to this file a section of its own.
   render replaces them with the answers.
 - A file no made project needs joins `template_only`, with a comment saying why. A file a made
   project keeps makes no claim that it is a template and names no branch it does not have.
+- A decision record that binds made projects ships; one about running the template joins
+  `template_only`, as does the decisions index, which a made project's itos writes anew.
 - Every render is scanned for credentials by gitleaks, pinned in `tools/bin/pinned` and marked
   as the manifest's root check, so `itos-template check` proves it on every combination.
 

@@ -76,6 +76,16 @@ template_only:
   - PLAN.md
   - docs/ORCHESTRATING.md
   - TEMPLATE.md
+  # The decisions about running the template, and the index itos writes from
+  # every record in the folder (q-19): a render ships decision 1 alone, the one
+  # binding a made CLI, and itos writes the made project's own index, naming 1
+  # beside it, when the project records its first decision. A later decision
+  # binding made projects stays off this list; one about the template joins it.
+  - docs/decisions/0002-made-projects-inherit-quality-policy-through-upstream-itos-initialization.md
+  - docs/decisions/0003-every-question-is-asked-and-recorded-on-main.md
+  - docs/decisions/0004-a-new-task-id-is-one-above-the-highest-on-any-branch.md
+  - docs/decisions/0005-item-ids-are-minted-by-itos-from-refs-itos-ids.md
+  - docs/decisions/README.md
 
 first_commit: |-
   chore: start the generated project
