@@ -1,24 +1,26 @@
 # go-template-itos
 
-A real Go project template for [itos-template](https://github.com/donvargax/itos-template),
-maintained by itos-corp. Answers replace real project values after git merges the selected
-branches. No template language is used.
-
-## Status
-
-This branch is the Go foundation plus the first feature built on it.
+go-template-itos is a command line, built from the Go module
+`github.com/itos-corp/go-template-itos` and maintained by itos-corp.
 `go-template-itos count <file>` counts a file's lines and words, `-` for standard input, and
-prints the counts for a person or one JSON object with `--json`; `internal/count` is the
-private counting domain beneath it, with a Files port, a disk adapter and an in-memory fake,
-and `internal/cli` is the UI that turns a typed failure into an exit code. The public behaviour
-lives in `features/` as scenarios, which godog runs against the binary the harness builds for
-the platform it is on, and the release machinery a made project needs is here as well. The
-manifest declares render checks for both combinations, including a pinned credential scan. A
-render excludes the template's itos configuration and work history. Fresh-project policy and
-CI still need separate verification before this branch's gates can be claimed for generated
-projects.
+prints the counts for a person or one JSON object with `--json`.
 
-## Check the Go project
+## What it does
+
+`internal/count` is the private counting domain beneath the command, with a Files port, a disk
+adapter and an in-memory fake, and `internal/cli` is the UI that turns a typed failure into an
+exit code. Lines are logical text lines separated by LF; CRLF is one separator, and a nonempty
+final line without a newline counts. Empty input has zero lines. Words are runs separated by
+Unicode whitespace, using Go's standard library; punctuation does not split a word. Thus
+`hello-world` is one word. The domain has no JSON, flags or exit codes, and file access is
+read-only through its port. Its additive property uses newline-terminated pieces to preserve
+word boundaries.
+
+The public behaviour lives in [features/](features/README.md) as scenarios, which godog runs
+against the binary the harness builds for the platform it is on. The release machinery a
+command line needs, its workflow and its version and notes tools, is here as well.
+
+## Check it
 
 ```sh
 go build ./...
@@ -26,35 +28,26 @@ go test ./...
 go test ./features -count=1
 ```
 
-CI runs the Go gates and tests on Linux, macOS and Windows. Domain coverage must stay at least
-80 percent. Changed code needs fresh mutation proof, recorded before it is pushed and judged
-by CI over each push's range; recorded mutants are sampled in CI. Properties run one random
-case per CI push, and more in ordinary local runs.
-
-## The example
-
-Lines are logical text lines separated by LF; CRLF is one separator, and a nonempty final line
-without a newline counts. Empty input has zero lines. Words are runs separated by Unicode
-whitespace, using Go's standard library; punctuation does not split a word. Thus `hello-world`
-is one word. The domain has no JSON, flags or exit codes, and file access is read-only through
-its port. Its additive property uses newline-terminated pieces to preserve word boundaries.
-
-Read [docs/engineering.md](docs/engineering.md) for shared engineering rules,
-[docs/architecture.md](docs/architecture.md) for the layer boundaries,
-[docs/security.md](docs/security.md) for trust boundaries, and
-[docs/upgrading.md](docs/upgrading.md) before moving dependency pins.
+Its other gates are formatting, vet, golangci-lint, an import-boundary self-test,
+govulncheck, domain coverage of at least 80 percent and changed-code mutation proof;
+[docs/go.md](docs/go.md) describes each. The rules `AGENTS.md` generates from the project's
+itos configuration say which of them its hooks and CI run.
 
 ## Working here
 
-Read [AGENTS.md](AGENTS.md) and [PLAN.md](PLAN.md). `itos go` coordinates; an implementing agent
-uses `itos guide work`. Hooks and CI judge the rules configured for this branch. Common changes
-merge from root `main` into stacks and then features; published history is not rebased.
+Read [AGENTS.md](AGENTS.md) for the project's rules. [docs/CLI.md](docs/CLI.md) holds the
+command line's contract and rules, [docs/engineering.md](docs/engineering.md) the shared
+engineering rules, [docs/go.md](docs/go.md) Go's, [docs/architecture.md](docs/architecture.md)
+the layer boundaries, [docs/security.md](docs/security.md) the trust boundaries,
+[docs/upgrading.md](docs/upgrading.md) how to move dependency pins,
+[docs/CONFIG.md](docs/CONFIG.md) the rules for a configuration file the project owns, and
+[docs/decisions/](docs/decisions/README.md) its decision records. `itos go` coordinates the
+work; an implementing agent uses `itos guide work`.
 
 ## License and provenance
 
-The template is MIT licensed; `itos-corp` is the illustrative attribution owner replaced by a
-made project's answer. Infrastructure comes from the copyright owner's
-[itos](https://github.com/donvargax/itos) and
+The project is MIT licensed; see [LICENSE](LICENSE). Its infrastructure comes from the
+copyright owner's [itos](https://github.com/donvargax/itos) and
 [itos-template](https://github.com/donvargax/itos-template), with permission to distribute that
-owner's copied work under MIT here. The original projects and third-party dependencies retain
-their own licenses and notices. See [LICENSE](LICENSE) and [CONTRIBUTORS.md](CONTRIBUTORS.md).
+owner's copied work under MIT. The original projects and third-party dependencies retain their
+own licenses and notices; [CONTRIBUTORS.md](CONTRIBUTORS.md) records the provenance.

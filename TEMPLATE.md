@@ -57,3 +57,12 @@ as the code has them.
 A render carries no itos data, so its gates are evidence about the template, not a made
 project's: until fresh-project setup (T-27) and a made project's own CI (made-project-ci) land,
 do not claim a made project inherits them.
+
+## The CLI feature
+
+`go/cli` adds the command line on top of the stack: `cmd/go-template-itos`, `internal/cli`, the
+scenarios in `features/` and their godog runner, and the release workflow and its tools. The
+manifest's `cli` checks are the plan this branch's `itos.yaml` runs, less its itos commands.
+`README.md` and `AGENTS.md` here describe the project a `go + cli` render makes. The release job
+runs only on a push to main, which no template branch is; on a made project's main it waits for
+made-project-ci, as the stack's gates do.
