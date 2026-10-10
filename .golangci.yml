@@ -3,9 +3,18 @@ linters:
   default: standard
   enable:
     - depguard
+    - gochecksumtype
     - gosec
     - revive
   settings:
+    # Harvested from github.com/donvargax/itos-template/.golangci.yml with
+    # owner MIT permission (CONTRIBUTORS.md). The ports' failures are sealed
+    # sets (//sumtype:decl), and internal/cli gives each kind its exit code
+    # in one switch per set (docs/CLI.md rule 32): a switch that leaves a
+    # kind out is refused, and a default case does not count as naming them.
+    # tools/bin/architecture-check proves it with compile-valid fixtures.
+    gochecksumtype:
+      default-signifies-exhaustive: false
     # Layer/production-I/O/mock rules harvested from
     # github.com/donvargax/itos-template/.golangci.yml with owner MIT
     # permission (CONTRIBUTORS.md), adapted to this module and layout.

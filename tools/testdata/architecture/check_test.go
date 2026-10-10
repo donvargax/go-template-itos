@@ -14,7 +14,9 @@ import (
 // The fixtures are independent packages in a temporary module, not broken
 // mutations of the counting example. Every package/test compiles before lint.
 // Local replacement modules supply mock/Rapid symbols without new dependencies.
-func TestImportBoundaries(t *testing.T) {
+// They hold the import boundaries (depguard) and the exit-code switches over
+// a sealed failure set (gochecksumtype).
+func TestArchitecture(t *testing.T) {
 	root := os.Getenv("ARCHITECTURE_ROOT")
 	linter := os.Getenv("ARCHITECTURE_LINTER")
 	if root == "" || linter == "" {
@@ -71,7 +73,12 @@ func TestImportBoundaries(t *testing.T) {
 		write(stub+"/stub.go", "package probe\n\nconst Value = 1\n")
 	}
 	write("go.mod", mod)
-	type expectation struct{ name, path, imported, rule string }
+	// A refused fixture names the linter refusing it and what its
+	// diagnostic must say; an accepted one names neither.
+	type expectation struct {
+		path, linter string
+		texts        []string
+	}
 	var cases []expectation
 	add := func(name, layer, imported, symbol, rule string, test bool) {
 		path := layer + "/" + name + "/probe.go"
@@ -91,7 +98,11 @@ func TestImportBoundaries(t *testing.T) {
 			path = layer + "/" + name + "_test.go"
 		}
 		write(path, "package probe\n\n"+imports+"\n"+body)
-		cases = append(cases, expectation{name, path, imported, rule})
+		refusal := expectation{path: path}
+		if rule != "" {
+			refusal = expectation{path, "depguard", []string{imported, "from list '" + rule + "'"}}
+		}
+		cases = append(cases, refusal)
 	}
 	for _, layer := range []string{"domain", "port", "port/porttest"} {
 		base := "internal/count/" + layer
@@ -164,13 +175,64 @@ func TestImportBoundaries(t *testing.T) {
 			add("rapid_test", layer, "pgregory.net/rapid", "Value", "rapid", true)
 		}
 	}
+	// A sealed failure set as the ports declare one, and internal/cli's
+	// switches over it shaped as readProblem is: starting from the internal
+	// error's 70, each kind its code. Only the switch naming every kind
+	// passes; a default arm does not count as naming the kind it leaves out.
+	sealed := module + "/internal/count/port/sealed"
+	write("internal/count/port/sealed/sealed.go", `package sealed
+
+// Failure is a sealed set of two kinds.
+//
+//sumtype:decl
+type Failure interface {
+	error
+	failure()
+}
+
+// Missing is one kind.
+type Missing struct{ Path string }
+
+func (*Missing) failure() {}
+func (e *Missing) Error() string { return "missing: " + e.Path }
+
+// Unreadable is the other.
+type Unreadable struct{ Path string }
+
+func (*Unreadable) failure() {}
+func (e *Unreadable) Error() string { return "unreadable: " + e.Path }
+`)
+	sumtype := func(name, arms string, refused bool) {
+		path := "internal/cli/" + name + "/probe.go"
+		write(path, fmt.Sprintf(`package probe
+
+import sealed %q
+
+// Code is failure's exit code.
+func Code(failure sealed.Failure) int {
+	code := 70
+	switch failure.(type) {
+%s	}
+	return code
+}
+`, sealed, arms))
+		refusal := expectation{path: path}
+		if refused {
+			refusal = expectation{path, "gochecksumtype", []string{"Failure", "missing cases for Unreadable"}}
+		}
+		cases = append(cases, refusal)
+	}
+	missing := "case *sealed.Missing:\n code = 3\n"
+	sumtype("sumtype_allowed", missing+"case *sealed.Unreadable:\n code = 4\n", false)
+	sumtype("sumtype_omitted", missing, true)
+	sumtype("sumtype_default", missing+"default:\n", true)
 	compile := exec.Command("go", "test", "./...")
 	compile.Dir = dir
 	compile.Env = append(os.Environ(), "GOWORK=off", "GOPROXY=off")
 	if output, err := compile.CombinedOutput(); err != nil {
 		t.Fatalf("fixtures must compile and their tests pass before lint: %v\n%s", err, output)
 	}
-	t.Logf("all %d independent boundary fixtures compiled; fixture-I/O tests passed", len(cases))
+	t.Logf("all %d independent architecture fixtures compiled; fixture-I/O tests passed", len(cases))
 	outputPath := filepath.Join(dir, "issues.json")
 	// Absolute output paths avoid the config/fixture being on different
 	// Windows drives. This changes presentation only, not any lint rule.
@@ -180,7 +242,7 @@ func TestImportBoundaries(t *testing.T) {
 	output, lintErr := lint.CombinedOutput()
 	if lintErr != nil {
 		if exit, ok := lintErr.(*exec.ExitError); !ok || exit.ExitCode() != 1 {
-			t.Fatalf("linter failed to run, not an import refusal: %v\n%s", lintErr, output)
+			t.Fatalf("linter failed to run, not a refusal: %v\n%s", lintErr, output)
 		}
 	}
 	var report struct {
@@ -223,7 +285,11 @@ func TestImportBoundaries(t *testing.T) {
 				break
 			}
 		}
-		if expected == nil || expected.rule == "" || issue.FromLinter != "depguard" || !strings.Contains(issue.Text, expected.imported) || !strings.Contains(issue.Text, "from list '"+expected.rule+"'") {
+		matches := expected != nil && expected.linter != "" && issue.FromLinter == expected.linter
+		for i := 0; matches && i < len(expected.texts); i++ {
+			matches = strings.Contains(issue.Text, expected.texts[i])
+		}
+		if !matches {
 			t.Errorf("unexpected diagnostic (not a passed negative): %s: %s: %s", path, issue.FromLinter, issue.Text)
 			continue
 		}
@@ -231,8 +297,8 @@ func TestImportBoundaries(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.path, func(t *testing.T) {
-			if c.rule != "" && !seen[c.path] {
-				t.Errorf("missing %s refusal of %s", c.rule, c.imported)
+			if c.linter != "" && !seen[c.path] {
+				t.Errorf("missing %s refusal: %s", c.linter, strings.Join(c.texts, ", "))
 			}
 		})
 	}

@@ -3,6 +3,8 @@ package port
 
 // ReadFailure describes a file-read failure without exposing operating-system
 // error types to the domain.
+//
+//sumtype:decl
 type ReadFailure interface {
 	error
 	readFailure()
