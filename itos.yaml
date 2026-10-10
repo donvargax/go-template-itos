@@ -98,6 +98,10 @@ ci:
     - { run: tools/bin/architecture-check, cost: static }
     - { run: go tool govulncheck -test ./..., cost: late }
     - { run: "RAPID_CHECKS=1 go test ./cmd/... ./internal/...", cost: late }
+    # The release helpers' tests, harvested with them from itos-template: the version a range
+    # bumps to, the module-path refusal, what moved beneath the binary and the notes it writes,
+    # over example repositories. The platform jobs run them too, in go test ./....
+    - { run: go test ./tools/bin/release-version ./tools/bin/release-notes, cost: late }
     - { run: tools/bin/domain-coverage, cost: late }
     # The one merged run of the scenarios: the smoke set and those the range names, the
     # whole suite when there is no green run to start from.

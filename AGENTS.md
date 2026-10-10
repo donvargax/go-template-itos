@@ -122,6 +122,7 @@ CI runs its plan, `itos ci run`, on every push, in this order, stopping at the f
 - The static checks of the tasks the push's commits name.
 - `go tool govulncheck -test ./...`
 - `RAPID_CHECKS=1 go test ./cmd/... ./internal/...`
+- `go test ./tools/bin/release-version ./tools/bin/release-notes`
 - `tools/bin/domain-coverage`
 - The `scenario` tests of the smoke set and those the push's commits name, in one run.
 - `tools/bin/pinned itos-cc mutation sample --count 10`
