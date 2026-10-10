@@ -6,5 +6,6 @@ file and leaves this list, which itos decision record writes.
 <!-- itos:decisions:begin -->
 
 - [ADR-0001: Non-cumulative CLI flags are accepted once](0001-non-cumulative-cli-flags-are-accepted-once.md)
+- [ADR-0002: Made projects inherit quality policy through upstream itos initialization](0002-made-projects-inherit-quality-policy-through-upstream-itos-initialization.md)
 
 <!-- itos:decisions:end -->
