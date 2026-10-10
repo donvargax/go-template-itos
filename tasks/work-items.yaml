@@ -392,25 +392,9 @@ items:
     title: Say in the made project's guides how its policy is adopted
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was made-project-setup-docs.
-      Found by T-27: docs/go.md's Made projects section on stack/go and go/cli, and
-      docs/engineering.md on main, still say fresh-project setup waits on upstream itos and that a
-      made project has none of the branch's rules. Since T-27 a render ships itos-policy.yaml and
-      itos-template new prints the setup steps that adopt it with itos init --policy and remove it.
-      docs/go.md also links decision 2, which renders leave out. The coordinator's docs commits
-      bring these user-facing guides in step, keeping the claim about CI on a made main withheld
-      until made-project-ci.
-
-      T-31 made a made main's CI set up Go and run the platform jobs, proved on
-      go-template-itos-sample's run 38081894211, so the CI claim need no longer be withheld.
-      docs/go.md's Made projects section on stack/go and go/cli still says the workflow runs its Go
-      steps only on stack/, go/ and renovate/ branches, which is now false; T-31's docs commits left
-      it to this item, as its spec named only TEMPLATE.md, docs/CLI.md, docs/upgrading.md and
-      docs/ORCHESTRATING.md.
   - id: made-project-agent-rules
     title: A made project's AGENTS.md rules describe its adopted policy
     phase: 1

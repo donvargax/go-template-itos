@@ -381,5 +381,3 @@
     passages in docs commits, main first and merged down, saying what setup adopts and what a made
     main's CI runs, and leaving the real release unclaimed, since cli-releases has not proved one.
     Wording the rest of these guides for the made project is guides-template-wording's.
-  done_when:
-    - run: "! grep -rqiE 'waits on upstream itos|not registered there yet|until fresh-project setup' docs"
