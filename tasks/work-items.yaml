@@ -88,14 +88,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: cli-contract
-    title: Document the reusable CLI contract on go/cli
+  - id: T-16
+    title: Write the CLI design guide for the CLI feature
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was cli-contract.
       Belongs on go/cli only. Adapt the general contract from donvargax/itos-template/docs/CLI.md,
       not generator commands or domain types: output channels, stable machine fields and exit kinds,
       schema-1 JSON successes and failures, help, flags/environment/negation, argument separators,
