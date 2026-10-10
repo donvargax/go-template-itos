@@ -16,8 +16,12 @@
 - Ask, answer and record every question on `main`, even one specific to a stack or feature
   (decision 3). Question and record numbers are per branch; asked anywhere else, main reuses them.
 - A new task's id is one above the highest on any branch (decision 4), never `itos task next-id`
-  alone: `git fetch` and `git grep -hoE 'id: T-[0-9]+' origin/main origin/stack/go origin/go/cli
-  -- 'tasks/phase-*.yaml' | sort -t- -k2n | tail -1`.
+  alone: `git fetch` and `git grep -hoE 'id: T-[0-9]+' main stack/go go/cli origin/main
+  origin/stack/go origin/go/cli -- 'tasks/phase-*.yaml' | sort -t- -k2n | tail -1`, local
+  branches included for ids not pushed yet.
+- Main's registry is the template-wide index of every idea. When the work lands on a stack or
+  feature branch, leave main's copy open with an `itos work edit --note` naming where; never
+  drop it, since dropped reads as unwanted.
 
 ## Briefs and proof
 

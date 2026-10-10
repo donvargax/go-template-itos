@@ -353,3 +353,22 @@
     than writing a second parser. No new flag, and no change to the JSON usage-error shape.
   done_when:
     - run: '! grep -q "@wip" features/cli.feature && grep -q "@T-14" features/cli.feature'
+- id: T-15
+  type: docs
+  title: Write the shared configuration-format guide
+  why: >
+    The person asked that a made CLI carry docs/CONFIG.md beside docs/CLI.md. Its rules hold for
+    any interface, so the guide lives on main and merges down; the CLI feature adds only flags,
+    environment variables and precedence in its own docs/CLI.md (cli-contract). Harvest the general
+    rules of itos-template's docs/CONFIG.md, keeping its sources and provenance: defaults written
+    down and printable, JSON data written as YAML, refusing what JSON cannot say (tags, anchors,
+    several documents, duplicate keys), unknown keys refused, every problem named by its key path,
+    a version on every file, snake-case keys, named lists as lists of objects, whole values, no
+    secrets, documented keys and a schema. Leave out the generator's manifest and record, its
+    decision and task numbers. The template has no configuration file, loader, schema or
+    defaults printer, so the guide says a project applies the rules when it adds its first file
+    and claims none of them is implemented. Formats owned by other tools (go.mod, linters, CI,
+    itos.yaml) keep their own rules.
+  done_when:
+    - run: test -f docs/CONFIG.md && grep -q docs/CONFIG.md AGENTS.md
+    - run: '! grep -qiE "decision [0-9]|manifest|T-[0-9]|\.itos-template" docs/CONFIG.md'
