@@ -13,6 +13,8 @@ template; do not repeat the generic guide here.
   machinery, retaining provenance, rather than rebuilding it differently for this template.
 - GitHub App installation and bot operation must be verified before claiming Renovate is active;
   a committed configuration alone proves neither.
+- Ask, answer and record every question on `main`, even one specific to a stack or feature
+  (decision 3). Question and record numbers are per branch; asked anywhere else, main reuses them.
 
 ## Briefs
 
@@ -28,3 +30,7 @@ template; do not repeat the generic guide here.
 Record a lesson only when it prevents a repeated mistake. Give its recorded date, last-seen date
 and exit item (or permanent); keep at most ten. An upstream-tool gap belongs upstream, after
 checking versions and existing reports, not in a workaround here.
+
+- After merging a parent branch down, compare the items both registries hold. The merge keeps the
+  child's status, so close an item finished upstream with `itos work done` on the child too.
+  Recorded 2026-10-09; last seen 2026-10-09; permanent while registries share items.
