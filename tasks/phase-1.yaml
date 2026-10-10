@@ -226,5 +226,3 @@
     installed while this was specified, but no request has landed, so docs/upgrading.md says so
     until renovate-proof. Change main's file, then stack/go's and go/cli's, merging main down as
     earlier items did.
-  done_when:
-    - run: 'f=.github/renovate.json5 && ! grep -q "landed on main" "$f" && if test -f go.mod; then ! grep -qE "^[[:space:]]*(baseBranchPatterns|baseBranches|useBaseBranchConfig|commitTrailers)[[:space:]]*:" "$f"; else grep -qE "^[[:space:]]*baseBranchPatterns[[:space:]]*:" "$f" && grep -qE "^[[:space:]]*useBaseBranchConfig[[:space:]]*:" "$f" && grep -q "Task: T-2" "$f"; fi'
