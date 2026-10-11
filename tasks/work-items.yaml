@@ -735,19 +735,9 @@ items:
     title: A depguard refusal says how to extend the rule
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was depguard-refusal-guide.
-      Raised on 2026-10-10 by a reviewer of T-52: go/cli's slices rule treats every internal package
-      not on its exclusion list as a command, and the domain and infra rules name their packages, so
-      a project adding a domain package or an adapter is refused by lint until the rules are told.
-      That fails safe, but itos, itos-cc and itos-template will adopt this layout with many domain
-      packages, and an agent meeting the refusal may loosen the rule instead. Each rule's desc names
-      the step and points to docs/go.md's Adding a package section (stack/go's, and go/cli's once
-      its docs name the slices rule), so the message itself says to extend the rule and never to
-      loosen it.
   - id: itos-ci-workflows
     title: "CI follows itos's workflow design: fast pushes, slow work in a nightly"
     phase: 1

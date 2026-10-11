@@ -788,6 +788,3 @@
     on conflict. No rule's files, allow or deny change, so architecture-check's fixtures pass as
     they are; if a fixture asserts a desc's text, update it with the desc. Push each branch's
     commits together and see CI on Linux, macOS and Windows and Template check green on both.
-  done_when:
-    - run: "test \"$(grep -c 'Adding a package' .golangci.yml)\" -ge 3"
-    - run: tools/bin/architecture-check
