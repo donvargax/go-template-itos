@@ -467,7 +467,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-51]
+    depends_on: [T-51, T-53]
     kind: task
     why: >
       Second half of decision 6 on go/cli, after T-51 has moved the domain to internal/counting and
