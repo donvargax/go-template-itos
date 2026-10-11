@@ -468,14 +468,15 @@ items:
     status: done
     depends_on: [T-51, T-53]
     kind: task
-  - id: release-v0-2-0
+  - id: T-57
     title: Cut the template's release v0.2.0
     phase: 1
     owner: null
     status: todo
     depends_on: [T-52, T-54, T-55, T-56]
-    kind: idea
+    kind: task
     why: >
+      Was release-v0-2-0.
       Once T-51 and T-52 land decision 6's layout, cut v0.2.0 with itos-template release as T-42 cut
       v0.1.0, so a project made from the template starts on the new layout and on itos 7.4.0
       (v0.1.0's policy still pins 7.1.2, since it was cut before T-49). The tags still need a real
