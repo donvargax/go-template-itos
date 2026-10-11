@@ -472,8 +472,8 @@ items:
   - id: T-57
     title: Cut the template's release v0.2.0
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-52, T-54, T-55, T-56]
     kind: task
     why: >
