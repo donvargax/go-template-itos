@@ -7,12 +7,13 @@ prints the counts for a person or one JSON object with `--json`.
 
 ## What it does
 
-`internal/count` is the private counting domain beneath the command, with a Files port, a disk
-adapter and an in-memory fake, and `internal/cli` is the UI that turns a typed failure into an
-exit code. Lines are logical text lines separated by LF; CRLF is one separator, and a nonempty
-final line without a newline counts. Empty input has zero lines. Words are runs separated by
-Unicode whitespace, using Go's standard library; punctuation does not split a word. Thus
-`hello-world` is one word. The domain has no JSON, flags or exit codes, and file access is
+`internal/counting` is the private counting domain beneath the command, with a Files port, a
+disk adapter and an in-memory fake; `internal/count` is the `count` command's slice, and
+`internal/cli` is the UI that turns a typed failure into an exit code and stops a command on
+Ctrl-C, exit 130. Lines are logical text lines separated by LF; CRLF is one separator, and a
+nonempty final line without a newline counts. Empty input has zero lines. Words are runs
+separated by Unicode whitespace, using Go's standard library; punctuation does not split a word.
+Thus `hello-world` is one word. The domain has no JSON, flags or exit codes, and file access is
 read-only through its port. Its additive property uses newline-terminated pieces to preserve
 word boundaries.
 

@@ -9,71 +9,92 @@ OS as a value), adapted to this module with its owner's permission (`CONTRIBUTOR
 
 ## Packages
 
-The counting example is one slice under `internal/count`:
+The code follows decision 6 (`docs/decisions/`): a shared domain behind ports, adapters apart
+from it, and thin slices named for their commands.
 
-- `domain` owns counting and its result. It reads input only through the `Files` port.
-- `port` declares `Files` and its typed failures, `Missing` and `Unreadable`.
-- `port/porttest` holds our in-memory fake of `Files` for the domain's and command's tests.
-- `disk` is the concrete adapter. It reads real files and translates OS errors into the
-  port's failures.
-- `input` is the adapter the command reads through. It reads standard input for `-` and
-  hands every other path to the disk.
-- `command` is the slice's application handler. It carries the command line's values to
-  the domain through the `Files` port and hands the result to `internal/cli`.
+- `internal/counting` is the domain. It owns counting and its result, and reads input only
+  through its port. A function that calls the port takes a `context.Context` first (decision
+  7); pure logic, such as counting bytes, takes none.
+- `internal/counting/port` declares `Files` and its sealed set of failures: `Missing`,
+  `Unreadable` and `Cancelled`. `Files.Read` takes the context first.
+- `internal/counting/port/porttest` holds our in-memory fake of `Files` for the tests.
+- `internal/disk` and `internal/stdin` are the adapters. `disk` reads real files and translates
+  OS errors into the port's failures; `stdin` reads standard input for `-`, stops with
+  `Cancelled` once the context is done, and hands every other path to a fallback it is given.
+  Each imports nothing of ours but the port.
+- `internal/count` is the `count` command's slice, named for the command. Its kong struct and
+  `Run` are the UI; its `Query`, carrying domain values, and `Handler.Handle(ctx, q)`, which
+  only calls the domain through the port, are the application. `Run` assembling the `Query`
+  from kong's flags is the one copy the layout accepts.
+- `internal/cli` is the UI every slice shares. It alone turns a failure into its exit code and
+  prints the plain or JSON answer, and it stops a command on Ctrl-C (decision 8).
+- `cmd/go-template-itos` assembles everything: it makes the context, feeds the interrupts to
+  `internal/cli`, gives `stdin` the disk as its fallback, and hands the context and the handler
+  to `Run` through kong's bindings. It is the only place that knows every package.
+- `internal/version` says what the build is, and `internal/release` is the library of the
+  release tools that `tools/bin/release-version` and `tools/bin/release-notes` run. Neither is
+  a command.
 
-Around the slice:
+The domain is shared, not part of any command, so a second command reuses counting through its
+port without reaching into another command's package. A context carries cancellation and
+deadlines only, always as the first parameter and never in a struct or as a value.
 
-- `cmd/go-template-itos` is the entry point. It builds the kong parser, wires `disk` and
-  `input` into the command, and runs it.
-- `internal/cli` is the UI. It turns a typed failure into its exit code and prints the
-  plain or JSON answer.
-- `internal/release` and `internal/version` are build helpers outside the slice. No
-  boundary rule lists them. `tools/bin/release-version` and `tools/bin/release-notes`,
-  which the release workflow runs, read commits and what moved beneath the binary
-  through `internal/release`.
+`.golangci.yml` holds these arrows with depguard:
 
-`.golangci.yml` enforces these boundaries with depguard, one rule per layer:
+- `domain`: the domain, its port and their tests import nothing of ours but the domain and its
+  port subpackages, and never kong.
+- `domain-io`: the domain's own code does no I/O, neither `os` nor `net`. Its tests may read
+  fixtures.
+- `slices`: a slice imports nothing of ours but the domain and `internal/cli`, so never another
+  slice, an adapter or `cmd`. Its files are every package under `internal/` except the ones the
+  rule lists as something else, so a new command's slice is held with no edit. A slice's tests
+  are in its own package, since the rule cannot tell a package's import of itself from another's.
+- `infra`: an adapter imports nothing of ours but the port it implements; only its tests may
+  use `porttest`.
+- `mocks`: no mocking library anywhere. Fakes live in `porttest`.
+- `rapid`: the property library only in the domain's own tests.
+- `kong`: kong only in `cmd` and `internal/cli`. A slice's struct tags need no import.
 
-- `domain` and `ports` may import only the domain and its ports from this module.
-- `application` lets `command`, its code and tests alike, import only the domain, its
-  ports and `internal/cli`, never a concrete adapter or the entry point.
-- `domain-io` denies `os` and `net` to production domain and port code. Their tests may
-  still read fixtures.
-- `infra` lets a production adapter import only the ports, never the domain, another
-  adapter or a fake. It names `disk` and `input`.
-- `mocks` denies mocking libraries everywhere. Fakes live in `porttest`.
-- `rapid` limits the property library to the domain's tests.
-- `kong`, harvested from itos-template, keeps kong in `cmd` and `internal/cli`. The
-  command carries kong's struct tags, which need no import.
+### Adding a package
 
-The lists name each package explicitly, so a new package is unchecked until a rule names
-it. When you add a domain package, a slice or an adapter:
+Lint refusing an import after you add a package means a rule has not been told what the package
+is. Extend the rule as below; never loosen it, since every arrow above is what keeps the next
+command from reaching into this one.
 
-1. Add its folder as a `**/<folder>/**` glob to the matching rule's `files`, and its
-   import path to the `allow` list of each rule that may import it.
-2. Add compile-valid fixtures that the rule must accept and reject to
-   `tools/testdata/architecture`. `tools/bin/architecture-check` builds every fixture, then
-   runs the pinned linter and this configuration against them, so a rule that stops
-   matching fails there instead of passing silently.
-3. A new domain package is measured by `tools/bin/domain-coverage`, which reads its list
-   from the `domain` rule's `files`.
+- A command: add its slice as `internal/<command>`. The `slices` rule holds it already. Add it
+  to `cmd`'s bindings and give it scenarios.
+- A domain package: add its folder as a `**/internal/<name>/**` glob to `domain` and
+  `domain-io`, as a `!**/internal/<name>/**` exclusion to `slices`, and its import path to the
+  `allow` lists of `domain` and of `slices` if commands use it. Give it a `port` subpackage for
+  what it reaches outside. `tools/bin/domain-coverage` reads its list from `domain`'s `files`,
+  so the package is held to 80% from then on.
+- An adapter: add its folder to `infra`'s `files`, the port it implements to `infra`'s `allow`,
+  and a `!**/internal/<name>/**` exclusion to `slices`. Wire it in `cmd`.
+- Any other package that is no command, such as `internal/version`: add a `slices` exclusion
+  saying what it is.
+- Then add compile-valid fixtures to `tools/testdata/architecture` that each rule you touched
+  must accept and refuse. `tools/bin/architecture-check` runs the pinned linter over them, so a
+  rule that stops matching fails there instead of passing silently.
 
 A new sealed failure set, an interface with an unexported marker method like
 `port.ReadFailure`, is annotated `//sumtype:decl` and given its exit codes in one switch in
 `internal/cli` that names every kind. gochecksumtype then refuses the switch when a kind is
 added and left out; without the annotation nothing checks it.
 
-Code that differs by OS takes the OS as a value. Logic never branches on `runtime.GOOS`.
-A build-tagged file holds only a call that one OS lacks, with no mutation site. The
-counting example has no OS-specific logic.
+Code that differs by OS takes the OS as a value. Logic never branches on `runtime.GOOS`. A
+build-tagged file holds only a call that one OS lacks, with no mutation site: the scenarios'
+interrupt step is the example, `os.Interrupt` on Unix and `CTRL_BREAK_EVENT` on Windows.
 
 ## Tests
 
 The domain's unit tests use the `porttest` fake and assert results and typed failures.
 The disk adapter's tests use real temporary files, since translating OS errors is what
-the adapter does. The command's tests use the fake too, standard input being its `-` key;
-reading standard input is the `input` adapter's, held by its own tests. The scenarios in
-`features/` run the built binary through godog.
+the adapter does. The `count` slice's tests use the fake too, standard input being its `-`
+key; reading standard input, and stopping when the context is done, is `internal/stdin`'s,
+held by its own tests. The scenarios in `features/` run the built binary through godog,
+interrupting it once it waits on an open standard input to show the 130 exit. A second Ctrl-C
+ending the process at once is held by `internal/cli`'s unit tests, which feed it fake
+interrupts on every system: `count` has no cleanup for a scenario to see skipped.
 
 Properties use `pgregory.net/rapid` and live in the domain's tests. The counting property
 joins newline-terminated pieces and checks that their counts add. Arbitrary concatenation
