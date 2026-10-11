@@ -619,3 +619,16 @@ items:
       a major release, but no job checks that a release keeps the last one's contract. Run the
       previous release tag's contract scenarios against the binary about to be released, refusing a
       release that breaks one without a breaking-change commit.
+  - id: template-release-job
+    title: The template's own releases are cut by a CI job
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found cutting v0.1.0 on 2026-10-10: itos-template release made the tags locally and the person
+      had to push them with /usr/bin/git, since itos's git shim refuses tag pushes (itos#37) and
+      push.followtags makes a local tag on main a hazard. A workflow on main, run by hand or on a
+      schedule, would check out every branch, run itos-template check and release, and push the tags
+      atomically from CI, where no shim intercepts git; a release then needs no one's terminal.
