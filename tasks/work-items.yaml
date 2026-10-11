@@ -606,3 +606,16 @@ items:
       policy, a contributing guide, code owners or issue and pull request templates, the files
       GitHub's community profile and OpenSSF Scorecard look for. Add them on main with the owner
       literal, so a render fills them, and consider Scorecard's workflow once they exist.
+  - id: cli-contract-check
+    title: CI runs the last release's scenarios against the new binary
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Named as not yet in go/cli's docs/CLI.md and listed in the README's status on 2026-10-10: the
+      exit code and the --json output are the contract with scripts, and a breaking change must make
+      a major release, but no job checks that a release keeps the last one's contract. Run the
+      previous release tag's contract scenarios against the binary about to be released, refusing a
+      release that breaks one without a breaking-change commit.
