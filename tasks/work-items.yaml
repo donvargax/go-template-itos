@@ -594,3 +594,15 @@ items:
       bill of materials is published, so a user cannot see what the binary links without the source.
       GoReleaser's sboms with a pinned syft would add one per archive, covered by the same
       attestation.
+  - id: repo-health-files
+    title: A made project ships SECURITY.md, CONTRIBUTING.md, CODEOWNERS and issue and pull request templates
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found gathering the README's practices on 2026-10-10. No branch has a vulnerability reporting
+      policy, a contributing guide, code owners or issue and pull request templates, the files
+      GitHub's community profile and OpenSSF Scorecard look for. Add them on main with the owner
+      literal, so a render fills them, and consider Scorecard's workflow once they exist.
