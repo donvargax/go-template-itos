@@ -34,6 +34,8 @@ type world struct {
 	stdout, stderr string
 
 	stdin string // the text the run reads from its standard input, "" for none
+
+	running *running // the run started with its standard input left open, nil for none
 }
 
 func initializeScenario(sc *godog.ScenarioContext, root, bin string) {
@@ -44,6 +46,7 @@ func initializeScenario(sc *godog.ScenarioContext, root, bin string) {
 	// The scenario's error is godog's already: returned here, it would be
 	// reported twice, as the hook's and as the step's.
 	sc.After(func(ctx context.Context, _ *godog.Scenario, _ error) (context.Context, error) {
+		w.running.stop()
 		_ = os.RemoveAll(w.dir)
 		return ctx, nil
 	})
@@ -57,6 +60,10 @@ func initializeScenario(sc *godog.ScenarioContext, root, bin string) {
 	sc.Step(`^go-template-itos runs with "([^"]*)" and the environment "([^"]*)"$`, func(args, vars string) error {
 		return w.runWith(w.withEnv(vars), args)
 	})
+	// A run that waits on its input until something ends it, and the
+	// interrupt that does (interrupt_test.go).
+	sc.Step(`^go-template-itos runs with "([^"]*)" and its standard input left open$`, w.startWithInputOpen)
+	sc.Step(`^it is interrupted while it waits$`, w.interruptWhileWaiting)
 
 	sc.Step(`^it exits with code (\d+)$`, w.exitsWith)
 	sc.Step(`^its standard output lists "([^"]*)"$`, func(text string) error {
@@ -88,6 +95,12 @@ func initializeScenario(sc *godog.ScenarioContext, root, bin string) {
 	sc.Step(`^its standard output does not say "([^"]*)"$`, func(text string) error {
 		if strings.Contains(w.stdout, text) {
 			return fmt.Errorf("standard output says %q\n%s", text, w.report())
+		}
+		return nil
+	})
+	sc.Step(`^its standard output is empty$`, func() error {
+		if w.stdout != "" {
+			return fmt.Errorf("standard output is not empty\n%s", w.report())
 		}
 		return nil
 	})

@@ -31,6 +31,13 @@ Commands run in a clean environment: no `GIT_*`, `ITOS_*`, `GO_TEMPLATE_ITOS_*`,
 of the caller's claude, itos or its extensions on the PATH. A `GOCOVERDIR` that exists builds the
 binary with `-cover` and collects what each run did, for itos-cc to merge with `go test`'s.
 
+An interrupt is sent as each system delivers Ctrl-C, from one build-tagged file per system:
+`os.Interrupt` on Linux and macOS, and on Windows `CTRL_BREAK_EVENT` to the binary started in a
+process group of its own, which Go reports as the same signal. The step first writes more to the
+binary's open stdin than any pipe holds unread, so the write returns only once the binary is
+reading, its interrupt handling already in place; no sleep guesses when. A run the interrupt
+killed by the system's default action fails the step: it never handled the interrupt.
+
 ## Running them
 
 ```sh
@@ -104,8 +111,11 @@ with the program named as the built binary is.
 | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `go-template-itos runs with "…"`                                                       | Runs the binary in the scratch folder with those words.          |
 | `go-template-itos runs with "…" and the environment "NAME=value"`                     | The same, with that variable added to the clean environment.     |
+| `go-template-itos runs with "…" and its standard input left open`                     | Starts the binary, its stdin a pipe held open, and does not wait. |
+| `it is interrupted while it waits`                                                    | Interrupts that run once it reads its stdin; waits for it to stop. |
 | `it exits with code <n>`                                                              | The binary's exit status.                                         |
 | `its standard output says "…"` / `does not say "…"` / `lists "…"` / `does not list "…"` | Containment, or one whole line equal to the text.                |
+| `its standard output is empty`                                                        | Nothing at all on stdout.                                        |
 | `its error output says "…"` / `does not say "…"`                                      | The same, on stderr.                                              |
 | `the first line of its standard output is "…" and the stamped version`                | The stamped version the harness built with.                      |
 | `the second line of its standard output is "…" and the stamped commit`                | The stamped commit.                                               |
