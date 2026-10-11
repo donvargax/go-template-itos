@@ -733,3 +733,20 @@ items:
       and from the pre-commit hook with --cached, one pattern for both; it fails closed when git
       grep cannot look. No branch here has it, though source, feature files and docs can all carry
       one. Harvest it onto main with its provenance, so every made project gets it.
+  - id: cli-ui-arrow
+    title: go/cli's depguard holds the UI's arrow
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found during T-52 on go/cli: decision 6's arrows hold the domain, the adapters, the slices and
+      kong, but nothing holds internal/cli, the UI the slices share, or internal/version, which the
+      slices rule leaves out as packages that are no command. Today internal/cli imports only the
+      domain's port, yet no rule would refuse it importing a slice, an adapter or cmd, so a made
+      project could grow an arrow from the UI into a command without a gate noticing. Decision 17
+      names internal/cli as the shared UI but states no arrow for it. Ask whether the UI may import
+      only the domain's ports (for the sealed failure sets it classifies) and internal/version, and
+      if so add a ui rule with accept and refuse fixtures in tools/testdata/architecture, each shown
+      to fail without its rule.
