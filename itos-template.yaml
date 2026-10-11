@@ -92,6 +92,15 @@ template_only:
   # project has neither the template's itos.yaml nor, after setup, the policy.
   # itos-policy.yaml itself ships: the setup steps read it, then remove it.
   - tools/bin/policy-drift
+  # The template's mutation records: each snapshot hashes the test files that
+  # import its file, and those import the module path a render replaces, so
+  # every record is stale in every render, and each itos-template update would
+  # conflict on them. A made project's first push judges no code (setup sets
+  # commits.since to the render commit), and its first code change records its
+  # own. itos-cc.yaml still ships: itos-cc reads that one file, configuration
+  # and reviewed exceptions alike, and an exception's hash covers its
+  # function's body, not the module path, so most of them hold in a render.
+  - .metrics
   # The decisions about running the template, and the index itos writes from
   # every record in the folder (q-19): a render ships decision 1 alone, the one
   # binding a made CLI, and itos writes the made project's own index, naming 1
