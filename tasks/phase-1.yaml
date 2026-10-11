@@ -619,5 +619,3 @@
     .github/workflows/template-check.yml, the same file on main, stack/go and go/cli, in a ci commit
     on main merged down as T-46 did, each branch keeping its own itos.yaml, ci.yml, README.md and
     registry. See Template check green on every head with the new version.
-  done_when:
-    - run: grep -q 'itos-template@v0.26.0' .github/workflows/template-check.yml
