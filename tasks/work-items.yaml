@@ -465,8 +465,8 @@ items:
   - id: T-52
     title: The CLI's count command and stdin adapter take decision 6's layout
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-51, T-53]
     kind: task
     why: >
