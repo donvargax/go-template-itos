@@ -633,3 +633,35 @@
     own itos.yaml, ci.yml, README.md and registry. A gate 7.4.0 refuses on existing work is a
     finding, not a check to weaken. Push each branch commits together and see its CI and Template
     check green.
+- id: T-50
+  type: chore
+  title: The sample takes the template release v0.1.0 by itos-template update
+  why: >
+    Was sample-engineering-doc. donvargax/go-template-itos-sample was rendered from the branch heads
+    before the template had a release, and it is behind on every template change since: T-32's
+    docs/engineering.md paragraph, T-38 to T-49, the itos pins. The person chose on 2026-10-10 not
+    to replay those by hand but to bring it current in one step once itos-template could update a
+    made project; 0.25.0 adds update and v0.1.0 is the first release (T-42), so the person approved
+    on 2026-10-10 doing it now. Its .itos-template.yaml names the branch commits it was rendered
+    from and no release, which is what update renders the old side from.
+
+    Clone the sample beside this repository, at /home/yorch/src/os/github/donvargax/go-template-itos-sample,
+    install its itos hooks, and on a clean main run itos-template update (0.26.0 or later, git 2.45
+    or later) with no --to, so it targets v0.1.0, the newest. Resolve each conflict keeping the
+    sample's own changes (T-33's fix to docs/go.md, its own itos data) and taking the template's
+    elsewhere. Expect the render to bring itos-policy.yaml, which the sample's setup removed after
+    adopting it as its own itos.yaml: keep it removed, and move the sample's own itos.yaml pin with
+    itos pin to the version that file names, regenerating its agent rules, so its workflows'
+    donvargax/itos action and its pin agree. Commit the update through the sample's own itos rules,
+    as one commit of the type those rules give it, with the message update prints made to fit
+    them; if they need a Task footer, add the task to the sample's own ledger with itos task add.
+    Before pushing, run tools/bin/release-version as release.yml runs it: the update is not a
+    release of the sample, so stop and report if it would cut one. Push with itos push and see the
+    sample's CI green on every job. A gate that fails is a finding to report with its run, not a
+    check to weaken. Change none of the sample's settings.
+
+    What update did that itos-template should hear about (a setup step's removal coming back, a
+    conflict it could have avoided) goes to the coordinator, who reports it upstream; no workaround
+    is built here.
+  done_when:
+    - run: "curl -fsSL https://raw.githubusercontent.com/donvargax/go-template-itos-sample/main/.itos-template.yaml | grep -q '^release: v0.1.0$'"
