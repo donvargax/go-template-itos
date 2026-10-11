@@ -11,6 +11,9 @@ template; do not repeat the generic guide here.
   merge root changes downward. Do not treat a made project's binary release as a template tag.
 - Infrastructure came from the owner's itos-template and itos repositories. Harvest proven
   machinery, retaining provenance, rather than rebuilding it differently for this template.
+  Their tooling keeps changing (the owner said so of itos's on 2026-10-10): before specifying an
+  idea that harvests from either, re-read its current `tools/bin` and the files the idea's note
+  names, since a note records what was there when it was written.
 - GitHub App installation and bot operation must be verified before claiming Renovate is active;
   a committed configuration alone proves neither.
 - Ask, answer and record every question on `main`, even one specific to a stack or feature
