@@ -581,3 +581,16 @@ items:
       the standard tool for code that reads untrusted input (the counting of arbitrary bytes, the
       CLI's argument handling). Run go test -race in CI where the platform supports it, and add fuzz
       targets with a seed corpus and a short CI budget.
+  - id: release-sbom
+    title: A CLI release publishes an SBOM beside its attested archives
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found gathering the README's practices on 2026-10-10. go/cli's GoReleaser config builds
+      reproducibly (-trimpath, commit timestamps) and the archives are attested, but no software
+      bill of materials is published, so a user cannot see what the binary links without the source.
+      GoReleaser's sboms with a pinned syft would add one per archive, covered by the same
+      attestation.
