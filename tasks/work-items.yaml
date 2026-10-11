@@ -675,3 +675,16 @@ items:
       render cannot ship them. A short section in a made project's docs (docs/security.md or a setup
       guide) names each, why, and how to check it with gh, so a project made from the template gets
       the protection its CI assumes.
+  - id: dependency-license-check
+    title: CI checks that dependencies' licenses are allowed
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found gathering the README's practices on 2026-10-10. docs/security.md and CONTRIBUTORS.md
+      keep the licenses of copied code, but nothing checks the Go modules a project links: a new
+      dependency under a license the project cannot ship would pass every gate. A pinned license
+      checker (google/go-licenses or similar) over the module graph, with an allowlist in the
+      project's own config, run in the Go stack's CI plan.
