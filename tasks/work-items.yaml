@@ -660,6 +660,21 @@ items:
       over several CI runs, fall back: the interrupt scenarios run on Linux and macOS only, every
       system's tests cancel the context directly and check what follows, and an idea keeps the
       Windows interrupt for later.
+
+      The contract, the person's calls on 2026-10-10, to record as decision 8 on main before the
+      scenarios: an interrupted command exits 130 on every system, Windows too; plain output says it
+      was interrupted in one stderr line, and --json prints the usual failure object with rule
+      INTERRUPTED; the first Ctrl-C cancels the context and the command stops promptly, a second
+      ends the process at once with 130, skipping cleanup. No demo feature is added for cleanup: the
+      double Ctrl-C is shared machinery in internal/cli, a small function taking the interrupts as a
+      channel (cmd feeds it signal.Notify's, the one system-specific line), its unit tests feeding
+      fake interrupts on all three systems to show the first cancels and the second exits, since
+      count has no cleanup a scenario could tell apart. Scenarios in features/cli.feature: Ctrl-C
+      while count - waits on an open standard input exits 130 with the stderr line and nothing on
+      stdout; the same with --json prints the INTERRUPTED object; count --help lists 130. The stdin
+      adapter acts on the context so the wait ends. The feat commit adds 130 to docs/CLI.md's exit
+      table and rules for interrupts and for cleanup (write a temp file and rename, so an interrupt
+      never leaves half a file).
   - id: repo-settings-guide
     title: A made project's docs say which repository settings to turn on
     phase: 1
