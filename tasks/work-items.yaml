@@ -644,3 +644,16 @@ items:
       made from the go stack alone gets no version tags, so nothing marks its releases for go get or
       for its users. Give stack/go a release job that tags vX.Y.Z from the commits as go/cli's
       release-version decides, with notes from git-cliff and no binaries.
+  - id: cli-ctrl-c
+    title: Ctrl-C cancels a command through its context
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Decision 7's later slice. cmd/go-template-itos makes the context with signal.NotifyContext so
+      an interrupt cancels it; the adapters act on a done context; and what a cancelled command
+      prints and exits with (130 by convention, through internal/cli as every exit code is) is
+      specified in scenarios first, red before green, on Linux, macOS and Windows, where an
+      interrupt is delivered differently. Waits for T-52.
