@@ -1118,6 +1118,26 @@
     on conflict. No rule's files, allow or deny change, so architecture-check's fixtures pass as
     they are; if a fixture asserts a desc's text, update it with the desc. Push each branch's
     commits together and see CI on Linux, macOS and Windows and Template check green on both.
-  done_when:
-    - run: "test \"$(grep -c 'Adding a package' .golangci.yml)\" -ge 3"
-    - run: tools/bin/architecture-check
+- id: T-56
+  type: build
+  title: A render ships none of the template's mutation records
+  why: >
+    From release-v0-2-0's notes, found by T-50; the person put it before v0.2.0. go/cli's
+    .metrics/mutate holds 17 records, each hashing the test files that import its file, and those
+    import the module path a render replaces, so every record is stale in every render (the
+    sample's second CI, run 38087430541, refused them) and every itos-template update conflicts on
+    them. Add .metrics to itos-template.yaml's template_only on main, with a comment saying why, as
+    the list's other entries have. itos-cc.yaml keeps shipping: itos-cc reads one fixed file name
+    with no include, so its exceptions cannot be split from configuration a made project will need
+    (itos#41's mutation.tests block, the person's tiered testing), and three of its four
+    exceptions survive a render, their hashes covering a function's body, not the module path;
+    the fourth, on cmd's run, holds the name literal and is re-excepted when that code next
+    changes, as the sample did.
+
+    The first attempt found, on 2026-10-10, that a made project's first CI needs no records: setup
+    sets commits.since to the render commit, so the first push judges no code, the proof step does
+    not run and the sample finds nothing to sample (the sample's first CI, run 38081894211, was
+    green so). A first code change then records its own with mutation run, as docs/go.md says. So
+    the setup steps stay as they are. Prove it: itos-template check passes 2 of 2 with the entry,
+    and a render of each combination with the setup steps run passes itos ci run from its render
+    commit. The coordinator updates docs/go.md's Setup section after.

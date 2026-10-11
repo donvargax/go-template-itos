@@ -67,7 +67,8 @@ command from reaching into this one.
   `domain-io`, as a `!**/internal/<name>/**` exclusion to `slices`, and its import path to the
   `allow` lists of `domain` and of `slices` if commands use it. Give it a `port` subpackage for
   what it reaches outside. `tools/bin/domain-coverage` reads its list from `domain`'s `files`,
-  so the package is held to 80% from then on.
+  so the package is held to 80% from then on. If its tests use rapid, add a
+  `!**/internal/<name>/*_test.go` exclusion to `rapid`.
 - An adapter: add its folder to `infra`'s `files`, the port it implements to `infra`'s `allow`,
   and a `!**/internal/<name>/**` exclusion to `slices`. Wire it in `cmd`.
 - Any other package that is no command, such as `internal/version`: add a `slices` exclusion
@@ -157,9 +158,11 @@ From then on the workflow runs the Go steps, the scenarios and the Linux, macOS 
 tests on the project's own `main`, and the release job after them, as `docs/CLI.md`
 describes.
 
-The project starts with the mutation records in `.metrics/mutate/` and the reviewed exceptions
-in `itos-cc.yaml` that came with its code. Their hashes were taken before its name, owner and
-module were filled in, so they are a starting point, not proof: re-prove each function you
-change with `itos-cc mutation run`, as the code proof asks of any change, and re-apply an
-exception's reviewed reason with `itos-cc mutation except` where the same equivalent mutant
-survives.
+The project starts with no mutation records: the template's are taken over its own names and
+stay behind. Setup makes the render commit the point judging starts from, so the first push
+checks no code. A change to a function needs that function's results: run `itos-cc mutation run`
+as the code proof asks of any change, and commit `.metrics/mutate/` with the change.
+`itos-cc.yaml` comes with the template's reviewed exceptions. Most still hold, their hashes
+covering a function's body; one whose function holds the project's name, such as `cmd`'s `run`,
+goes stale, and its reviewed reason is re-applied with `itos-cc mutation except` when that
+function next changes.
