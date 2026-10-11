@@ -3,6 +3,7 @@
 package disk
 
 import (
+	"context"
 	"errors"
 	"io/fs"
 	"os"
@@ -16,8 +17,9 @@ type Files struct{}
 var _ port.Files = Files{}
 
 // Read reads path without modifying or executing its contents and translates
-// operating-system errors into the port's typed failures.
-func (Files) Read(path string) ([]byte, port.ReadFailure) {
+// operating-system errors into the port's typed failures. It does not act on
+// ctx: what a cancelled read returns is not yet settled.
+func (Files) Read(ctx context.Context, path string) ([]byte, port.ReadFailure) {
 	data, err := os.ReadFile(path) //nolint:gosec // caller selects the input path through the Files port
 	if err != nil {
 		return nil, classifyReadError(path, err)

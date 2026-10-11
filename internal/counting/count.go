@@ -3,6 +3,7 @@ package counting
 
 import (
 	"bytes"
+	"context"
 	"strings"
 
 	"github.com/itos-corp/go-template-itos/internal/counting/port"
@@ -25,9 +26,10 @@ func Count(data []byte) Result {
 	return Result{Lines: lines, Words: len(strings.Fields(string(data)))}
 }
 
-// File counts the contents of path through the Files port.
-func File(files port.Files, path string) (Result, error) {
-	data, failure := files.Read(path)
+// File counts the contents of path through the Files port, passing ctx on to
+// the port's read.
+func File(ctx context.Context, files port.Files, path string) (Result, error) {
+	data, failure := files.Read(ctx, path)
 	if failure != nil {
 		return Result{}, failure
 	}

@@ -17,7 +17,7 @@ func TestFilesReadExistingFile(t *testing.T) {
 	if err := os.WriteFile(path, want, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	got, err := (Files{}).Read(path)
+	got, err := (Files{}).Read(t.Context(), path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func TestFilesReadExistingFile(t *testing.T) {
 
 func TestFilesReadMissingPathAsTypedFailure(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "absent")
-	_, err := (Files{}).Read(path)
+	_, err := (Files{}).Read(t.Context(), path)
 	var missing *port.Missing
 	if !errors.As(err, &missing) || missing.Path != path {
 		t.Fatalf("Read() error = %T %v, want typed Missing for %q", err, err, path)

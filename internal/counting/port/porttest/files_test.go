@@ -5,7 +5,7 @@ import "testing"
 func TestReadReturnsAnIndependentCopy(t *testing.T) {
 	data := []byte("notes")
 	files := Files{Data: map[string][]byte{"input": data}}
-	got, failure := files.Read("input")
+	got, failure := files.Read(t.Context(), "input")
 	if failure != nil {
 		t.Fatal(failure)
 	}
