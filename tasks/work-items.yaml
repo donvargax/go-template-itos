@@ -509,3 +509,17 @@ items:
       with it. itos-template check passes 2 of 2 and CI and Template check go green at go/cli's
       head. The coordinator rewrites docs/go.md, docs/architecture.md and docs/CLI.md where they
       name the old paths after.
+  - id: release-v0-2-0
+    title: Cut the template's release v0.2.0
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [T-52]
+    kind: idea
+    why: >
+      Once T-51 and T-52 land decision 6's layout, cut v0.2.0 with itos-template release as T-42 cut
+      v0.1.0, so a project made from the template starts on the new layout and on itos 7.4.0
+      (v0.1.0's policy still pins 7.1.2, since it was cut before T-49). The tags still need a real
+      git push until itos ships p1-push-tag-and-ref (itos#37); never push from main while they are
+      local, since push.followtags would publish main's alone. Then bring the sample to it with
+      itos-template update, as T-50 did.
