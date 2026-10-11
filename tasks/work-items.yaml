@@ -638,6 +638,11 @@ items:
       made from the go stack alone gets no version tags, so nothing marks its releases for go get or
       for its users. Give stack/go a release job that tags vX.Y.Z from the commits as go/cli's
       release-version decides, with notes from git-cliff and no binaries.
+
+      itos's release.yml, checked 2026-10-10 at v7.4.0, releases a Go module: it refuses a version
+      whose major the module path does not end in (/vN from v2, its T-089), since the module proxy
+      would refuse that tag. A Go-only project's release job needs the same gate; harvest it with
+      release-version.
   - id: cli-ctrl-c
     title: Ctrl-C cancels a command through its context
     phase: 1
