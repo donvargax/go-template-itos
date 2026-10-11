@@ -495,6 +495,10 @@ items:
       Before cutting each release, check the README's Practices list and status checklist against
       the guides and the branches, since the list is a summary that can drift from what the guides
       say.
+
+      The person adopts the template on itos, itos-cc and itos-template from this release (said on
+      2026-10-10, when they asked to hear once Ctrl-C landed; T-54 did on 2026-10-10 and they were
+      told). Tell them when it is cut, with the itos-template adopt command and the release's tag.
   - id: cli-stale-mutation-snapshots
     title: go/cli's mutation snapshots are fresh for the code they record
     phase: 1
