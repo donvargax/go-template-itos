@@ -548,7 +548,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: []
+    depends_on: [itos-ci-workflows]
     kind: idea
     why: >
       Found gathering the README's practices on 2026-10-10. The Go stack's tests run without -race,
