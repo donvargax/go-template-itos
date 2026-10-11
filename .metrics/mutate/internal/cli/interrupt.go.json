@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "file": "internal/cli/interrupt.go",
+  "language": "go",
+  "tests": {
+    "cmd/go-template-itos/main_test.go": "93bfbb3377862ad4b6987c7c976bf1577980b8acdcfa0eeb20fea44e198bf82c",
+    "internal/cli/cli_test.go": "b47c2c5ed915db3ba1ff44db1d5c14aa45ede15d5f4b1f1f9b8812abc8ff8c4a",
+    "internal/cli/completion_test.go": "e5a2efb94994d45b2580e11e919af565e5650f39d7116c388c78fbba98e626e3",
+    "internal/cli/flags_test.go": "6a74267a3b1eaaf1f6d1997f40918a4155028e2b2f2a1c2b3a762020888a68fd",
+    "internal/cli/interrupt_test.go": "b146a4b53608c4283bcec1a53fac1aa4cc031291f9a0928e1fed0f492b0b64aa",
+    "internal/cli/version_test.go": "290ca6a0bbcc01c23160f93dee4f3e69d860ad04b7fc10ecf1d8c01f8861efb9",
+    "internal/count/count_test.go": "45780d7586cd2b21a30242a4c2b74a0e7d34d30c42a0357da4cae2d42389063a"
+  },
+  "units": [
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/cli",
+      "name": "StopOnInterrupt",
+      "hash": "0198e0b6e930832a",
+      "start_line": 19,
+      "end_line": 28,
+      "killed": 2,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 2,
+      "mutants": [
+        {
+          "line": 20,
+          "column": 28,
+          "offset": 127,
+          "original": "!",
+          "replacement": "",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 24,
+          "column": 28,
+          "offset": 182,
+          "original": "!",
+          "replacement": "",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/cli",
+      "name": "interrupted",
+      "hash": "69eb7b1d7a6d2554",
+      "start_line": 32,
+      "end_line": 34,
+      "killed": 0,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 0,
+      "mutants": []
+    }
+  ]
+}

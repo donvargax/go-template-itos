@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"io"
+	"runtime"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/itos-corp/go-template-itos/internal/counting"
 	"github.com/itos-corp/go-template-itos/internal/counting/port"
@@ -78,6 +80,38 @@ func TestFilesEndAWaitingReadWhenTheContextIsDone(t *testing.T) {
 	var cancelled *port.Cancelled
 	if err := <-read; !errors.As(err, &cancelled) || cancelled.Path != "-" {
 		t.Fatalf("File(-, open input) after cancel = %T %v, want typed Cancelled for -", err, err)
+	}
+}
+
+// A cancelled read leaves nothing behind once its input ends: the read it
+// left under way finishes, and its goroutine with it, never blocked on
+// handing over a result nobody waits for, so a program that lives on after
+// a cancelled read does not keep one goroutine for each.
+func TestACancelledReadLeavesNoGoroutineOnceItsInputEnds(t *testing.T) {
+	before := runtime.NumGoroutine()
+	input, writer := io.Pipe()
+	ctx, cancel := context.WithCancel(t.Context())
+	files := stdin.Files{Fallback: porttest.Files{}, In: input}
+	read := make(chan error, 1)
+	go func() {
+		_, err := counting.File(ctx, files, "-")
+		read <- err
+	}()
+	if _, err := writer.Write([]byte("one")); err != nil { // the read is under way
+		t.Fatal(err)
+	}
+	cancel()
+	var cancelled *port.Cancelled
+	if err := <-read; !errors.As(err, &cancelled) {
+		t.Fatalf("File(-, open input) after cancel = %T %v, want typed Cancelled", err, err)
+	}
+	_ = writer.Close()
+	deadline := time.Now().Add(10 * time.Second)
+	for runtime.NumGoroutine() > before {
+		if time.Now().After(deadline) {
+			t.Fatalf("%d goroutines remain of the cancelled read, want none", runtime.NumGoroutine()-before)
+		}
+		time.Sleep(time.Millisecond)
 	}
 }
 

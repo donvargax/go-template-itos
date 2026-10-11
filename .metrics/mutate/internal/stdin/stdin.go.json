@@ -4,22 +4,22 @@
   "language": "go",
   "tests": {
     "cmd/go-template-itos/main_test.go": "93bfbb3377862ad4b6987c7c976bf1577980b8acdcfa0eeb20fea44e198bf82c",
-    "internal/stdin/stdin_test.go": "3118b51f5b387cac4c0a5c9b347ff2643ba051068b44df80c2a7a51916b88f90"
+    "internal/stdin/stdin_test.go": "202d2f5acb83026f48d97cfc6d95ff2ddf44103e284fca9574ba6f159eb4c15a"
   },
   "units": [
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/stdin.Files",
       "name": "Read",
-      "hash": "83634fbf1a423ab2",
-      "start_line": 35,
-      "end_line": 44,
-      "killed": 2,
+      "hash": "129b1354019046e9",
+      "start_line": 40,
+      "end_line": 61,
+      "killed": 4,
       "survived": 0,
       "uncovered": 0,
-      "sites": 2,
+      "sites": 4,
       "mutants": [
         {
-          "line": 36,
+          "line": 41,
           "column": 10,
           "offset": 92,
           "original": "!=",
@@ -28,9 +28,27 @@
           "scope": "all-tests"
         },
         {
-          "line": 40,
-          "column": 9,
-          "offset": 180,
+          "line": 44,
+          "column": 15,
+          "offset": 155,
+          "original": "!=",
+          "replacement": "==",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 47,
+          "column": 28,
+          "offset": 236,
+          "original": "1",
+          "replacement": "0",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 56,
+          "column": 12,
+          "offset": 419,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",

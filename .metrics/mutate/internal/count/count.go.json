@@ -8,11 +8,78 @@
   },
   "units": [
     {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/count.CLI",
+      "name": "Help",
+      "hash": "c5ed9e70395d950d",
+      "start_line": 35,
+      "end_line": 43,
+      "killed": 6,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 6,
+      "mutants": [
+        {
+          "line": 36,
+          "column": 95,
+          "offset": 121,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 37,
+          "column": 92,
+          "offset": 214,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 38,
+          "column": 23,
+          "offset": 238,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 39,
+          "column": 24,
+          "offset": 263,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 40,
+          "column": 42,
+          "offset": 306,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 41,
+          "column": 55,
+          "offset": 362,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
       "namespace": "github.com/itos-corp/go-template-itos/internal/count.Handler",
       "name": "Handle",
       "hash": "bffdba380622c9c4",
-      "start_line": 70,
-      "end_line": 72,
+      "start_line": 71,
+      "end_line": 73,
       "killed": 0,
       "survived": 0,
       "uncovered": 0,
@@ -23,15 +90,15 @@
       "namespace": "github.com/itos-corp/go-template-itos/internal/count.CLI",
       "name": "Run",
       "hash": "b674ccbdc8868659",
-      "start_line": 77,
-      "end_line": 91,
+      "start_line": 78,
+      "end_line": 92,
       "killed": 5,
       "survived": 0,
       "uncovered": 0,
       "sites": 5,
       "mutants": [
         {
-          "line": 79,
+          "line": 80,
           "column": 13,
           "offset": 134,
           "original": "!=",
@@ -40,7 +107,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 83,
+          "line": 84,
           "column": 26,
           "offset": 218,
           "original": "1",
@@ -49,7 +116,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 83,
+          "line": 84,
           "column": 33,
           "offset": 225,
           "original": "true",
@@ -58,7 +125,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 84,
+          "line": 85,
           "column": 10,
           "offset": 297,
           "original": "0",
@@ -67,7 +134,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 90,
+          "line": 91,
           "column": 9,
           "offset": 558,
           "original": "0",

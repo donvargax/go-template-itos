@@ -3,15 +3,16 @@
   "file": "internal/counting/port/files.go",
   "language": "go",
   "tests": {
-    "internal/cli/cli_test.go": "998f34060b56f6f713bfaef6d2c5e971e8cfd3dec5973f85dba7613157add163",
+    "internal/cli/cli_test.go": "b47c2c5ed915db3ba1ff44db1d5c14aa45ede15d5f4b1f1f9b8812abc8ff8c4a",
     "internal/cli/completion_test.go": "e5a2efb94994d45b2580e11e919af565e5650f39d7116c388c78fbba98e626e3",
     "internal/cli/flags_test.go": "6a74267a3b1eaaf1f6d1997f40918a4155028e2b2f2a1c2b3a762020888a68fd",
+    "internal/cli/interrupt_test.go": "b146a4b53608c4283bcec1a53fac1aa4cc031291f9a0928e1fed0f492b0b64aa",
     "internal/cli/version_test.go": "290ca6a0bbcc01c23160f93dee4f3e69d860ad04b7fc10ecf1d8c01f8861efb9",
-    "internal/count/command/command_test.go": "fc2fb386f5e140959141d03bfb10b1efd6f9ea982eb8c41ee971a48b5e6fccfe",
-    "internal/count/input/input_test.go": "15a1a70c32a00168c92b3f7a060ec80599393d82612e7ca07054143b127ce723",
+    "internal/count/count_test.go": "45780d7586cd2b21a30242a4c2b74a0e7d34d30c42a0357da4cae2d42389063a",
     "internal/counting/count_test.go": "15ef633064b54e9488f94fab89f792be50faac4333db6731c672a2c0a782a6b5",
     "internal/counting/port/porttest/files_test.go": "d1363bcfa8de54c4285b6b1cb1379a0cdbdc17b70cd1dd91a038829ef11f7339",
-    "internal/disk/files_test.go": "3601c40dadc423f5d6ebb915eff87e6f0bc67325f964a0fac99b009dee5f3830"
+    "internal/disk/files_test.go": "3601c40dadc423f5d6ebb915eff87e6f0bc67325f964a0fac99b009dee5f3830",
+    "internal/stdin/stdin_test.go": "202d2f5acb83026f48d97cfc6d95ff2ddf44103e284fca9574ba6f159eb4c15a"
   },
   "units": [
     {
@@ -24,7 +25,8 @@
       "survived": 0,
       "uncovered": 0,
       "sites": 0,
-      "mutants": []
+      "mutants": [],
+      "stale": true
     },
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Missing",
@@ -46,7 +48,8 @@
           "outcome": "killed",
           "scope": "all-tests"
         }
-      ]
+      ],
+      "stale": true
     },
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Unreadable",
@@ -58,7 +61,8 @@
       "survived": 0,
       "uncovered": 0,
       "sites": 0,
-      "mutants": []
+      "mutants": [],
+      "stale": true
     },
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Unreadable",
@@ -75,6 +79,41 @@
           "line": 25,
           "column": 66,
           "offset": 65,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ],
+      "stale": true
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Cancelled",
+      "name": "readFailure",
+      "hash": "9f69adf63c88e7cf",
+      "start_line": 31,
+      "end_line": 31,
+      "killed": 0,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 0,
+      "mutants": []
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Cancelled",
+      "name": "Error",
+      "hash": "4f80907f23130a13",
+      "start_line": 32,
+      "end_line": 32,
+      "killed": 1,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 1,
+      "mutants": [
+        {
+          "line": 32,
+          "column": 64,
+          "offset": 63,
           "original": "+",
           "replacement": "-",
           "outcome": "killed",
