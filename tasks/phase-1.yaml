@@ -720,5 +720,89 @@
     own itos.yaml, ci.yml, README.md and registry. A gate 7.4.0 refuses on existing work is a
     finding, not a check to weaken. Push each branch commits together and see its CI and Template
     check green.
+- id: T-50
+  type: chore
+  title: The sample takes the template release v0.1.0 by itos-template update
+  why: >
+    Was sample-engineering-doc. donvargax/go-template-itos-sample was rendered from the branch heads
+    before the template had a release, and it is behind on every template change since: T-32's
+    docs/engineering.md paragraph, T-38 to T-49, the itos pins. The person chose on 2026-10-10 not
+    to replay those by hand but to bring it current in one step once itos-template could update a
+    made project; 0.25.0 adds update and v0.1.0 is the first release (T-42), so the person approved
+    on 2026-10-10 doing it now. Its .itos-template.yaml names the branch commits it was rendered
+    from and no release, which is what update renders the old side from.
+
+    Clone the sample beside this repository, at /home/yorch/src/os/github/donvargax/go-template-itos-sample,
+    install its itos hooks, and on a clean main run itos-template update (0.26.0 or later, git 2.45
+    or later) with no --to, so it targets v0.1.0, the newest. Resolve each conflict keeping the
+    sample's own changes (T-33's fix to docs/go.md, its own itos data) and taking the template's
+    elsewhere. Expect the render to bring itos-policy.yaml, which the sample's setup removed after
+    adopting it as its own itos.yaml: keep it removed, and move the sample's own itos.yaml pin with
+    itos pin to the version that file names, regenerating its agent rules, so its workflows'
+    donvargax/itos action and its pin agree. Commit the update through the sample's own itos rules,
+    as one commit of the type those rules give it, with the message update prints made to fit
+    them; if they need a Task footer, add the task to the sample's own ledger with itos task add.
+    Before pushing, run tools/bin/release-version as release.yml runs it: the update is not a
+    release of the sample, so stop and report if it would cut one. Push with itos push and see the
+    sample's CI green on every job. A gate that fails is a finding to report with its run, not a
+    check to weaken. Change none of the sample's settings.
+
+    What update did that itos-template should hear about (a setup step's removal coming back, a
+    conflict it could have avoided) goes to the coordinator, who reports it upstream; no workaround
+    is built here.
+- id: T-51
+  type: refactor
+  title: The Go stack's domain and disk adapter take decision 6's layout
+  why: >
+    First half of decision 6, the layout of v0.2.0, on stack/go; go/cli follows once this is merged
+    down. Move internal/count/domain to internal/counting (package counting) and internal/count/disk
+    to internal/disk; internal/count/port moves to internal/counting/port with Files, Missing and
+    Unreadable, and its porttest with it. internal/disk imports only the port, never the domain or
+    another adapter; code that differs by OS takes the OS as a value (itos-template decision 26),
+    with no runtime.GOOS branch in logic. No behaviour changes: refactor commits naming this task,
+    every test passing as it is. Rewrite .golangci.yml's depguard rules to decision 6's arrows as
+    they apply here: the domain imports no adapter, slice, UI, kong or I/O package (os, net), its
+    tests reading fixtures as now; an adapter imports only port packages; the mock and rapid rules
+    keep their meaning at the new paths. Give each arrow fixtures in tools/testdata/architecture
+    that it must accept and refuse, an adapter importing the domain among them, so
+    tools/bin/architecture-check proves every arrow against the pinned linter.
+    tools/bin/domain-coverage measures internal/counting and its port, keeping its 80 percent floor.
+    Record the mutation results of the moved code with that code; nothing is copied from another
+    project's cache. Template check (2 of 2) and CI on Linux, macOS and Windows go green at
+    stack/go's head; merge main down first if it is behind. Then merge stack/go into go/cli in a
+    refactor commit naming this task that points go/cli's own code (internal/count/command,
+    internal/count/input, cmd, their tests, its depguard rules and fixtures) at the moved packages,
+    and only that: go/cli's packages stay where they are until the next task, and every scenario
+    passes unchanged there, with its CI and Template check green. Push each branch's commits
+    together, since this task's checks run on every branch whose push holds them. The coordinator
+    rewrites docs/go.md and docs/architecture.md after.
   done_when:
-    - run: "grep -q 'version: \"7.4.0\"' itos.yaml && ! grep -rqE 'itos@[0-9a-f]+ # v7\\.[0-3]\\.' .github/workflows"
+    - run: test -d internal/counting && test -d internal/counting/port/porttest && test -d internal/disk && ! test -e internal/count/domain && ! test -e internal/count/disk
+    - run: tools/bin/architecture-check
+    - run: tools/bin/domain-coverage
+- id: T-52
+  type: refactor
+  title: The CLI's count command and stdin adapter take decision 6's layout
+  why: >
+    Second half of decision 6 on go/cli, after T-51 has moved the domain to internal/counting and
+    the disk adapter to internal/disk and merged them down. Turn internal/count/command into the
+    slice internal/count (package count), named for its command: its kong struct and Run are the UI;
+    a Query carrying domain values and a Handle that only wires it to the domain through the Files
+    port are the application; Run assembles the Query from kong's flags, the one copy decision 17
+    accepts, and the slice counts nothing and holds no options struct copying domain values. Move
+    internal/count/input to internal/stdin, importing only the port; cmd/go-template-itos assembles
+    everything and injects the disk adapter as stdin's fallback, so no adapter imports another.
+    internal/cli stays the shared UI: errors stay sealed sets of domain types turned into exit codes
+    there alone, held by gochecksumtype, and only an unclassified error exits 70. No behaviour
+    changes: refactor commits naming this task, every scenario and test passing as it is on Linux,
+    macOS and Windows. Rewrite go/cli's depguard rules to decision 6's arrows: the domain imports no
+    adapter, slice, UI, kong or I/O package; an adapter imports only port packages; a slice imports
+    no other slice; kong only in cmd and internal/cli. Give each arrow fixtures in
+    tools/testdata/architecture it must accept and refuse, a slice importing a slice and an adapter
+    importing the domain among them, so tools/bin/architecture-check proves every arrow. Record the
+    mutation results of the moved code with it. itos-template check passes 2 of 2 and CI and
+    Template check go green at go/cli's head. The coordinator rewrites docs/go.md,
+    docs/architecture.md and docs/CLI.md where they name the old paths after.
+  done_when:
+    - run: test -d internal/count && test -d internal/stdin && ! test -e internal/count/command && ! test -e internal/count/input && grep -q 'Handle' internal/count/*.go
+    - run: tools/bin/architecture-check
