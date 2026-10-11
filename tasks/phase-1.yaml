@@ -1047,9 +1047,6 @@
     mutation results of the moved code with it. itos-template check passes 2 of 2 and CI and
     Template check go green at go/cli's head. The coordinator rewrites docs/go.md,
     docs/architecture.md and docs/CLI.md where they name the old paths after.
-  done_when:
-    - run: test -d internal/count && test -d internal/stdin && ! test -e internal/count/command && ! test -e internal/count/input && grep -q 'Handle' internal/count/*.go
-    - run: tools/bin/architecture-check
 - id: T-53
   type: refactor
   title: The Go stack's Files port and its callers take a context
@@ -1068,3 +1065,38 @@
     that T-52 threads Run's own, and internal/count/input takes the ctx and hands it to its disk
     fallback. Push each branch's commits together and see CI on Linux, macOS and Windows and
     Template check green on both heads.
+- id: T-54
+  type: feat
+  title: Ctrl-C cancels a command through its context
+  why: >
+    Was cli-ctrl-c, decision 8 on go/cli, after T-52 gave the count slice Handle(ctx, q) and
+    decision 7 put the context through the Files port. An interrupted command exits 130 on every
+    system, Windows too; plain output says it was interrupted in one stderr line, and --json
+    prints the usual failure object with rule INTERRUPTED, through internal/cli as every failure
+    is; the first interrupt cancels the context and the command stops promptly, a second ends the
+    process at once with 130, skipping cleanup. The scenarios are ID-CLI-14, ID-CLI-15 and
+    ID-COUNT-16, @wip, in features/cli.feature and features/count.feature.
+
+    cmd/go-template-itos makes the context and feeds internal/cli's interrupt handling from
+    signal.Notify, the one system-specific line. That handling is a small function taking the
+    interrupts as a channel: the first cancels the context, the second exits 130 at once; its unit
+    tests feed it fake interrupts on all three systems, since count has no cleanup a scenario
+    could tell apart from a prompt stop, and no demo command is added for one (the person's call).
+    internal/stdin acts on a done context, so a read waiting on an open standard input ends;
+    internal/disk may stay as it is, its read being instant. A cancelled read is a failure kind the
+    UI turns into 130 and INTERRUPTED, gochecksumtype holding the switch.
+
+    The scenario step that interrupts lives in one build-tagged helper per system (decision 26):
+    os.Interrupt with the standard library on Linux and macOS, and on Windows the binary started in
+    its own process group (CREATE_NEW_PROCESS_GROUP) receiving CTRL_BREAK_EVENT through
+    golang.org/x/sys/windows' GenerateConsoleCtrlEvent, as Go's own os/signal TestCtrlBreak does;
+    no wrapper library. The step must not race the handler: it interrupts only once the binary is
+    waiting on its input, and an interrupt that kills the process before the handler is installed
+    is a failing step, not a pass. If the Windows scenarios are not stable over several CI runs,
+    tag them off Windows, cover Windows with a test cancelling the context directly, and add an
+    idea for the Windows interrupt. The feat commit adds 130 to docs/CLI.md's exit table, a rule
+    for interrupts and one for cleanup (write a temporary file and rename it, so an interrupt
+    never leaves half a file), and count's help gains its line. When it is done, tell the person:
+    they adopt the template on itos, itos-cc and itos-template from the release that holds it.
+  done_when:
+    - run: "grep -q '^| 130' docs/CLI.md && ! grep -q '@cli-ctrl-c @wip' features/cli.feature features/count.feature"
