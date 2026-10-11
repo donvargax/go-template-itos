@@ -12,6 +12,9 @@
   never rebase published history. Made-project binary releases are not template release tags.
 - Infrastructure is harvested from the owner's itos-template and itos repositories. Preserve
   provenance and real upstream identities; do not globally substitute the owner's handle.
+  Their tooling keeps changing (the owner said so of itos's on 2026-10-10): before specifying an
+  idea that harvests from either, re-read its current `tools/bin` and the files the idea's note
+  names, since a note records what was there when it was written.
 - A Renovate configuration does not prove App installation or bot activity. Verify before
   claiming the automation runs.
 - Ask, answer and record every question on `main`, even one specific to a stack or feature
