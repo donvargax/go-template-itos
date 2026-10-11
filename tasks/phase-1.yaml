@@ -811,5 +811,3 @@
     the setup steps stay as they are. Prove it: itos-template check passes 2 of 2 with the entry,
     and a render of each combination with the setup steps run passes itos ci run from its render
     commit. The coordinator updates docs/go.md's Setup section after.
-  done_when:
-    - run: "grep -q '^  - .metrics' itos-template.yaml && ! grep -q '^  - itos-cc.yaml' itos-template.yaml"

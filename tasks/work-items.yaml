@@ -799,26 +799,9 @@ items:
     title: A render ships none of the template's mutation records
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      From release-v0-2-0's notes, found by T-50; the person put it before v0.2.0. go/cli's
-      .metrics/mutate holds 17 records and itos-cc.yaml only mutation exceptions, all taken over the
-      template's names, so after a render's literals are replaced none matches the made project's
-      code: the sample's first CI refused them (run 38087430541) and its T-2 recorded its own, and
-      every itos-template update conflicts on them (three of T-50's four conflicts). Add .metrics
-      and itos-cc.yaml to itos-template.yaml's template_only on main, with a comment saying why, as
-      the list's other entries have. A made project's first CI judges all its code, so it needs
-      records of its own from the start: find what its first itos ci run actually requires (render
-      go and go + cli with itos-template new, run the setup steps and the plan's proof step
-      locally), and make the setup steps leave it green, for example a step recording the project's
-      mutation results that the person commits, printed by new as the other steps are; say in the
-      commit what you found and chose. If the cleanest fix is upstream (itos-cc's hashes include the
-      module path, so any module rename invalidates every record), report it to the coordinator
-      rather than working around it. Prove it: itos-template check passes 2 of 2, and a render of
-      each combination with the setup steps run passes its plan's proof step. The coordinator
-      updates docs/go.md's Setup section after.
   - id: itos-cc-renew-setup
     title: A made project records its own mutation results at setup and renews the shipped exceptions
     phase: 1
