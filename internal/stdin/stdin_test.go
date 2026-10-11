@@ -1,31 +1,31 @@
-package input_test
+package stdin_test
 
 import (
 	"errors"
 	"strings"
 	"testing"
 
-	"github.com/itos-corp/go-template-itos/internal/count/input"
 	"github.com/itos-corp/go-template-itos/internal/counting"
 	"github.com/itos-corp/go-template-itos/internal/counting/port"
 	"github.com/itos-corp/go-template-itos/internal/counting/port/porttest"
+	"github.com/itos-corp/go-template-itos/internal/stdin"
 )
 
 // Standard input is read whole, as a file is: the counts are the domain's,
 // whichever the path came from.
 func TestFilesReadStandardInputForTheDash(t *testing.T) {
-	files := input.Files{Disk: porttest.Files{}, In: strings.NewReader("one two\nthree")}
+	files := stdin.Files{Fallback: porttest.Files{}, In: strings.NewReader("one two\nthree")}
 	got, err := counting.File(t.Context(), files, "-")
 	if err != nil || got != (counting.Result{Lines: 2, Words: 3}) {
 		t.Fatalf("File(-, …) = %+v, %v; want 2 lines and 3 words", got, err)
 	}
 }
 
-// A named path is the disk's, never the reader's.
-func TestFilesReadANamedPathThroughTheDisk(t *testing.T) {
-	files := input.Files{
-		Disk: porttest.Files{Data: map[string][]byte{"notes": []byte("one two")}},
-		In:   strings.NewReader("ignored"),
+// A named path is the fallback's, never the reader's: cmd gives the disk.
+func TestFilesReadANamedPathThroughTheFallback(t *testing.T) {
+	files := stdin.Files{
+		Fallback: porttest.Files{Data: map[string][]byte{"notes": []byte("one two")}},
+		In:       strings.NewReader("ignored"),
 	}
 	got, err := counting.File(t.Context(), files, "notes")
 	if err != nil || got != (counting.Result{Lines: 1, Words: 2}) {
@@ -33,10 +33,10 @@ func TestFilesReadANamedPathThroughTheDisk(t *testing.T) {
 	}
 }
 
-// A path the disk has no file for is its failure, the reader's never spoken
-// for: the argument named a file, so it is a missing file.
-func TestFilesNameAMissingFileThroughTheDisk(t *testing.T) {
-	files := input.Files{Disk: porttest.Files{}, In: strings.NewReader("data")}
+// A path the fallback has no file for is its failure, the reader's never
+// spoken for: the argument named a file, so it is a missing file.
+func TestFilesNameAMissingFileThroughTheFallback(t *testing.T) {
+	files := stdin.Files{Fallback: porttest.Files{}, In: strings.NewReader("data")}
 	_, err := counting.File(t.Context(), files, "absent")
 	var missing *port.Missing
 	if !errors.As(err, &missing) {
@@ -48,7 +48,7 @@ func TestFilesNameAMissingFileThroughTheDisk(t *testing.T) {
 // cannot be read is. No permission bit is assumed, so this holds wherever
 // the reader fails.
 func TestFilesReportAFailingReaderAsUnreadable(t *testing.T) {
-	files := input.Files{Disk: porttest.Files{}, In: failingReader{}}
+	files := stdin.Files{Fallback: porttest.Files{}, In: failingReader{}}
 	_, err := counting.File(t.Context(), files, "-")
 	var unreadable *port.Unreadable
 	if !errors.As(err, &unreadable) || unreadable.Path != "-" {

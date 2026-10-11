@@ -1,12 +1,13 @@
-// Package command is the count command: what its kong struct carries and
-// what it does with the counts the domain found.
+// Package count is the count command, a slice named for it: its kong struct
+// and Run are the UI, and its Query and Handler the application.
 //
-// It is the thin application handler the architecture describes: it carries
-// the path and the switch, hands the path to the domain through the Files
-// port it was given, and writes what came back. It counts nothing itself,
-// reads no file, and knows no exit code: a failure is the domain's, and the
-// UI gives it one.
-package command
+// Run assembles the Query from the command line, the one copy of a command
+// line's values, and hands it to Handle with the context cmd made; Handle
+// only wires the Query to the domain through the Files port it was given,
+// and Run writes what came back. The slice counts nothing, reads no file and
+// knows no exit code: a failure is the domain's, and internal/cli gives it
+// one.
+package count
 
 import (
 	"context"
@@ -17,13 +18,9 @@ import (
 	"github.com/itos-corp/go-template-itos/internal/counting/port"
 )
 
-// CLI is the count command: the file it counts, and whether it prints the
-// counts or the one object a script reads.
+// CLI is the count command's command line: the file it counts, and whether
+// it prints the counts or the one object a script reads.
 type CLI struct {
-	// Files is the port the domain reads through, given by main, never a
-	// flag: no value of a command line is read as a global one.
-	Files port.Files `kong:"-"`
-
 	File string `arg:"" help:"The file to count, or - for standard input."`
 	JSON bool   `name:"json" negatable:"" env:"GO_TEMPLATE_ITOS_JSON" help:"Print one JSON object instead of the counts."`
 }
@@ -55,11 +52,30 @@ type counts struct {
 	Words  int    `json:"words"`
 }
 
-// Run counts the file the command names, or reports the failure it met, and
-// returns the exit code the UI gives it.
-func (c CLI) Run(ui *cli.UI) int {
-	// T-52 threads Run's own context here, made in cmd/go-template-itos.
-	result, failure := counting.File(context.Background(), c.Files, c.File)
+// Query is what the count command asks of the domain: the file to count,
+// its path as the argument gave it, - for standard input.
+type Query struct {
+	Path string
+}
+
+// Handler is the count command's application: the Files port the domain
+// reads through, given by cmd, which chooses the adapters behind it. No
+// value of a command line is read here.
+type Handler struct {
+	Files port.Files
+}
+
+// Handle counts the file q names through the domain and the Files port,
+// passing ctx on to them. It only wires: the counting is the domain's.
+func (h Handler) Handle(ctx context.Context, q Query) (counting.Result, error) {
+	return counting.File(ctx, h.Files, q.Path)
+}
+
+// Run counts the file the command names, through h and with the context
+// cmd made, or reports the failure it met, and returns the exit code the UI
+// gives it.
+func (c CLI) Run(ctx context.Context, ui *cli.UI, h Handler) int {
+	result, failure := h.Handle(ctx, Query{Path: c.File})
 	if failure != nil {
 		return ui.Fail(failure, c.JSON)
 	}

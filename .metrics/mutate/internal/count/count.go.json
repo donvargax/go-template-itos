@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "file": "internal/count/count.go",
+  "language": "go",
+  "tests": {
+    "cmd/go-template-itos/main_test.go": "93bfbb3377862ad4b6987c7c976bf1577980b8acdcfa0eeb20fea44e198bf82c",
+    "internal/count/count_test.go": "45780d7586cd2b21a30242a4c2b74a0e7d34d30c42a0357da4cae2d42389063a"
+  },
+  "units": [
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/count.Handler",
+      "name": "Handle",
+      "hash": "bffdba380622c9c4",
+      "start_line": 70,
+      "end_line": 72,
+      "killed": 0,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 0,
+      "mutants": []
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/count.CLI",
+      "name": "Run",
+      "hash": "b674ccbdc8868659",
+      "start_line": 77,
+      "end_line": 91,
+      "killed": 5,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 5,
+      "mutants": [
+        {
+          "line": 79,
+          "column": 13,
+          "offset": 134,
+          "original": "!=",
+          "replacement": "==",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 83,
+          "column": 26,
+          "offset": 218,
+          "original": "1",
+          "replacement": "0",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 83,
+          "column": 33,
+          "offset": 225,
+          "original": "true",
+          "replacement": "false",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 84,
+          "column": 10,
+          "offset": 297,
+          "original": "0",
+          "replacement": "1",
+          "outcome": "killed",
+          "scope": "all-tests"
+        },
+        {
+          "line": 90,
+          "column": 9,
+          "offset": 558,
+          "original": "0",
+          "replacement": "1",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    }
+  ]
+}

@@ -20,8 +20,9 @@ linters:
     # permission (CONTRIBUTORS.md), adapted to this module and layout.
     # tools/bin/architecture-check proves these with compile-valid fixtures.
     # The arrows are decision 6's: the domain and its ports reach the outside
-    # only through adapters implementing the ports, and an adapter imports
-    # nothing of ours but the ports.
+    # only through adapters implementing the ports, an adapter imports
+    # nothing of ours but the ports, a slice imports no other slice, and kong
+    # stays in cmd and internal/cli.
     depguard:
       rules:
         # The domain and its ports, their tests too: nothing of ours but the
@@ -52,30 +53,43 @@ linters:
               desc: "the domain does no I/O (decision 6): reach files and processes through internal/counting/port; tests may read fixtures"
             - pkg: net
               desc: "the domain does no I/O (decision 6): reach networks through internal/counting/port"
-        # The count command is the slice's application handler: it carries
-        # the command line's values to the domain through its ports and hands
-        # the result to internal/cli. Its code and tests import no concrete
-        # adapter; cmd wires disk and input into it.
-        application:
+        # A slice is a command, in one package named for it: its kong struct
+        # and Run (UI), its Query and Handler (application). It imports
+        # nothing of ours but the domain, its ports and internal/cli: no other
+        # slice, no adapter (cmd wires them in) and no cmd. Every package
+        # under internal is a slice but those excluded here, the domain, the
+        # adapters and the packages that are no command, so a new command's
+        # slice is held with no edit to this rule; a new domain or adapter
+        # package is excluded here as it is listed in its own rule. A rule
+        # cannot tell a slice's own import from another's, so a slice's tests
+        # are in its own package and need no import of it.
+        slices:
           list-mode: lax
           files:
-            - "**/internal/count/command/**"
+            - "**/internal/**"
+            - "!**/internal/counting/**" # the domain and its ports
+            - "!**/internal/disk/**" # an adapter, held by infra
+            - "!**/internal/stdin/**" # an adapter, held by infra
+            - "!**/internal/cli/**" # the UI the slices share
+            - "!**/internal/version/**" # what cmd says the build is
+            - "!**/internal/release/**" # the release tools' library
           allow:
-            - github.com/itos-corp/go-template-itos/internal/count/command$
             - github.com/itos-corp/go-template-itos/internal/counting$
             - github.com/itos-corp/go-template-itos/internal/counting/
             - github.com/itos-corp/go-template-itos/internal/cli$
           deny:
             - pkg: github.com/itos-corp/go-template-itos
-              desc: "the count command imports the domain, its ports and internal/cli, never a concrete adapter; cmd wires those"
+              desc: "a slice imports no other slice, adapter or cmd (decision 6), only the domain, its ports and internal/cli; its tests are in its own package"
         # An adapter implements the ports and imports nothing of ours but
         # them: not the domain, another adapter, a slice, the UI or porttest's
-        # fakes, which its tests alone may use. Each adapter is listed.
+        # fakes, which its tests alone may use. Each adapter is listed, and
+        # excluded from the slices above. cmd hands internal/stdin the disk
+        # adapter as its fallback.
         infra:
           list-mode: lax
           files:
             - "**/internal/disk/**"
-            - "**/internal/count/input/**"
+            - "**/internal/stdin/**"
             - "!$test"
           allow:
             - github.com/itos-corp/go-template-itos/internal/counting/port$
@@ -106,7 +120,7 @@ linters:
             - pkg: pgregory.net/rapid
               desc: "rapid is used only by domain property tests"
         # kong is the UI's, harvested from itos-template's kong rule: here
-        # the UI is the entry point and internal/cli. The count command
+        # the UI is the entry point and internal/cli. A slice's kong struct
         # carries kong's struct tags, which need no import of kong.
         kong:
           files:

@@ -6,15 +6,17 @@
 // The main output goes to stdout; logs, structured, and errors go to stderr.
 //
 // main only assembles: the count command is a slice, its kong struct and its
-// handler in a package of its own (internal/count/command), and main parses
-// the command line, runs the one it names through the UI the slices share
-// (internal/cli) and exits with the code that slice returns. A usage error,
-// which kong finds before any slice runs, is the one failure main reports
-// itself, through that UI; internal/cli's Flags hold kong to the rules on
-// flags it does not hold by itself.
+// handler in a package of its own (internal/count), and main makes the
+// context, gives the slice its adapters (internal/stdin, falling back on
+// internal/disk), parses the command line, runs the one it names through the
+// UI the slices share (internal/cli) and exits with the code that slice
+// returns. A usage error, which kong finds before any slice runs, is the one
+// failure main reports itself, through that UI; internal/cli's Flags hold
+// kong to the rules on flags it does not hold by itself.
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log/slog"
@@ -25,9 +27,9 @@ import (
 	"golang.org/x/term"
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
-	"github.com/itos-corp/go-template-itos/internal/count/command"
-	"github.com/itos-corp/go-template-itos/internal/count/input"
+	"github.com/itos-corp/go-template-itos/internal/count"
 	"github.com/itos-corp/go-template-itos/internal/disk"
+	"github.com/itos-corp/go-template-itos/internal/stdin"
 	"github.com/itos-corp/go-template-itos/internal/version"
 )
 
@@ -37,14 +39,16 @@ type commandLine struct {
 	// and no environment variable.
 	ShowVersion kong.VersionFlag `name:"version" help:"Print the version and the commit it was built from, and exit."`
 
-	Count      command.CLI    `cmd:"" help:"Count the lines and words of a file, or of standard input."`
+	Count      count.CLI      `cmd:"" help:"Count the lines and words of a file, or of standard input."`
 	Version    cli.Version    `cmd:"" help:"Print the version and the commit it was built from."`
 	Completion cli.Completion `cmd:"" help:"Print a shell completion script."`
 	Complete   struct{}       `cmd:"" name:"__complete" hidden:""`
 }
 
+// main makes the context every command's work runs under: nothing cancels
+// it yet.
 func main() {
-	os.Exit(run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+	os.Exit(run(context.Background(), os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
 }
 
 // run parses args and runs what they name, returning the exit code. With no
@@ -54,7 +58,11 @@ func main() {
 // kong's own exit is taken over and becomes run's return: --help and
 // --version print and ask kong to stop, and a run that returns the code is
 // what main exits with, so a test can read what a run printed.
-func run(args []string, in io.Reader, stdout, stderr io.Writer) int {
+//
+// ctx, the UI and each slice's handler are kong's bindings, so a command's
+// Run is handed them by type: the count command's handler reads through the
+// stdin adapter, which falls back on the disk, so no adapter imports another.
+func run(ctx context.Context, args []string, in io.Reader, stdout, stderr io.Writer) int {
 	slog.SetDefault(logger(stderr))
 	ui := &cli.UI{In: in, Stdout: stdout, Stderr: stderr}
 	if len(args) == 0 {
@@ -68,6 +76,8 @@ func run(args []string, in io.Reader, stdout, stderr io.Writer) int {
 		kong.Writers(stdout, stderr),
 		kong.Exit(func(code int) { stopped = code }),
 		kong.Vars{"version": version.Text("go-template-itos")},
+		kong.BindTo(ctx, (*context.Context)(nil)),
+		kong.Bind(ui, count.Handler{Files: stdin.Files{Fallback: disk.Files{}, In: in}}),
 	)...)
 	if err != nil {
 		// A model kong refuses is a bug, reported as one.
@@ -79,7 +89,7 @@ func run(args []string, in io.Reader, stdout, stderr io.Writer) int {
 		}
 		return 0
 	}
-	ctx, err := parser.Parse(args)
+	parsed, err := parser.Parse(args)
 	if stopped >= 0 {
 		return stopped
 	}
@@ -87,10 +97,14 @@ func run(args []string, in io.Reader, stdout, stderr io.Writer) int {
 		// With --json, the failure's object too.
 		return ui.Usage(commandName(args), err, wantsJSON(args))
 	}
-	c.Count.Files = input.Files{Disk: disk.Files{}, In: in}
-	switch command, _, _ := strings.Cut(ctx.Command(), " "); command {
+	switch command, _, _ := strings.Cut(parsed.Command(), " "); command {
 	case "count":
-		return c.Count.Run(ui)
+		out, err := parsed.Call(c.Count.Run)
+		if err != nil {
+			// Run asks for something nothing bound: a bug.
+			return ui.Fail(err, c.Count.JSON)
+		}
+		return out[0].(int)
 	case "version":
 		// What --version prints, as kong prints it, or with --json the
 		// version and commit that text is made of.
@@ -99,7 +113,7 @@ func run(args []string, in io.Reader, stdout, stderr io.Writer) int {
 		return c.Completion.Run(ui)
 	}
 	// A command kong took that has no case here: a bug.
-	return ui.Fail(fmt.Errorf("no case runs the command %q", ctx.Command()), wantsJSON(args))
+	return ui.Fail(fmt.Errorf("no case runs the command %q", parsed.Command()), wantsJSON(args))
 }
 
 // commandName is the command args name, the first word that is not a flag
