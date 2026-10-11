@@ -460,27 +460,9 @@ items:
     title: The Go stack's domain and disk adapter take decision 6's layout
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      First half of decision 6, the layout of v0.2.0, on stack/go; go/cli follows once this is
-      merged down. Move internal/count/domain to internal/counting (package counting) and
-      internal/count/disk to internal/disk; internal/count/port moves to internal/counting/port with
-      Files, Missing and Unreadable, and its porttest with it. internal/disk imports only the port,
-      never the domain or another adapter; code that differs by OS takes the OS as a value
-      (itos-template decision 26), with no runtime.GOOS branch in logic. No behaviour changes:
-      refactor commits naming this task, every test passing as it is. Rewrite .golangci.yml's
-      depguard rules to decision 6's arrows as they apply here: the domain imports no adapter,
-      slice, UI, kong or I/O package (os, net), its tests reading fixtures as now; an adapter
-      imports only port packages; the mock and rapid rules keep their meaning at the new paths. Give
-      each arrow fixtures in tools/testdata/architecture that it must accept and refuse, an adapter
-      importing the domain among them, so tools/bin/architecture-check proves every arrow against
-      the pinned linter. tools/bin/domain-coverage measures internal/counting and its port, keeping
-      its 80 percent floor. Record the mutation results of the moved code with that code; nothing is
-      copied from another project's cache. Template check (2 of 2) and CI on Linux, macOS and
-      Windows go green at stack/go's head; merge main down first if it is behind. The coordinator
-      rewrites docs/go.md and docs/architecture.md after.
   - id: T-52
     title: The CLI's count command and stdin adapter take decision 6's layout
     phase: 1

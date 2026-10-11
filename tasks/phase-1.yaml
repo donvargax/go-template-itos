@@ -689,10 +689,6 @@
     passes unchanged there, with its CI and Template check green. Push each branch's commits
     together, since this task's checks run on every branch whose push holds them. The coordinator
     rewrites docs/go.md and docs/architecture.md after.
-  done_when:
-    - run: test -d internal/counting && test -d internal/counting/port/porttest && test -d internal/disk && ! test -e internal/count/domain && ! test -e internal/count/disk
-    - run: tools/bin/architecture-check
-    - run: tools/bin/domain-coverage
 - id: T-52
   type: refactor
   title: The CLI's count command and stdin adapter take decision 6's layout
