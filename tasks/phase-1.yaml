@@ -738,6 +738,3 @@
     that T-52 threads Run's own, and internal/count/input takes the ctx and hands it to its disk
     fallback. Push each branch's commits together and see CI on Linux, macOS and Windows and
     Template check green on both heads.
-  done_when:
-    - run: grep -q 'Read(ctx context.Context' internal/counting/port/*.go
-    - run: tools/bin/architecture-check

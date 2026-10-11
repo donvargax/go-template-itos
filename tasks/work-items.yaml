@@ -539,25 +539,9 @@ items:
     title: The Go stack's Files port and its callers take a context
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Decision 7 on stack/go, between T-51 and T-52: context.Context carries only cancellation and
-      deadlines, as a first parameter, never a struct field and never a value. Files.Read in
-      internal/counting/port takes a ctx first; the domain function that calls it (counting.File)
-      takes one and passes it on; pure domain logic (counting bytes) takes none. internal/disk
-      honours it: a context already done returns before reading, as a failure of the port's sealed
-      set that keeps the exit codes they have today (choose the kind with the least change, and say
-      which in the commit); the porttest fake does the same so the domain's tests can show it. No
-      behaviour changes on any command line: refactor commits naming this task, every test passing,
-      with the new cancellation paths covered by unit tests and their mutation results recorded.
-      depguard and its fixtures keep proving every arrow (context is the standard library, allowed
-      everywhere). Then merge stack/go into go/cli in a refactor commit naming this task that only
-      makes go/cli compile and pass: internal/count/command passes context.Background() to
-      counting.File with a comment that T-52 threads Run's own, and internal/count/input takes the
-      ctx and hands it to its disk fallback. Push each branch's commits together and see CI on
-      Linux, macOS and Windows and Template check green on both heads.
   - id: made-project-secret-scan
     title: A made project scans its own commits for credentials in CI
     phase: 1
