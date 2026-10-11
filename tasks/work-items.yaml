@@ -473,7 +473,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-52, T-54, depguard-refusal-guide]
+    depends_on: [T-52, T-54, T-55]
     kind: idea
     why: >
       Once T-51 and T-52 land decision 6's layout, cut v0.2.0 with itos-template release as T-42 cut
@@ -730,14 +730,15 @@ items:
       own, bind it, and call every command's Run through the bindings, so run's switch over command
       names, and its unreachable no-case failure, can go. A refactor with no behaviour change, its
       help and output byte for byte the same.
-  - id: depguard-refusal-guide
+  - id: T-55
     title: A depguard refusal says how to extend the rule
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was depguard-refusal-guide.
       Raised on 2026-10-10 by a reviewer of T-52: go/cli's slices rule treats every internal package
       not on its exclusion list as a command, and the domain and infra rules name their packages, so
       a project adding a domain package or an adapter is refused by lint until the rules are told.
