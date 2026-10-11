@@ -635,48 +635,9 @@ items:
     title: Ctrl-C cancels a command through its context
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-52]
     kind: task
-    why: >
-      Was cli-ctrl-c.
-      Decision 7's later slice. cmd/go-template-itos makes the context with signal.NotifyContext so
-      an interrupt cancels it; the adapters act on a done context; and what a cancelled command
-      prints and exits with (130 by convention, through internal/cli as every exit code is) is
-      specified in scenarios first, red before green, on Linux, macOS and Windows, where an
-      interrupt is delivered differently. Waits for T-52.
-
-      The person said on 2026-10-10 that once this lands they adopt the template on itos, itos-cc
-      and itos-template, asking each to refactor to the template's code design: tell them when it is
-      done, and cut the release they adopt with it, since adopt reads a release. It needs @wip
-      scenarios written by the coordinator before an agent starts.
-
-      The person chose on 2026-10-10 to try Windows first: Go cannot send another process
-      os.Interrupt there, but Windows delivers one when the binary starts in its own process group
-      (CREATE_NEW_PROCESS_GROUP) and receives CTRL_BREAK_EVENT through golang.org/x/sys/windows'
-      GenerateConsoleCtrlEvent, which signal.Notify reports as os.Interrupt; Go's own os/signal
-      TestCtrlBreak works this way, as do Nomad, Lima and Pulumi. The scenario step that interrupts
-      lives in one build-tagged helper per system (decision 26: a call one system lacks), Unix
-      sending os.Interrupt with the standard library; no wrapper library such as
-      iwdgo/sigintwindows, a few lines over the same call. If the Windows scenario is not stable
-      over several CI runs, fall back: the interrupt scenarios run on Linux and macOS only, every
-      system's tests cancel the context directly and check what follows, and an idea keeps the
-      Windows interrupt for later.
-
-      The contract, the person's calls on 2026-10-10, to record as decision 8 on main before the
-      scenarios: an interrupted command exits 130 on every system, Windows too; plain output says it
-      was interrupted in one stderr line, and --json prints the usual failure object with rule
-      INTERRUPTED; the first Ctrl-C cancels the context and the command stops promptly, a second
-      ends the process at once with 130, skipping cleanup. No demo feature is added for cleanup: the
-      double Ctrl-C is shared machinery in internal/cli, a small function taking the interrupts as a
-      channel (cmd feeds it signal.Notify's, the one system-specific line), its unit tests feeding
-      fake interrupts on all three systems to show the first cancels and the second exits, since
-      count has no cleanup a scenario could tell apart. Scenarios in features/cli.feature: Ctrl-C
-      while count - waits on an open standard input exits 130 with the stderr line and nothing on
-      stdout; the same with --json prints the INTERRUPTED object; count --help lists 130. The stdin
-      adapter acts on the context so the wait ends. The feat commit adds 130 to docs/CLI.md's exit
-      table and rules for interrupts and for cleanup (write a temp file and rename, so an interrupt
-      never leaves half a file).
   - id: repo-settings-guide
     title: A made project's docs say which repository settings to turn on
     phase: 1

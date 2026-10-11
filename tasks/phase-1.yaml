@@ -768,5 +768,3 @@
     for interrupts and one for cleanup (write a temporary file and rename it, so an interrupt
     never leaves half a file), and count's help gains its line. When it is done, tell the person:
     they adopt the template on itos, itos-cc and itos-template from the release that holds it.
-  done_when:
-    - run: "grep -q '^| 130' docs/CLI.md && ! grep -q '@cli-ctrl-c @wip' features/cli.feature features/count.feature"
