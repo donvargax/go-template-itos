@@ -22,6 +22,24 @@ gets, and what it does not get yet:
 - [ ] Every guide it ships speaks to the made project, not to the template.
 - [ ] Automatic dependency updates are proven running on every branch.
 
+## Making a project
+
+Make a project from the newest release with
+[itos-template](https://github.com/donvargax/itos-template) 0.26.0 or later:
+
+```sh
+itos-template new https://github.com/donvargax/go-template-itos.git my-project --stack go --feature cli
+```
+
+Leave out `--feature cli` for a Go project without the command line. It asks on a terminal for
+the project's name, the owner its attribution names and its Go module path, or takes them as
+`--answer name=…`, `--answer owner=…` and `--answer module=…`. `--ref v0.1.0` pins a release.
+Run the setup steps it prints in the new folder. The made project's `.itos-template.yaml`
+records the release it came from.
+
+Each release tags every branch with one version: `main/v0.1.0`, `stack/go/v0.1.0` and
+`go/cli/v0.1.0` make v0.1.0, the first.
+
 ## Branches
 
 - `main` holds the files every stack shares.
