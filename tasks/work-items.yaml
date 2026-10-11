@@ -770,3 +770,19 @@ items:
       with provenance; itos's tooling is changing, so re-read its .github/workflows, itos.yaml's ci
       section and tools/bin before specifying (docs/ORCHESTRATING.md). go-race-fuzz's fuzz budget
       and high-count rapid runs belong in that nightly.
+  - id: rapid-new-domain-package
+    title: Adding a domain package says how its property tests get rapid
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Raised on 2026-10-10 by T-55's implementer. The rapid rule refuses rapid everywhere but
+      internal/counting's own tests (its files are $all less !**/internal/counting/*_test.go), so a
+      made project's second domain package cannot have property tests until rapid's files gain its
+      own !**/internal/<name>/*_test.go. docs/go.md's Adding a package section, on stack/go and
+      go/cli, lists domain, domain-io, slices and infra for a domain package but not rapid, and
+      T-55's rapid desc can say only what to use instead. Add the step to that section, and to the
+      rapid desc once the docs say it, with a fixture proving a second domain package's own tests
+      may use rapid.
