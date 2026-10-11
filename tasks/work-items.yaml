@@ -660,6 +660,11 @@ items:
       prints and exits with (130 by convention, through internal/cli as every exit code is) is
       specified in scenarios first, red before green, on Linux, macOS and Windows, where an
       interrupt is delivered differently. Waits for T-52.
+
+      The person said on 2026-10-10 that once this lands they adopt the template on itos, itos-cc
+      and itos-template, asking each to refactor to the template's code design: tell them when it is
+      done, and cut the release they adopt with it, since adopt reads a release. It needs @wip
+      scenarios written by the coordinator before an agent starts.
   - id: repo-settings-guide
     title: A made project's docs say which repository settings to turn on
     phase: 1
