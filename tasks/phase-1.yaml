@@ -862,8 +862,6 @@
     Its check reads the published tags, so it fails until they are pushed: no commit names T-42
     before then, or that push's CI turns red (5cef394 named it early and turned stack/go and go/cli
     red).
-  done_when:
-    - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.1.0'
 - id: T-43
   type: docs
   title: README credits itos and itos-template to their author, not the project's owner
@@ -949,5 +947,21 @@
     .github/workflows/template-check.yml, the same file on main, stack/go and go/cli, in a ci commit
     on main merged down as T-46 did, each branch keeping its own itos.yaml, ci.yml, README.md and
     registry. See Template check green on every head with the new version.
+- id: T-49
+  type: build
+  title: Move every branch to itos 7.4.0
+  why: >
+    The person asked on 2026-10-10 to move to itos 7.4.0, the newest release; every branch pins
+    7.1.2 since T-41, and each itos call warns that the itos on the PATH is newer than the pin. The
+    Upgrading sections from 7.2.0 to 7.4.0 carry no breaking change and no config change; 7.3.0 asks
+    that a commit staging a new live test file stage its smoke entry with it, which binds future
+    work, not this move. On each of main, stack/go and go/cli, move the pin with itos pin 7.4.0 and
+    the donvargax/itos workflow action with it, go/cli release.yml included, pinned by the release
+    commit, and regenerate the agent rules. The itos-policy.yaml of stack/go and go/cli pin itos
+    too: move them with the branch so policy-drift stays green and a made project adopts 7.4.0.
+    Branches move independently, as T-41 did; merge main down afterwards, each branch keeping its
+    own itos.yaml, ci.yml, README.md and registry. A gate 7.4.0 refuses on existing work is a
+    finding, not a check to weaken. Push each branch commits together and see its CI and Template
+    check green.
   done_when:
-    - run: grep -q 'itos-template@v0.26.0' .github/workflows/template-check.yml
+    - run: "grep -q 'version: \"7.4.0\"' itos.yaml && ! grep -rqE 'itos@[0-9a-f]+ # v7\\.[0-3]\\.' .github/workflows"
