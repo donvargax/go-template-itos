@@ -6,7 +6,7 @@ It has no command-line executable.
 
 ## What it does
 
-The counting domain, `internal/count`, counts a text's lines and words through a Files port,
+The counting domain, `internal/counting`, counts a text's lines and words through a Files port,
 with a read-only disk adapter and an in-memory fake that its tests use. Lines are logical text
 lines separated by LF; CRLF is one separator, and a nonempty final line without a newline
 counts. Empty input has zero lines. Words are runs separated by Unicode whitespace, using Go's

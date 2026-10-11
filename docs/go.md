@@ -8,42 +8,53 @@ this module with its owner's permission (`CONTRIBUTORS.md`).
 
 ## Packages
 
-The counting example is one slice under `internal/count`:
+The code follows decision 6 (`docs/decisions/`): a shared domain behind ports, adapters apart
+from it, and thin slices named for their commands. This stack has the domain and its adapter;
+the command-line feature adds the slices and the UI.
 
-- `domain` owns counting and its result. It reads input only through the `Files` port.
-- `port` declares `Files` and its typed failures, `Missing` and `Unreadable`.
-- `port/porttest` holds our in-memory fake of `Files` for the domain's tests.
-- `disk` is the concrete adapter. It reads real files and translates OS errors into the
-  port's failures.
+- `internal/counting` is the domain. It owns counting and its result, and reads input only
+  through its port. A function that calls the port takes a `context.Context` first (decision
+  7); pure logic, such as counting bytes, takes none.
+- `internal/counting/port` declares `Files` and its sealed set of failures, `Missing` and
+  `Unreadable`. `Files.Read` takes the context first.
+- `internal/counting/port/porttest` holds our in-memory fake of `Files` for the domain's tests.
+- `internal/disk` is the adapter. It reads real files and translates OS errors into the port's
+  failures, importing nothing of ours but the port.
 
-There is no `cmd/` package and no public entry point yet. A command line adds its own
-handler and input adapter over this domain.
+The domain is shared, not part of any command, so a second command reuses counting through its
+port without reaching into another command's package. A context carries cancellation and
+deadlines only, always as the first parameter and never in a struct or as a value.
 
-`.golangci.yml` enforces these boundaries with depguard, one rule per layer:
+`.golangci.yml` holds these arrows with depguard:
 
-- `domain` and `ports` may import only the domain and its ports from this module.
-- `domain-io` denies `os` and `net` to production domain and port code. Their tests may
-  still read fixtures.
-- `infra` lets a production adapter import only the ports, never the domain, another
-  adapter or a fake. It names `disk`, and `input`, the adapter a command line adds.
-- `mocks` denies mocking libraries everywhere. Fakes live in `porttest`.
-- `rapid` limits the property library to the domain's tests.
+- `domain`: the domain, its port and their tests import nothing of ours but the domain and its
+  port subpackages, and never kong.
+- `domain-io`: the domain's own code does no I/O, neither `os` nor `net`. Its tests may read
+  fixtures.
+- `infra`: an adapter imports nothing of ours but the port it implements; only its tests may
+  use `porttest`.
+- `mocks`: no mocking library anywhere. Fakes live in `porttest`.
+- `rapid`: the property library only in the domain's own tests.
 
-The lists name each package explicitly, so a new package is unchecked until a rule names
-it. When you add a domain package, a slice or an adapter:
+### Adding a package
 
-1. Add its folder as a `**/<folder>/**` glob to the matching rule's `files`, and its
-   import path to the `allow` list of each rule that may import it.
-2. Add compile-valid fixtures that the rule must accept and reject to
-   `tools/testdata/architecture`. `tools/bin/architecture-check` builds every fixture, then
-   runs the pinned linter and this configuration against them, so a rule that stops
-   matching fails there instead of passing silently.
-3. A new domain package is measured by `tools/bin/domain-coverage`, which reads its list
-   from the `domain` rule's `files`.
+A rule names its packages, so a package it does not name is checked by none of them. Lint
+refusing an import after you add one means a rule has not been told; extend the rule as below,
+never loosen it.
 
-Code that differs by OS takes the OS as a value. Logic never branches on `runtime.GOOS`.
-A build-tagged file holds only a call that one OS lacks, with no mutation site. The
-counting example has no OS-specific logic.
+- A domain package: add its folder as a `**/internal/<name>/**` glob to `domain` and
+  `domain-io`, and its import path to `domain`'s `allow`. Give it a `port` subpackage for what
+  it reaches outside. `tools/bin/domain-coverage` reads its list from `domain`'s `files`, so the
+  new package is held to 80% from then on.
+- An adapter: add its folder to `infra`'s `files`, and the port it implements to `infra`'s
+  `allow`.
+- Then add compile-valid fixtures to `tools/testdata/architecture` that the rule must accept and
+  refuse. `tools/bin/architecture-check` runs the pinned linter over them, so a rule that stops
+  matching fails there instead of passing silently.
+
+Code that differs by OS takes the OS as a value. Logic never branches on `runtime.GOOS`. A
+build-tagged file holds only a call that one OS lacks, with no mutation site. The counting
+example has no OS-specific logic.
 
 ## Tests
 
