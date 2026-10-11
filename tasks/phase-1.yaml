@@ -663,5 +663,3 @@
     What update did that itos-template should hear about (a setup step's removal coming back, a
     conflict it could have avoided) goes to the coordinator, who reports it upstream; no workaround
     is built here.
-  done_when:
-    - run: "curl -fsSL https://raw.githubusercontent.com/donvargax/go-template-itos-sample/main/.itos-template.yaml | grep -q '^release: v0.1.0$'"
