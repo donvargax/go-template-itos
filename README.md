@@ -21,6 +21,11 @@ gets, and what it does not get yet:
   [the sample project's v0.1.0](https://github.com/donvargax/go-template-itos-sample/releases/tag/v0.1.0).
 - [ ] Every guide it ships speaks to the made project, not to the template.
 - [ ] Automatic dependency updates are proven running on every branch.
+- [ ] Its CI scans its own commits for credentials, not only the template's renders.
+- [ ] A CLI release is checked against the last release's scenarios, so the `--json` contract
+  cannot break unnoticed.
+- [ ] A Go project without the command line gets versioned releases too.
+- [ ] The template's own releases are cut by CI rather than by hand.
 
 ## Making a project
 
@@ -39,6 +44,35 @@ records the release it came from.
 
 Each release tags every branch with one version: `main/v0.1.0`, `stack/go/v0.1.0` and
 `go/cli/v0.1.0` make v0.1.0, the first.
+
+## Practices
+
+A made project follows these; the guide linked beside each says how. `go` marks what the Go
+stack adds, `cli` what the command-line feature adds.
+
+- Design: vertical slices over a domain that owns its behaviour and reaches the outside only
+  through its own ports ([docs/engineering.md](docs/engineering.md)); `go` enforces the import
+  rules with depguard and proves each rule with a self-test (`docs/architecture.md`).
+- Tests: behaviour specified first, failing steps committed before the code; the project's own
+  fakes, never a mocking library; `go` adds property tests, an 80% domain coverage floor,
+  changed-code mutation proof and runs on Linux, macOS and Windows (`docs/go.md`); `cli` runs
+  scenarios against the built binary.
+- Code quality: `go` runs gofmt, vet, golangci-lint with gosec and gochecksumtype, and
+  govulncheck (`docs/go.md`).
+- Dependencies: a library before new code, locked and verified modules, every tool and
+  workflow action pinned and checksum-checked ([docs/upgrading.md](docs/upgrading.md)),
+  Renovate configured for every branch.
+- Security: no credentials in files, fixtures or logs, and provenance kept for copied code
+  ([docs/security.md](docs/security.md)).
+- Command line: `cli` treats only the exit code and `--json` as a contract with scripts, with
+  rules sourced from clig.dev and the GNU and POSIX standards (`docs/CLI.md`).
+- Configuration: rules for the first configuration file a project adds
+  ([docs/CONFIG.md](docs/CONFIG.md)).
+- Releases: `cli` releases on a push to `main` holding a feat or a fix, with notes from
+  git-cliff and attested binaries from GoReleaser.
+- Work: itos holds every commit to Conventional Commits and its task, in hooks and CI alike;
+  decisions are recorded in `docs/decisions/`; coding agents work one item at a time through
+  `itos go` and `itos guide work` ([AGENTS.md](AGENTS.md)).
 
 ## Branches
 
