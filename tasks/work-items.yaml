@@ -568,6 +568,10 @@ items:
       the standard tool for code that reads untrusted input (the counting of arbitrary bytes, the
       CLI's argument handling). Run go test -race in CI where the platform supports it, and add fuzz
       targets with a seed corpus and a short CI budget.
+
+      itos's nightly.yml, checked 2026-10-10 at v7.4.0, runs a fuller suite every day and opens a
+      Nightly red issue when it fails; it is the natural home for a fuzz budget and high-count rapid
+      runs, which go/cli's docs/go.md says this project has none of.
   - id: release-sbom
     title: A CLI release publishes an SBOM beside its attested archives
     phase: 1
