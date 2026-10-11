@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/itos-corp/go-template-itos/internal/count/port"
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
 )
 
 func TestFilesReadExistingFile(t *testing.T) {

@@ -1,11 +1,11 @@
-// Package domain owns the private example's file-counting behavior.
-package domain
+// Package counting owns the private example's file-counting behavior.
+package counting
 
 import (
 	"bytes"
 	"strings"
 
-	"github.com/itos-corp/go-template-itos/internal/count/port"
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
 )
 
 // Result is the number of logical lines and whitespace-delimited words.

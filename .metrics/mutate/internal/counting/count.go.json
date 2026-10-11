@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "file": "internal/count/domain/count.go",
+  "file": "internal/counting/count.go",
   "language": "go",
   "tests": {
-    "internal/count/domain/count_test.go": "48a3c28ffe7e3194ab29dce6a1d8e3cdebee96a675485800737462ff44ab9c05"
+    "internal/counting/count_test.go": "06378dcada1850ff6c811a809efb97868c9fd262c6f3f8348f57aaef418287d3"
   },
   "units": [
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/domain",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting",
       "name": "Count",
       "hash": "17eeb382f0b740c4",
       "start_line": 20,
@@ -74,7 +74,7 @@
       ]
     },
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/domain",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting",
       "name": "File",
       "hash": "9e88079a33a1e3e1",
       "start_line": 29,

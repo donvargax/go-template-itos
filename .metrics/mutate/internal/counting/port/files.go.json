@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "file": "internal/count/port/files.go",
+  "file": "internal/counting/port/files.go",
   "language": "go",
   "tests": {
-    "internal/count/disk/files_test.go": "286f827bf8e420d66753805041777fa06209fe6fa058555a29a46c3c56f071a4",
-    "internal/count/domain/count_test.go": "48a3c28ffe7e3194ab29dce6a1d8e3cdebee96a675485800737462ff44ab9c05",
-    "internal/count/port/porttest/files_test.go": "acc0ac3830cf98c0f48de30ed14f7afeddb162d5c1539a0655b2bf50891119ee"
+    "internal/counting/count_test.go": "06378dcada1850ff6c811a809efb97868c9fd262c6f3f8348f57aaef418287d3",
+    "internal/counting/port/porttest/files_test.go": "acc0ac3830cf98c0f48de30ed14f7afeddb162d5c1539a0655b2bf50891119ee",
+    "internal/disk/files_test.go": "5d469a6c02e284d9f4acd01b5a6bde83bd1046143f48e940e4da2598a722d8e0"
   },
   "units": [
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/port.Missing",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Missing",
       "name": "readFailure",
       "hash": "3c559dcd11b1ded8",
       "start_line": 14,
@@ -21,7 +21,7 @@
       "mutants": []
     },
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/port.Missing",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Missing",
       "name": "Error",
       "hash": "d8f56676b2a9366b",
       "start_line": 15,
@@ -43,7 +43,7 @@
       ]
     },
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/port.Unreadable",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Unreadable",
       "name": "readFailure",
       "hash": "fe92d7403e32967c",
       "start_line": 20,
@@ -55,7 +55,7 @@
       "mutants": []
     },
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/port.Unreadable",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Unreadable",
       "name": "Error",
       "hash": "6bb0dfe088cc35f7",
       "start_line": 21,

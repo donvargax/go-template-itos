@@ -10,55 +10,53 @@ linters:
     # github.com/donvargax/itos-template/.golangci.yml with owner MIT
     # permission (CONTRIBUTORS.md), adapted to this module and layout.
     # tools/bin/architecture-check proves these with compile-valid fixtures.
+    # The arrows are decision 6's: the domain and its ports reach the outside
+    # only through adapters implementing the ports, and an adapter imports
+    # nothing of ours but the ports.
     depguard:
       rules:
+        # The domain and its ports, their tests too: nothing of ours but the
+        # domain and its port subpackages (no adapter, slice, UI or cmd), and
+        # no kong. Its tests run it against porttest's fakes. domain-coverage
+        # reads this list: each glob's folder is a domain package it measures
+        # (./internal/counting), its port subpackages not measured, so the
+        # floor holds behaviour, not the ports and fakes.
         domain:
           list-mode: lax
           files:
-            - "**/internal/count/domain/**"
+            - "**/internal/counting/**"
           allow:
-            - github.com/itos-corp/go-template-itos/internal/count/domain$
-            - github.com/itos-corp/go-template-itos/internal/count/domain/
-            - github.com/itos-corp/go-template-itos/internal/count/port$
-            - github.com/itos-corp/go-template-itos/internal/count/port/
+            - github.com/itos-corp/go-template-itos/internal/counting$
+            - github.com/itos-corp/go-template-itos/internal/counting/
           deny:
             - pkg: github.com/itos-corp/go-template-itos
-              desc: "domain code and tests import domain/ports, never application, commands or concrete adapters"
-        # Separate from domain so domain-coverage still measures behavior,
-        # not the ports/fakes. Includes porttest and tests in both layers.
-        ports:
-          list-mode: lax
-          files:
-            - "**/internal/count/port/**"
-          allow:
-            - github.com/itos-corp/go-template-itos/internal/count/domain$
-            - github.com/itos-corp/go-template-itos/internal/count/domain/
-            - github.com/itos-corp/go-template-itos/internal/count/port$
-            - github.com/itos-corp/go-template-itos/internal/count/port/
-          deny:
-            - pkg: github.com/itos-corp/go-template-itos
-              desc: "ports and their tests import no application, commands or concrete adapters"
+              desc: "the domain imports no adapter, slice, UI or cmd (decision 6): reach the outside through internal/counting/port"
+            - pkg: github.com/alecthomas/kong
+              desc: "kong stays in the UI (decision 6)"
+        # The domain's own code does no I/O: no os (os/exec with it) and no
+        # net. Its tests may read a fixture.
         domain-io:
           files:
-            - "**/internal/count/domain/**"
-            - "**/internal/count/port/**"
+            - "**/internal/counting/**"
             - "!$test"
           deny:
             - pkg: os
-              desc: "production domain/ports reach files and processes through ports; tests may read fixtures"
+              desc: "the domain does no I/O (decision 6): reach files and processes through internal/counting/port; tests may read fixtures"
             - pkg: net
-              desc: "production domain/ports reach networks through ports"
+              desc: "the domain does no I/O (decision 6): reach networks through internal/counting/port"
+        # An adapter implements the ports and imports nothing of ours but
+        # them: not the domain, another adapter, a slice, the UI or porttest's
+        # fakes, which its tests alone may use. Each adapter is listed.
         infra:
           list-mode: lax
           files:
-            - "**/internal/count/disk/**"
-            - "**/internal/count/input/**"
+            - "**/internal/disk/**"
             - "!$test"
           allow:
-            - github.com/itos-corp/go-template-itos/internal/count/port$
+            - github.com/itos-corp/go-template-itos/internal/counting/port$
           deny:
             - pkg: github.com/itos-corp/go-template-itos
-              desc: "production adapters import only project ports, not domain, application, other adapters or test fakes"
+              desc: "an adapter imports nothing of ours but the ports it implements (decision 6)"
         mocks:
           files:
             - $all
@@ -73,10 +71,12 @@ linters:
               desc: "use our own porttest fakes/stubs, never mocking libraries"
             - pkg: github.com/maxbrunsfeld/counterfeiter
               desc: "use our own porttest fakes/stubs, never mocking libraries"
+        # Properties are unit tests of the domain: rapid comes in only in the
+        # domain package's own tests, not its code, its ports or porttest.
         rapid:
           files:
             - $all
-            - "!**/internal/count/domain/*_test.go"
+            - "!**/internal/counting/*_test.go"
           deny:
             - pkg: pgregory.net/rapid
               desc: "rapid is used only by domain property tests"

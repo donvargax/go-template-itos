@@ -51,12 +51,15 @@ func TestImportBoundaries(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	for _, path := range []string{"internal/count/domain", "internal/count/port", "internal/count/port/porttest", "internal/count/disk", "internal/count/input", "internal/count/app", "internal/cli", "cmd/probe", "internal/other"} {
+	// Decision 6's packages: the domain and its port subpackages, two
+	// adapters, a slice named for its command, the UI, cmd and anything else.
+	for _, path := range []string{"internal/counting", "internal/counting/port", "internal/counting/port/porttest", "internal/disk", "internal/stdin", "internal/count", "internal/cli", "cmd/probe", "internal/other"} {
 		write(path+"/stub.go", "package probe\n\nconst Value = 1\n")
 	}
 	mocks := []string{"github.com/golang/mock/gomock", "go.uber.org/mock/gomock", "github.com/stretchr/testify/mock", "github.com/vektra/mockery/v2", "github.com/maxbrunsfeld/counterfeiter/v6"}
+	const kong = "github.com/alecthomas/kong"
 	mod := "module " + module + "\n\ngo 1.27\n"
-	for i, path := range append(mocks, "pgregory.net/rapid") {
+	for i, path := range append(mocks, "pgregory.net/rapid", kong) {
 		stub := fmt.Sprintf("stubs/library%d", i)
 		version := "v0.0.0"
 		if strings.HasSuffix(path, "/v2") {
@@ -92,51 +95,56 @@ func TestImportBoundaries(t *testing.T) {
 		write(path, "package probe\n\n"+imports+"\n"+body)
 		cases = append(cases, expectation{name, path, imported, rule})
 	}
-	for _, layer := range []string{"domain", "port", "port/porttest"} {
-		base := "internal/count/" + layer
-		rule := "domain"
-		if layer != "domain" {
-			rule = "ports"
-		}
+	// The domain arrow: the domain and its ports, code and tests, import
+	// nothing of ours but the domain and its port subpackages, and no kong.
+	for _, base := range []string{"internal/counting", "internal/counting/port", "internal/counting/port/porttest"} {
 		for _, test := range []bool{false, true} {
 			kind := "code"
 			if test {
 				kind = "test"
 			}
-			for _, target := range []string{"internal/count/disk", "internal/count/input", "internal/count/app", "internal/cli", "cmd/probe"} {
-				add(strings.ReplaceAll(target, "/", "_")+"_"+kind, base, module+"/"+target, "Value", rule, test)
+			for _, target := range []string{"internal/disk", "internal/stdin", "internal/count", "internal/cli", "cmd/probe", "internal/other"} {
+				add(strings.ReplaceAll(target, "/", "_")+"_"+kind, base, module+"/"+target, "Value", "domain", test)
 			}
-			add("port_allowed_"+kind, base, module+"/internal/count/port", "Value", "", test)
+			add("kong_"+kind, base, kong, "Value", "domain", test)
+			add("domain_allowed_"+kind, base, module+"/internal/counting", "Value", "", test)
+			add("port_allowed_"+kind, base, module+"/internal/counting/port", "Value", "", test)
 		}
+		// The domain-io arrow: no I/O in the domain's own code; its tests
+		// may read fixtures and use porttest's fakes.
 		add("os_code", base, "os", "ReadFile", "domain-io", false)
 		add("exec_code", base, "os/exec", "Command", "domain-io", false)
 		add("net_code", base, "net", "Dial", "domain-io", false)
 		add("http_code", base, "net/http", "Get", "domain-io", false)
 		add("fixture_io_allowed", base, "os", "ReadFile", "", true)
-		add("fake_allowed", base, module+"/internal/count/port/porttest", "Value", "", true)
+		add("fake_allowed", base, module+"/internal/counting/port/porttest", "Value", "", true)
 	}
-	for _, adapter := range []string{"disk", "input"} {
-		base := "internal/count/" + adapter
-		for _, target := range []string{"internal/count/domain", "internal/count/app", "internal/count/disk", "internal/count/input", "internal/count/port/porttest", "internal/cli", "cmd/probe", "internal/other"} {
-			add(strings.ReplaceAll(target, "/", "_"), base, module+"/"+target, "Value", "infra", false)
-		}
-		add("port_allowed", base, module+"/internal/count/port", "Value", "", false)
-		add("fake_allowed", base, module+"/internal/count/port/porttest", "Value", "", true)
-		add("os_allowed", base, "os", "ReadFile", "", false)
-		add("fixture_io_allowed", base, "os", "ReadFile", "", true)
+	// The adapter arrow: an adapter's code imports nothing of ours but the
+	// port, not the domain, another adapter, a slice, the UI, cmd or the
+	// fakes; it may do I/O, and its tests may use the fakes.
+	for _, target := range []string{"internal/counting", "internal/counting/port/porttest", "internal/disk", "internal/stdin", "internal/count", "internal/cli", "cmd/probe", "internal/other"} {
+		add(strings.ReplaceAll(target, "/", "_"), "internal/disk", module+"/"+target, "Value", "infra", false)
 	}
-	add("disk_allowed", "internal/other", module+"/internal/count/disk", "Value", "", false)
+	add("port_allowed", "internal/disk", module+"/internal/counting/port", "Value", "", false)
+	add("fake_allowed", "internal/disk", module+"/internal/counting/port/porttest", "Value", "", true)
+	add("os_allowed", "internal/disk", "os", "ReadFile", "", false)
+	add("fixture_io_allowed", "internal/disk", "os", "ReadFile", "", true)
+	// What assembles them is free to import the domain and the adapter.
+	for _, layer := range []string{"cmd/probe", "internal/other"} {
+		add("domain_allowed", layer, module+"/internal/counting", "Value", "", false)
+		add("disk_allowed", layer, module+"/internal/disk", "Value", "", false)
+	}
 	for i, imported := range mocks {
 		for _, test := range []bool{false, true} {
 			add(fmt.Sprintf("mock%d_%t", i, test), "internal/other", imported, "Value", "mocks", test)
 		}
 	}
-	add("rapid_allowed", "internal/count/domain", "pgregory.net/rapid", "Value", "", true)
-	for _, layer := range []string{"internal/count/domain", "internal/count/port", "internal/count/port/porttest", "internal/count/disk", "internal/other"} {
+	// Rapid only in the domain package's own tests, not its code, a
+	// subpackage's tests (its ports and fakes) or anything else.
+	add("rapid_allowed", "internal/counting", "pgregory.net/rapid", "Value", "", true)
+	for _, layer := range []string{"internal/counting", "internal/counting/port", "internal/counting/port/porttest", "internal/disk", "internal/other"} {
 		add("rapid_code", layer, "pgregory.net/rapid", "Value", "rapid", false)
-		if layer != "internal/count/domain" {
-			add("rapid_test", layer, "pgregory.net/rapid", "Value", "rapid", true)
-		}
+		add("rapid_test", layer, "pgregory.net/rapid", "Value", "rapid", true)
 	}
 	compile := exec.Command("go", "test", "./...")
 	compile.Dir = dir
