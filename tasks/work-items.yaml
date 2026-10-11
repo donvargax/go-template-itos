@@ -380,14 +380,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: sample-engineering-doc
-    title: The sample's docs/engineering.md takes main's T-32 text
+  - id: T-50
+    title: The sample takes the template release v0.1.0 by itos-template update
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was sample-engineering-doc.
       T-33 replaced only the sample's docs/go.md Made projects section with the template's current
       text. A render of the current heads also differs from go-template-itos-sample in
       docs/engineering.md, whose paragraph on made projects T-32 rewrote on main after the sample
