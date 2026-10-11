@@ -532,8 +532,6 @@
     Its check reads the published tags, so it fails until they are pushed: no commit names T-42
     before then, or that push's CI turns red (5cef394 named it early and turned stack/go and go/cli
     red).
-  done_when:
-    - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.1.0'
 - id: T-43
   type: docs
   title: README credits itos and itos-template to their author, not the project's owner

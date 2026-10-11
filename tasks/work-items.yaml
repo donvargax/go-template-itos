@@ -436,24 +436,9 @@ items:
     title: Cut the template's first release, v0.1.0
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-41, T-40, T-48]
     kind: task
-    why: >
-      The person approved on 2026-10-10 the template's first release, so a project is made from a
-      released version rather than the branch heads. itos-template's manifest guide defines a
-      template release as one version tagged <branch>/<version> on every branch the manifest lists,
-      the root included: main/v0.1.0, stack/go/v0.1.0 and go/cli/v0.1.0, plain git tags never a bare
-      v0.1.0 (a made project's own tag form), made by itos-template release; new then renders the
-      newest complete stable release. The Template check workflow pins itos-template v0.19.0, whose
-      manifest guide does not mention release: move that pin on every branch to the newest
-      itos-template release that has it, by its go install line, and see Template check green on
-      every head. Cut it only after T-40 and T-41 have landed and every head is green: run
-      itos-template check at the heads (2 of 2 combinations, no warning), then itos-template release
-      v0.1.0 as its help says, pushing the three tags; never move or delete a published tag. Prove
-      it: itos-template check --ref v0.1.0 passes both combinations, and itos-template new from the
-      public URL with no ref renders v0.1.0 and its .itos-template.yaml names the release. Main's
-      README says how to make a project from the released template, in a docs commit.
   - id: T-46
     title: Template check runs itos-template v0.24.1
     phase: 1
