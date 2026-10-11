@@ -768,3 +768,26 @@
     for interrupts and one for cleanup (write a temporary file and rename it, so an interrupt
     never leaves half a file), and count's help gains its line. When it is done, tell the person:
     they adopt the template on itos, itos-cc and itos-template from the release that holds it.
+- id: T-55
+  type: build
+  title: A depguard refusal says how to extend the rule
+  why: >
+    Was depguard-refusal-guide, raised on 2026-10-10 by a reviewer of T-52; the person put it
+    before v0.2.0, since itos, itos-cc and itos-template adopt decision 6's layout from that
+    release and will add many domain packages. A rule names its packages, so a package it does not
+    name is refused, not unchecked: go/cli's slices rule holds every internal package but those it
+    excludes, and the domain and infra rules list theirs. That fails safe, but an agent meeting
+    the refusal may loosen the rule instead of extending it. docs/go.md on both branches now has
+    an Adding a package section saying how; make each depguard rule's desc in .golangci.yml say,
+    in a sentence a person reads in the lint output, what the refusal means and what to extend,
+    naming that section (for example "a slice imports only the domain and internal/cli; if this
+    package is a domain package or an adapter, add it to the rules as docs/go.md's Adding a
+    package says, never loosen this one"). Every desc keeps the decision it holds. On stack/go
+    first, in a build commit naming this task, then merged into go/cli, where the slices and kong
+    rules get theirs; go/cli keeps its own itos.yaml, ci.yml, README.md, AGENTS.md and registry
+    on conflict. No rule's files, allow or deny change, so architecture-check's fixtures pass as
+    they are; if a fixture asserts a desc's text, update it with the desc. Push each branch's
+    commits together and see CI on Linux, macOS and Windows and Template check green on both.
+  done_when:
+    - run: "test \"$(grep -c 'Adding a package' .golangci.yml)\" -ge 3"
+    - run: tools/bin/architecture-check
