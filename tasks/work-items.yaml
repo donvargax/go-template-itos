@@ -495,7 +495,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-52]
+    depends_on: [T-52, cli-ctrl-c]
     kind: idea
     why: >
       Once T-51 and T-52 land decision 6's layout, cut v0.2.0 with itos-template release as T-42 cut
