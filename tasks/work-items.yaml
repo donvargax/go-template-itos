@@ -534,6 +534,11 @@ items:
       only the moved code and the count command and stdin adapter. A task could rerun those files
       once with --all-tests --fail-uncovered --no-annotate and commit the results, and decide
       whether CI should hold the whole cache fresh.
+
+      T-52 moved the count command's and stdin adapter's tests to internal/count/count_test.go and
+      internal/stdin/stdin_test.go and refreshed only main.go, count.go and stdin.go, so the
+      snapshots of internal/counting, its port and porttest and of internal/cli's files still record
+      the old test paths and go stale the same way on go/cli.
   - id: T-53
     title: The Go stack's Files port and its callers take a context
     phase: 1
