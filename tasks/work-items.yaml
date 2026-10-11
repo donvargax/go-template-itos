@@ -748,3 +748,25 @@ items:
       the step and points to docs/go.md's Adding a package section (stack/go's, and go/cli's once
       its docs name the slices rule), so the message itself says to extend the rule and never to
       loosen it.
+  - id: itos-ci-workflows
+    title: "CI follows itos's workflow design: fast pushes, slow work in a nightly"
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      The person asked on 2026-10-10 that the template follow how itos's GitHub Actions workflows
+      work, since itos moved slow checks out of a push's CI. Checked that day at itos v7.4.0: its
+      ci.yml runs a push's plan by cost (static then late), the smoke scenarios and those the push's
+      commits name, with a platform job on Linux, macOS and Windows that blocks the release job; a
+      newer push replaces a waiting run, a running one finishes. Its nightly.yml, on a schedule and
+      by hand, runs itos.yaml's ci.nightly: every scenario, the gates' self-tests and the slow steps
+      a push leaves out (coverage runs, the release build for every platform), in a concurrency
+      group of its own that never cancels a push's run; a red night opens or comments on one Nightly
+      red issue and a green night closes it. go/cli copied the push half, cost tiers and smoke set
+      included, but has no nightly, so a scenario no commit names never runs in CI, here or in a
+      made project. Harvest the nightly and whatever else of itos's workflows a made project needs,
+      with provenance; itos's tooling is changing, so re-read its .github/workflows, itos.yaml's ci
+      section and tools/bin before specifying (docs/ORCHESTRATING.md). go-race-fuzz's fuzz budget
+      and high-count rapid runs belong in that nightly.
