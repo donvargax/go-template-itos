@@ -783,8 +783,8 @@ items:
   - id: T-56
     title: A render ships none of the template's mutation records
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
