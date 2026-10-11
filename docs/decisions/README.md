@@ -10,5 +10,6 @@ file and leaves this list, which itos decision record writes.
 - [ADR-0003: Every question is asked and recorded on main](0003-every-question-is-asked-and-recorded-on-main.md)
 - [ADR-0005: Item ids are minted by itos from refs/itos/ids](0005-item-ids-are-minted-by-itos-from-refs-itos-ids.md)
 - [ADR-0006: Go code is a shared domain behind ports, separate adapters and thin slices named for their commands](0006-go-code-is-a-shared-domain-behind-ports-separate-adapters-and-thin-slices-named-for-their-commands.md)
+- [ADR-0007: context.Context carries cancellation from cmd through Handle to the ports, never a value](0007-context-context-carries-cancellation-from-cmd-through-handle-to-the-ports-never-a-value.md)
 
 <!-- itos:decisions:end -->
