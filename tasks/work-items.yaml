@@ -661,3 +661,17 @@ items:
       prints and exits with (130 by convention, through internal/cli as every exit code is) is
       specified in scenarios first, red before green, on Linux, macOS and Windows, where an
       interrupt is delivered differently. Waits for T-52.
+  - id: repo-settings-guide
+    title: A made project's docs say which repository settings to turn on
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found gathering the README's practices on 2026-10-10. Branch protection on main, the required
+      checks (ci and the platform jobs), no force pushes, private vulnerability reporting,
+      Dependabot alerts and secret scanning push protection are repository settings, not files, so a
+      render cannot ship them. A short section in a made project's docs (docs/security.md or a setup
+      guide) names each, why, and how to check it with gh, so a project made from the template gets
+      the protection its CI assumes.
