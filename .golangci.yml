@@ -12,7 +12,9 @@ linters:
     # tools/bin/architecture-check proves these with compile-valid fixtures.
     # The arrows are decision 6's: the domain and its ports reach the outside
     # only through adapters implementing the ports, and an adapter imports
-    # nothing of ours but the ports.
+    # nothing of ours but the ports. Each desc tells the reader of a refusal
+    # what it means and, where a new package caused it, to extend the rules
+    # as docs/go.md's Adding a package says rather than loosen them.
     depguard:
       rules:
         # The domain and its ports, their tests too: nothing of ours but the
@@ -30,9 +32,9 @@ linters:
             - github.com/itos-corp/go-template-itos/internal/counting/
           deny:
             - pkg: github.com/itos-corp/go-template-itos
-              desc: "the domain imports no adapter, slice, UI or cmd (decision 6): reach the outside through internal/counting/port"
+              desc: "the domain imports no adapter, slice, UI or cmd (decision 6): reach the outside through its port; if this is another domain package, extend the rules as docs/go.md's Adding a package says, never loosen this one"
             - pkg: github.com/alecthomas/kong
-              desc: "kong stays in the UI (decision 6)"
+              desc: "kong stays in the UI (decision 6): the domain takes plain values, never kong's; never loosen this one"
         # The domain's own code does no I/O: no os (os/exec with it) and no
         # net. Its tests may read a fixture.
         domain-io:
@@ -41,9 +43,9 @@ linters:
             - "!$test"
           deny:
             - pkg: os
-              desc: "the domain does no I/O (decision 6): reach files and processes through internal/counting/port; tests may read fixtures"
+              desc: "the domain does no I/O (decision 6): do the I/O in an adapter behind internal/counting/port, adding it as docs/go.md's Adding a package says; tests may read fixtures. Never loosen this one"
             - pkg: net
-              desc: "the domain does no I/O (decision 6): reach networks through internal/counting/port"
+              desc: "the domain does no I/O (decision 6): reach networks from an adapter behind internal/counting/port, adding it as docs/go.md's Adding a package says; never loosen this one"
         # An adapter implements the ports and imports nothing of ours but
         # them: not the domain, another adapter, a slice, the UI or porttest's
         # fakes, which its tests alone may use. Each adapter is listed.
@@ -56,21 +58,21 @@ linters:
             - github.com/itos-corp/go-template-itos/internal/counting/port$
           deny:
             - pkg: github.com/itos-corp/go-template-itos
-              desc: "an adapter imports nothing of ours but the ports it implements (decision 6)"
+              desc: "an adapter imports nothing of ours but the ports it implements (decision 6), cmd wiring the rest; if it implements another port, extend the rules as docs/go.md's Adding a package says, never loosen this one"
         mocks:
           files:
             - $all
           deny:
             - pkg: github.com/golang/mock
-              desc: "use our own porttest fakes/stubs, never mocking libraries"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
             - pkg: go.uber.org/mock
-              desc: "use our own porttest fakes/stubs, never mocking libraries"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
             - pkg: github.com/stretchr/testify/mock
-              desc: "use our own porttest fakes/stubs, never mocking libraries"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
             - pkg: github.com/vektra/mockery
-              desc: "use our own porttest fakes/stubs, never mocking libraries"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
             - pkg: github.com/maxbrunsfeld/counterfeiter
-              desc: "use our own porttest fakes/stubs, never mocking libraries"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
         # Properties are unit tests of the domain: rapid comes in only in the
         # domain package's own tests, not its code, its ports or porttest.
         rapid:
@@ -79,7 +81,7 @@ linters:
             - "!**/internal/counting/*_test.go"
           deny:
             - pkg: pgregory.net/rapid
-              desc: "rapid is used only by domain property tests"
+              desc: "rapid is only for the domain's property tests, in internal/counting's own tests; test anything else with ordinary tests and porttest's fakes"
     revive:
       rules:
         - name: file-length-limit
