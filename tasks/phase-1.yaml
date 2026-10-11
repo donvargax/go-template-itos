@@ -609,3 +609,17 @@
     Unreadable out, or ending in a default arm, is refused while the complete one passes. Main's
     idea copy was never noted as delivered, so it was promoted again; q-31's approval confirms
     the linter already in use, and this task closes on that work with no new commit.
+- id: T-48
+  type: ci
+  title: Template check runs itos-template v0.26.0
+  why: >
+    Split from T-42, which needs Template check on the version that has release. The Template check
+    workflow installs itos-template v0.24.1 with go install; v0.26.0 is the newest and the first
+    with release. Its notes from 0.25.0 to 0.26.0 carry no breaking change and ask nothing of
+    itos-template.yaml or the workflow (0.25.0 adds update, a 3-way merge of a project onto a newer
+    template release; 0.26.0 adds release). Move the go install line to v0.26.0 in
+    .github/workflows/template-check.yml, the same file on main, stack/go and go/cli, in a ci commit
+    on main merged down as T-46 did, each branch keeping its own itos.yaml, ci.yml, README.md and
+    registry. See Template check green on every head with the new version.
+  done_when:
+    - run: grep -q 'itos-template@v0.26.0' .github/workflows/template-check.yml
