@@ -460,8 +460,8 @@ items:
   - id: T-49
     title: Move every branch to itos 7.4.0
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
