@@ -81,7 +81,7 @@ jobs:
       # The global itos, for the notes' Upgrading footers (itos commit footers); itos.yaml's pin
       # chooses the itos that runs.
       - if: steps.version.outputs.next != ''
-        uses: donvargax/itos@e650a9b921a9e0ab094df549db1d09e2b80ebc71 # v7.1.2
+        uses: donvargax/itos@d02a769a8ea00030f5b385c06428485c23063318 # v7.4.0
       # The GitHub CLI, to publish the draft: pinned from its release tarball and checked against
       # its SHA-256, as itos installs it, so the runner's own copy does not decide what runs.
       - name: GitHub CLI

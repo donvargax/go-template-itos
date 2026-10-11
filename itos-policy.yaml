@@ -4,8 +4,8 @@ version: 1
 
 # The source project's pin and checksum, copied with its workflow action.
 pin:
-  version: "7.1.2"
-  checksums: "d9c306738d56225aab585a52d5f3dd8fdec71e640b4e29b09fa6976911287dee" # SHA-256 of checksums.txt
+  version: "7.4.0"
+  checksums: "aa29855411bdf686999ed417b8be277520d886d5f881f8dc9a7e62c37c28b305" # SHA-256 of checksums.txt
 
 ledger:
   files: "tasks/phase-{group}.yaml"
