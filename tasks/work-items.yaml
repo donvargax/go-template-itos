@@ -702,3 +702,17 @@ items:
       go.sum is staged and CI when a push's range changes them. Renovate's seven-day minimum release
       age covers only Renovate's own updates; a module added by hand here meets no such check.
       Harvest it into the Go stack's policy with its provenance.
+  - id: invisible-chars
+    title: Invisible characters are refused in every tracked text file
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found in itos-template on 2026-10-10 (tools/bin/invisible-chars, its T-32 to T-37): it refuses
+      Unicode's default-ignorable code points, format characters and line or paragraph separators in
+      tracked text files, Trojan Source (CVE-2021-42574) among them, from CI's code and prose plans
+      and from the pre-commit hook with --cached, one pattern for both; it fails closed when git
+      grep cannot look. No branch here has it, though source, feature files and docs can all carry
+      one. Harvest it onto main with its provenance, so every made project gets it.
