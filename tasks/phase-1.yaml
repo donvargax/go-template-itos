@@ -511,31 +511,29 @@
     release as one version tagged <branch>/<version> on every branch the manifest lists, the root
     included: main/v0.1.0, stack/go/v0.1.0 and go/cli/v0.1.0, plain git tags never a bare v0.1.0 (a
     made project's own tag form), made by itos-template release; new then renders the newest
-    complete stable release. The Template check workflow pins itos-template v0.19.0, whose manifest
-    guide does not mention release: move that pin on every branch to the newest itos-template
-    release that has it, by its go install line, and see Template check green on every head. Cut it
-    only after T-40 and T-41 have landed and every head is green: run itos-template check at the
-    heads (2 of 2 combinations, no warning), then itos-template release v0.1.0 as its help says,
-    pushing the three tags; never move or delete a published tag. Prove it: itos-template check
-    --ref v0.1.0 passes both combinations, and itos-template new from the public URL with no ref
-    renders v0.1.0 and its .itos-template.yaml names the release. Main's README says how to make a
-    project from the released template, in a docs commit.
+    complete stable release. Cut it only after T-40, T-41 and T-48 (Template check on itos-template
+    v0.26.0) have landed and every head is green: run itos-template check at the heads (2 of 2
+    combinations, no warning), then itos-template release v0.1.0 as its help says; never move or
+    delete a published tag. Prove it: itos-template check --ref v0.1.0 passes both combinations,
+    and itos-template new from the public URL with no ref renders v0.1.0 and its
+    .itos-template.yaml names the release. Main's README says how to make a project from the
+    released template, in a docs commit.
 
-    Waiting, by the person's choice in q-30: itos-template 0.24.1 has no release command (its
-    idea template-release-command is still open, and the 2026-10-09 call rules out tagging by
-    hand), so this item waits until itos-template ships it; the person follows that up there.
-    Template check's move from v0.19.0 to v0.24.1 left this item for T-46. It stays in progress
-    under donvargax only because itos cannot give an item back to todo for deferring
-    (donvargax/itos#42); nobody works it until the command exists. Note for when it does: itos-
-    template's idea gives the root a bare v1.2.0 tag while its manifest guide says main/v1.2.0;
-    build to whichever the command does.
+    It waited, by the person's choice in q-30, until itos-template shipped a release command, the
+    2026-10-09 call ruling out tagging by hand; Template check's move to v0.24.1 left for T-46.
+    itos-template 0.26.0 ships it and settles the root's tag as main/v0.1.0, not a bare v0.1.0.
+    Its release runs check over the branches' heads, which must each be at origin's, makes the
+    three annotated tags locally and pushes nothing: it prints the one git push --atomic command
+    that publishes them, to run as printed. Run it with main checked out: release reads the root
+    from the checkout's branch, and on stack/go it tags that branch twice and main never
+    (itos-template's idea release-root-branch). Its answers are given with --answer or --defaults,
+    as check takes them.
 
-    Its check is off while it waits, since CI runs a named task's check on every push and the
-    tags cannot exist yet: 5cef394 named it and turned stack/go and go/cli red. When the release
-    command exists, restore it as done_when: t=$(git ls-remote --tags
-    https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q
-    'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" |
-    grep -q 'refs/tags/go/cli/v0.1.0'
+    Its check reads the published tags, so it fails until they are pushed: no commit names T-42
+    before then, or that push's CI turns red (5cef394 named it early and turned stack/go and go/cli
+    red).
+  done_when:
+    - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.1.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.1.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.1.0'
 - id: T-43
   type: docs
   title: README credits itos and itos-template to their author, not the project's owner
