@@ -504,6 +504,15 @@ items:
       git push until itos ships p1-push-tag-and-ref (itos#37); never push from main while they are
       local, since push.followtags would publish main's alone. Then bring the sample to it with
       itos-template update, as T-50 did.
+
+      Found by T-50, to do as part of v0.2.0, the person's call on 2026-10-10. Before cutting it,
+      leave the template's own mutation records (.metrics/mutate) and itos-cc.yaml's exception
+      hashes out of a render (itos-template.yaml's template_only, or whatever keeps the rest of
+      itos-cc.yaml): they are taken over the template's names, so no made project can use them, the
+      sample had to record its own (its T-2), and every update conflicts on them (three of T-50's
+      four conflicts). After cutting it, the sample's update to v0.2.0 resolves docs/go.md's Setup
+      section to the template's text, since T-33's hand-copied text under the release's heading is
+      what T-50 left, and closes the sample's own T-3, the task its v0.1.0 update commit named.
   - id: cli-stale-mutation-snapshots
     title: go/cli's mutation snapshots are fresh for the code they record
     phase: 1
