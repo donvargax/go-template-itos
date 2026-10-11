@@ -538,8 +538,8 @@ items:
   - id: T-53
     title: The Go stack's Files port and its callers take a context
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
