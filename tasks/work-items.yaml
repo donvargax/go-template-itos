@@ -804,3 +804,25 @@ items:
       rather than working around it. Prove it: itos-template check passes 2 of 2, and a render of
       each combination with the setup steps run passes its plan's proof step. The coordinator
       updates docs/go.md's Setup section after.
+  - id: itos-cc-renew-setup
+    title: A made project records its own mutation results at setup and renews the shipped exceptions
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found by T-56. A render's records (.metrics/mutate) are stale in every made project, since
+      each snapshot hashes the test files that import its file and those import the module path, so
+      a made project starts with no usable records and re-proves code only as it changes it. Its
+      itos-cc.yaml exceptions hash only the function body, which the render renames with the module,
+      so three of go/cli's four still hold in a render; run's does not, since its body holds the
+      name literal in kong.Name. itos-cc 0.12.0 ships mutation except --renew (itos-cc#32), which
+      after a mutation run carried run's exception across the render (hash c33f9e2625dbed56 to
+      e248afb182bea57e, checked in a go + cli render). The branches pin itos-cc 0.5.0, which has no
+      --renew, and 0.12.0's mutation run --fail-uncovered also reports uncovered statements in
+      go/cli's cmd/go-template-itos run and logger. Moving the pin to 0.12.0 or later on stack/go
+      and go/cli, with those statements covered, would let new print two more setup steps, a full
+      mutation run and mutation except --renew, so a made project commits records of its own from
+      the start, unattended, as q-28 wanted once #32 shipped. A full go + cli run took 9m21s
+      locally, the go stack's 40s.
