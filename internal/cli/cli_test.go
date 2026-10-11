@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/itos-corp/go-template-itos/internal/count/port"
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
 )
 
 // Every kind the counting port's sealed set has is read by a scenario by its

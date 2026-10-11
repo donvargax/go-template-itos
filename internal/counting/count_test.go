@@ -1,13 +1,13 @@
-package domain_test
+package counting_test
 
 import (
 	"errors"
 	"strings"
 	"testing"
 
-	"github.com/itos-corp/go-template-itos/internal/count/domain"
-	"github.com/itos-corp/go-template-itos/internal/count/port"
-	"github.com/itos-corp/go-template-itos/internal/count/port/porttest"
+	"github.com/itos-corp/go-template-itos/internal/counting"
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/counting/port/porttest"
 	"pgregory.net/rapid"
 )
 
@@ -15,21 +15,21 @@ func TestCountCountsLogicalLinesAndUnicodeWhitespaceWords(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
-		want  domain.Result
+		want  counting.Result
 	}{
-		{name: "empty", input: "", want: domain.Result{}},
-		{name: "one-byte unterminated line", input: "x", want: domain.Result{Lines: 1, Words: 1}},
-		{name: "one unterminated line", input: "one", want: domain.Result{Lines: 1, Words: 1}},
-		{name: "terminated line", input: "one\n", want: domain.Result{Lines: 1, Words: 1}},
-		{name: "empty lines", input: "\n\n", want: domain.Result{Lines: 2}},
-		{name: "mixed line endings", input: "one\r\ntwo\nthree", want: domain.Result{Lines: 3, Words: 3}},
-		{name: "unicode whitespace and punctuation", input: "a\u2003b,\tc!", want: domain.Result{Lines: 1, Words: 3}},
-		{name: "invalid UTF-8 is not whitespace", input: string([]byte{'a', 0xff, 'b'}), want: domain.Result{Lines: 1, Words: 1}},
-		{name: "long line", input: strings.Repeat("x", 128*1024), want: domain.Result{Lines: 1, Words: 1}},
+		{name: "empty", input: "", want: counting.Result{}},
+		{name: "one-byte unterminated line", input: "x", want: counting.Result{Lines: 1, Words: 1}},
+		{name: "one unterminated line", input: "one", want: counting.Result{Lines: 1, Words: 1}},
+		{name: "terminated line", input: "one\n", want: counting.Result{Lines: 1, Words: 1}},
+		{name: "empty lines", input: "\n\n", want: counting.Result{Lines: 2}},
+		{name: "mixed line endings", input: "one\r\ntwo\nthree", want: counting.Result{Lines: 3, Words: 3}},
+		{name: "unicode whitespace and punctuation", input: "a\u2003b,\tc!", want: counting.Result{Lines: 1, Words: 3}},
+		{name: "invalid UTF-8 is not whitespace", input: string([]byte{'a', 0xff, 'b'}), want: counting.Result{Lines: 1, Words: 1}},
+		{name: "long line", input: strings.Repeat("x", 128*1024), want: counting.Result{Lines: 1, Words: 1}},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			if got := domain.Count([]byte(test.input)); got != test.want {
+			if got := counting.Count([]byte(test.input)); got != test.want {
 				t.Errorf("Count(%q) = %+v, want %+v", test.input, got, test.want)
 			}
 		})
@@ -38,8 +38,8 @@ func TestCountCountsLogicalLinesAndUnicodeWhitespaceWords(t *testing.T) {
 
 func TestFileReadsThroughFilesAndReturnsContentsCount(t *testing.T) {
 	files := porttest.Files{Data: map[string][]byte{"notes": []byte("one\r\ntwo words\n")}}
-	got, err := domain.File(files, "notes")
-	if err != nil || got != (domain.Result{Lines: 2, Words: 3}) {
+	got, err := counting.File(files, "notes")
+	if err != nil || got != (counting.Result{Lines: 2, Words: 3}) {
 		t.Fatalf("File() = %+v, %v; want 2 lines and 3 words", got, err)
 	}
 }
@@ -54,11 +54,11 @@ func TestFileReturnsTypedMissingAndUnreadableFailures(t *testing.T) {
 		{name: "unreadable", files: porttest.Files{Failures: map[string]port.ReadFailure{"notes": porttest.Unreadable("notes")}}, wantMissing: false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			got, err := domain.File(test.files, "notes")
+			got, err := counting.File(test.files, "notes")
 			if err == nil {
 				t.Fatal("File() returned no failure")
 			}
-			if got != (domain.Result{}) {
+			if got != (counting.Result{}) {
 				t.Errorf("File() result on failure = %+v, want zero result", got)
 			}
 			var missing *port.Missing
@@ -83,15 +83,15 @@ func TestCountAddsAcrossNewlineTerminatedPieces(t *testing.T) {
 	rapid.Check(t, func(t *rapid.T) {
 		pieces := rapid.SliceOfN(rapid.StringMatching(`[a-z\p{Zs}\t]{0,30}`), 0, 12).Draw(t, "pieces")
 		var joined string
-		var want domain.Result
+		var want counting.Result
 		for _, piece := range pieces {
 			terminated := piece + "\n"
-			part := domain.Count([]byte(terminated))
+			part := counting.Count([]byte(terminated))
 			want.Lines += part.Lines
 			want.Words += part.Words
 			joined += terminated
 		}
-		if got := domain.Count([]byte(joined)); got != want {
+		if got := counting.Count([]byte(joined)); got != want {
 			t.Fatalf("Count(joined pieces) = %+v, sum of pieces = %+v", got, want)
 		}
 	})

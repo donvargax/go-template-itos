@@ -6,8 +6,8 @@ import (
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
 	"github.com/itos-corp/go-template-itos/internal/count/command"
-	"github.com/itos-corp/go-template-itos/internal/count/port"
-	"github.com/itos-corp/go-template-itos/internal/count/port/porttest"
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/counting/port/porttest"
 )
 
 // A run's ends, so a test reads what the person or the script would.

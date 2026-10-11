@@ -12,8 +12,8 @@ import (
 	"fmt"
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
-	"github.com/itos-corp/go-template-itos/internal/count/domain"
-	"github.com/itos-corp/go-template-itos/internal/count/port"
+	"github.com/itos-corp/go-template-itos/internal/counting"
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
 )
 
 // CLI is the count command: the file it counts, and whether it prints the
@@ -57,7 +57,7 @@ type counts struct {
 // Run counts the file the command names, or reports the failure it met, and
 // returns the exit code the UI gives it.
 func (c CLI) Run(ui *cli.UI) int {
-	result, failure := domain.File(c.Files, c.File)
+	result, failure := counting.File(c.Files, c.File)
 	if failure != nil {
 		return ui.Fail(failure, c.JSON)
 	}

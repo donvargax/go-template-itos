@@ -1,14 +1,16 @@
 {
   "version": 1,
-  "file": "internal/count/port/porttest/files.go",
+  "file": "internal/counting/port/porttest/files.go",
   "language": "go",
   "tests": {
-    "internal/count/domain/count_test.go": "48a3c28ffe7e3194ab29dce6a1d8e3cdebee96a675485800737462ff44ab9c05",
-    "internal/count/port/porttest/files_test.go": "acc0ac3830cf98c0f48de30ed14f7afeddb162d5c1539a0655b2bf50891119ee"
+    "internal/count/command/command_test.go": "fc2fb386f5e140959141d03bfb10b1efd6f9ea982eb8c41ee971a48b5e6fccfe",
+    "internal/count/input/input_test.go": "49b92fee75ac44fe308f7d9c9ee31fe0b0bb712a46295f4b2184dff10ace9b31",
+    "internal/counting/count_test.go": "06378dcada1850ff6c811a809efb97868c9fd262c6f3f8348f57aaef418287d3",
+    "internal/counting/port/porttest/files_test.go": "acc0ac3830cf98c0f48de30ed14f7afeddb162d5c1539a0655b2bf50891119ee"
   },
   "units": [
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/port/porttest.Files",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port/porttest.Files",
       "name": "Read",
       "hash": "084700e1d09c01fd",
       "start_line": 15,
@@ -30,7 +32,7 @@
       ]
     },
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/port/porttest",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port/porttest",
       "name": "Unreadable",
       "hash": "3f6ea4f333c8a393",
       "start_line": 27,

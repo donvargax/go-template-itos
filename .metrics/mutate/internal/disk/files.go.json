@@ -1,13 +1,14 @@
 {
   "version": 1,
-  "file": "internal/count/disk/files.go",
+  "file": "internal/disk/files.go",
   "language": "go",
   "tests": {
-    "internal/count/disk/files_test.go": "286f827bf8e420d66753805041777fa06209fe6fa058555a29a46c3c56f071a4"
+    "cmd/go-template-itos/main_test.go": "818584786d3ee213fbf511ab56f24862a1c4bf9f554a0e2f1b2720f4201947ee",
+    "internal/disk/files_test.go": "5d469a6c02e284d9f4acd01b5a6bde83bd1046143f48e940e4da2598a722d8e0"
   },
   "units": [
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/disk.Files",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/disk.Files",
       "name": "Read",
       "hash": "cb1dd5f86eb82680",
       "start_line": 20,
@@ -29,7 +30,7 @@
       ]
     },
     {
-      "namespace": "github.com/itos-corp/go-template-itos/internal/count/disk",
+      "namespace": "github.com/itos-corp/go-template-itos/internal/disk",
       "name": "classifyReadError",
       "hash": "bd8761ded9feaff3",
       "start_line": 28,

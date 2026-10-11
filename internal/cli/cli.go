@@ -17,7 +17,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/itos-corp/go-template-itos/internal/count/port"
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
 )
 
 // The exit codes, as count's command's help states them.

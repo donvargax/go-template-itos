@@ -3,8 +3,8 @@
   "file": "internal/count/command/command.go",
   "language": "go",
   "tests": {
-    "cmd/go-template-itos/main_test.go": "25c7791b428d496ef053e24de090fe8a4221dea3cee5ea94f5ea5891f732e157",
-    "internal/count/command/command_test.go": "a0d711b7662e2019a96b5b54962034c5de2a0eebf95e0b894478527e21189810"
+    "cmd/go-template-itos/main_test.go": "818584786d3ee213fbf511ab56f24862a1c4bf9f554a0e2f1b2720f4201947ee",
+    "internal/count/command/command_test.go": "fc2fb386f5e140959141d03bfb10b1efd6f9ea982eb8c41ee971a48b5e6fccfe"
   },
   "units": [
     {
@@ -68,7 +68,7 @@
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/count/command.CLI",
       "name": "Run",
-      "hash": "3cab5924a4a249d1",
+      "hash": "6e7a9e4b8d33f04c",
       "start_line": 59,
       "end_line": 73,
       "killed": 5,
@@ -79,7 +79,7 @@
         {
           "line": 61,
           "column": 13,
-          "offset": 96,
+          "offset": 98,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",
@@ -88,7 +88,7 @@
         {
           "line": 65,
           "column": 26,
-          "offset": 180,
+          "offset": 182,
           "original": "1",
           "replacement": "0",
           "outcome": "killed",
@@ -97,7 +97,7 @@
         {
           "line": 65,
           "column": 33,
-          "offset": 187,
+          "offset": 189,
           "original": "true",
           "replacement": "false",
           "outcome": "killed",
@@ -106,7 +106,7 @@
         {
           "line": 66,
           "column": 10,
-          "offset": 259,
+          "offset": 261,
           "original": "0",
           "replacement": "1",
           "outcome": "killed",
@@ -115,7 +115,7 @@
         {
           "line": 72,
           "column": 9,
-          "offset": 520,
+          "offset": 522,
           "original": "0",
           "replacement": "1",
           "outcome": "killed",

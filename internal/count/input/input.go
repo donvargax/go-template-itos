@@ -9,7 +9,7 @@ package input
 import (
 	"io"
 
-	"github.com/itos-corp/go-template-itos/internal/count/port"
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
 )
 
 // Stdin is the argument that names standard input.

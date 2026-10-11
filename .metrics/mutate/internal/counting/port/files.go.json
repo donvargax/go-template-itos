@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "file": "internal/counting/port/files.go",
+  "language": "go",
+  "tests": {
+    "internal/cli/cli_test.go": "998f34060b56f6f713bfaef6d2c5e971e8cfd3dec5973f85dba7613157add163",
+    "internal/cli/completion_test.go": "e5a2efb94994d45b2580e11e919af565e5650f39d7116c388c78fbba98e626e3",
+    "internal/cli/flags_test.go": "6a74267a3b1eaaf1f6d1997f40918a4155028e2b2f2a1c2b3a762020888a68fd",
+    "internal/cli/version_test.go": "290ca6a0bbcc01c23160f93dee4f3e69d860ad04b7fc10ecf1d8c01f8861efb9",
+    "internal/count/command/command_test.go": "fc2fb386f5e140959141d03bfb10b1efd6f9ea982eb8c41ee971a48b5e6fccfe",
+    "internal/count/input/input_test.go": "49b92fee75ac44fe308f7d9c9ee31fe0b0bb712a46295f4b2184dff10ace9b31",
+    "internal/counting/count_test.go": "06378dcada1850ff6c811a809efb97868c9fd262c6f3f8348f57aaef418287d3",
+    "internal/counting/port/porttest/files_test.go": "acc0ac3830cf98c0f48de30ed14f7afeddb162d5c1539a0655b2bf50891119ee",
+    "internal/disk/files_test.go": "5d469a6c02e284d9f4acd01b5a6bde83bd1046143f48e940e4da2598a722d8e0"
+  },
+  "units": [
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Missing",
+      "name": "readFailure",
+      "hash": "3c559dcd11b1ded8",
+      "start_line": 16,
+      "end_line": 16,
+      "killed": 0,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 0,
+      "mutants": []
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Missing",
+      "name": "Error",
+      "hash": "d8f56676b2a9366b",
+      "start_line": 17,
+      "end_line": 17,
+      "killed": 1,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 1,
+      "mutants": [
+        {
+          "line": 17,
+          "column": 60,
+          "offset": 59,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Unreadable",
+      "name": "readFailure",
+      "hash": "fe92d7403e32967c",
+      "start_line": 22,
+      "end_line": 22,
+      "killed": 0,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 0,
+      "mutants": []
+    },
+    {
+      "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port.Unreadable",
+      "name": "Error",
+      "hash": "6bb0dfe088cc35f7",
+      "start_line": 23,
+      "end_line": 23,
+      "killed": 1,
+      "survived": 0,
+      "uncovered": 0,
+      "sites": 1,
+      "mutants": [
+        {
+          "line": 23,
+          "column": 66,
+          "offset": 65,
+          "original": "+",
+          "replacement": "-",
+          "outcome": "killed",
+          "scope": "all-tests"
+        }
+      ]
+    }
+  ]
+}

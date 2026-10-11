@@ -26,8 +26,8 @@ import (
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
 	"github.com/itos-corp/go-template-itos/internal/count/command"
-	"github.com/itos-corp/go-template-itos/internal/count/disk"
 	"github.com/itos-corp/go-template-itos/internal/count/input"
+	"github.com/itos-corp/go-template-itos/internal/disk"
 	"github.com/itos-corp/go-template-itos/internal/version"
 )
 

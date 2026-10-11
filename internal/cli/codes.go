@@ -1,6 +1,6 @@
 package cli
 
-import "github.com/itos-corp/go-template-itos/internal/count/port"
+import "github.com/itos-corp/go-template-itos/internal/counting/port"
 
 // The port's failures are the sealed set this UI classifies. Each kind below
 // is one the count command's scenarios read: a missing file and an
