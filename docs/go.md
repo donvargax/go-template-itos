@@ -45,7 +45,8 @@ never loosen it.
 - A domain package: add its folder as a `**/internal/<name>/**` glob to `domain` and
   `domain-io`, and its import path to `domain`'s `allow`. Give it a `port` subpackage for what
   it reaches outside. `tools/bin/domain-coverage` reads its list from `domain`'s `files`, so the
-  new package is held to 80% from then on.
+  new package is held to 80% from then on. If its tests use rapid, add a
+  `!**/internal/<name>/*_test.go` exclusion to `rapid`.
 - An adapter: add its folder to `infra`'s `files`, and the port it implements to `infra`'s
   `allow`.
 - Then add compile-valid fixtures to `tools/testdata/architecture` that the rule must accept and
@@ -116,9 +117,7 @@ then the policy file is removed. The last step, `itos init --agent-rules`, rewri
 `AGENTS.md`'s rules to describe the project's own config. From then on the workflow runs the Go
 steps and the Linux, macOS and Windows tests on the project's own `main`.
 
-The project starts with the mutation records in `.metrics/mutate/` and the reviewed exceptions
-in `itos-cc.yaml` that came with its code. Their hashes were taken before its name, owner and
-module were filled in, so they are a starting point, not proof: re-prove each function you
-change with `itos-cc mutation run`, as the code proof asks of any change, and re-apply an
-exception's reviewed reason with `itos-cc mutation except` where the same equivalent mutant
-survives.
+The project starts with no mutation records: the template's are taken over its own names and
+stay behind. Setup makes the render commit the point judging starts from, so the first push
+checks no code. A change to a function needs that function's results: run `itos-cc mutation run`
+as the code proof asks of any change, and commit `.metrics/mutate/` with the change.
