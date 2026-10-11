@@ -523,3 +523,20 @@ items:
       git push until itos ships p1-push-tag-and-ref (itos#37); never push from main while they are
       local, since push.followtags would publish main's alone. Then bring the sample to it with
       itos-template update, as T-50 did.
+  - id: cli-stale-mutation-snapshots
+    title: go/cli's mutation snapshots are fresh for the code they record
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found during T-51: on go/cli before T-51, itos-cc mutation check without --since reports stale
+      snapshots for internal/release, internal/version, internal/cli and cmd, because their test
+      files were added or changed (tools/bin/release-notes and release-version tests, main_test.go,
+      version_test.go) after the results were recorded. The proof gate judges only changed functions
+      with --since, and mutation sample still reruns the stale mutants, so nothing fails; but the
+      committed cache no longer says whether the current tests kill those mutants. T-51 refreshed
+      only the moved code and the count command and stdin adapter. A task could rerun those files
+      once with --all-tests --fail-uncovered --no-annotate and commit the results, and decide
+      whether CI should hold the whole cache fresh.
