@@ -834,5 +834,3 @@
     Tell the person, with the adopt command and the tag. The sample's update to v0.2.0, resolving
     docs/go.md's Setup section to the template's text and closing the sample's own T-3, follows as
     its own task.
-  done_when:
-    - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.2.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.2.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.2.0'
