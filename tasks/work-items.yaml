@@ -634,8 +634,8 @@ items:
   - id: T-54
     title: Ctrl-C cancels a command through its context
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-52]
     kind: task
     why: >
