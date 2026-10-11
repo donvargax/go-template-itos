@@ -110,3 +110,26 @@ Feature: The command line
     When go-template-itos runs with "version --help"
     Then it exits with code 0
     And its standard output says "--json prints one object: schema 1, ok true, version, and commit when the build knows it."
+
+  # Decision 8: an interrupt cancels the command's context, so a command waiting on
+  # its input stops promptly, and it exits 130 on every system, saying so once. The
+  # step interrupts only once the binary waits on its input: os.Interrupt on Linux
+  # and macOS, CTRL_BREAK_EVENT to the binary's own process group on Windows, which
+  # Go reports as the same signal. The input is left open, so nothing but the
+  # interrupt can end the wait.
+  @ID-CLI-14 @cli-ctrl-c @wip
+  Scenario: an interrupt while count waits on standard input exits 130 and says so
+    When go-template-itos runs with "count -" and its standard input left open
+    And it is interrupted while it waits
+    Then it exits with code 130
+    And its error output says "interrupted"
+    And its standard output is empty
+
+  # Under --json the interrupt is a failure like any other: one object, ok false,
+  # its problem's rule what a script matches on.
+  @ID-CLI-15 @cli-ctrl-c @wip
+  Scenario: an interrupt under --json prints the INTERRUPTED problem
+    When go-template-itos runs with "count - --json" and its standard input left open
+    And it is interrupted while it waits
+    Then it exits with code 130
+    And its JSON output names the problem "INTERRUPTED"

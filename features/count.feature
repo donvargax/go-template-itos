@@ -151,3 +151,11 @@ Feature: Count
     And its standard output says "0  success"
     And its standard output says "2  the command line is wrong"
     And its standard output says "3  the input is missing or cannot be read"
+
+  # Decision 8 gives every command the exit code 130, so count's help lists it
+  # beside the codes count returns of its own.
+  @ID-COUNT-16 @cli-ctrl-c @wip
+  Scenario: count's help names the interrupt's exit code
+    When go-template-itos runs with "count --help"
+    Then it exits with code 0
+    And its standard output says "130  interrupted"
