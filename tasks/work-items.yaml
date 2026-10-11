@@ -421,6 +421,10 @@ items:
       Background'), and a fix needs a Scenarios footer naming scenarios it turns green, which a
       wording change cannot honestly carry. itos was asked to let a docs or test commit change a
       feature's free-text description alone.
+    deferred: >
+      The person chose on 2026-10-10 that go/cli features/cli.feature and features/count.feature may
+      keep describing themselves as the template for now. It waits until the person lifts it;
+      itos#43 would let a docs or test commit reword a description alone.
   - id: T-43
     title: README's provenance names the itos owner, not the copyright owner
     phase: 1
