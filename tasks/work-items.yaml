@@ -649,7 +649,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: []
+    depends_on: [T-52]
     kind: idea
     why: >
       Decision 7's later slice. cmd/go-template-itos makes the context with signal.NotifyContext so
