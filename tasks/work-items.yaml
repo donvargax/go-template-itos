@@ -759,6 +759,10 @@ items:
       with provenance; itos's tooling is changing, so re-read its .github/workflows, itos.yaml's ci
       section and tools/bin before specifying (docs/ORCHESTRATING.md). go-race-fuzz's fuzz budget
       and high-count rapid runs belong in that nightly.
+
+      The person set it for v0.3.0 on 2026-10-10, after v0.2.0: projects that adopted v0.2.0 (itos,
+      itos-cc, itos-template) take it with itos-template update. itos already has its own
+      nightly.yml, the source of this design, so its update meets that file once and keeps its own.
   - id: rapid-new-domain-package
     title: Adding a domain package says how its property tests get rapid
     phase: 1
