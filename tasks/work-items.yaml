@@ -465,8 +465,8 @@ items:
   - id: T-48
     title: Template check runs itos-template v0.26.0
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
