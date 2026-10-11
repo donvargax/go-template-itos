@@ -479,3 +479,31 @@ items:
       copied from another project's cache. Template check (2 of 2) and CI on Linux, macOS and
       Windows go green at stack/go's head; merge main down first if it is behind. The coordinator
       rewrites docs/go.md and docs/architecture.md after.
+  - id: T-52
+    title: The CLI's count command and stdin adapter take decision 6's layout
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      Second half of decision 6 on go/cli, after T-51 has moved the domain to internal/counting and
+      the disk adapter to internal/disk and merged them down. Turn internal/count/command into the
+      slice internal/count (package count), named for its command: its kong struct and Run are the
+      UI; a Query carrying domain values and a Handle that only wires it to the domain through the
+      Files port are the application; Run assembles the Query from kong's flags, the one copy
+      decision 17 accepts, and the slice counts nothing and holds no options struct copying domain
+      values. Move internal/count/input to internal/stdin, importing only the port;
+      cmd/go-template-itos assembles everything and injects the disk adapter as stdin's fallback, so
+      no adapter imports another. internal/cli stays the shared UI: errors stay sealed sets of
+      domain types turned into exit codes there alone, held by gochecksumtype, and only an
+      unclassified error exits 70. No behaviour changes: refactor commits naming this task, every
+      scenario and test passing as it is on Linux, macOS and Windows. Rewrite go/cli's depguard
+      rules to decision 6's arrows: the domain imports no adapter, slice, UI, kong or I/O package;
+      an adapter imports only port packages; a slice imports no other slice; kong only in cmd and
+      internal/cli. Give each arrow fixtures in tools/testdata/architecture it must accept and
+      refuse, a slice importing a slice and an adapter importing the domain among them, so
+      tools/bin/architecture-check proves every arrow. Record the mutation results of the moved code
+      with it. itos-template check passes 2 of 2 and CI and Template check go green at go/cli's
+      head. The coordinator rewrites docs/go.md, docs/architecture.md and docs/CLI.md where they
+      name the old paths after.
