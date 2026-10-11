@@ -687,3 +687,18 @@ items:
       dependency under a license the project cannot ship would pass every gate. A pinned license
       checker (google/go-licenses or similar) over the module graph, with an allowlist in the
       project's own config, run in the Go stack's CI plan.
+  - id: go-deps-age
+    title: A Go module younger than a week is refused unless an exception names it
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found in itos on 2026-10-10 (v7.4.0, tools/bin/deps-check, its T-067): it refuses a module of
+      the build younger than seven days, by the module proxy's publication time, unless
+      deps-check.json excepts it with a reason, an exception no longer needed failing too, and runs
+      govulncheck only once every module has passed. The pre-commit hook runs it when go.mod or
+      go.sum is staged and CI when a push's range changes them. Renovate's seven-day minimum release
+      age covers only Renovate's own updates; a module added by hand here meets no such check.
+      Harvest it into the Go stack's policy with its provenance.
