@@ -51,8 +51,10 @@ A made project follows these; the guide linked beside each says how. `go` marks 
 stack adds, `cli` what the command-line feature adds.
 
 - Design: vertical slices over a domain that owns its behaviour and reaches the outside only
-  through its own ports ([docs/engineering.md](docs/engineering.md)); `go` enforces the import
-  rules with depguard and proves each rule with a self-test (`docs/architecture.md`).
+  through its own ports ([docs/engineering.md](docs/engineering.md)); `go` lays the code out as
+  a shared domain, separate adapters and one slice per command named for it, with a context
+  carrying cancellation to the ports, and enforces the import rules with depguard, each proved
+  by a self-test (`docs/go.md`, `docs/architecture.md`).
 - Tests: behaviour specified first, failing steps committed before the code; the project's own
   fakes, never a mocking library; `go` adds property tests, an 80% domain coverage floor,
   changed-code mutation proof and runs on Linux, macOS and Windows (`docs/go.md`); `cli` runs
@@ -64,8 +66,9 @@ stack adds, `cli` what the command-line feature adds.
   Renovate configured for every branch.
 - Security: no credentials in files, fixtures or logs, and provenance kept for copied code
   ([docs/security.md](docs/security.md)).
-- Command line: `cli` treats only the exit code and `--json` as a contract with scripts, with
-  rules sourced from clig.dev and the GNU and POSIX standards (`docs/CLI.md`).
+- Command line: `cli` treats only the exit code and `--json` as a contract with scripts, stops
+  a command on Ctrl-C with exit 130, and sources its rules from clig.dev and the GNU and POSIX
+  standards (`docs/CLI.md`).
 - Configuration: rules for the first configuration file a project adds
   ([docs/CONFIG.md](docs/CONFIG.md)).
 - Releases: `cli` releases on a push to `main` holding a feat or a fix, with notes from
