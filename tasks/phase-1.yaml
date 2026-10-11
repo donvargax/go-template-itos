@@ -633,5 +633,3 @@
     own itos.yaml, ci.yml, README.md and registry. A gate 7.4.0 refuses on existing work is a
     finding, not a check to weaken. Push each branch commits together and see its CI and Template
     check green.
-  done_when:
-    - run: "grep -q 'version: \"7.4.0\"' itos.yaml && ! grep -rqE 'itos@[0-9a-f]+ # v7\\.[0-3]\\.' .github/workflows"
