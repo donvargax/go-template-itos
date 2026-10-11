@@ -473,7 +473,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-52, cli-ctrl-c]
+    depends_on: [T-52, T-54]
     kind: idea
     why: >
       Once T-51 and T-52 land decision 6's layout, cut v0.2.0 with itos-template release as T-42 cut
@@ -630,14 +630,15 @@ items:
       whose major the module path does not end in (/vN from v2, its T-089), since the module proxy
       would refuse that tag. A Go-only project's release job needs the same gate; harvest it with
       release-version.
-  - id: cli-ctrl-c
+  - id: T-54
     title: Ctrl-C cancels a command through its context
     phase: 1
     owner: null
     status: todo
     depends_on: [T-52]
-    kind: idea
+    kind: task
     why: >
+      Was cli-ctrl-c.
       Decision 7's later slice. cmd/go-template-itos makes the context with signal.NotifyContext so
       an interrupt cancels it; the adapters act on a done context; and what a cancelled command
       prints and exits with (130 by convention, through internal/cli as every exit code is) is
