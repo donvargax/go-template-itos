@@ -698,9 +698,14 @@
     slice internal/count (package count), named for its command: its kong struct and Run are the UI;
     a Query carrying domain values and a Handle that only wires it to the domain through the Files
     port are the application; Run assembles the Query from kong's flags, the one copy decision 17
-    accepts, and the slice counts nothing and holds no options struct copying domain values. Move
-    internal/count/input to internal/stdin, importing only the port; cmd/go-template-itos assembles
-    everything and injects the disk adapter as stdin's fallback, so no adapter imports another.
+    accepts, and the slice counts nothing and holds no options struct copying domain values. By
+    decision 7, after T-53 has given the Files port and counting.File a context: Handle takes
+    ctx first, Handle(ctx, q), never a Query field; cmd/go-template-itos makes the context
+    (context.Background() until the Ctrl-C slice) and hands it to Run through kong's bindings, and
+    Run passes it to Handle, replacing T-53's context.Background() in the command. Move
+    internal/count/input to internal/stdin, importing only the port and taking the ctx, which it
+    passes to its fallback and does not act on yet; cmd/go-template-itos assembles everything and
+    injects the disk adapter as stdin's fallback, so no adapter imports another.
     internal/cli stays the shared UI: errors stay sealed sets of domain types turned into exit codes
     there alone, held by gochecksumtype, and only an unclassified error exits 70. No behaviour
     changes: refactor commits naming this task, every scenario and test passing as it is on Linux,
