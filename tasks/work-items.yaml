@@ -384,8 +384,8 @@ items:
   - id: T-50
     title: The sample takes the template release v0.1.0 by itos-template update
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
