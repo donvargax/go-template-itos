@@ -25,6 +25,7 @@ const (
 	CodeUsage       = 2
 	CodeEnvironment = 3
 	CodeInternal    = 70
+	CodeInterrupted = 130
 )
 
 // UI is a command's ends: what it reads and where it writes. Nothing here

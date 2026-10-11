@@ -18,7 +18,9 @@ var _ port.Files = Files{}
 
 // Read reads path without modifying or executing its contents and translates
 // operating-system errors into the port's typed failures. It does not act on
-// ctx: what a cancelled read returns is not yet settled.
+// ctx: a file's read ends at once, so an interrupt has nothing here to cut
+// short. One that waits, a named pipe's, ends on a second interrupt, which
+// ends the process at once (decision 8).
 func (Files) Read(ctx context.Context, path string) ([]byte, port.ReadFailure) {
 	data, err := os.ReadFile(path) //nolint:gosec // caller selects the input path through the Files port
 	if err != nil {

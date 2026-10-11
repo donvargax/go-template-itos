@@ -47,9 +47,12 @@ the binary that follows it.
 | 3    | The environment is missing something: the input is missing or cannot be read.                               |
 | 70   | An internal error that no code classified. Report it.                                                       |
 | 75   | A temporary failure, which may pass when run again with no change. No command returns it yet.               |
+| 130  | Interrupted: Ctrl-C stopped the command before it finished (rule 42).                                       |
 
 These codes follow grep and diff (0 yes, 1 no, 2 trouble) and the BSD `sysexits.h` values
-`EX_SOFTWARE` for 70 and `EX_TEMPFAIL` for 75 (CLIG `#the-basics`). A script tells failures with
+`EX_SOFTWARE` for 70 and `EX_TEMPFAIL` for 75 (CLIG `#the-basics`). 130 is 128 plus SIGINT's 2,
+what shells report for a command Ctrl-C ended; it is the code on every system, Windows too
+(decision 8). A script tells failures with
 the same code apart by their rule IDs, such as `COUNT_INPUT_MISSING` and `COUNT_INPUT_UNREADABLE`.
 
 ## Rules
@@ -181,3 +184,16 @@ may repeat, but no command has one yet.
     then exactly one final instruction: `:files` leaves file-name completion to the shell, and
     `:none` asks it to offer nothing more. Candidates come only from kong's command and flag
     model. The printed comments say where to install each script.
+
+### Interrupts and cleanup
+
+42. On an interrupt, Ctrl-C, cancel the command's context so it stops promptly, and exit 130.
+    Say so in one stderr line, or with `--json` print the failure object with rule `INTERRUPTED`
+    (rule 29). A second interrupt ends the process at once with 130, skipping cleanup.
+    `internal/cli`'s `StopOnInterrupt` does both for every command, `cmd` feeding it from
+    `signal.Notify`, and an adapter whose read waits, as standard input's does, ends it once the
+    context is done, with a failure the UI turns into 130 (decision 8). (CLIG
+    `#robustness-guidelines`.)
+43. Write a file by writing a temporary one beside it and renaming it over the target once it is
+    whole, so an interrupt, a second one included, never leaves half a file. No command writes a
+    file yet. (CLIG `#robustness-guidelines`.)

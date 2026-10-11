@@ -16,7 +16,8 @@ type Files struct {
 var _ port.Files = Files{}
 
 // Read returns a copy of the configured file, or its configured failure. It
-// does not act on ctx: what a cancelled read returns is not yet settled.
+// does not act on ctx, since nothing here waits: a test that wants a
+// cancelled read configures port.Cancelled as the path's failure.
 func (f Files) Read(ctx context.Context, path string) ([]byte, port.ReadFailure) {
 	if failure, ok := f.Failures[path]; ok {
 		return nil, failure

@@ -1,7 +1,9 @@
 package stdin_test
 
 import (
+	"context"
 	"errors"
+	"io"
 	"strings"
 	"testing"
 
@@ -53,6 +55,45 @@ func TestFilesReportAFailingReaderAsUnreadable(t *testing.T) {
 	var unreadable *port.Unreadable
 	if !errors.As(err, &unreadable) || unreadable.Path != "-" {
 		t.Fatalf("File(-, failing reader) = %T %v, want typed Unreadable for -", err, err)
+	}
+}
+
+// A read waiting on an input nobody closes ends once its context is done,
+// as an interrupt makes it: cancelled, the input not read whole, so the
+// command stops promptly instead of waiting for an end that never comes.
+func TestFilesEndAWaitingReadWhenTheContextIsDone(t *testing.T) {
+	input, writer := io.Pipe()
+	defer func() { _ = writer.Close() }() // ends the read the adapter left under way
+	ctx, cancel := context.WithCancel(t.Context())
+	files := stdin.Files{Fallback: porttest.Files{}, In: input}
+	read := make(chan error, 1)
+	go func() {
+		_, err := counting.File(ctx, files, "-")
+		read <- err
+	}()
+	if _, err := writer.Write([]byte("one two")); err != nil { // the read is under way
+		t.Fatal(err)
+	}
+	cancel()
+	var cancelled *port.Cancelled
+	if err := <-read; !errors.As(err, &cancelled) || cancelled.Path != "-" {
+		t.Fatalf("File(-, open input) after cancel = %T %v, want typed Cancelled for -", err, err)
+	}
+}
+
+// A context already done reads nothing, even of an input that is ready: the
+// command was interrupted before it asked, and a ready input must not race
+// the interrupt into counts.
+func TestFilesReadNothingUnderADoneContext(t *testing.T) {
+	ctx, cancel := context.WithCancel(t.Context())
+	cancel()
+	files := stdin.Files{Fallback: porttest.Files{}, In: strings.NewReader("one two")}
+	for range 100 {
+		_, err := counting.File(ctx, files, "-")
+		var cancelled *port.Cancelled
+		if !errors.As(err, &cancelled) {
+			t.Fatalf("File(-, ready input) under a done context = %T %v, want typed Cancelled", err, err)
+		}
 	}
 }
 

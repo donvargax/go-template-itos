@@ -30,15 +30,38 @@ var _ port.Files = Files{}
 // Read reads path, and refuses any path but Dash through In, so a caller
 // that names a file reads it through the fallback and one that names - reads
 // a reader. A reader that fails is the environment's, as a file that cannot
-// be read is. It hands ctx to the fallback and does not act on it: what a
-// cancelled read returns is not yet settled.
+// be read is.
+//
+// Standard input may wait as long as nobody closes it, so the read acts on
+// ctx: once ctx is done it ends with port.Cancelled, the input not read
+// whole, and a done ctx reads nothing at all. No read of a terminal or a
+// pipe can be stopped on every system, so the one under way is left to end
+// with the process, which a cancelled command is about to end.
 func (f Files) Read(ctx context.Context, path string) ([]byte, port.ReadFailure) {
 	if path != Dash {
 		return f.Fallback.Read(ctx, path)
 	}
-	data, err := io.ReadAll(f.In)
-	if err != nil {
-		return nil, &port.Unreadable{Path: path}
+	if ctx.Err() != nil {
+		return nil, &port.Cancelled{Path: path}
 	}
-	return data, nil
+	read := make(chan result, 1)
+	go func() {
+		data, err := io.ReadAll(f.In)
+		read <- result{data, err}
+	}()
+	select {
+	case <-ctx.Done():
+		return nil, &port.Cancelled{Path: path}
+	case r := <-read:
+		if r.err != nil {
+			return nil, &port.Unreadable{Path: path}
+		}
+		return r.data, nil
+	}
+}
+
+// result is what reading In whole gave.
+type result struct {
+	data []byte
+	err  error
 }

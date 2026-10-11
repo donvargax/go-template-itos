@@ -7,7 +7,7 @@
 //
 // main only assembles: the count command is a slice, its kong struct and its
 // handler in a package of its own (internal/count), and main makes the
-// context, gives the slice its adapters (internal/stdin, falling back on
+// context an interrupt cancels, gives the slice its adapters (internal/stdin, falling back on
 // internal/disk), parses the command line, runs the one it names through the
 // UI the slices share (internal/cli) and exits with the code that slice
 // returns. A usage error, which kong finds before any slice runs, is the one
@@ -21,6 +21,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"os/signal"
 	"strings"
 
 	"github.com/alecthomas/kong"
@@ -45,10 +46,20 @@ type commandLine struct {
 	Complete   struct{}       `cmd:"" name:"__complete" hidden:""`
 }
 
-// main makes the context every command's work runs under: nothing cancels
-// it yet.
+// main makes the context every command's work runs under, and has
+// internal/cli's StopOnInterrupt cancel it on the first interrupt and end
+// the process with 130 on a second (decision 8). signal.Notify is the one
+// line that differs by system: os.Interrupt is SIGINT on Linux and macOS,
+// and Ctrl-C or Ctrl-Break at a Windows console. It is in place before the
+// command line is parsed, so no command reads its input before an
+// interrupt would reach it. The channel holds both interrupts, so a second
+// one is not lost while the first is handled.
 func main() {
-	os.Exit(run(context.Background(), os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+	ctx, cancel := context.WithCancel(context.Background())
+	interrupts := make(chan os.Signal, 2)
+	signal.Notify(interrupts, os.Interrupt)
+	go cli.StopOnInterrupt(interrupts, cancel, os.Exit)
+	os.Exit(run(ctx, os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
 }
 
 // run parses args and runs what they name, returning the exit code. With no

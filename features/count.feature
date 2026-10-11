@@ -154,7 +154,7 @@ Feature: Count
 
   # Decision 8 gives every command the exit code 130, so count's help lists it
   # beside the codes count returns of its own.
-  @ID-COUNT-16 @cli-ctrl-c @wip
+  @ID-COUNT-16 @cli-ctrl-c
   Scenario: count's help names the interrupt's exit code
     When go-template-itos runs with "count --help"
     Then it exits with code 0

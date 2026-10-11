@@ -39,6 +39,14 @@ func TestEachReadFailureKindHasItsCodeRuleAndSentence(t *testing.T) {
 			fix:        "give a file this program can read, not a folder",
 			wantStderr: "go-template-itos: the file adirectory cannot be read as text\n",
 		},
+		{
+			failure:    &port.Cancelled{Path: "-"},
+			code:       CodeInterrupted,
+			rule:       "INTERRUPTED",
+			message:    "interrupted before it finished",
+			fix:        "run it again and let it finish",
+			wantStderr: "go-template-itos: interrupted before it finished\n",
+		},
 	} {
 		var stdout, stderr strings.Builder
 		ui := &UI{Stdout: &stdout, Stderr: &stderr}

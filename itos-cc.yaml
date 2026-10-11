@@ -20,7 +20,7 @@ mutation:
       column: 10
       original: "0"
       replacement: "1"
-      reason: report seeds the code and raises it with max over the leaves; classify returns 2, 3 or 70 for every leaf it is given and leaves is never empty, so every read of the result is a leaf's code and 0 and 1 seed the same value.
+      reason: report seeds the code and raises it with max over the leaves; classify returns 2, 3, 70 or 130 for every leaf it is given and leaves is never empty, so every read of the result is a leaf's code and 0 and 1 seed the same value.
     - file: internal/release/build.go
       function: github.com/itos-corp/go-template-itos/internal/release#extract
       hash: 6e51bcbcdcf402f5

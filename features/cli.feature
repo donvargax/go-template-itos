@@ -117,7 +117,7 @@ Feature: The command line
   # and macOS, CTRL_BREAK_EVENT to the binary's own process group on Windows, which
   # Go reports as the same signal. The input is left open, so nothing but the
   # interrupt can end the wait.
-  @ID-CLI-14 @cli-ctrl-c @wip
+  @ID-CLI-14 @cli-ctrl-c
   Scenario: an interrupt while count waits on standard input exits 130 and says so
     When go-template-itos runs with "count -" and its standard input left open
     And it is interrupted while it waits
@@ -127,7 +127,7 @@ Feature: The command line
 
   # Under --json the interrupt is a failure like any other: one object, ok false,
   # its problem's rule what a script matches on.
-  @ID-CLI-15 @cli-ctrl-c @wip
+  @ID-CLI-15 @cli-ctrl-c
   Scenario: an interrupt under --json prints the INTERRUPTED problem
     When go-template-itos runs with "count - --json" and its standard input left open
     And it is interrupted while it waits

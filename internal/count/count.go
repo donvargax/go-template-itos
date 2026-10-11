@@ -38,7 +38,8 @@ func (CLI) Help() string {
 		"    Exit codes:\n" +
 		"      0  success\n" +
 		"      2  the command line is wrong\n" +
-		"      3  the input is missing or cannot be read\n"
+		"      3  the input is missing or cannot be read\n" +
+		"      130  interrupted\n"
 }
 
 // counts is the one object --json prints on success, the contract a script

@@ -24,9 +24,17 @@ type Unreadable struct{ Path string }
 func (*Unreadable) readFailure()    {}
 func (e *Unreadable) Error() string { return "unreadable file: " + e.Path }
 
+// Cancelled is returned when the read's context was done before the read
+// ended, as an interrupt makes it: the input was not read whole.
+type Cancelled struct{ Path string }
+
+func (*Cancelled) readFailure()    {}
+func (e *Cancelled) Error() string { return "cancelled read: " + e.Path }
+
 // Files reads the bytes at a path. Implementations return a typed ReadFailure
-// for missing and unreadable inputs. ctx carries only the read's cancellation
-// and deadline, never a value.
+// for missing and unreadable inputs, and Cancelled for a read that waits and
+// whose ctx is done first. ctx carries only the read's cancellation and
+// deadline, never a value.
 type Files interface {
 	Read(ctx context.Context, path string) ([]byte, ReadFailure)
 }
