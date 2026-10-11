@@ -606,6 +606,13 @@ items:
       a major release, but no job checks that a release keeps the last one's contract. Run the
       previous release tag's contract scenarios against the binary about to be released, refusing a
       release that breaks one without a breaking-change commit.
+
+      Solved in itos, checked 2026-10-10 at v7.4.0: tools/bin/previous-release (its T-071) checks
+      the last release's tag out into a scratch worktree and runs that release's own scenarios
+      against the new binary, ITOS_BIN naming it, as go test ./features; an old scenario that fails
+      is accepted only when a commit since that release names it in a Changes footer, which its
+      release-notes lists. go/cli's godog scenarios have the same shape, so harvest it with its
+      provenance; itos's corpus and schema-contract halves have no counterpart here.
   - id: template-release-job
     title: The template's own releases are cut by a CI job
     phase: 1
