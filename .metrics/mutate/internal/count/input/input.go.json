@@ -4,33 +4,33 @@
   "language": "go",
   "tests": {
     "cmd/go-template-itos/main_test.go": "818584786d3ee213fbf511ab56f24862a1c4bf9f554a0e2f1b2720f4201947ee",
-    "internal/count/input/input_test.go": "49b92fee75ac44fe308f7d9c9ee31fe0b0bb712a46295f4b2184dff10ace9b31"
+    "internal/count/input/input_test.go": "15a1a70c32a00168c92b3f7a060ec80599393d82612e7ca07054143b127ce723"
   },
   "units": [
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/count/input.Files",
       "name": "Read",
-      "hash": "420e548e0492ffb7",
-      "start_line": 29,
-      "end_line": 38,
+      "hash": "c4fb011e58896db0",
+      "start_line": 32,
+      "end_line": 41,
       "killed": 2,
       "survived": 0,
       "uncovered": 0,
       "sites": 2,
       "mutants": [
         {
-          "line": 30,
+          "line": 33,
           "column": 10,
-          "offset": 71,
+          "offset": 92,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",
           "scope": "all-tests"
         },
         {
-          "line": 34,
+          "line": 37,
           "column": 9,
-          "offset": 151,
+          "offset": 177,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",

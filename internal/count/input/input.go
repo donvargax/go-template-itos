@@ -7,6 +7,7 @@
 package input
 
 import (
+	"context"
 	"io"
 
 	"github.com/itos-corp/go-template-itos/internal/counting/port"
@@ -26,9 +27,11 @@ var _ port.Files = Files{}
 // Read reads path, and refuses any path but Stdin through In, so a caller
 // that names no file reads the disk and one that names - reads a reader. A
 // reader that fails is the environment's, as a file that cannot be read is.
-func (f Files) Read(path string) ([]byte, port.ReadFailure) {
+// It hands ctx to Disk and does not act on it: what a cancelled read returns
+// is not yet settled.
+func (f Files) Read(ctx context.Context, path string) ([]byte, port.ReadFailure) {
 	if path != Stdin {
-		return f.Disk.Read(path)
+		return f.Disk.Read(ctx, path)
 	}
 	data, err := io.ReadAll(f.In)
 	if err != nil {

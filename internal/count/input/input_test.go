@@ -15,7 +15,7 @@ import (
 // whichever the path came from.
 func TestFilesReadStandardInputForTheDash(t *testing.T) {
 	files := input.Files{Disk: porttest.Files{}, In: strings.NewReader("one two\nthree")}
-	got, err := counting.File(files, "-")
+	got, err := counting.File(t.Context(), files, "-")
 	if err != nil || got != (counting.Result{Lines: 2, Words: 3}) {
 		t.Fatalf("File(-, …) = %+v, %v; want 2 lines and 3 words", got, err)
 	}
@@ -27,7 +27,7 @@ func TestFilesReadANamedPathThroughTheDisk(t *testing.T) {
 		Disk: porttest.Files{Data: map[string][]byte{"notes": []byte("one two")}},
 		In:   strings.NewReader("ignored"),
 	}
-	got, err := counting.File(files, "notes")
+	got, err := counting.File(t.Context(), files, "notes")
 	if err != nil || got != (counting.Result{Lines: 1, Words: 2}) {
 		t.Fatalf("File(notes, …) = %+v, %v; want 1 line and 2 words", got, err)
 	}
@@ -37,7 +37,7 @@ func TestFilesReadANamedPathThroughTheDisk(t *testing.T) {
 // for: the argument named a file, so it is a missing file.
 func TestFilesNameAMissingFileThroughTheDisk(t *testing.T) {
 	files := input.Files{Disk: porttest.Files{}, In: strings.NewReader("data")}
-	_, err := counting.File(files, "absent")
+	_, err := counting.File(t.Context(), files, "absent")
 	var missing *port.Missing
 	if !errors.As(err, &missing) {
 		t.Fatalf("File(absent, …) = %T %v, want typed Missing", err, err)
@@ -49,7 +49,7 @@ func TestFilesNameAMissingFileThroughTheDisk(t *testing.T) {
 // the reader fails.
 func TestFilesReportAFailingReaderAsUnreadable(t *testing.T) {
 	files := input.Files{Disk: porttest.Files{}, In: failingReader{}}
-	_, err := counting.File(files, "-")
+	_, err := counting.File(t.Context(), files, "-")
 	var unreadable *port.Unreadable
 	if !errors.As(err, &unreadable) || unreadable.Path != "-" {
 		t.Fatalf("File(-, failing reader) = %T %v, want typed Unreadable for -", err, err)

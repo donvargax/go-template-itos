@@ -9,6 +9,7 @@
 package command
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
@@ -57,7 +58,8 @@ type counts struct {
 // Run counts the file the command names, or reports the failure it met, and
 // returns the exit code the UI gives it.
 func (c CLI) Run(ui *cli.UI) int {
-	result, failure := counting.File(c.Files, c.File)
+	// T-52 threads Run's own context here, made in cmd/go-template-itos.
+	result, failure := counting.File(context.Background(), c.Files, c.File)
 	if failure != nil {
 		return ui.Fail(failure, c.JSON)
 	}

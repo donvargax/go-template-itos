@@ -1019,10 +1019,6 @@
     passes unchanged there, with its CI and Template check green. Push each branch's commits
     together, since this task's checks run on every branch whose push holds them. The coordinator
     rewrites docs/go.md and docs/architecture.md after.
-  done_when:
-    - run: test -d internal/counting && test -d internal/counting/port/porttest && test -d internal/disk && ! test -e internal/count/domain && ! test -e internal/count/disk
-    - run: tools/bin/architecture-check
-    - run: tools/bin/domain-coverage
 - id: T-52
   type: refactor
   title: The CLI's count command and stdin adapter take decision 6's layout
@@ -1032,9 +1028,14 @@
     slice internal/count (package count), named for its command: its kong struct and Run are the UI;
     a Query carrying domain values and a Handle that only wires it to the domain through the Files
     port are the application; Run assembles the Query from kong's flags, the one copy decision 17
-    accepts, and the slice counts nothing and holds no options struct copying domain values. Move
-    internal/count/input to internal/stdin, importing only the port; cmd/go-template-itos assembles
-    everything and injects the disk adapter as stdin's fallback, so no adapter imports another.
+    accepts, and the slice counts nothing and holds no options struct copying domain values. By
+    decision 7, after T-53 has given the Files port and counting.File a context: Handle takes
+    ctx first, Handle(ctx, q), never a Query field; cmd/go-template-itos makes the context
+    (context.Background() until the Ctrl-C slice) and hands it to Run through kong's bindings, and
+    Run passes it to Handle, replacing T-53's context.Background() in the command. Move
+    internal/count/input to internal/stdin, importing only the port and taking the ctx, which it
+    passes to its fallback and does not act on yet; cmd/go-template-itos assembles everything and
+    injects the disk adapter as stdin's fallback, so no adapter imports another.
     internal/cli stays the shared UI: errors stay sealed sets of domain types turned into exit codes
     there alone, held by gochecksumtype, and only an unclassified error exits 70. No behaviour
     changes: refactor commits naming this task, every scenario and test passing as it is on Linux,
@@ -1048,4 +1049,25 @@
     docs/architecture.md and docs/CLI.md where they name the old paths after.
   done_when:
     - run: test -d internal/count && test -d internal/stdin && ! test -e internal/count/command && ! test -e internal/count/input && grep -q 'Handle' internal/count/*.go
+    - run: tools/bin/architecture-check
+- id: T-53
+  type: refactor
+  title: The Go stack's Files port and its callers take a context
+  why: >
+    Decision 7 on stack/go, between T-51 and T-52: context.Context carries only cancellation and
+    deadlines, as a first parameter, never a struct field and never a value. Files.Read in
+    internal/counting/port takes a ctx first; the domain function that calls it (counting.File)
+    takes one and passes it on; pure domain logic (counting bytes) takes none. internal/disk and the
+    porttest fake take the ctx and do not act on it yet: what a cancelled read returns, and the exit
+    code it gives, is behaviour, settled with scenarios by the later Ctrl-C slice, not here. No
+    behaviour changes: refactor commits naming this task, every test passing, mutation results
+    recorded for the changed code. depguard and its
+    fixtures keep proving every arrow (context is the standard library, allowed everywhere). Then
+    merge stack/go into go/cli in a refactor commit naming this task that only makes go/cli compile
+    and pass: internal/count/command passes context.Background() to counting.File with a comment
+    that T-52 threads Run's own, and internal/count/input takes the ctx and hands it to its disk
+    fallback. Push each branch's commits together and see CI on Linux, macOS and Windows and
+    Template check green on both heads.
+  done_when:
+    - run: grep -q 'Read(ctx context.Context' internal/counting/port/*.go
     - run: tools/bin/architecture-check

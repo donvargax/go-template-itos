@@ -4,26 +4,26 @@
   "language": "go",
   "tests": {
     "internal/count/command/command_test.go": "fc2fb386f5e140959141d03bfb10b1efd6f9ea982eb8c41ee971a48b5e6fccfe",
-    "internal/count/input/input_test.go": "49b92fee75ac44fe308f7d9c9ee31fe0b0bb712a46295f4b2184dff10ace9b31",
-    "internal/counting/count_test.go": "06378dcada1850ff6c811a809efb97868c9fd262c6f3f8348f57aaef418287d3",
-    "internal/counting/port/porttest/files_test.go": "acc0ac3830cf98c0f48de30ed14f7afeddb162d5c1539a0655b2bf50891119ee"
+    "internal/count/input/input_test.go": "15a1a70c32a00168c92b3f7a060ec80599393d82612e7ca07054143b127ce723",
+    "internal/counting/count_test.go": "15ef633064b54e9488f94fab89f792be50faac4333db6731c672a2c0a782a6b5",
+    "internal/counting/port/porttest/files_test.go": "d1363bcfa8de54c4285b6b1cb1379a0cdbdc17b70cd1dd91a038829ef11f7339"
   },
   "units": [
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port/porttest.Files",
       "name": "Read",
-      "hash": "084700e1d09c01fd",
-      "start_line": 15,
-      "end_line": 24,
+      "hash": "bac691b555c46c2b",
+      "start_line": 20,
+      "end_line": 29,
       "killed": 1,
       "survived": 0,
       "uncovered": 0,
       "sites": 1,
       "mutants": [
         {
-          "line": 20,
+          "line": 25,
           "column": 5,
-          "offset": 159,
+          "offset": 180,
           "original": "!",
           "replacement": "",
           "outcome": "killed",
@@ -35,8 +35,8 @@
       "namespace": "github.com/itos-corp/go-template-itos/internal/counting/port/porttest",
       "name": "Unreadable",
       "hash": "3f6ea4f333c8a393",
-      "start_line": 27,
-      "end_line": 27,
+      "start_line": 32,
+      "end_line": 32,
       "killed": 0,
       "survived": 0,
       "uncovered": 0,

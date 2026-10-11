@@ -11,15 +11,15 @@
       "namespace": "github.com/itos-corp/go-template-itos/internal/count/command.CLI",
       "name": "Help",
       "hash": "a05d4340aef3281d",
-      "start_line": 37,
-      "end_line": 44,
+      "start_line": 38,
+      "end_line": 45,
       "killed": 5,
       "survived": 0,
       "uncovered": 0,
       "sites": 5,
       "mutants": [
         {
-          "line": 38,
+          "line": 39,
           "column": 95,
           "offset": 121,
           "original": "+",
@@ -28,7 +28,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 39,
+          "line": 40,
           "column": 92,
           "offset": 214,
           "original": "+",
@@ -37,7 +37,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 40,
+          "line": 41,
           "column": 23,
           "offset": 238,
           "original": "+",
@@ -46,7 +46,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 41,
+          "line": 42,
           "column": 24,
           "offset": 263,
           "original": "+",
@@ -55,7 +55,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 42,
+          "line": 43,
           "column": 42,
           "offset": 306,
           "original": "+",
@@ -68,54 +68,54 @@
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/count/command.CLI",
       "name": "Run",
-      "hash": "6e7a9e4b8d33f04c",
-      "start_line": 59,
-      "end_line": 73,
+      "hash": "7dc12f2579f5853e",
+      "start_line": 60,
+      "end_line": 75,
       "killed": 5,
       "survived": 0,
       "uncovered": 0,
       "sites": 5,
       "mutants": [
         {
-          "line": 61,
+          "line": 63,
           "column": 13,
-          "offset": 98,
+          "offset": 191,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",
           "scope": "all-tests"
         },
         {
-          "line": 65,
+          "line": 67,
           "column": 26,
-          "offset": 182,
+          "offset": 275,
           "original": "1",
           "replacement": "0",
           "outcome": "killed",
           "scope": "all-tests"
         },
         {
-          "line": 65,
+          "line": 67,
           "column": 33,
-          "offset": 189,
+          "offset": 282,
           "original": "true",
           "replacement": "false",
           "outcome": "killed",
           "scope": "all-tests"
         },
         {
-          "line": 66,
+          "line": 68,
           "column": 10,
-          "offset": 261,
+          "offset": 354,
           "original": "0",
           "replacement": "1",
           "outcome": "killed",
           "scope": "all-tests"
         },
         {
-          "line": 72,
+          "line": 74,
           "column": 9,
-          "offset": 522,
+          "offset": 615,
           "original": "0",
           "replacement": "1",
           "outcome": "killed",

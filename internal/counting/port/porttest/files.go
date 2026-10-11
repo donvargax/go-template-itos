@@ -1,7 +1,11 @@
 // Package porttest provides in-memory fakes for counting-domain tests.
 package porttest
 
-import "github.com/itos-corp/go-template-itos/internal/counting/port"
+import (
+	"context"
+
+	"github.com/itos-corp/go-template-itos/internal/counting/port"
+)
 
 // Files holds test inputs and configured read failures in memory.
 type Files struct {
@@ -11,8 +15,9 @@ type Files struct {
 
 var _ port.Files = Files{}
 
-// Read returns a copy of the configured file, or its configured failure.
-func (f Files) Read(path string) ([]byte, port.ReadFailure) {
+// Read returns a copy of the configured file, or its configured failure. It
+// does not act on ctx: what a cancelled read returns is not yet settled.
+func (f Files) Read(ctx context.Context, path string) ([]byte, port.ReadFailure) {
 	if failure, ok := f.Failures[path]; ok {
 		return nil, failure
 	}

@@ -4,23 +4,23 @@
   "language": "go",
   "tests": {
     "internal/count/command/command_test.go": "fc2fb386f5e140959141d03bfb10b1efd6f9ea982eb8c41ee971a48b5e6fccfe",
-    "internal/count/input/input_test.go": "49b92fee75ac44fe308f7d9c9ee31fe0b0bb712a46295f4b2184dff10ace9b31",
-    "internal/counting/count_test.go": "06378dcada1850ff6c811a809efb97868c9fd262c6f3f8348f57aaef418287d3"
+    "internal/count/input/input_test.go": "15a1a70c32a00168c92b3f7a060ec80599393d82612e7ca07054143b127ce723",
+    "internal/counting/count_test.go": "15ef633064b54e9488f94fab89f792be50faac4333db6731c672a2c0a782a6b5"
   },
   "units": [
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/counting",
       "name": "Count",
       "hash": "17eeb382f0b740c4",
-      "start_line": 20,
-      "end_line": 26,
+      "start_line": 21,
+      "end_line": 27,
       "killed": 6,
       "survived": 0,
       "uncovered": 0,
       "sites": 6,
       "mutants": [
         {
-          "line": 22,
+          "line": 23,
           "column": 15,
           "offset": 89,
           "original": ">",
@@ -29,7 +29,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 22,
+          "line": 23,
           "column": 17,
           "offset": 91,
           "original": "0",
@@ -38,7 +38,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 22,
+          "line": 23,
           "column": 19,
           "offset": 93,
           "original": "&&",
@@ -47,7 +47,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 22,
+          "line": 23,
           "column": 36,
           "offset": 110,
           "original": "-",
@@ -56,7 +56,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 22,
+          "line": 23,
           "column": 37,
           "offset": 111,
           "original": "1",
@@ -65,7 +65,7 @@
           "scope": "all-tests"
         },
         {
-          "line": 22,
+          "line": 23,
           "column": 40,
           "offset": 114,
           "original": "!=",
@@ -78,18 +78,18 @@
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/counting",
       "name": "File",
-      "hash": "9e88079a33a1e3e1",
-      "start_line": 29,
-      "end_line": 35,
+      "hash": "e1d5de76674925ef",
+      "start_line": 31,
+      "end_line": 37,
       "killed": 1,
       "survived": 0,
       "uncovered": 0,
       "sites": 1,
       "mutants": [
         {
-          "line": 31,
+          "line": 33,
           "column": 13,
-          "offset": 106,
+          "offset": 132,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",

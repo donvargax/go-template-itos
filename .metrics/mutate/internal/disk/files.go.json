@@ -4,24 +4,24 @@
   "language": "go",
   "tests": {
     "cmd/go-template-itos/main_test.go": "818584786d3ee213fbf511ab56f24862a1c4bf9f554a0e2f1b2720f4201947ee",
-    "internal/disk/files_test.go": "5d469a6c02e284d9f4acd01b5a6bde83bd1046143f48e940e4da2598a722d8e0"
+    "internal/disk/files_test.go": "3601c40dadc423f5d6ebb915eff87e6f0bc67325f964a0fac99b009dee5f3830"
   },
   "units": [
     {
       "namespace": "github.com/itos-corp/go-template-itos/internal/disk.Files",
       "name": "Read",
-      "hash": "cb1dd5f86eb82680",
-      "start_line": 20,
-      "end_line": 26,
+      "hash": "7f0c8dce4f1762af",
+      "start_line": 22,
+      "end_line": 28,
       "killed": 1,
       "survived": 0,
       "uncovered": 0,
       "sites": 1,
       "mutants": [
         {
-          "line": 22,
+          "line": 24,
           "column": 9,
-          "offset": 171,
+          "offset": 192,
           "original": "!=",
           "replacement": "==",
           "outcome": "killed",
@@ -33,8 +33,8 @@
       "namespace": "github.com/itos-corp/go-template-itos/internal/disk",
       "name": "classifyReadError",
       "hash": "bd8761ded9feaff3",
-      "start_line": 28,
-      "end_line": 33,
+      "start_line": 30,
+      "end_line": 35,
       "killed": 0,
       "survived": 0,
       "uncovered": 0,

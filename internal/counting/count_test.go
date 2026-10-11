@@ -38,7 +38,7 @@ func TestCountCountsLogicalLinesAndUnicodeWhitespaceWords(t *testing.T) {
 
 func TestFileReadsThroughFilesAndReturnsContentsCount(t *testing.T) {
 	files := porttest.Files{Data: map[string][]byte{"notes": []byte("one\r\ntwo words\n")}}
-	got, err := counting.File(files, "notes")
+	got, err := counting.File(t.Context(), files, "notes")
 	if err != nil || got != (counting.Result{Lines: 2, Words: 3}) {
 		t.Fatalf("File() = %+v, %v; want 2 lines and 3 words", got, err)
 	}
@@ -54,7 +54,7 @@ func TestFileReturnsTypedMissingAndUnreadableFailures(t *testing.T) {
 		{name: "unreadable", files: porttest.Files{Failures: map[string]port.ReadFailure{"notes": porttest.Unreadable("notes")}}, wantMissing: false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			got, err := counting.File(test.files, "notes")
+			got, err := counting.File(t.Context(), test.files, "notes")
 			if err == nil {
 				t.Fatal("File() returned no failure")
 			}
