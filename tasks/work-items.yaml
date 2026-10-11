@@ -568,3 +568,16 @@ items:
       is caught by nothing of the template's. Add the pinned gitleaks to the policy's CI plan on
       each stack, over the push's commits, so every made project and this template's branches scan
       alike.
+  - id: go-race-fuzz
+    title: Go tests run with the race detector, and input handling gets fuzz targets
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found gathering the README's practices on 2026-10-10. The Go stack's tests run without -race,
+      and nothing fuzzes; rapid properties cover the domain's arithmetic, but Go's native fuzzing is
+      the standard tool for code that reads untrusted input (the counting of arbitrary bytes, the
+      CLI's argument handling). Run go test -race in CI where the platform supports it, and add fuzz
+      targets with a seed corpus and a short CI budget.
