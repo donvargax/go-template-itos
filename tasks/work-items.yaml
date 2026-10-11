@@ -750,3 +750,19 @@ items:
       only the domain's ports (for the sealed failure sets it classifies) and internal/version, and
       if so add a ui rule with accept and refuse fixtures in tools/testdata/architecture, each shown
       to fail without its rule.
+  - id: cli-runs-through-bindings
+    title: Every CLI command's Run is called through kong's bindings
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found during T-52 on go/cli: cmd now binds the context, the UI and the count slice's Handler
+      in kong and calls count's Run through kong's Context.Call, so Run is handed them by type. The
+      version and completion commands are still called directly from run's switch, since version's
+      Run takes three strings (the text, the version and the commit) that kong cannot tell apart by
+      type. A made project copying the CLI sees two shapes. Give version's values a type of their
+      own, bind it, and call every command's Run through the bindings, so run's switch over command
+      names, and its unreachable no-case failure, can go. A refactor with no behaviour change, its
+      help and output byte for byte the same.
