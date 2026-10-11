@@ -554,3 +554,17 @@ items:
       counting.File with a comment that T-52 threads Run's own, and internal/count/input takes the
       ctx and hands it to its disk fallback. Push each branch's commits together and see CI on
       Linux, macOS and Windows and Template check green on both heads.
+  - id: made-project-secret-scan
+    title: A made project scans its own commits for credentials in CI
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found gathering the README's practices on 2026-10-10. gitleaks runs only in itos-template
+      check over the template's renders (the manifest's root check); a made project's CI plan, from
+      the stacks' itos-policy.yaml, runs no credential scan, so a secret committed in a made project
+      is caught by nothing of the template's. Add the pinned gitleaks to the policy's CI plan on
+      each stack, over the push's commits, so every made project and this template's branches scan
+      alike.
