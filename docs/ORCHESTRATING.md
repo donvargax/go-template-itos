@@ -50,6 +50,10 @@ working around it in this template.
   range holds the naming commit, so a check that passes only once the work is whole turns an
   early push red. Push all of the task's commits together, and never name a waiting task in a
   footer. Recorded 2026-10-09; last seen 2026-10-10 (T-42); permanent.
+- Before specifying one of main's ideas, look for it on the branches (`git log --all --grep`,
+  their ledgers): main's copy stays open after a branch delivers it and may lack the note
+  saying so. Recorded 2026-10-10; last seen 2026-10-10 (cli-once-only-flags,
+  cli-exhaustive-errors); permanent while main indexes the branches' items.
 - An agent never answers a question, not even one a decision command needs: it stops and the
   coordinator asks the person. Recorded 2026-10-10; last seen 2026-10-10 (T-24's q-11, which the
   person then confirmed); permanent.
