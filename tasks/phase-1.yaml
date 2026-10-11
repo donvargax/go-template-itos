@@ -811,3 +811,28 @@
     the setup steps stay as they are. Prove it: itos-template check passes 2 of 2 with the entry,
     and a render of each combination with the setup steps run passes itos ci run from its render
     commit. The coordinator updates docs/go.md's Setup section after.
+- id: T-57
+  type: ci
+  title: Cut the template's release v0.2.0
+  why: >
+    Was release-v0-2-0. v0.2.0 holds decisions 6 to 8 (T-51 to T-54: a shared domain, separate
+    adapters and a slice per command, a context carrying cancellation to the ports, Ctrl-C exiting
+    130), the depguard refusals that say how to extend a rule (T-55), renders without the
+    template's mutation records (T-56) and itos 7.4.0 (T-49), which v0.1.0 lacked. The person
+    adopts the template on itos, itos-cc and itos-template from it.
+
+    Cut it as T-42 cut v0.1.0: with every head green and each local branch at origin's, run
+    itos-template check (2 of 2, no warning), then, with main checked out (itos-template's
+    release-root-branch), itos-template release v0.2.0 with the Template check workflow's answers.
+    It makes main/v0.2.0, stack/go/v0.2.0 and go/cli/v0.2.0 locally and prints the git push
+    --atomic command; itos's git shim refuses it (itos#37), so the person runs it with /usr/bin/git,
+    and no itos push runs from main while the tags are local, since push.followtags would publish
+    main's alone. Never move or delete a published tag. No commit names this task before the tags
+    are published, since its check reads them. Prove it: itos-template check --ref v0.2.0 passes
+    both combinations, and itos-template new from the public URL with no ref renders v0.2.0, its
+    .itos-template.yaml naming the release. Main's README then names v0.2.0 in a docs commit.
+    Tell the person, with the adopt command and the tag. The sample's update to v0.2.0, resolving
+    docs/go.md's Setup section to the template's text and closing the sample's own T-3, follows as
+    its own task.
+  done_when:
+    - run: t=$(git ls-remote --tags https://github.com/donvargax/go-template-itos.git) && echo "$t" | grep -q 'refs/tags/main/v0.2.0' && echo "$t" | grep -q 'refs/tags/stack/go/v0.2.0' && echo "$t" | grep -q 'refs/tags/go/cli/v0.2.0'
