@@ -632,3 +632,15 @@ items:
       push.followtags makes a local tag on main a hazard. A workflow on main, run by hand or on a
       schedule, would check out every branch, run itos-template check and release, and push the tags
       atomically from CI, where no shim intercepts git; a release then needs no one's terminal.
+  - id: go-module-releases
+    title: A Go project without the command line gets versioned releases
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found gathering the README's practices on 2026-10-10. Only go/cli has a release job; a project
+      made from the go stack alone gets no version tags, so nothing marks its releases for go get or
+      for its users. Give stack/go a release job that tags vX.Y.Z from the commits as go/cli's
+      release-version decides, with notes from git-cliff and no binaries.
