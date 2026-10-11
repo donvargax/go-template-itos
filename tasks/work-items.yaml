@@ -739,7 +739,7 @@ items:
     depends_on: []
     kind: task
   - id: itos-ci-workflows
-    title: "CI follows itos's workflow design: fast pushes, slow work in a nightly"
+    title: "Testing runs in tiers, fast local, judging CI, thorough nightly, as itos#41 lays out"
     phase: 1
     owner: null
     status: todo
@@ -764,6 +764,21 @@ items:
       The person set it for v0.3.0 on 2026-10-10, after v0.2.0: projects that adopted v0.2.0 (itos,
       itos-cc, itos-template) take it with itos-template update. itos already has its own
       nightly.yml, the source of this design, so its update meets that file once and keeps its own.
+
+      The person asked on 2026-10-10 that every go/cli follow itos#41's tiers, adapted to each
+      branch, so this idea now holds them beside the nightly. Local, per item: mutation over each
+      file's own unit tests first, scenarios only for a survivor and only those reaching its line,
+      through itos-cc's mutation.tests (itos's itos-cc.yaml has the block, its list command being
+      tools/bin/itos-cc-tests.ts, TypeScript, so the template needs a Go equivalent), instead of
+      --all-tests; the item's scenarios and their neighbours. CI, per push: the code proof as today
+      (no mutant runs), mutation sample --count 1 or 2 instead of 10, the smoke set and the
+      scenarios the push names on Linux, macOS and Windows; today go/cli's platform jobs run go test
+      ./... with every scenario. Nightly: sample --count 20 or a weekly full mutation run, every
+      scenario on the three systems, go-race-fuzz's runs. stack/go has no scenarios, so its tiers
+      are the unit tests, the proof, the sample and the nightly's high-count runs; go/cli adds the
+      scenario selection. itos has not built it yet (p1-testing-tiers-guide and p1-ci-e2e-workflow,
+      todo on 2026-10-10, itos#18 and #41): harvest what itos ships by then and re-read its tooling
+      first. T-56 keeps itos-cc.yaml shippable for the mutation.tests block.
   - id: rapid-new-domain-package
     title: Adding a domain package says how its property tests get rapid
     phase: 1
