@@ -665,6 +665,18 @@ items:
       and itos-template, asking each to refactor to the template's code design: tell them when it is
       done, and cut the release they adopt with it, since adopt reads a release. It needs @wip
       scenarios written by the coordinator before an agent starts.
+
+      The person chose on 2026-10-10 to try Windows first: Go cannot send another process
+      os.Interrupt there, but Windows delivers one when the binary starts in its own process group
+      (CREATE_NEW_PROCESS_GROUP) and receives CTRL_BREAK_EVENT through golang.org/x/sys/windows'
+      GenerateConsoleCtrlEvent, which signal.Notify reports as os.Interrupt; Go's own os/signal
+      TestCtrlBreak works this way, as do Nomad, Lima and Pulumi. The scenario step that interrupts
+      lives in one build-tagged helper per system (decision 26: a call one system lacks), Unix
+      sending os.Interrupt with the standard library; no wrapper library such as
+      iwdgo/sigintwindows, a few lines over the same call. If the Windows scenario is not stable
+      over several CI runs, fall back: the interrupt scenarios run on Linux and macOS only, every
+      system's tests cancel the context directly and check what follows, and an idea keeps the
+      Windows interrupt for later.
   - id: repo-settings-guide
     title: A made project's docs say which repository settings to turn on
     phase: 1
