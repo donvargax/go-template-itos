@@ -682,8 +682,13 @@
     tools/bin/domain-coverage measures internal/counting and its port, keeping its 80 percent floor.
     Record the mutation results of the moved code with that code; nothing is copied from another
     project's cache. Template check (2 of 2) and CI on Linux, macOS and Windows go green at
-    stack/go's head; merge main down first if it is behind. The coordinator rewrites docs/go.md and
-    docs/architecture.md after.
+    stack/go's head; merge main down first if it is behind. Then merge stack/go into go/cli in a
+    refactor commit naming this task that points go/cli's own code (internal/count/command,
+    internal/count/input, cmd, their tests, its depguard rules and fixtures) at the moved packages,
+    and only that: go/cli's packages stay where they are until the next task, and every scenario
+    passes unchanged there, with its CI and Template check green. Push each branch's commits
+    together, since this task's checks run on every branch whose push holds them. The coordinator
+    rewrites docs/go.md and docs/architecture.md after.
   done_when:
     - run: test -d internal/counting && test -d internal/counting/port/porttest && test -d internal/disk && ! test -e internal/count/domain && ! test -e internal/count/disk
     - run: tools/bin/architecture-check
