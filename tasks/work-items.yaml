@@ -857,3 +857,16 @@ items:
       the release job and the git-cliff pin, name T-20, which completed the made CLI's release
       pipeline; q-24, proving a real release on the sample, names T-33. No decision is left for the
       person.
+  - id: template-check-generator-current
+    title: Template check installs the current itos-template
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      template-check.yml installs itos-template v0.26.0 by a go install line T-48 moved by hand,
+      while 0.33.0 is out and sessions here run 0.30.0, so CI proves renders with an older generator
+      than the one making projects. Keep it current as the other tools are: a Renovate custom
+      manager for the go install line (check that .github/renovate.json5 can match it on every
+      branch), or a pin read from tools/bin/pinned. Found by T-60 on 2026-10-12.
