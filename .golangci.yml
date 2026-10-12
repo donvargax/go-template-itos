@@ -7,7 +7,7 @@ linters:
     - revive
   settings:
     # Layer/production-I/O/mock rules harvested from
-    # github.com/donvargax/itos-template/.golangci.yml with owner MIT
+    # github.com/donvargax/itos-template/.golangci.yml with the owner's
     # permission (CONTRIBUTORS.md), adapted to this module and layout.
     # tools/bin/architecture-check proves these with compile-valid fixtures.
     # The arrows are decision 6's: the domain and its ports reach the outside
