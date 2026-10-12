@@ -26,10 +26,17 @@ stacks:
     # the stack, so a go + cli render prints them once, adopting go/cli's file.
     # AGENTS.md's rules block still describes the template's itos.yaml after
     # init --policy, which in itos 7.0.0 makes no offer to rewrite it, so the
-    # last step regenerates it from the project's own config (T-39).
+    # last step regenerates it from the project's own config (T-39). The mv
+    # gives the project its license (decision 9): the template's LICENSE is the
+    # AGPL and stays here, and LICENSE.project, the MIT text naming the owner
+    # answered, becomes the project's LICENSE. It stands in until itos-template#8
+    # lets the manifest render a file at another path; an update follows the
+    # rename (itos-template#2), which for a license text is what a made project
+    # wants.
     setup:
       - [itos, init, --policy, itos-policy.yaml]
       - [rm, itos-policy.yaml]
+      - [mv, LICENSE.project, LICENSE]
       - [itos, init, --agent-rules]
     checks:
       - [sh, -c, "! gofmt -l internal | grep ."]
@@ -79,6 +86,12 @@ questions:
 template_only:
   - itos.yaml
   - tasks
+  # The template's own license, the AGPL, and the section 7 permission that lets
+  # a made project choose its terms (decision 9): a render starts MIT with its
+  # owner instead, from LICENSE.project, which the go stack's setup moves to
+  # LICENSE.
+  - LICENSE
+  - LICENSE-EXCEPTION
   # Re-proves this template's renders; a made project has no renders to prove.
   - .github/workflows/template-check.yml
   # The template's plan, its coordination notes and the guidance for working on
@@ -110,6 +123,9 @@ template_only:
   - docs/decisions/0003-every-question-is-asked-and-recorded-on-main.md
   - docs/decisions/0004-a-new-task-id-is-one-above-the-highest-on-any-branch.md
   - docs/decisions/0005-item-ids-are-minted-by-itos-from-refs-itos-ids.md
+  # Decision 9 is about the template's own license, not one a made project
+  # keeps: the project's license is the MIT text it starts with.
+  - docs/decisions/0009-the-template-is-agpl-3-0-and-lets-made-projects-choose-their-license.md
   - docs/decisions/README.md
 
 first_commit: |-

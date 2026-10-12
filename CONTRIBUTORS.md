@@ -14,9 +14,11 @@ The GitHub profile links in this table are the handles itos recognizes for work 
 
 This project starts with infrastructure from Jorge Vargas's
 [itos](https://github.com/donvargax/itos) and
-[itos-template](https://github.com/donvargax/itos-template) projects. Their copyright owner
-authorized MIT distribution of their harvested work in this project. This permission does not
-change the source projects' licenses or the licenses of third-party tools and dependencies.
+[itos-template](https://github.com/donvargax/itos-template) projects, both under the GNU AGPL.
+Their copyright owner lets a project made from the template that carries that work distribute it,
+with the rest of the project, under terms of the project's choice; the template keeps this
+permission's text in its `LICENSE-EXCEPTION`. This permission does not change the source
+projects' licenses or the licenses of third-party tools and dependencies.
 
-`itos-corp` is the project owner `LICENSE` names. It is not a replacement for upstream
-provenance.
+`itos-corp` is the project owner the MIT license names: a made project's `LICENSE`, which the
+template ships as `LICENSE.project`. It is not a replacement for upstream provenance.

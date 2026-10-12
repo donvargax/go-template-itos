@@ -1141,3 +1141,58 @@
     the setup steps stay as they are. Prove it: itos-template check passes 2 of 2 with the entry,
     and a render of each combination with the setup steps run passes itos ci run from its render
     commit. The coordinator updates docs/go.md's Setup section after.
+- id: T-57
+  type: ci
+  title: Cut the template's release v0.2.0
+  why: >
+    Was release-v0-2-0. v0.2.0 holds decisions 6 to 8 (T-51 to T-54: a shared domain, separate
+    adapters and a slice per command, a context carrying cancellation to the ports, Ctrl-C exiting
+    130), the depguard refusals that say how to extend a rule (T-55), renders without the
+    template's mutation records (T-56) and itos 7.4.0 (T-49), which v0.1.0 lacked. The person
+    adopts the template on itos, itos-cc and itos-template from it.
+
+    Cut it as T-42 cut v0.1.0: with every head green and each local branch at origin's, run
+    itos-template check (2 of 2, no warning), then, with main checked out (itos-template's
+    release-root-branch), itos-template release v0.2.0 with the Template check workflow's answers.
+    It makes main/v0.2.0, stack/go/v0.2.0 and go/cli/v0.2.0 locally and prints the git push
+    --atomic command; itos's git shim refuses it (itos#37), so the person runs it with /usr/bin/git,
+    and no itos push runs from main while the tags are local, since push.followtags would publish
+    main's alone. Never move or delete a published tag. No commit names this task before the tags
+    are published, since its check reads them. Prove it: itos-template check --ref v0.2.0 passes
+    both combinations, and itos-template new from the public URL with no ref renders v0.2.0, its
+    .itos-template.yaml naming the release. Main's README then names v0.2.0 in a docs commit.
+    Tell the person, with the adopt command and the tag. The sample's update to v0.2.0, resolving
+    docs/go.md's Setup section to the template's text and closing the sample's own T-3, follows as
+    its own task.
+- id: T-58
+  type: chore
+  title: Move the template to the AGPL with a permission for made projects
+  why: >
+    Decision 9 (q-35): the template becomes AGPL-3.0 like itos, itos-template and itos-cc, with a
+    section 7 additional permission letting projects made from it choose their terms, and a render
+    still starts MIT with its owner. On main, in one chore commit: LICENSE becomes itos's LICENSE
+    byte for byte, the unmodified AGPL-3.0 text (sha256
+    57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6), so GitHub reads it as
+    AGPL-3.0; the permission goes in a new LICENSE-EXCEPTION, not in LICENSE, for the same reason.
+    Its text, exactly: Copyright (C) 2026 Jorge Vargas Additional permission under GNU AGPL version
+    3 section 7 go-template-itos is licensed under the GNU Affero General Public License, version 3
+    (LICENSE). As a special exception, the copyright holder gives you permission to make a project
+    from this template, through itos-template or by copying its files, and to use, modify and
+    distribute that project, including the parts of this template it contains, under terms of your
+    choice. This exception does not cover distributing the template itself, or a modified copy of
+    it, as a template: that stays under the GNU AGPL. Third-party code and tools the template uses
+    keep their own licenses. LICENSE.project takes today's LICENSE unchanged, the MIT text naming
+    itos-corp, which a render replaces with the owner. itos-template.yaml's template_only gains
+    LICENSE, LICENSE-EXCEPTION and
+    docs/decisions/0009-the-template-is-agpl-3-0-and-lets-made-projects-choose-their-license.md,
+    each with a comment saying why as the list's others have, and the go stack's setup gains [mv,
+    LICENSE.project, LICENSE] after the rm of itos-policy.yaml, its comment naming decision 9 and
+    saying it stands in until itos-template#8 lets the manifest render a file at another path; per
+    itos-template#2 an update follows that rename, which for a license text is what a made project
+    wants. itos.yaml is unchanged. Prove it: itos-template check passes 2 of 2 with no warning, and
+    a render of each combination with its setup steps run has LICENSE as the MIT text naming the
+    owner answered, no LICENSE.project, LICENSE-EXCEPTION or record 0009, and passes itos ci run
+    from its render commit. Releases up to v0.2.0 stay MIT. The coordinator then rewrites the docs
+    naming MIT (README.md, PLAN.md, TEMPLATE.md, AGENTS.md, CONTRIBUTORS.md) in docs commits, merges
+    main down, and specifies the branches' own wording (their README.md, AGENTS.md and .golangci.yml
+    comments) as a task of its own.
