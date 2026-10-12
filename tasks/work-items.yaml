@@ -823,8 +823,8 @@ items:
   - id: T-59
     title: Say the branches' harvested work comes under the template's permission
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
