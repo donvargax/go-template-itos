@@ -856,3 +856,21 @@ items:
       each branch keeping its own itos.yaml, ci.yml, README.md and registry. A gate 8.3.0 refuses on
       existing work is a finding, not a check to weaken. Push each branch's commits together and see
       its CI and Template check green, and itos-template check pass 2 of 2.
+  - id: asks-promoted-item-ids
+    title: Point answered questions at the items their ideas were promoted to
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      itos 8.0.0 (798276a) warns in config check and init of an answered question naming an item the
+      registry lacks, and renames the item in questions when an idea is promoted from then on. Under
+      8.3.0 main warns 23 times, for q-2, q-5 to q-10, q-12 to q-19, q-21 to q-24, q-28, q-29, q-31
+      and q-34, which name ideas promoted before 8.0.0: made-project-policy (T-27),
+      cli-exhaustive-errors (T-47), cli-releases (T-20, then T-33), template-check-ci (T-21),
+      template-check-rerun (T-23), renovate-branches (T-25), template-only-docs (T-28),
+      render-decisions-index (T-29), made-project-ci (T-31), render-mutation-records (T-44),
+      version-json-hint (T-45) and cli-ctrl-c (T-54). Name each item's new id in its question's
+      item, as the warning's fix says, so the warnings that remain mean something; cli-releases
+      needs the person's choice of T-20 or T-33. Found by T-60.
