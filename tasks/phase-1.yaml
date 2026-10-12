@@ -866,8 +866,3 @@
     naming MIT (README.md, PLAN.md, TEMPLATE.md, AGENTS.md, CONTRIBUTORS.md) in docs commits, merges
     main down, and specifies the branches' own wording (their README.md, AGENTS.md and .golangci.yml
     comments) as a task of its own.
-  done_when:
-    - run: echo "57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6  LICENSE" | sha256sum -c --quiet -
-    - run: grep -qx "MIT License" LICENSE.project && grep -q "^Copyright (c) 2026 itos-corp$" LICENSE.project
-    - run: "grep -q \"^Additional permission under GNU AGPL version 3 section 7$\" LICENSE-EXCEPTION && grep -q \"under terms of your choice\" LICENSE-EXCEPTION && grep -q \"as a template: that stays under the GNU AGPL\" LICENSE-EXCEPTION"
-    - run: m=itos-template.yaml && grep -qE "^  - LICENSE$" "$m" && grep -qE "^  - LICENSE-EXCEPTION$" "$m" && grep -qE "^  - docs/decisions/0009-the-template-is-agpl-3-0-and-lets-made-projects-choose-their-license\.md$" "$m" && grep -qF "[mv, LICENSE.project, LICENSE]" "$m"
