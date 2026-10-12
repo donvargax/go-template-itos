@@ -803,8 +803,8 @@ items:
   - id: T-58
     title: Move the template to the AGPL with a permission for made projects
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
