@@ -12,5 +12,6 @@ file and leaves this list, which itos decision record writes.
 - [ADR-0006: Go code is a shared domain behind ports, separate adapters and thin slices named for their commands](0006-go-code-is-a-shared-domain-behind-ports-separate-adapters-and-thin-slices-named-for-their-commands.md)
 - [ADR-0007: context.Context carries cancellation from cmd through Handle to the ports, never a value](0007-context-context-carries-cancellation-from-cmd-through-handle-to-the-ports-never-a-value.md)
 - [ADR-0008: An interrupted command exits 130, says so once, and a second interrupt ends it at once](0008-an-interrupted-command-exits-130-says-so-once-and-a-second-interrupt-ends-it-at-once.md)
+- [ADR-0009: The template is AGPL-3.0 and lets made projects choose their license](0009-the-template-is-agpl-3-0-and-lets-made-projects-choose-their-license.md)
 
 <!-- itos:decisions:end -->
