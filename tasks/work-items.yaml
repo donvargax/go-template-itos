@@ -827,3 +827,31 @@ items:
     status: done
     depends_on: []
     kind: task
+  - id: T-60
+    title: Move every branch to itos 8.3.0
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      The person chose on 2026-10-12 to move to itos 8.3.0, the newest release, after T-58; every
+      branch pins 7.4.0 since T-49. 8.0.0 is a major with seven breaking changes; itos upgrade
+      8.3.0, tried on main in a scratch worktree, edits only itos.yaml's pin and AGENTS.md's rules
+      block, which 8.x writes as two lines pointing at itos go, and lists what is left by hand: run
+      itos init --agent-rules for the new block and trim our own text it repeated; drop a nightly {
+      tasks: done } step (no branch has one); fix each value itos config check now refuses; scripts
+      passing --no-verify, -a or git add -A through the shim name paths instead; a plain itos push
+      no longer publishes tags, so a release pushes them with itos push --tag; and 8.3.0 lets a
+      scenario go live outside feat and fix once the moves check's code is set, which binds future
+      work, not this move. On each of main, stack/go and go/cli, run itos upgrade 8.3.0, then move
+      the donvargax/itos workflow action to the 8.3.0 release commit (ci.yml everywhere, go/cli's
+      release.yml too), and the itos-policy.yaml pins of stack/go and go/cli with their branch so
+      policy-drift stays green and a made project adopts 8.3.0. AGENTS.md's Finishing paragraph,
+      which says the generated rules below describe the branch's configuration, is reworded to what
+      the two-line block now is, on each branch. Keep the go stack's setup step itos init
+      --agent-rules unless a render shows 8.3.0's init --policy already writes the block, and say
+      which in the commit. Branches move independently, as T-49 did; merge main down afterwards,
+      each branch keeping its own itos.yaml, ci.yml, README.md and registry. A gate 8.3.0 refuses on
+      existing work is a finding, not a check to weaken. Push each branch's commits together and see
+      its CI and Template check green, and itos-template check pass 2 of 2.
