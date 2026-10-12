@@ -806,3 +806,17 @@ items:
     status: done
     depends_on: []
     kind: task
+  - id: render-has-a-license
+    title: A render check proves the made project has a license
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      Found by T-58. Until main is merged down, main heads leave LICENSE out (template_only) while
+      stack/go and go/cli still have no LICENSE.project, so a render from the heads ships no license
+      at all and its mv setup step fails; itos-template check still passed 2 of 2, since no check
+      reads a license. A root check such as test -f LICENSE.project (or, once itos-template#8 ships,
+      test -f LICENSE) would make itos-template check and the Template check workflow refuse a
+      render with no license.
