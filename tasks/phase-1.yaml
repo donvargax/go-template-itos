@@ -881,6 +881,3 @@
     made project's front page, and setup gives the project its MIT LICENSE. AGENTS.md's "Owner
     permission for copied infrastructure" stays true and is left. Push each branch's commits
     together, since the checks pass only once that branch's wording is whole.
-  done_when:
-    - run: "! grep -q \"MIT permission\\|owner MIT\" .golangci.yml 2>/dev/null"
-    - run: "! grep -q \"copied work under MIT\" README.md"

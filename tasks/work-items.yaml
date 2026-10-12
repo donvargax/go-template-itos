@@ -824,19 +824,6 @@ items:
     title: Say the branches' harvested work comes under the template's permission
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      After decision 9 and T-58, the owner's harvested work reaches a made project under the
-      template's section 7 permission, not under an MIT permission of its own. stack/go's and
-      go/cli's .golangci.yml comments still say it was harvested "with owner MIT permission" (one
-      comment on stack/go, two on go/cli), and both branches' README.md say donvargax permits
-      distributing it "under MIT". The comments change in a chore commit on stack/go, merged into
-      go/cli, which changes its own second comment; each now says "with the owner's permission
-      (CONTRIBUTORS.md)". The READMEs change in the coordinator's docs commits, saying the copied
-      work comes under the template's permission for made projects. Their "The project is MIT
-      licensed" stays: it is the made project's front page, and setup gives the project its MIT
-      LICENSE. AGENTS.md's "Owner permission for copied infrastructure" stays true and is left. Push
-      each branch's commits together, since the checks pass only once that branch's wording is
-      whole.
