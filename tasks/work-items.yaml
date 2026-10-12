@@ -852,3 +852,8 @@ items:
       version-json-hint (T-45) and cli-ctrl-c (T-54). Name each item's new id in its question's
       item, as the warning's fix says, so the warnings that remain mean something; cli-releases
       needs the person's choice of T-20 or T-33. Found by T-60.
+
+      The coordinator settled cli-releases on 2026-10-12 from what each question asks: q-6 and q-7,
+      the release job and the git-cliff pin, name T-20, which completed the made CLI's release
+      pipeline; q-24, proving a real release on the sample, names T-33. No decision is left for the
+      person.
