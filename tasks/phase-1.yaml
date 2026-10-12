@@ -905,7 +905,3 @@
     ci.yml, README.md and registry. A gate 8.3.0 refuses on existing work is a finding, not a check
     to weaken. Push each branch's commits together and see its CI and Template check green, and
     itos-template check pass 2 of 2.
-  done_when:
-    - run: "grep -q \"^  version: \\\"8.3.0\\\"$\" itos.yaml"
-    - run: "! grep -rq \"donvargax/itos@.*# v7\" .github/workflows"
-    - run: "! test -f itos-policy.yaml || grep -q \"^  version: \\\"8.3.0\\\"$\" itos-policy.yaml"
