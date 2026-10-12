@@ -35,8 +35,8 @@ by the source project's T-25 until this new repository has its own usable regist
   choice in the spec. Preserve thin entry points and domain-owned behavior through ports.
 - No credentials belong in fixtures, logs or committed files.
 - Preserve third-party license notices, `CONTRIBUTORS.md` and the comments naming where
-  harvested code came from. MIT permission for the owner's harvested infrastructure does not
-  change dependencies' licenses or the original source projects' licenses.
+  harvested code came from. The template's AGPL and its permission for made projects (decision 9)
+  do not change dependencies' licenses or the original source projects' licenses.
 
 ## Finishing
 

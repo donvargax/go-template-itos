@@ -65,10 +65,11 @@ request has landed yet, so the automation stays unverified until one lands on ea
 
 - Infrastructure is harvested from the owner's itos and itos-template projects: take proven
   machinery whole, with a comment naming its source, rather than rebuilding it differently.
-- The owner's MIT permission for their harvested work does not change the source projects'
-  licenses or third-party dependencies' and tools'. `CONTRIBUTORS.md`, license notices and the
+- The template's AGPL and its permission for made projects (decision 9, `LICENSE-EXCEPTION`)
+  do not change the source projects' licenses or third-party dependencies' and tools'. `CONTRIBUTORS.md`, license notices and the
   harvest comments ship with every made project; keep them true.
 - `itos-corp` is the template's illustrative project owner, replaced in attribution by the answer
-  the person supplies when making a project. `CONTRIBUTORS.md` calls it the project owner
-  `LICENSE` names, which stays true after the replacement.
+  the person supplies when making a project. `CONTRIBUTORS.md` calls it the project owner the
+  MIT license names, `LICENSE.project` here and `LICENSE` once setup moves it, which stays true
+  after the replacement.
 - Do not replace real upstream tool and preset identities when substituting project identity.

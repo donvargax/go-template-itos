@@ -102,11 +102,17 @@ with their code on `stack/go` and `go/cli`; this root has no Go module or binary
 
 ## License and provenance
 
-The template is MIT licensed. `itos-corp` is an illustrative owner literal, replaced with the
-made project's owner. [LICENSE](LICENSE) contains the license text.
+The template is licensed under the [GNU AGPL version 3](LICENSE), as the rest of the itos family
+is, with an [additional permission](LICENSE-EXCEPTION): a project made from it may use, modify
+and distribute that project, the template's parts included, under terms of its choice.
+Distributing the template itself, or a modified copy, as a template stays under the AGPL.
+Releases up to v0.2.0 were MIT licensed and stay so.
+
+A made project starts MIT licensed: the go stack's setup moves `LICENSE.project` to `LICENSE`,
+with `itos-corp`, an illustrative owner literal, replaced by the project's owner (decision 9).
 
 Infrastructure is harvested from donvargax's
 [itos](https://github.com/donvargax/itos) and
-[itos-template](https://github.com/donvargax/itos-template), with donvargax's permission to
-distribute that copied work under MIT in this template. Those source projects retain their own licenses.
-Third-party dependencies and tools retain their licenses and notices.
+[itos-template](https://github.com/donvargax/itos-template), both AGPL; as their copyright owner,
+donvargax grants the same permission for the copied work. Those source projects retain their own
+licenses. Third-party dependencies and tools retain their licenses and notices.

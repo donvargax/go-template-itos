@@ -14,7 +14,8 @@ are `go` and `go + cli`, proved by rendering both and running their checks.
 The manifest's literals are real values: `go-template-itos` for the project name, with its five
 case forms; `itos-corp` for the attribution owner; and
 `github.com/itos-corp/go-template-itos` for the module path. A render substitutes answers after
-merging branches. MIT is the template's license; owner attribution is an answer, not a secret.
+merging branches. The template is AGPL-3.0 with a permission letting made projects choose their
+license, and a render starts MIT (decision 9); owner attribution is an answer, not a secret.
 
 ## Order of work
 
@@ -41,6 +42,7 @@ release tooling carried by a made CLI project is not a template-release protocol
 ## Provenance
 
 Infrastructure is harvested from the owner's itos and itos-template projects rather than
-rewritten. The owner authorized MIT distribution of their copied work for this template.
+rewritten. The owner's copied work comes under the template's license and its permission for
+made projects (decision 9).
 Preserve original provenance and applicable third-party notices. Do not replace real upstream
 tool and preset identities when substituting project identity.
