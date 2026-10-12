@@ -38,14 +38,16 @@ itos-template new https://github.com/donvargax/go-template-itos.git my-project -
 
 Leave out `--feature cli` for a Go project without the command line. It asks on a terminal for
 the project's name, the owner its attribution names and its Go module path, or takes them as
-`--answer name=…`, `--answer owner=…` and `--answer module=…`. `--ref v0.2.0` pins a release.
+`--answer name=…`, `--answer owner=…` and `--answer module=…`. `--ref v0.3.0` pins a release.
 Run the setup steps it prints in the new folder. The made project's `.itos-template.yaml`
 records the release it came from.
 
-Each release tags every branch with one version: `main/v0.2.0`, `stack/go/v0.2.0` and
-`go/cli/v0.2.0` make v0.2.0, the newest. It lays the Go code out as a shared domain, separate
-adapters and a slice per command (decisions 6 to 8), so a project made from it adds a command
-without restructuring first; v0.1.0 came before that layout.
+Each release tags every branch with one version: `main/v0.3.0`, `stack/go/v0.3.0` and
+`go/cli/v0.3.0` make v0.3.0, the newest. It makes the template AGPL-3.0 with a permission
+letting made projects choose their license, while a made project still starts MIT (decision 9),
+and moves to itos 8.3.0. v0.2.0 laid the Go code out as a shared domain, separate adapters and a
+slice per command (decisions 6 to 8), so a project made from it adds a command without
+restructuring first; v0.1.0 came before that layout.
 
 ## Practices
 
