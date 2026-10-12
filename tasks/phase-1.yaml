@@ -905,3 +905,27 @@
     ci.yml, README.md and registry. A gate 8.3.0 refuses on existing work is a finding, not a check
     to weaken. Push each branch's commits together and see its CI and Template check green, and
     itos-template check pass 2 of 2.
+- id: T-61
+  type: ci
+  title: Cut the template's release v0.3.0
+  why: >
+    The person asked on 2026-10-12 to cut v0.3.0. It holds decision 9 (T-58, T-59: the template is
+    AGPL-3.0 with a section 7 permission for made projects, and a render starts MIT through
+    LICENSE.project, which the go stack's setup moves to LICENSE) and itos 8.3.0 (T-60), which
+    v0.2.0 lacks; until it is published, itos-template new renders v0.2.0, MIT and itos 7.4.0. itos
+    8.3.1, one fix this repository does not meet, waits for a later release. Cut it as T-57 cut
+    v0.2.0: with every head green and each local branch at origin's, run itos-template check (2 of
+    2, no warning), then, with main checked out, itos-template release v0.3.0 with the Template
+    check workflow's answers. It makes main/v0.3.0, stack/go/v0.3.0 and go/cli/v0.3.0 locally and
+    prints a git push --atomic command; publish the three tags instead with itos push --tag
+    main/v0.3.0 --tag stack/go/v0.3.0 --tag go/cli/v0.3.0, which itos 8.x pushes atomically through
+    its own checks, so the person no longer runs /usr/bin/git (itos#37). If itos push refuses them,
+    stop and report; do not push with git directly. Never move or delete a published tag. No commit
+    names this task before the tags are published, since its check reads them. Prove it:
+    itos-template check --ref v0.3.0 passes both combinations, and itos-template new from the public
+    URL with no ref renders v0.3.0, its .itos-template.yaml naming the release; in that render, with
+    its setup steps run, LICENSE is the MIT text naming the answered owner and itos.yaml pins 8.3.0.
+    The coordinator then names v0.3.0 in main's README in a docs commit and tells the person, with
+    the adopt command and the tag.
+  done_when:
+    - run: test "$(git ls-remote --tags origin refs/tags/main/v0.3.0 refs/tags/stack/go/v0.3.0 refs/tags/go/cli/v0.3.0 | wc -l)" -eq 3

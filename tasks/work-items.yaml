@@ -870,3 +870,10 @@ items:
       than the one making projects. Keep it current as the other tools are: a Renovate custom
       manager for the go install line (check that .github/renovate.json5 can match it on every
       branch), or a pin read from tools/bin/pinned. Found by T-60 on 2026-10-12.
+  - id: T-61
+    title: Cut the template's release v0.3.0
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
