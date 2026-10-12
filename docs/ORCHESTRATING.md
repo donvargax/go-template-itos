@@ -56,3 +56,10 @@ checking versions and existing reports, not in a workaround here.
 - An agent never answers a question, not even one a decision command needs: it stops and the
   coordinator asks the person. Recorded 2026-10-10; last seen 2026-10-10 (T-24's q-11, which the
   person then confirmed); permanent.
+- A branch's commit can name a task only once the branch's ledger has its entry, so a task
+  specified on main and done on every branch merges main down first, then moves each branch;
+  spec it in that order. Recorded 2026-10-12; last seen 2026-10-12 (T-60, specified the other
+  way round); permanent while ledgers are per branch.
+- A push to main or stack/go turns its Template check red on go + cli until go/cli merges it, as
+  the render merges the heads. Rerun the parent's run once the child is pushed, and read only
+  the rerun. Recorded 2026-10-12; last seen 2026-10-12 (T-60); permanent.
