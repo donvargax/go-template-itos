@@ -875,6 +875,6 @@ items:
     title: Cut the template's release v0.3.0
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task

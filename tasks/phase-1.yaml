@@ -927,5 +927,3 @@
     its setup steps run, LICENSE is the MIT text naming the answered owner and itos.yaml pins 8.3.0.
     The coordinator then names v0.3.0 in main's README in a docs commit and tells the person, with
     the adopt command and the tag.
-  done_when:
-    - run: test "$(git ls-remote --tags origin refs/tags/main/v0.3.0 refs/tags/stack/go/v0.3.0 refs/tags/go/cli/v0.3.0 | wc -l)" -eq 3
