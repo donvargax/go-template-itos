@@ -2,7 +2,7 @@ module github.com/itos-corp/go-template-itos
 
 go 1.27
 
-toolchain go1.27.2
+toolchain go1.27.3
 
 require pgregory.net/rapid v1.3.0
 
