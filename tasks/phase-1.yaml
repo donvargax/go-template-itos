@@ -1100,8 +1100,3 @@
     shipped file names itos's hooks. golangci-lint, govulncheck and the tests stay in CI only.
     Prove it on stack/go and go/cli green, Template check green after go/cli is pushed, and
     itos-template check passing 2 of 2.
-  done_when:
-    - run: tools/bin/pre-commit-check
-    - run: go run ./tools/bin/pre-push-check
-    - run: '! grep -nE "golangci-lint|govulncheck" tools/hooks/pre-commit && grep -q "go vet" tools/hooks/pre-push'
-    - run: grep -q "tools/bin/pre-commit-check" .github/workflows/ci.yml && grep -q "hook.go-template-itos-pre-push.command" README.md

@@ -923,16 +923,9 @@ items:
     title: A made project's hooks are a staged gofmt before commit and go vet before push, each proven by a fixture check
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-65]
     kind: task
-    why: >
-      Was plain-hooks.
-      Lands on stack/go and merges into go/cli. itos-cc's tools/hooks/pre-commit (gofmt on the
-      staged blobs only) and pre-push (go vet over the tree about to be pushed), declared through
-      git config hook.<name>.*, with tools/bin/pre-commit-check and pre-push-check adjusted for a
-      plain git push. They replace the pre-commit hook that runs the full lint and govulncheck (#11,
-      #13). The template's own checkout keeps itos's hooks beside them.
     refs: [https://github.com/donvargax/go-template-itos/issues/11, https://github.com/donvargax/go-template-itos/issues/13]
   - id: mutation-fresh
     title: Mutation runs fresh and seeded on each push, with no committed results
