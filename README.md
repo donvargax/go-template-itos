@@ -6,7 +6,7 @@ It has no command-line executable.
 
 ## What it does
 
-The counting domain, `internal/counting`, counts a text's lines and words through a Files port,
+The counting domain, `internal/engine/counting/domain`, counts a text's lines and words through a Files port,
 with a read-only disk adapter and an in-memory fake that its tests use. Lines are logical text
 lines separated by LF; CRLF is one separator, and a nonempty final line without a newline
 counts. Empty input has zero lines. Words are runs separated by Unicode whitespace, using Go's
@@ -21,7 +21,7 @@ go build ./...
 go test ./...
 ```
 
-Its other gates are formatting, vet, golangci-lint, an import-boundary self-test,
+Its other gates are formatting, vet, golangci-lint, the architecture check,
 govulncheck, domain coverage of at least 80 percent and a fresh mutation run over the pushed
 commits; [docs/go.md](docs/go.md) describes each. `.github/workflows/ci.yml` runs them.
 

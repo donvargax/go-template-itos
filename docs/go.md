@@ -8,50 +8,69 @@ this module with its owner's permission (`CONTRIBUTORS.md`).
 
 ## Packages
 
-The code follows decision 6 (`docs/decisions/`): a shared domain behind ports, adapters apart
-from it, and thin slices named for their commands. This stack has the domain and its adapter;
-the command-line feature adds the slices and the UI.
+The code follows decision 11 (`docs/decisions/`): a shared domain is an engine, and a command
+is a slice that uses engines through their ports and never another slice.
 
-- `internal/counting` is the domain. It owns counting and its result, and reads input only
-  through its port. A function that calls the port takes a `context.Context` first (decision
-  7); pure logic, such as counting bytes, takes none.
-- `internal/counting/port` declares `Files` and its sealed set of failures, `Missing` and
-  `Unreadable`. `Files.Read` takes the context first.
-- `internal/counting/port/porttest` holds our in-memory fake of `Files` for the domain's tests.
-- `internal/disk` is the adapter. It reads real files and translates OS errors into the port's
-  failures, importing nothing of ours but the port.
+- An engine is `internal/engine/<name>/{domain,port,port/porttest,<adapter>}`.
+- A slice is `internal/slices/<cmd>/{command,domain,port,<adapter>}`. This stack has no command
+  line, so it has engines only; the command-line feature adds the slices and the UI.
+
+The counting example is one engine, `internal/engine/counting`:
+
+- `domain` owns counting and its result, and reads input only through its port. A function that
+  calls the port takes a `context.Context` first (decision 7); pure logic, such as counting
+  bytes, takes none.
+- `port` declares `Files` and its sealed set of failures, `Missing` and `Unreadable`.
+  `Files.Read` takes the context first.
+- `port/porttest` holds our in-memory fake of `Files` for the domain's tests.
+- `disk` is the adapter. It reads real files and translates OS errors into the port's failures.
 
 The domain is shared, not part of any command, so a second command reuses counting through its
 port without reaching into another command's package. A context carries cancellation and
 deadlines only, always as the first parameter and never in a struct or as a value.
 
-`.golangci.yml` holds these arrows with depguard:
+The rules are taken from itos-container's `.golangci.yml` and its `tools/architecture`, and are
+default-deny: Go code under `internal` that no role names is refused.
 
-- `domain`: the domain, its port and their tests import nothing of ours but the domain and its
-  port subpackages, and never kong.
-- `domain-io`: the domain's own code does no I/O, neither `os` nor `net`. Its tests may read
+- `unclassified` refuses a package under `internal` or `pkg` that is not a role below, so a new
+  package needs its role before lint accepts it.
+- `domain` and `port` import only the standard library packages their exact lists name and the
+  engines' packages; `domain-tests` and `port-tests` add the rest of the standard library, and
+  the domain's tests rapid.
+- `store-ports-io`: a port does no I/O, neither `os`, `net` nor `syscall`. Its tests may read
   fixtures.
-- `infra`: an adapter imports nothing of ours but the port it implements; only its tests may
-  use `porttest`.
+- `adapter`: an adapter imports its engine's port and other engines' APIs, no other package of
+  ours. Its tests may use `porttest`.
+- `porttest`: the fakes import the standard library and engines only.
 - `mocks`: no mocking library anywhere. Fakes live in `porttest`.
-- `rapid`: the property library only in the domain's own tests.
+- `rapid`: the property library only in a domain's own tests.
+- forbidigo, taken from itos-template: `runtime.GOOS` is read only where an edge hands the OS in
+  as a value, nothing prints with `fmt.Print*`, `print` or `println` outside the writers the UI
+  hands down, `os.Exit`, `syscall.Exit` and `log.Fatal*` are for cmd alone, and nothing panics.
+  Tests may ask the OS, exit and panic; `tools/` holds programs that print and exit.
+- nolintlint: each `//nolint` names its linter and says why, and one that silences nothing is
+  reported.
+
+`tools/bin/architecture-check` runs the graph check, which the import prefixes of depguard
+cannot express: an engine's domain imports no adapter, an adapter imports no other engine's
+adapter, test support is never linked into a binary, only cmd imports a slice from outside the
+slices, and a `//nolint` of depguard is refused.
 
 ### Adding a package
 
-A rule names its packages, so a package it does not name is checked by none of them. Lint
-refusing an import after you add one means a rule has not been told; extend the rule as below,
-never loosen it.
+A package under `internal/engine/<name>/` has the role its folder names, `domain`, `port`,
+`port/porttest` or an adapter, and no other folder is accepted until the rules name it. Lint or
+the check refusing an import after you add one means the package is in the wrong role; move it,
+never loosen a rule.
 
-- A domain package: add its folder as a `**/internal/<name>/**` glob to `domain` and
-  `domain-io`, and its import path to `domain`'s `allow`. Give it a `port` subpackage for what
-  it reaches outside. `tools/bin/domain-coverage` reads its list from `domain`'s `files`, so the
-  new package is held to 80% from then on. If its tests use rapid, add a
-  `!**/internal/<name>/*_test.go` exclusion to `rapid`.
-- An adapter: add its folder to `infra`'s `files`, and the port it implements to `infra`'s
-  `allow`.
-- Then add compile-valid fixtures to `tools/testdata/architecture` that the rule must accept and
-  refuse. `tools/bin/architecture-check` runs the pinned linter over them, so a rule that stops
-  matching fails there instead of passing silently.
+- A new engine needs no edit to the rules. Its `domain` is measured by `tools/bin/domain-coverage`
+  from then on, held to 80%.
+- A new adapter is a folder beside `domain` and `port`; it imports its engine's port.
+- Then add the cases the rules must accept and refuse to `tools/testdata/architecture/cases.json`:
+  `Kind` `lint` names the depguard rules that must refuse an import, `graph` the check's
+  violation, and `allow` an arrow both must accept. The check runs the pinned linter and itself
+  over each case in a module of its own, so a rule that stops matching fails there instead of
+  passing silently.
 
 Code that differs by OS takes the OS as a value. Logic never branches on `runtime.GOOS`. A
 build-tagged file holds only a call that one OS lacks, with no mutation site. The counting
@@ -69,8 +88,8 @@ can join two words, so it is not promised to be additive. Every run sets
 `RAPID_CHECKS=1`: one new random case per property, as fast as an example test, with the
 seed printed on failure. This project has no scheduled high-count run.
 
-Tests run on Linux, macOS and Windows in CI's platform jobs. The import-boundary self-test
-runs there as well, because it checks paths and diagnostics that differ by platform.
+Tests run on Linux, macOS and Windows in CI's platform jobs. The architecture check's
+fixtures run there as well, because they check paths and diagnostics that differ by platform.
 
 ## Quality checks
 
@@ -78,9 +97,10 @@ CI's `static` and `test` jobs run these checks in order:
 
 - `gofmt`, `go build`, `go vet`, `go mod verify` against `go.sum`, and `go mod tidy -diff`
   so the module files match the code.
-- golangci-lint: the standard linters plus depguard, gosec on non-test code, and revive's
-  file-length limit.
-- `tools/bin/architecture-check`, the self-test above.
+- golangci-lint: the standard linters plus depguard, forbidigo, nolintlint, gosec on non-test
+  code, and revive's file-length limit.
+- `tools/bin/architecture-check`, which inspects the packages against the rules above and runs
+  the fixtures that prove the rules refuse what they should.
 - `go tool actionlint`, which checks the workflows.
 - `tools/bin/govulncheck`, which runs `go tool govulncheck -test ./...` with the toolchain
   `go.mod` names, covering the dependencies in use, test-only ones and the standard library.
