@@ -1051,3 +1051,18 @@ items:
       nightly-fuzz and nightly-properties), and a coverage floor for the code outside the domain.
       Settles #9 and #4's coverage floor; covers go-race-fuzz.
     refs: [https://github.com/donvargax/go-template-itos/issues/9, https://github.com/donvargax/go-template-itos/issues/4]
+  - id: release-plain
+    title: A release is versioned, noted, attested and announced with no itos
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [plain-ci]
+    kind: idea
+    why: >
+      Lands on go/cli. itos-container's release.yml and .goreleaser.yaml (one job, called after
+      green: version, tag, GoReleaser, attest, notes, publish); itos's check of the attestation on
+      the built archive and its request to the Go module proxy (#8); itos-cc's release-version with
+      the before-1.0 rule (#2); release-notes reading git trailers instead of itos's commit footers;
+      itos-cc's tools/bin/notices writing THIRD_PARTY_NOTICES, checked in CI with -check and shipped
+      in the archives. Attestation stays on.
+    refs: [https://github.com/donvargax/go-template-itos/issues/2, https://github.com/donvargax/go-template-itos/issues/8]
