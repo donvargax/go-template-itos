@@ -24,12 +24,12 @@ or domain is added; keep each to a few lines and say where to look, not what the
 ## Count command
 
 - Start: `cmd/go-template-itos/main.go`, which assembles the command and the context an
-  interrupt cancels; `internal/count/count.go`, the slice that carries the command's values to
-  the domain through the port; and `internal/cli/cli.go`, the shared UI that maps each failure to
+  interrupt cancels; `internal/slices/count/command/count.go`, the slice that carries the
+  command's values to the domain through the port; and `internal/cli/cli.go`, the shared UI that maps each failure to
   its exit code and prints the answer.
 - Scenarios: `features/count.feature` and `features/cli.feature`, run by `features/features_test.go`
   against the built binary.
-- Fake: the counting domain's `internal/counting/port/porttest/files.go`; the command's own tests
+- Fake: the counting domain's `internal/engine/counting/port/porttest/files.go`; the command's own tests
   use it too.
 - Test: `go test ./cmd/... ./internal/... ./features -count=1`
 

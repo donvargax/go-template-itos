@@ -7,8 +7,9 @@ prints the counts for a person or one JSON object with `--json`.
 
 ## What it does
 
-`internal/counting` is the private counting domain beneath the command, with a Files port, a
-disk adapter and an in-memory fake; `internal/count` is the `count` command's slice, and
+`internal/engine/counting` is the private counting engine beneath the command, with a domain, a
+Files port, a disk adapter and an in-memory fake; `internal/slices/count` is the `count`
+command's slice, and
 `internal/cli` is the UI that turns a typed failure into an exit code and stops a command on
 Ctrl-C, exit 130. Lines are logical text lines separated by LF; CRLF is one separator, and a
 nonempty final line without a newline counts. Empty input has zero lines. Words are runs
@@ -29,7 +30,7 @@ go test ./...
 go test ./features -count=1
 ```
 
-Its other gates are formatting, vet, golangci-lint, an import-boundary self-test,
+Its other gates are formatting, vet, golangci-lint, the architecture check,
 govulncheck, domain coverage of at least 80 percent and a fresh mutation run over the pushed
 commits; [docs/go.md](docs/go.md) describes each. `.github/workflows/ci.yml` runs them.
 

@@ -124,7 +124,7 @@ template's own direct pushes and, in a made project, on the pull request before 
 `go/cli` adds the command line on top of the stack: `cmd/go-template-itos`, `internal/cli`, the
 scenarios in `features/` and their godog runner, and the release workflow and its tools. The
 manifest's `cli` checks are the commands this branch's `ci.yml` runs: the scenarios and the
-import-boundary self-test included, but not the release helpers' tests, and not the smoke-set
+architecture check included, but not the release helpers' tests, and not the smoke-set
 check in `itos.yaml`, an itos command a made project has no use for. `itos-template check` runs them after the root's
 gitleaks scan on each supported render, which is evidence about the template, not about a made
 project's own CI. `README.md`, `AGENTS.md` and the shipped guides here describe the project a

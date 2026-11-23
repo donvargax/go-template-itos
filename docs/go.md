@@ -9,23 +9,34 @@ OS as a value), adapted to this module with its owner's permission (`CONTRIBUTOR
 
 ## Packages
 
-The code follows decision 6 (`docs/decisions/`): a shared domain behind ports, adapters apart
-from it, and thin slices named for their commands.
+The code follows decision 11 (`docs/decisions/`): a shared domain is an engine, and a command
+is a slice that uses engines through their ports and never another slice.
 
-- `internal/counting` is the domain. It owns counting and its result, and reads input only
-  through its port. A function that calls the port takes a `context.Context` first (decision
-  7); pure logic, such as counting bytes, takes none.
-- `internal/counting/port` declares `Files` and its sealed set of failures: `Missing`,
-  `Unreadable` and `Cancelled`. `Files.Read` takes the context first.
-- `internal/counting/port/porttest` holds our in-memory fake of `Files` for the tests.
-- `internal/disk` and `internal/stdin` are the adapters. `disk` reads real files and translates
-  OS errors into the port's failures; `stdin` reads standard input for `-`, stops with
-  `Cancelled` once the context is done, and hands every other path to a fallback it is given.
-  Each imports nothing of ours but the port.
-- `internal/count` is the `count` command's slice, named for the command. Its kong struct and
-  `Run` are the UI; its `Query`, carrying domain values, and `Handler.Handle(ctx, q)`, which
-  only calls the domain through the port, are the application. `Run` assembling the `Query`
-  from kong's flags is the one copy the layout accepts.
+- An engine is `internal/engine/<name>/{domain,port,port/porttest,<adapter>}`.
+- A slice is `internal/slices/<cmd>/{command,domain,port,<adapter>}`.
+
+The counting example is one engine, `internal/engine/counting`:
+
+- `domain` owns counting and its result, and reads input only through its port. A function that
+  calls the port takes a `context.Context` first (decision 7); pure logic, such as counting
+  bytes, takes none.
+- `port` declares `Files` and its sealed set of failures: `Missing`, `Unreadable` and
+  `Cancelled`. `Files.Read` takes the context first.
+- `port/porttest` holds our in-memory fake of `Files` for the tests.
+- `disk` is the adapter that reads real files and translates OS errors into the port's failures.
+
+The `count` command is one slice, `internal/slices/count`:
+
+- `command` is the command, named for it. Its kong struct and `Run` are the UI; its `Query`,
+  carrying domain values, and `Handler.Handle(ctx, q)`, which only calls the engine through its
+  port, are the application. `Run` assembling the `Query` from kong's flags is the one copy the
+  layout accepts.
+- `stdin` is the slice's adapter of the engine's port: it reads standard input for `-`, stops
+  with `Cancelled` once the context is done, and hands every other path to a fallback it is
+  given. It imports nothing of ours but the port.
+
+Around them:
+
 - `internal/cli` is the UI every slice shares. It alone turns a failure into its exit code and
   prints the plain or JSON answer, and it stops a command on Ctrl-C (decision 8).
 - `cmd/go-template-itos` assembles everything: it makes the context, feeds the interrupts to
@@ -45,41 +56,51 @@ default-deny: Go code under `internal` that no role names is refused.
 - `unclassified` refuses a package under `internal` or `pkg` that is not a role below, so a new
   package needs its role before lint accepts it.
 - `domain` and `port` import only the standard library packages their exact lists name and the
-  engines' packages; `domain-tests` and `port-tests` add the rest of the standard library, and
-  the domain's tests rapid.
-- `store-ports-io`: a port does no I/O, neither `os`, `net` nor `syscall`. Its tests may read
-  fixtures.
-- `slices`: a slice imports nothing of ours but the domain and `internal/cli`, so never another
-  slice, an adapter or `cmd`. Its files are every package under `internal/` except the ones the
-  rule lists as something else, so a new command's slice is held with no edit. A slice's tests
-  are in its own package, since the rule cannot tell a package's import of itself from another's.
-- `infra`: an adapter imports nothing of ours but the port it implements; only its tests may
-  use `porttest`.
+  engines' and slices' packages; `domain-tests` and `port-tests` add the rest of the standard
+  library, and the domain's tests rapid.
+- `store-ports-io` and `command-io`: a port and a command do no I/O, neither `os`, `net` nor
+  `syscall`. Their tests may read fixtures.
+- `command`: a command imports the standard library, kong, `internal/cli`, and engines and
+  slices; the graph check keeps it from another slice.
+- `adapter`: an adapter imports its owner's port and domain and other engines' APIs, no other
+  package of ours. Its tests may use `porttest`.
+- `porttest`: the fakes import the standard library and engines only.
+- `ui`, `version` and `release`: `internal/cli` imports the standard library and kong,
+  `internal/version` the standard library, and `internal/release` itself and the standard
+  library.
 - `mocks`: no mocking library anywhere. Fakes live in `porttest`.
-- `rapid`: the property library only in the domain's own tests.
-- `kong`: kong only in `cmd` and `internal/cli`. A slice's struct tags need no import.
+- `rapid`: the property library only in a domain's own tests.
+- `kong`: kong only in `cmd`, `internal/cli` and a slice's `command` package.
+- forbidigo, taken from itos-template: `runtime.GOOS` is read only where an edge hands the OS in
+  as a value, nothing prints with `fmt.Print*`, `print` or `println` outside the writers the UI
+  hands down, `os.Exit`, `syscall.Exit` and `log.Fatal*` are for cmd alone, and nothing panics.
+  Tests may ask the OS, exit and panic; `tools/` holds programs that print and exit.
+- nolintlint: each `//nolint` names its linter and says why, and one that silences nothing is
+  reported.
+- gochecksumtype: see below.
+
+`tools/bin/architecture-check` runs the graph check, which the import prefixes of depguard
+cannot express: a domain imports no adapter, an adapter imports no other owner's adapter, a
+slice imports no other slice, only cmd imports a slice from outside the slices, test support is
+never linked into a binary, and a `//nolint` of depguard is refused.
 
 ### Adding a package
 
-Lint refusing an import after you add a package means a rule has not been told what the package
-is. Extend the rule as below; never loosen it, since every arrow above is what keeps the next
-command from reaching into this one.
+A package under `internal/engine/<name>/` or `internal/slices/<cmd>/` has the role its folder
+names, `domain`, `port`, `port/porttest`, `command` or an adapter, and no other folder is
+accepted until the rules name it. Lint or the check refusing an import after you add one means
+the package is in the wrong role; move it, never loosen a rule.
 
-- A command: add its slice as `internal/<command>`. The `slices` rule holds it already. Add it
-  to `cmd`'s bindings and give it scenarios.
-- A domain package: add its folder as a `**/internal/<name>/**` glob to `domain` and
-  `domain-io`, as a `!**/internal/<name>/**` exclusion to `slices`, and its import path to the
-  `allow` lists of `domain` and of `slices` if commands use it. Give it a `port` subpackage for
-  what it reaches outside. `tools/bin/domain-coverage` reads its list from `domain`'s `files`,
-  so the package is held to 80% from then on. If its tests use rapid, add a
-  `!**/internal/<name>/*_test.go` exclusion to `rapid`.
-- An adapter: add its folder to `infra`'s `files`, the port it implements to `infra`'s `allow`,
-  and a `!**/internal/<name>/**` exclusion to `slices`. Wire it in `cmd`.
-- Any other package that is no command, such as `internal/version`: add a `slices` exclusion
-  saying what it is.
-- Then add compile-valid fixtures to `tools/testdata/architecture` that each rule you touched
-  must accept and refuse. `tools/bin/architecture-check` runs the pinned linter over them, so a
-  rule that stops matching fails there instead of passing silently.
+- A command: add its slice as `internal/slices/<command>/command`, using engines through their
+  ports. Add it to `cmd`'s bindings and give it scenarios.
+- A new engine needs no edit to the rules. Its `domain` is measured by `tools/bin/domain-coverage`
+  from then on, held to 80%.
+- A new adapter is a folder beside `domain` and `port`; it imports its owner's port.
+- Then add the cases the rules must accept and refuse to `tools/testdata/architecture/cases.json`:
+  `Kind` `lint` names the depguard rules that must refuse an import, `graph` the check's
+  violation, and `allow` an arrow both must accept. The check runs the pinned linter and itself
+  over each case in a module of its own, so a rule that stops matching fails there instead of
+  passing silently.
 
 A new sealed failure set, an interface with an unexported marker method like
 `port.ReadFailure`, is annotated `//sumtype:decl` and given its exit codes in one switch in
@@ -116,10 +137,11 @@ CI's `static` and `test` jobs run these checks in order:
 
 - `gofmt` over `cmd`, `internal` and `features`, `go build`, `go vet`, `go mod verify`
   against `go.sum`, and `go mod tidy -diff` so the module files match the code.
-- golangci-lint: the standard linters plus depguard, gosec on non-test code, revive's
-  file-length limit and gochecksumtype, which refuses a type switch over a sealed set that
+- golangci-lint: the standard linters plus depguard, forbidigo, nolintlint, gosec on non-test
+  code, revive's file-length limit and gochecksumtype, which refuses a type switch over a sealed set that
   leaves a kind out, a default arm not counting.
-- `tools/bin/architecture-check`, the self-test above.
+- `tools/bin/architecture-check`, which inspects the packages against the rules above and runs
+  the fixtures that prove the rules refuse what they should.
 - `go tool actionlint`, which checks the workflows.
 - `tools/bin/govulncheck`, which runs `go tool govulncheck -test ./...` with the toolchain
   `go.mod` names, covering the dependencies in use, test-only ones and the standard library.
