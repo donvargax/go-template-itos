@@ -1025,6 +1025,9 @@ items:
       fields and trusted inside. Decisions 7 and 8 stay. The scenarios change first, red. Settles #6
       and #5's secure by design.
     refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
+    deferred: >
+      The stock-kong call is on hold: the person has a reason for the kong fork and it is being
+      discussed. Resume once that is settled.
   - id: scenarios-two-drivers
     title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
     phase: 1
