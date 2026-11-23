@@ -177,3 +177,4 @@ questions:
   - id: q-39
     item: "T-69"
     question: "Which exit codes, precedence and problem shape do go/cli's commands use: the template's 0, 1, 2, 3, 70, 75 and 130, or itos-cc's 0, 1, 75, 80, 81, 82, 100 and 130 with an explicit precedence?"
+    answer: "itos-cc's (the migration plan, approved by the person 2026-11-23). 0 success, 1 a check said no, 75 temporary, 80 a usage or config error, 81 an unknown command, 82 a requirement not met, 100 an error nothing classified, 130 interrupted. With problems of several codes, the run exits with the first of 130, 80, 81, 100, 82, 75, 1. A problem carries a stable dotted lower-case rule, a message, a fix and its exit, with its subject as keys of their own in --json. Codes stay clear of 2, 3 and 70, which shells, Go and sysexits already use."
