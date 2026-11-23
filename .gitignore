@@ -2,3 +2,6 @@
 
 # Pinned tools downloaded for local use.
 /.tools/
+
+# Mutation results the pinned itos-cc writes while a check runs; CI judges a fresh run.
+/.metrics/
