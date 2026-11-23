@@ -20,6 +20,7 @@ queue:
   - layout-rules
   - cli-contract-code
   - scenarios-two-drivers
+  - renovate-plain
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
