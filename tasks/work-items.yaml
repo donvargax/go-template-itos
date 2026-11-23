@@ -966,6 +966,9 @@ items:
       layout-rules (T-68) moves go/cli's packages into the slice layout as a refactor with no
       behavior change, so the render never conflicts between stack/go and go/cli. This item is the
       behavior: the exit codes, the problems, the kong fork and the checked values at the edge.
+
+      kong: pin github.com/donvargax/kong v1.17.1-itos.1, tagged 2026-11-23 (the fork rebased on
+      upstream v1.17.0); v1.16.2-itos.2 is no longer needed.
     refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
   - id: scenarios-two-drivers
     title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
