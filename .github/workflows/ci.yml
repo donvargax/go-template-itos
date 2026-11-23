@@ -36,6 +36,8 @@ jobs:
       - run: go mod tidy -diff
       - run: tools/bin/pinned golangci-lint run ./...
       - run: tools/bin/architecture-check
+      - run: tools/bin/pre-commit-check
+      - run: go run ./tools/bin/pre-push-check
       - run: go tool actionlint
       - run: tools/bin/govulncheck
       # The commits this run judges: from the pull request's base or the push's before, and the

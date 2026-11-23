@@ -1,0 +1,43 @@
+#!/bin/sh
+# The project's pre-push hook: go vet ./... over the working tree, which
+# compiles every package of the module and its tests, refusing the push with
+# vet's output when one does not compile or vet finds a problem. It reads
+# the pushed refs on standard input not at all and changes nothing. It is
+# declared once in each clone (README.md, Hooks), which every worktree of the
+# clone shares:
+#
+#   git config hook.go-template-itos-pre-push.event pre-push
+#   git config hook.go-template-itos-pre-push.command tools/hooks/pre-push
+#
+# A plain git push pushes HEAD as it is, and this hook vets the checked-out
+# tree, not HEAD. The two are the same only when the tree is clean, which the
+# hook checks with git status; when it is not, it says so plainly, because an
+# uncommitted or untracked Go file is vetted though the push does not carry
+# it, and a committed file the tree no longer holds is not vetted at all.
+#
+# git runs it from the top of the working tree, under sh on every platform
+# (Git for Windows' on Windows). tools/bin/pre-push-check proves it in
+# repositories of its own with a local bare remote.
+#
+# Neither golangci-lint nor the tests: ci.yml runs both on every push
+# (docs/go.md, Quality checks), and this hook stays a matter of seconds, a
+# fraction of one with the build cache warm.
+#
+# Taken from itos-cc's tools/hooks/pre-push
+# (https://github.com/donvargax/itos-cc).
+set -eu
+
+command -v go >/dev/null 2>&1 || {
+	echo "pre-push: go is not on PATH; the hook needs the Go toolchain" >&2
+	exit 1
+}
+
+if [ -n "$(git status --porcelain)" ]; then
+	echo "pre-push: the working tree is not clean, so go vet checks it and not HEAD" >&2
+fi
+
+if ! out=$(go vet ./... 2>&1); then
+	printf 'pre-push: go vet ./... failed on the working tree:\n%s\n' "$out" >&2
+	echo "pre-push: fix it, commit the fix and push again" >&2
+	exit 1
+fi
