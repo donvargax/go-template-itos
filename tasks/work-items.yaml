@@ -1081,7 +1081,12 @@ items:
       Made projects have no commit-header check, so release-version must tolerate a header that is
       not a Conventional Commit: it counts as a patch-level change and the output says which commits
       were read that way, rather than failing the release.
-    refs: [https://github.com/donvargax/go-template-itos/issues/2, https://github.com/donvargax/go-template-itos/issues/8]
+
+      Also settles #10, which T-62 did not reach: go/cli's comments citing a bare decision 23
+      (internal/release/build.go, release.go, release_test.go) and decision 26
+      (features/interrupt_unix_test.go, interrupt_windows_test.go) name their source,
+      itos-template's decision 23 or 26.
+    refs: [https://github.com/donvargax/go-template-itos/issues/2, https://github.com/donvargax/go-template-itos/issues/8, https://github.com/donvargax/go-template-itos/issues/10]
   - id: ko-image
     title: A release publishes a container image through GoReleaser's ko
     phase: 1
