@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - cli-contract-code
+  - T-69
   - scenarios-two-drivers
   - renovate-plain
   - nightly
@@ -940,14 +940,15 @@ items:
     depends_on: [T-65]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/19, https://github.com/donvargax/go-template-itos/issues/4, https://github.com/donvargax/go-template-itos/issues/5]
-  - id: cli-contract-code
+  - id: T-69
     title: go/cli's commands share itos-cc's exit codes and problems on the kong fork, in itos-container's slice layout
     phase: 1
     owner: null
     status: todo
     depends_on: [T-68]
-    kind: idea
+    kind: task
     why: >
+      Was cli-contract-code.
       Lands on go/cli. The count command moves to internal/slices/count/command; internal/cli
       becomes generic, importing nothing of the project's, and cmd hands it each slice's classifier
       (itos-container). Exit codes 0, 1, 75, 80, 81, 82, 100 and 130 with an explicit precedence, a
@@ -980,7 +981,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [cli-contract-code]
+    depends_on: [T-69]
     kind: idea
     why: >
       A contract suite per port, run against both the fake and the real adapter, in itos-container's
