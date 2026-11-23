@@ -8,7 +8,7 @@ import (
 	"io/fs"
 	"os"
 
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
 )
 
 // Files reads input files from the local filesystem.

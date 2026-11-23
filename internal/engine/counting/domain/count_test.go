@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/itos-corp/go-template-itos/internal/counting"
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
-	"github.com/itos-corp/go-template-itos/internal/counting/port/porttest"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/domain"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port/porttest"
 	"pgregory.net/rapid"
 )
 

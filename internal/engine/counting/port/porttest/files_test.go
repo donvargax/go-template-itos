@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
 )
 
 func TestReadReturnsAnIndependentCopy(t *testing.T) {

@@ -4,7 +4,7 @@ package porttest
 import (
 	"context"
 
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
 )
 
 // Files holds test inputs and configured read failures in memory.
