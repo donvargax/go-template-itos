@@ -895,8 +895,8 @@ items:
   - id: T-62
     title: A made project's architecture document is a lean arc42 and its decisions are MADR records
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
