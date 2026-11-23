@@ -89,17 +89,11 @@ CI's `static` and `test` jobs run these checks in order:
 - The tests with `RAPID_CHECKS=1`.
 - `tools/bin/domain-coverage`, which requires each domain package to reach 80% statement
   coverage from its own tests.
-- `itos-cc mutation sample --count 10`, a sample of recorded mutation results. It is not
-  proof of the changed code.
-
-Changed-code proof is judged in CI. Before pushing code, run
-`tools/bin/pinned itos-cc mutation run --since <base> --fail-uncovered --all-tests
---no-annotate internal`, where the base is the push's range start, the nearest ancestor with
-a green CI run (`itos ci range --head HEAD` prints it, given GITHUB_REPOSITORY and
-GITHUB_TOKEN), and commit `.metrics/mutate/`. When a push's range touches
-`internal/**/*.go`, `itos ci run` runs `itos.yaml`'s `proof.code` check from that base as a
-static step, before the tests, and fails while a mutant survives, is uncovered or has no
-result. `itos work done` runs no proof; it needs that green run.
+- `tools/bin/pinned itos-cc mutation run --count 10 --since <base> --seed <base>
+  --fail-uncovered=lines internal`, run fresh on each push. The base is the pull request's base
+  or the push's before; a branch's first push has no base and runs the packages with no
+  `--since`, seeded by the head. A mutant that survives or a line no test reaches fails the
+  step. No mutation result is committed: `.metrics/` is ignored.
 
 Tools are pinned:
 
@@ -116,7 +110,5 @@ A new project needs no itos. `itos-template new` prints one setup step, the move
 `LICENSE.project` to `LICENSE`, which gives the project its license. From then on the workflow
 runs the Go steps and the Linux, macOS and Windows tests on the project's own `main`.
 
-The project starts with no mutation records: the template's are taken over its own names and
-stay behind. Setup makes the render commit the point judging starts from, so the first push
-checks no code. A change to a function needs that function's results: run `itos-cc mutation run`
-as the code proof asks of any change, and commit `.metrics/mutate/` with the change.
+The project starts with no mutation results and commits none. A branch's first push mutates the
+whole packages and each later push the functions it changes; a surviving mutant is a test to write.

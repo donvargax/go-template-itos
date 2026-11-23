@@ -71,4 +71,4 @@ needs a reason a person can review. Never copy another project's proof cache.
 
 No credentials belong in committed files, fixtures or logs. State which scans actually
 run and what they establish. A configured workflow is not proof that its external service
-is active, and a sample of mutation results is not a complete changed-code proof.
+is active.
