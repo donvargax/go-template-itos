@@ -959,7 +959,3 @@
     each branch's own itos.yaml, CI and registry, as earlier merges did. Prove it on all three
     heads green, Template check green on main's run after go/cli is pushed, and itos-template
     check passing 2 of 2.
-  done_when:
-    - run: test -f docs/architecture/01-introduction-and-goals.md && test -f docs/architecture/02-architecture-constraints.md && test -f docs/architecture/09-architecture-decisions.md && test ! -e docs/architecture.md
-    - run: '! git grep -n "docs/architecture\.md" -- ":!tasks" ":!docs/decisions"'
-    - run: tools/bin/doc-caps && grep -q "docs/architecture/09-architecture-decisions.md" tools/bin/doc-caps

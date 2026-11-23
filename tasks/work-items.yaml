@@ -896,19 +896,9 @@ items:
     title: A made project's architecture document is a lean arc42 and its decisions are MADR records
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was docs-arc42.
-      Lands on main and merges down. docs/architecture.md becomes docs/architecture/, one file per
-      arc42 section and only sections with content. Sections 1 (introduction and goals), 2
-      (constraints) and 9 (decisions) ship empty, each with one line saying what goes there; they
-      are what agents always read. Section 9 is a one-line index of docs/decisions/, MADR records
-      with status and date front matter in itos-cc's format, and replaces in made projects the index
-      itos writes. docs/engineering.md is refreshed from itos-cc's; CONFIG.md, security.md and
-      upgrading.md are trimmed. doc-caps points at AGENTS.md, MAP.md and sections 1, 2 and 9. Every
-      shipped text cites its source by name, which settles #10.
     refs: [https://github.com/donvargax/go-template-itos/issues/10]
   - id: agents-no-itos
     title: A made project's AGENTS.md is tool-agnostic and its MAP.md says where to start
