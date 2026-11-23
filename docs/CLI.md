@@ -39,21 +39,40 @@ the binary that follows it.
 
 ### Exit codes
 
-| Code | Meaning                                                                                                     |
-| ---- | ----------------------------------------------------------------------------------------------------------- |
-| 0    | Success.                                                                                                    |
-| 1    | A check said no. No command returns it yet.                                                                 |
-| 2    | A usage error: the command line is wrong.                                                                   |
-| 3    | The environment is missing something: the input is missing or cannot be read.                               |
-| 70   | An internal error that no code classified. Report it.                                                       |
-| 75   | A temporary failure, which may pass when run again with no change. No command returns it yet.               |
-| 130  | Interrupted: Ctrl-C stopped the command before it finished (rule 42).                                       |
+| Code | Meaning                                                                                                   |
+| ---- | --------------------------------------------------------------------------------------------------------- |
+| 0    | Success.                                                                                                  |
+| 1    | A check said no. No command returns it yet.                                                               |
+| 75   | A temporary failure, which may pass when run again with no change. No command returns it yet.            |
+| 80   | A usage or config error: the command line is wrong, a flag is bad, an argument is refused.                |
+| 81   | An unknown command, or subcommand. The problem names the command meant when it can guess it.             |
+| 82   | A requirement not met: the environment lacks something, such as an input that is missing or unreadable.   |
+| 100  | An error nothing classified, a bug. Report it.                                                            |
+| 130  | Interrupted: Ctrl-C stopped the command before it finished (rule 42).                                     |
 
-These codes follow grep and diff (0 yes, 1 no, 2 trouble) and the BSD `sysexits.h` values
-`EX_SOFTWARE` for 70 and `EX_TEMPFAIL` for 75 (CLIG `#the-basics`). 130 is 128 plus SIGINT's 2,
-what shells report for a command Ctrl-C ended; it is the code on every system, Windows too
-(decision 8). A script tells failures with
-the same code apart by their rule IDs, such as `COUNT_INPUT_MISSING` and `COUNT_INPUT_UNREADABLE`.
+These are itos-cc's codes (decision 13). They stay clear of 2, 3 and 70, which shells, Go and the BSD
+`sysexits.h` already use, and keep 75 for `EX_TEMPFAIL`. 130 is 128 plus SIGINT's 2, what shells
+report for a command Ctrl-C ended; it is the code on every system, Windows too (decision 8).
+
+When a run has problems of several codes, it exits with the first of these it has, not the highest:
+**130, 80, 81, 100, 82, 75, 1** (`cli.Precedence`). An interrupt comes first, because nothing else
+in the run can be trusted after it, then the command line that was wrong, then a bug, then the
+environment. A script tells failures with the same code apart by their rule IDs, such as
+`count.input-missing` and `count.input-unreadable`.
+
+### Problems
+
+A failure is one or more problems. A problem has a stable, dotted, lower-case `rule` (such as
+`count.input-missing`, `flags.unknown`, `interrupted`, `usage` or `internal`), a `message` and a
+`fix`, which are sentences for people, and its own `exit` code. What it is about, such as the
+`file` or the `flag`, is a key of its own beside them in `--json`, so a script reads it without
+parsing a message. `rule`, `message`, `fix` and `exit` are reserved: no subject uses them. The
+plain line keeps the fix: `go-template-itos: <message>. <fix>`.
+
+The rules a command line can fail as: `flags.unknown`, `flags.repeated`, `flags.switch-value`,
+`flags.value-missing` and `flags.value-invalid` (80), `args.unexpected`, `args.missing` and
+`command.missing` (80), `command.unknown` (81), and `usage` for any other failure of the line kong
+reports. They are told by the types of the kong fork's parse errors (decision 12), never by text.
 
 ## Rules
 
@@ -76,14 +95,15 @@ the same code apart by their rule IDs, such as `COUNT_INPUT_MISSING` and `COUNT_
 
 9. Show help for `--help`, for `<command> --help` and for `-h` in any position. Write help to
    stdout and exit 0. (CLIG `#help`; GNU-HELP.) Not yet: there is no `help <command>`, which
-   exits 2 as an unknown command.
+   exits 81 as an unknown command.
 10. In the help of each command, give the shape of its `--json` output and its exit codes.
     `count --help` and `version --help` do both.
 11. Support `--version` and `version`, printing the same. The first line is
     `go-template-itos <version>`. A second line, `commit <full commit id>`, follows when the build
     knows the commit it was built from. `version --json` gives the two as one object (rule 27);
     `--version` is an action and stays plain text. (GNU-CLI; GNU-VER; CLIG `#arguments-and-flags`.)
-12. For an unknown command, exit 2. If you can guess the command the person meant, name it.
+12. For an unknown command, exit 81. If you can guess the command the person meant, name it,
+    through the kong fork's `Suggest`.
     (CLIG `#help`.)
 13. For a group with no subcommand, name the subcommands the group takes.
 14. End the help with an example or two and the address for issue reports. (CLIG `#help`;
@@ -104,7 +124,7 @@ may repeat, but no command has one yet.
 17. Let a flag mean the same thing in every command. (CLIG `#subcommands`.)
 18. Use a flag to change an action, never to select a different action. (COBRA `#concepts`.)
 19. Accept `--flag=value` and `--flag value`. (CLIG `#arguments-and-flags`; GNU-CLI.)
-20. Refuse with exit 2 an unknown flag, a flag with no value, a switch given a value, and a flag
+20. Refuse with exit 80 an unknown flag, a flag with no value, a switch given a value, and a flag
     that is not cumulative given twice. A switch and its `--no-` pair count as one flag, so
     `--json --no-json` is refused. An environment variable is not the flag
     (decision 1). (CLIG `#robustness-guidelines`.)
@@ -115,7 +135,8 @@ may repeat, but no command has one yet.
 23. Let `--` end the options, and let `-` mean stdin or stdout. (POSIX guidelines 10 and 13; CLIG
     `#arguments-and-flags`.)
 24. Accept flags in any position. (CLIG `#arguments-and-flags`.)
-25. Check each argument before you use it, and refuse a bad one with exit 2. (CLIG
+25. Check each argument before you use it, and refuse a bad one with exit 80. Each input is checked
+    where it enters, into a value the rest trusts (`docs/go.md`, "Secure by design"). (CLIG
     `#robustness-guidelines`.)
 
 ### Output
@@ -130,7 +151,8 @@ may repeat, but no command has one yet.
     `--json` in scripts. `version`'s two short lines are not data a script scrapes, so it prints
     no hint; `version --json` is there for scripts.
 29. With `--json`, print an object for every failure too, a usage error included: `"ok": false`
-    and a `problems` list, each with its `rule`, `message` and `fix`. (CLIG `#output`; ITOS.)
+    and a `problems` list, each with its `rule`, `message`, `fix` and `exit`, and its subject as keys
+    of their own. Print nothing on stderr then. (CLIG `#output`; ITOS.)
 30. Do not use colour, and pass `NO_COLOR` on to any program the CLI runs. (CLIG `#output`,
     `#environment-variables`.)
 31. Log through `log/slog` to stderr, warnings and above only. Logs are text on a terminal and
@@ -138,16 +160,17 @@ may repeat, but no command has one yet.
 
 ### Errors and exit codes
 
-32. Derive the exit code from the kind of error, in the UI alone. The domain's and adapters'
-    errors are sealed sets, and each kind gets its code in one switch with no default. Only an
-    error no switch classified, a bug, exits 70. Read the kind of a failure of a program you run
-    from what it says; never pass its own exit code through. A sealed set is annotated
-    `//sumtype:decl`, and gochecksumtype refuses a switch that leaves one of its kinds out.
-    (CLIG `#the-basics`.)
+32. Derive the exit code from the kind of error, in a classifier of its own. The domain's and
+    adapters' errors are sealed sets, and each slice has one classifier, kept beside its command,
+    that gives each kind its problem in one switch with no default. `cmd` hands the classifiers to
+    the UI, which imports nothing of the project's. Only an error no classifier claimed, a bug, exits
+    100. Read the kind of a failure of a program you run from what it says; never pass its own exit
+    code through. A sealed set is annotated `//sumtype:decl`, and gochecksumtype refuses a switch
+    that leaves one of its kinds out. (CLIG `#the-basics`.)
 33. Start each error line with `go-template-itos:`. Write it for people: say what happened and
     what to do next. Do not show a raw command line as the message. (GNU-ERR; CLIG `#errors`.)
-34. Keep the help and the code in agreement on each exit code; a scenario checks each code the
-    help names.
+34. Keep the help and the code in agreement on each exit code: the help of each command states
+    every code it can return, and a scenario checks each code the help names.
 
 ### Environment variables
 
@@ -171,13 +194,13 @@ may repeat, but no command has one yet.
 39. Renaming a command or a flag, or changing an exit code or a key of the `--json` output, is a
     breaking change. Release the breaking changes that are ready together, in one major release.
     A commit that changes the contract says so in an `Upgrading` footer.
-40. Do not keep code for compatibility with an old interface: an old name exits 2, naming the new
+40. Do not keep code for compatibility with an old interface: an old name exits 81, naming the new
     one. Only the previous-release check judges compatibility, against the contract above.
 
 ### Shell completion
 
 41. `completion <shell>` prints a short completion script for `bash`, `zsh`, `fish` or
-    `powershell`, and exits 2 for any other shell. The script asks the same executable for
+    `powershell`, and exits 80 for any other shell. The script asks the same executable for
     candidates through the hidden `__complete` command, so it carries no second copy of the
     command model. `__complete` takes the command line's words that follow it. The last word is
     the one being completed, and an empty last word means a new word. It prints one candidate per line,
@@ -188,7 +211,7 @@ may repeat, but no command has one yet.
 ### Interrupts and cleanup
 
 42. On an interrupt, Ctrl-C, cancel the command's context so it stops promptly, and exit 130.
-    Say so in one stderr line, or with `--json` print the failure object with rule `INTERRUPTED`
+    Say so in one stderr line, or with `--json` print the failure object with rule `interrupted`
     (rule 29). A second interrupt ends the process at once with 130, skipping cleanup.
     `internal/cli`'s `StopOnInterrupt` does both for every command, `cmd` feeding it from
     `signal.Notify`, and an adapter whose read waits, as standard input's does, ends it once the

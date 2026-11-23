@@ -30,18 +30,22 @@ The `count` command is one slice, `internal/slices/count`:
 - `command` is the command, named for it. Its kong struct and `Run` are the UI; its `Query`,
   carrying domain values, and `Handler.Handle(ctx, q)`, which only calls the engine through its
   port, are the application. `Run` assembling the `Query` from kong's flags is the one copy the
-  layout accepts.
+  layout accepts. `Classify` is the slice's classifier: it gives the port's failures their
+  problems, so `internal/cli` need not know them. `Input` is the checked file argument.
 - `stdin` is the slice's adapter of the engine's port: it reads standard input for `-`, stops
   with `Cancelled` once the context is done, and hands every other path to a fallback it is
   given. It imports nothing of ours but the port.
 
 Around them:
 
-- `internal/cli` is the UI every slice shares. It alone turns a failure into its exit code and
-  prints the plain or JSON answer, and it stops a command on Ctrl-C (decision 8).
+- `internal/cli` is the UI every slice shares. It imports nothing of the project's: it turns
+  the problems of the classifiers `cmd` hands it into the exit code, by `Precedence`, and prints
+  the plain or JSON answer (decision 13). It builds on the kong fork (decision 12), tells a bad
+  flag from an unknown command by the fork's typed parse errors, and stops a command on Ctrl-C
+  (decision 8).
 - `cmd/go-template-itos` assembles everything: it makes the context, feeds the interrupts to
-  `internal/cli`, gives `stdin` the disk as its fallback, and hands the context and the handler
-  to `Run` through kong's bindings. It is the only place that knows every package.
+  `internal/cli`, hands it each slice's classifier, gives `stdin` the disk as its fallback, and
+  hands the context and the handler to `Run` through kong's bindings. It is the only place that knows every package.
 - `internal/version` says what the build is, and `internal/release` is the library of the
   release tools that `tools/bin/release-version` and `tools/bin/release-notes` run. Neither is
   a command.
@@ -103,13 +107,32 @@ the package is in the wrong role; move it, never loosen a rule.
   passing silently.
 
 A new sealed failure set, an interface with an unexported marker method like
-`port.ReadFailure`, is annotated `//sumtype:decl` and given its exit codes in one switch in
-`internal/cli` that names every kind. gochecksumtype then refuses the switch when a kind is
+`port.ReadFailure`, is annotated `//sumtype:decl` and given its problems, with their codes, in one
+switch in its slice's classifier that names every kind. gochecksumtype then refuses the switch when a kind is
 added and left out; without the annotation nothing checks it.
 
 Code that differs by OS takes the OS as a value. Logic never branches on `runtime.GOOS`. A
 build-tagged file holds only a call that one OS lacks, with no mutation site: the scenarios'
 interrupt step is the example, `os.Interrupt` on Unix and `CTRL_BREAK_EVENT` on Windows.
+
+## Secure by design: where each input is checked
+
+Every input from outside is checked where it enters, at the outer layer that meets it, into a
+checked value: a type with unexported fields and one constructor that checks it, so holding one
+proves it was checked. The layers inside trust it and never check it again. Bad input is refused
+with a problem naming it, never repaired; only a lossless normalization is allowed. Everything is
+under `internal/`, which no other module can import, so nothing outside reaches an inner layer.
+
+| Edge                  | Input                                   | Checked value                                  | Where it is checked                                                                                  |
+| --------------------- | --------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Command line          | `count`'s file argument                 | `command.Input` (path, or `-` for stdin)       | `command.NewInput`, called by `Run`; an empty argument or one with a NUL byte is `count.input-invalid` |
+| Command line          | `--json` and `--no-json`                | kong's bool, in the command's `CLI`          | `internal/cli`'s `Flags` mappers and hook: a value, or a second giving, is `flags.switch-value` or `flags.repeated` |
+| Command line          | an unknown flag or command              | none: refused                                  | kong's parse, told by its typed errors in `internal/cli`'s `ParseProblem`: `flags.unknown`, `command.unknown` |
+| Command line          | `completion`'s shell                    | kong's enum                                    | kong's `enum` tag, refused as a usage failure                                                        |
+| Environment           | `GO_TEMPLATE_ITOS_JSON`                 | the same bool as `--json`                      | kong's `env` tag, through the same mappers; the variable is not the flag, so it is never given twice |
+| Standard input        | the bytes behind `-`                    | `[]byte` from the Files port                   | `stdin.Files.Read`: a read that fails or is cancelled is a typed `port.ReadFailure`; the bytes are only counted, never interpreted |
+| Files                 | the bytes of the named file             | `[]byte` from the Files port                   | `disk.Files.Read`: a missing or unreadable file is a typed `port.ReadFailure`                        |
+| Build                 | the version and commit stamped by the linker | strings                                   | `internal/version`, which only prints them; none is parsed                                           |
 
 ## Tests
 

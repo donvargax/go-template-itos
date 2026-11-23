@@ -24,8 +24,9 @@ or domain is added; keep each to a few lines and say where to look, not what the
 
 - Start: `cmd/go-template-itos/main.go`, which assembles the command and the context an
   interrupt cancels; `internal/slices/count/command/count.go`, the slice that carries the
-  command's values to the domain through the port; and `internal/cli/cli.go`, the shared UI that maps each failure to
-  its exit code and prints the answer.
+  command's values to the domain through the port, `classify.go` beside it, which gives the
+  port's failures their problems, and `input.go`, the checked file argument; and
+  `internal/cli/cli.go`, the generic UI that turns problems into the exit code and the answer.
 - Scenarios: `features/count.feature` and `features/cli.feature`, run by `features/features_test.go`
   against the built binary.
 - Fake: the counting domain's `internal/engine/counting/port/porttest/files.go`; the command's own tests
