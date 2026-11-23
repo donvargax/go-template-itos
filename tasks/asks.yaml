@@ -164,3 +164,4 @@ questions:
     item: "agents-no-itos"
     question: "Should a project made from this template need itos, or should its CI, hooks and docs call plain commands?"
     answer: "A made project needs no itos (the person, 2026-11-23). Its CI calls plain commands directly: go test, golangci-lint, govulncheck and itos-cc's mutation run. It gets no itos registry, ledger, commit-footer hooks, gate commands, itos.yaml or itos-policy.yaml, and its AGENTS.md names no itos command. The template's own development keeps using itos meanwhile, in files template_only keeps out of renders."
+    decision: 10
