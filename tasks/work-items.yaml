@@ -974,3 +974,22 @@ items:
       domain-coverage stays. The manifest's mutation check follows. Settles #4's cache-less
       mutation, and retires cli-stale-mutation-snapshots and itos-cc-renew-setup.
     refs: [https://github.com/donvargax/go-template-itos/issues/4]
+  - id: layout-rules
+    title: Default-deny import rules over static role paths hold the Go layout
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [plain-ci]
+    kind: idea
+    why: >
+      Lands on stack/go and merges into go/cli. itos-container's layout
+      (internal/slices/<cmd>/{command,domain,port,<adapter>},
+      internal/engine/<name>/{domain,port,<adapter>}) and its .golangci.yml: unclassified code
+      refused, exact allowlists for domain and port, I/O denied in port and command, held by its Go
+      architecture check (tools/architecture, tools/bin/architecture-check, its fixtures). The
+      template's bans on mocks, rapid and kong stay, as does revive's file limit. forbidigo holds
+      the design rules (no fmt.Print*, only main exits, no panic, runtime.GOOS only where the OS is
+      a value) and nolintlint the exceptions. stack/go's counting code moves into the layout, and a
+      decision supersedes decision 6. Settles #19, #4's lint rules and #5's no panic; covers
+      go-architecture.
+    refs: [https://github.com/donvargax/go-template-itos/issues/19, https://github.com/donvargax/go-template-itos/issues/4, https://github.com/donvargax/go-template-itos/issues/5]
