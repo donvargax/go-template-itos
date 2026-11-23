@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - plain-ci
+  - T-65
   - plain-hooks
   - mutation-fresh
   - layout-rules
@@ -912,14 +912,15 @@ items:
     depends_on: []
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/15, https://github.com/donvargax/go-template-itos/issues/16]
-  - id: plain-ci
+  - id: T-65
     title: CI calls plain commands, so a made project's CI needs no itos
     phase: 1
     owner: null
     status: todo
     depends_on: [T-63, T-64]
-    kind: idea
+    kind: task
     why: >
+      Was plain-ci.
       ci.yml on stack/go and go/cli runs go build, vet, mod verify, mod tidy -diff, golangci-lint,
       the architecture check, govulncheck, go test and the scenarios directly, in itos-container's
       shape: draft pull requests wait for ready_for_review (#17), in-progress runs are cancelled on
@@ -939,7 +940,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [plain-ci]
+    depends_on: [T-65]
     kind: idea
     why: >
       Lands on stack/go and merges into go/cli. itos-cc's tools/hooks/pre-commit (gofmt on the
@@ -953,7 +954,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [plain-ci]
+    depends_on: [T-65]
     kind: idea
     why: >
       Lands on stack/go and merges into go/cli. CI runs the pinned itos-cc as itos-container does:
@@ -968,7 +969,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [plain-ci]
+    depends_on: [T-65]
     kind: idea
     why: >
       Lands on stack/go and merges into go/cli. itos-container's layout
@@ -1052,7 +1053,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [plain-ci]
+    depends_on: [T-65]
     kind: idea
     why: >
       Lands on go/cli. itos-container's release.yml and .goreleaser.yaml (one job, called after
