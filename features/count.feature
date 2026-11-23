@@ -98,7 +98,7 @@ Feature: Count
 
   # Exit 82 is the environment's, not a refusal: the input the person named is not
   # there. The rule ID is what a script matches on, not the sentence.
-  @ID-COUNT-10 @count-cli @wip
+  @ID-COUNT-10 @count-cli
   Scenario: a missing file exits 82 with count.input-missing
     When go-template-itos runs with "count absent.txt --json"
     Then it exits with code 82
@@ -107,7 +107,7 @@ Feature: Count
 
   # A directory exists and still cannot be read as bytes; a platform says so
   # differently, the kind and the code are the same.
-  @ID-COUNT-11 @count-cli @wip
+  @ID-COUNT-11 @count-cli
   Scenario: a directory exits 82 with count.input-unreadable
     Given an empty folder "adirectory"
     When go-template-itos runs with "count adirectory --json"
@@ -116,7 +116,7 @@ Feature: Count
 
   # With --json even a failure is one object, and every problem says what to do next,
   # not only what went wrong: a script reads the rule and prints the fix.
-  @ID-COUNT-12 @count-cli @wip
+  @ID-COUNT-12 @count-cli
   Scenario: a JSON failure carries a rule, a message and a fix for each problem
     When go-template-itos runs with "count absent.txt --json"
     Then it exits with code 82
@@ -124,7 +124,7 @@ Feature: Count
     And its JSON output gives the subject "file" as "absent.txt"
     And its error output is empty
 
-  @ID-COUNT-13 @count-cli @wip
+  @ID-COUNT-13 @count-cli
   Scenario: count without its file is a usage failure
     When go-template-itos runs with "count"
     Then it exits with code 80
@@ -144,7 +144,7 @@ Feature: Count
   # The help of a command gives the shape of its --json output and every exit code it
   # can return, so the two agree without a reader holding the source. The wording below
   # is what the help must hold, because a scenario checks it and a script reads it.
-  @ID-COUNT-15 @count-cli @wip
+  @ID-COUNT-15 @count-cli
   Scenario: count's help names its JSON shape and its exit codes
     When go-template-itos runs with "count --help"
     Then it exits with code 0
@@ -166,7 +166,7 @@ Feature: Count
   # The argument is checked where it enters, into a value the rest trusts: an empty
   # one names no file, and it is refused as given, never repaired into standard input
   # or the folder it might mean.
-  @ID-COUNT-17 @count-cli @wip
+  @ID-COUNT-17 @count-cli
   Scenario: an empty file argument is refused as input no one can read
     When go-template-itos runs with "count '' --json"
     Then it exits with code 80

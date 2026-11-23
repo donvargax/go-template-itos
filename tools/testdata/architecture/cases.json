@@ -2906,18 +2906,32 @@
     "Workspace": true
   },
   {
-    "Name": "cli-imports-counting-port-allowed",
+    "Name": "cli-imports-counting-port",
     "File": "internal/cli/probe.go",
     "Import": "$module/internal/engine/counting/port",
-    "Kind": "allow",
+    "Kind": "graph",
     "Rule": "siblings"
   },
   {
-    "Name": "cli-imports-counting-port-test-allowed",
+    "Name": "cli-imports-counting-port-lint",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/engine/counting/port",
+    "Kind": "lint",
+    "Rule": "ui"
+  },
+  {
+    "Name": "cli-imports-counting-port-test",
     "File": "internal/cli/probe_test.go",
     "Import": "$module/internal/engine/counting/port",
-    "Kind": "allow",
+    "Kind": "graph",
     "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-counting-port-test-lint",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/engine/counting/port",
+    "Kind": "lint",
+    "Rule": "ui-tests"
   },
   {
     "Name": "cli-imports-other-engine-port",
@@ -2967,5 +2981,89 @@
     "Import": "github.com/donvargax/kong",
     "Kind": "lint",
     "Rule": "kong"
+  },
+  {
+    "Name": "cli-imports-slice-command",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/slices/count/command",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-slice-command-lint",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/slices/count/command",
+    "Kind": "lint",
+    "Rule": "ui"
+  },
+  {
+    "Name": "cli-imports-slice-stdin",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/slices/count/stdin",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-slice-stdin-lint",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/slices/count/stdin",
+    "Kind": "lint",
+    "Rule": "ui"
+  },
+  {
+    "Name": "cli-imports-engine-disk",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/engine/counting/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-engine-disk-lint",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/engine/counting/disk",
+    "Kind": "lint",
+    "Rule": "ui"
+  },
+  {
+    "Name": "cli-imports-slice-command-test",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/slices/count/command",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-slice-command-test-lint",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/slices/count/command",
+    "Kind": "lint",
+    "Rule": "ui-tests"
+  },
+  {
+    "Name": "cli-imports-slice-stdin-test",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/slices/count/stdin",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-slice-stdin-test-lint",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/slices/count/stdin",
+    "Kind": "lint",
+    "Rule": "ui-tests"
+  },
+  {
+    "Name": "cli-imports-engine-disk-test",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/engine/counting/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-engine-disk-test-lint",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/engine/counting/disk",
+    "Kind": "lint",
+    "Rule": "ui-tests"
   }
 ]

@@ -29,14 +29,14 @@ Feature: The command line
     Then it exits with code 0
     And the second line of its standard output is "commit" and the stamped commit
 
-  @ID-CLI-04 @count-cli @wip
+  @ID-CLI-04 @count-cli
   Scenario: an unknown command exits 81, naming it and the command meant
     When go-template-itos runs with "coun"
     Then it exits with code 81
     And its error output says "coun"
     And its error output says "count"
 
-  @ID-CLI-05 @count-cli @wip
+  @ID-CLI-05 @count-cli
   Scenario: an unknown flag exits 80, naming it
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --bogus"
@@ -45,7 +45,7 @@ Feature: The command line
 
   # kong takes a switch given a value; the mappers and the hook on kong's parse
   # refuse it in our words instead.
-  @ID-CLI-06 @count-cli @wip
+  @ID-CLI-06 @count-cli
   Scenario: a switch given a value exits 80, naming it
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --json=yes"
@@ -56,7 +56,7 @@ Feature: The command line
   # Decision 1: a flag that is not cumulative is given once. A switch and its
   # --no- pair count as one flag, so giving both is giving it twice; the
   # environment variable is not the flag, and still takes a value beside it.
-  @ID-CLI-08 @T-14 @wip
+  @ID-CLI-08 @T-14
   Scenario: a switch given twice exits 80, naming it
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --json --json"
@@ -65,7 +65,7 @@ Feature: The command line
     And its error output is empty
     And its standard output does not say "words"
 
-  @ID-CLI-09 @T-14 @wip
+  @ID-CLI-09 @T-14
   Scenario: a switch with its --no- pair exits 80, naming it
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --no-json --json"
@@ -74,7 +74,7 @@ Feature: The command line
     And its error output is empty
     And its standard output does not say "words"
 
-  @ID-CLI-07 @count-cli @wip
+  @ID-CLI-07 @count-cli
   Scenario: version takes no argument and refuses one
     When go-template-itos runs with "version extra"
     Then it exits with code 80
@@ -131,7 +131,7 @@ Feature: The command line
 
   # Under --json the interrupt is a failure like any other: one object, ok false,
   # its problem's rule what a script matches on.
-  @ID-CLI-15 @cli-ctrl-c @wip
+  @ID-CLI-15 @cli-ctrl-c
   Scenario: an interrupt under --json prints the interrupted problem
     When go-template-itos runs with "count - --json" and its standard input left open
     And it is interrupted while it waits
@@ -141,7 +141,7 @@ Feature: The command line
   # The problem names the command as it was written, in a key of its own beside the
   # rule, so a script reads it without parsing a sentence, and the fix says the one
   # meant. With --json nothing goes to stderr.
-  @ID-CLI-16 @count-cli @wip
+  @ID-CLI-16 @count-cli
   Scenario: an unknown command under --json exits 81 and names the command meant
     When go-template-itos runs with "coun --json"
     Then it exits with code 81
@@ -152,7 +152,7 @@ Feature: The command line
 
   # A bad flag is a usage failure of its own rule, naming the flag as it was written
   # in a key of its own.
-  @ID-CLI-17 @count-cli @wip
+  @ID-CLI-17 @count-cli
   Scenario: an unknown flag under --json exits 80 and names the flag
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --bogus --json"

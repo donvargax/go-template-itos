@@ -238,8 +238,6 @@ linters:
           allow:
             - "$gostd"
             - "github.com/donvargax/kong$"
-            # temporary: cli classifies read failures until cli-contract-code moves that into the count slice, as itos-container does, and removes this arrow.
-            - "github.com/itos-corp/go-template-itos/internal/engine/counting/port$"
         ui-tests:
           list-mode: strict
           files:
@@ -250,8 +248,6 @@ linters:
             - "github.com/itos-corp/go-template-itos/internal/cli$"
             - "github.com/itos-corp/go-template-itos/internal/cli/"
             - "github.com/donvargax/kong$"
-            # temporary: cli classifies read failures until cli-contract-code moves that into the count slice, as itos-container does, and removes this arrow.
-            - "github.com/itos-corp/go-template-itos/internal/engine/counting/port$"
         version:
           list-mode: strict
           files:

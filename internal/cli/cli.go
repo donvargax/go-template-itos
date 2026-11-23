@@ -1,13 +1,12 @@
 // Package cli is the UI every command shares: where a command reads and
-// writes, the lines on stderr, the --json object, and the one place an error
-// becomes an exit code.
+// writes, the problems it reports, the lines on stderr, the --json object,
+// and the one place a run's problems become its exit code.
 //
-// The domain's errors are a sealed set of plain types carrying no exit code,
-// rule ID or wording. Here each kind has one switch giving it its code
-// (docs of count's command, "Exit codes"), its rule ID for --json, its line
-// for people and what to do about it, every kind classified and none with a
-// default: a kind no case classifies is the 70 of an unclassified bug, never
-// a child process's status passed through.
+// It imports nothing of the project's. A slice's errors are a sealed set of
+// plain types carrying no exit code, rule ID or wording; cmd hands the UI
+// one Classifier per slice, each turning that slice's failures into problems
+// in one switch naming every kind. An error no classifier claims is the 100
+// of an unclassified bug, never a child process's status passed through.
 package cli
 
 import (
@@ -15,71 +14,131 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"strings"
-
-	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
+	"slices"
 )
 
-// The exit codes, as count's command's help states them.
-const (
-	CodeUsage       = 2
-	CodeEnvironment = 3
-	CodeInternal    = 70
-	CodeInterrupted = 130
-)
-
-// UI is a command's ends: what it reads and where it writes. Nothing here
+// UI is a command's ends: what it reads and where it writes, and the
+// classifiers that turn its slices' failures into problems. Nothing here
 // asks a question, so there is no terminal to know of.
 type UI struct {
 	In     io.Reader
 	Stdout io.Writer
 	Stderr io.Writer
+	// Classifiers are cmd's, one per slice, tried in turn.
+	Classifiers []Classifier
 }
 
-// Problem is one thing wrong, as --json gives it: its rule ID, its sentence
-// for people, and what to do about it.
-type Problem struct {
-	Rule    string `json:"rule"`
-	Message string `json:"message"`
-	Fix     string `json:"fix"`
-}
+// Classifier turns err, a failure of one slice's sealed set, into its
+// problems, each with its code, and says whether err was of that set. A
+// classifier names every kind of its set in one switch, so gochecksumtype
+// refuses it when a kind is added and left out.
+type Classifier func(err error) ([]*Problem, bool)
 
 // Fail reports err, a command failing, and returns its exit code: with
-// withJSON the failure's object on stdout first, then each problem a line on
-// stderr.
+// withJSON the failure's object on stdout and nothing on stderr, otherwise
+// each problem a line on stderr.
 func (u *UI) Fail(err error, withJSON bool) int {
-	problems, code := report(err)
-	return u.fail(problems, code, withJSON)
+	return u.Emit(withJSON, u.Problems(err))
 }
 
-// Usage reports err, a command line kong could not parse, as Fail does: a
-// usage error, exit 2, in the words of the person who wrote the line. The
-// command is named as it was written, so the sentence says what was read,
-// never kong's own such as "EOL".
+// Usage reports err, a usage error of a command that is not kong's, as Fail
+// does: exit 80, the command named first as it was written, so the sentence
+// says what was read.
 func (u *UI) Usage(command string, err error, withJSON bool) int {
 	message := err.Error()
 	if command != "" {
 		message = command + ": " + message
 	}
-	return u.fail([]Problem{{
-		Rule:    "usage",
-		Message: message,
-		Fix:     "run go-template-itos --help for the commands and the flags each takes",
-	}}, CodeUsage, withJSON)
+	return u.Emit(withJSON, []*Problem{NewProblem(CodeUsage, "usage", message,
+		"Run 'go-template-itos --help' for the commands and the flags each takes.")})
 }
 
-func (u *UI) fail(problems []Problem, code int, withJSON bool) int {
-	if withJSON {
+// Emit prints a run's outcome, which is failing, and returns its exit code:
+// with asJSON the object {"schema": 1, "ok": false, "problems": […]} on one
+// line of stdout and nothing on stderr; otherwise each problem on stderr, as
+// "go-template-itos: <message>. <fix>".
+func (u *UI) Emit(asJSON bool, problems []*Problem) int {
+	if asJSON {
 		u.JSON(struct {
-			Schema   int       `json:"schema"`
-			OK       bool      `json:"ok"`
-			Problems []Problem `json:"problems"`
+			Schema   int        `json:"schema"`
+			OK       bool       `json:"ok"`
+			Problems []*Problem `json:"problems"`
 		}{1, false, problems})
+	} else {
+		for _, p := range problems {
+			u.Line(p.plain())
+		}
 	}
-	for _, p := range problems {
-		u.Line(p.Message)
+	return ExitCode(problems)
+}
+
+// ExitCode is the exit code of a run with problems: 0 with none, else the
+// first code of Precedence one of them has. A problem of a code the list
+// lacks is a defect of ours, so with no listed code it is 100.
+func ExitCode(problems []*Problem) int {
+	for _, code := range Precedence {
+		if slices.ContainsFunc(problems, func(p *Problem) bool { return p.Code == code }) {
+			return code
+		}
 	}
-	return code
+	if len(problems) > 0 {
+		return CodeInternal
+	}
+	return 0
+}
+
+// Problems is err as the problems it reports. A problem is itself; a
+// failure a classifier claims is that classifier's problems; anything else
+// is one internal problem, err whole. Errors joined (errors.Join) are each
+// their own problems, so one never hides another.
+func (u *UI) Problems(err error) []*Problem {
+	if err == nil {
+		return nil
+	}
+	var problems []*Problem
+	for _, leaf := range leaves(err) {
+		problems = append(problems, u.classify(leaf)...)
+	}
+	return problems
+}
+
+// classify is err's problems, from the first that claims it: err itself
+// when it is a problem, or a classifier's, else err as an internal one.
+func (u *UI) classify(err error) []*Problem {
+	var p *Problem
+	if errors.As(err, &p) {
+		return []*Problem{p}
+	}
+	for _, c := range u.Classifiers {
+		if problems, ok := c(err); ok {
+			return problems
+		}
+	}
+	return []*Problem{Internal(err)}
+}
+
+// leaves are the errors err joins, each in turn, or err.
+func leaves(err error) []error {
+	joined, ok := err.(interface{ Unwrap() []error })
+	if !ok {
+		return []error{err}
+	}
+	var all []error
+	for _, e := range joined.Unwrap() {
+		all = append(all, leaves(e)...)
+	}
+	return all
+}
+
+// Internal is err as an internal problem, a defect of ours: exit 100.
+func Internal(err error) *Problem {
+	return NewProblem(CodeInternal, "internal", err.Error(), "This is a bug in go-template-itos; please report it.")
+}
+
+// Interrupted is the problem of a command an interrupt cancelled: exit 130,
+// what shells report for Ctrl-C (128 and SIGINT's 2), on every system.
+func Interrupted() *Problem {
+	return NewProblem(CodeInterrupted, "interrupted", "interrupted before it finished", "Run it again and let it finish.")
 }
 
 // JSON writes v on stdout as one line of JSON, as --json prints it; a
@@ -96,70 +155,4 @@ func (u *UI) JSON(v any) {
 // first. A stderr that cannot be written leaves nowhere else to say so.
 func (u *UI) Line(message string) {
 	_, _ = fmt.Fprintf(u.Stderr, "go-template-itos: %s\n", message)
-}
-
-// Code is err's exit code.
-func Code(err error) int {
-	_, code := report(err)
-	return code
-}
-
-// Message is err as people read it: each problem's sentence, a line each.
-func Message(err error) string {
-	problems, _ := report(err)
-	lines := make([]string, len(problems))
-	for i, p := range problems {
-		lines[i] = p.Message
-	}
-	return strings.Join(lines, "\n")
-}
-
-// report is every problem of err, joined ones each on its own, and the exit
-// code of them all: the highest.
-func report(err error) ([]Problem, int) {
-	var problems []Problem
-	code := 0
-	for _, e := range leaves(err) {
-		c, p := classify(e)
-		problems = append(problems, p...)
-		code = max(code, c)
-	}
-	return problems, code
-}
-
-// leaves are the errors err joins (errors.Join), each in turn, or err.
-func leaves(err error) []error {
-	joined, ok := err.(interface{ Unwrap() []error })
-	if !ok {
-		return []error{err}
-	}
-	var all []error
-	for _, e := range joined.Unwrap() {
-		all = append(all, leaves(e)...)
-	}
-	return all
-}
-
-// one is a problem of its rule, its sentence and its fix.
-func one(rule, format, fix string, args ...any) []Problem {
-	return []Problem{{Rule: rule, Message: fmt.Sprintf(format, args...), Fix: fix}}
-}
-
-// internal is err as an internal error, a defect of ours.
-func internal(err error) []Problem {
-	return []Problem{{Rule: "internal", Message: err.Error(), Fix: "report this as a bug"}}
-}
-
-// classify is err's exit code and problems, from the sealed set it is of:
-// only an error of none is an internal one, exit 70.
-//
-// The switch below starts from an internal error and names every kind, so a
-// kind added without a case here would still exit 70, as a bug, rather than
-// take another kind's code by accident.
-func classify(err error) (int, []Problem) {
-	var failure port.ReadFailure
-	if errors.As(err, &failure) {
-		return readProblem(failure)
-	}
-	return CodeInternal, internal(err)
 }

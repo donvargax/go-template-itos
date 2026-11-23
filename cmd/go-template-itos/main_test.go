@@ -156,14 +156,35 @@ func TestRunWithNoArgumentsPrintsTheHelpAndSucceeds(t *testing.T) {
 }
 
 // A usage error kong finds before any command runs is the one failure main
-// reports itself, as a line on stderr and exit 2.
-func TestRunReportsAUsageErrorAsAUsageExit(t *testing.T) {
-	var stdout, stderr bytes.Buffer
-	if code := run(t.Context(), []string{"count"}, strings.NewReader(""), &stdout, &stderr); code != 2 {
-		t.Fatalf("run of count with no file returned %d, want 2", code)
-	}
-	if !strings.Contains(stderr.String(), "go-template-itos: ") {
-		t.Errorf("stderr = %q, want a line prefixed for a person", stderr.String())
+// reports itself, as a line on stderr and exit 80; a command it does not
+// know is exit 81, and with --json either is one object on stdout and
+// nothing on stderr.
+func TestRunReportsAParseFailureAsAUsageOrUnknownCommandExit(t *testing.T) {
+	for _, c := range []struct {
+		args   []string
+		code   int
+		rule   string
+		stderr string
+	}{
+		{[]string{"count"}, 80, "args.missing", "go-template-itos: count needs <file>."},
+		{[]string{"count", "f", "--bogus"}, 80, "flags.unknown", "go-template-itos: count takes no flag --bogus."},
+		{[]string{"coun"}, 81, "command.unknown", `go-template-itos: there is no command "coun". Did you mean 'count'?`},
+	} {
+		var stdout, stderr bytes.Buffer
+		if code := run(t.Context(), c.args, strings.NewReader(""), &stdout, &stderr); code != c.code {
+			t.Fatalf("run of %v returned %d, want %d", c.args, code, c.code)
+		}
+		if !strings.HasPrefix(stderr.String(), c.stderr) || stdout.Len() != 0 {
+			t.Errorf("%v: stderr = %q and stdout = %q, want a line starting %q", c.args, stderr.String(), stdout.String(), c.stderr)
+		}
+		stdout.Reset()
+		stderr.Reset()
+		if code := run(t.Context(), append(c.args, "--json"), strings.NewReader(""), &stdout, &stderr); code != c.code {
+			t.Fatalf("run of %v --json returned %d, want %d", c.args, code, c.code)
+		}
+		if !strings.Contains(stdout.String(), `"rule":"`+c.rule+`"`) || stderr.Len() != 0 {
+			t.Errorf("%v --json: stdout = %q and stderr = %q, want the rule %q and no stderr", c.args, stdout.String(), stderr.String(), c.rule)
+		}
 	}
 }
 
@@ -240,34 +261,5 @@ func TestCountReadsALineWholePastAnyTokenLimit(t *testing.T) {
 	want := `{"schema":1,"ok":true,"file":` + string(name) + `,"lines":1,"words":1}` + "\n"
 	if got := stdout.String(); got != want {
 		t.Errorf("standard output = %q, want %q", got, want)
-	}
-}
-
-// The command a line names, as the usage failure about it is written: the
-// first word that is neither a flag nor a flag's value, and "" where the line
-// names none. No scenario begins a line with a flag, so nothing else reads
-// this.
-func TestCommandNameSkipsFlagsAndTheirValues(t *testing.T) {
-	for _, c := range []struct {
-		args []string
-		want string
-	}{
-		{nil, ""},
-		{[]string{"count", "notes.txt"}, "count"},
-		{[]string{"--", "count"}, ""},
-		// A flag's value is the next word unless the flag took it as
-		// --flag=value, which is one word: a word after a bare flag is that
-		// flag's value, and never names the command.
-		{[]string{"--json", "count", "notes.txt"}, "notes.txt"},
-		{[]string{"--json=yes", "count", "notes.txt"}, "count"},
-		{[]string{"--json", "count"}, ""},
-		{[]string{"--json"}, ""},
-		// A lone - is a command's argument, the file read from standard
-		// input, and not a flag.
-		{[]string{"-", "notes.txt"}, "-"},
-	} {
-		if got := commandName(c.args); got != c.want {
-			t.Errorf("commandName(%q) = %q, want %q", c.args, got, c.want)
-		}
 	}
 }

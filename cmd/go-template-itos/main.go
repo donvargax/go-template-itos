@@ -10,9 +10,12 @@
 // context an interrupt cancels, gives the slice its adapters (internal/stdin, falling back on
 // internal/disk), parses the command line, runs the one it names through the
 // UI the slices share (internal/cli) and exits with the code that slice
-// returns. A usage error, which kong finds before any slice runs, is the one
-// failure main reports itself, through that UI; internal/cli's Flags hold
-// kong to the rules on flags it does not hold by itself.
+// returns. The UI imports nothing of ours: main hands it each slice's
+// classifier, which turns that slice's failures into problems. A usage error
+// or an unknown command, which kong finds before any slice runs, is the one
+// failure main reports itself, through that UI, as the problem
+// internal/cli's ParseProblem makes of kong's typed error; internal/cli's
+// Flags hold kong to the rules on flags it does not hold by itself.
 package main
 
 import (
@@ -80,7 +83,7 @@ func main() {
 // stdin adapter, which falls back on the disk, so no adapter imports another.
 func run(ctx context.Context, args []string, in io.Reader, stdout, stderr io.Writer) int {
 	slog.SetDefault(logger(stderr))
-	ui := &cli.UI{In: in, Stdout: stdout, Stderr: stderr}
+	ui := &cli.UI{In: in, Stdout: stdout, Stderr: stderr, Classifiers: []cli.Classifier{count.Classify}}
 	if len(args) == 0 {
 		args = []string{"--help"}
 	}
@@ -110,8 +113,8 @@ func run(ctx context.Context, args []string, in io.Reader, stdout, stderr io.Wri
 		return stopped
 	}
 	if err != nil {
-		// With --json, the failure's object too.
-		return ui.Usage(commandName(args), err, wantsJSON(args))
+		// With --json, the failure's object, and nothing on stderr.
+		return ui.Emit(wantsJSON(args), []*cli.Problem{cli.ParseProblem(err)})
 	}
 	switch command, _, _ := strings.Cut(parsed.Command(), " "); command {
 	case "count":
@@ -130,29 +133,6 @@ func run(ctx context.Context, args []string, in io.Reader, stdout, stderr io.Wri
 	}
 	// A command kong took that has no case here: a bug.
 	return ui.Fail(fmt.Errorf("no case runs the command %q", parsed.Command()), wantsJSON(args))
-}
-
-// commandName is the command args name, the first word that is not a flag
-// and not a flag's value, as the person wrote it; "" where the line names
-// none, so a usage error about such a line says what was wrong and nothing
-// more.
-func commandName(args []string) string {
-	for i := 0; i < len(args); i++ {
-		word := args[i]
-		switch {
-		case word == "--":
-			return ""
-		case strings.HasPrefix(word, "-") && word != "-":
-			// A flag's value is the next word unless the flag took it as
-			// --flag=value, which is one word.
-			if !strings.Contains(word, "=") {
-				i++
-			}
-		default:
-			return word
-		}
-	}
-	return ""
 }
 
 // wantsJSON is whether args ask for --json before any --, as a command line

@@ -1,12 +1,13 @@
 // Package command is the count command, in the count slice: its kong struct
 // and Run are the UI, and its Query and Handler the application.
 //
-// Run assembles the Query from the command line, the one copy of a command
-// line's values, and hands it to Handle with the context cmd made; Handle
+// Run checks the command line's file argument into an Input, the one place
+// it is checked (decision on checked values, docs/go.md), assembles the Query
+// from it and hands it to Handle with the context cmd made; Handle
 // only wires the Query to the domain through the Files port it was given,
 // and Run writes what came back. The slice counts nothing, reads no file and
-// knows no exit code: a failure is the domain's, and internal/cli gives it
-// one.
+// knows no exit code: a failure is the domain's, and Classify, beside it,
+// gives it its problem.
 package command
 
 import (
@@ -37,8 +38,9 @@ func (CLI) Help() string {
 		"    --json prints one object: schema 1, ok true, file the argument, lines and words.\n" +
 		"    Exit codes:\n" +
 		"      0  success\n" +
-		"      2  the command line is wrong\n" +
-		"      3  the input is missing or cannot be read\n" +
+		"      80  the command line is wrong\n" +
+		"      82  the input is missing or cannot be read\n" +
+		"      100  an error nothing classified, a bug\n" +
 		"      130  interrupted\n"
 }
 
@@ -54,9 +56,9 @@ type counts struct {
 }
 
 // Query is what the count command asks of the domain: the file to count,
-// its path as the argument gave it, - for standard input.
+// its argument as it was checked, - for standard input.
 type Query struct {
-	Path string
+	Input Input
 }
 
 // Handler is the count command's application: the Files port the domain
@@ -69,24 +71,28 @@ type Handler struct {
 // Handle counts the file q names through the domain and the Files port,
 // passing ctx on to them. It only wires: the counting is the domain's.
 func (h Handler) Handle(ctx context.Context, q Query) (counting.Result, error) {
-	return counting.File(ctx, h.Files, q.Path)
+	return counting.File(ctx, h.Files, q.Input.Path())
 }
 
 // Run counts the file the command names, through h and with the context
 // cmd made, or reports the failure it met, and returns the exit code the UI
 // gives it.
 func (c CLI) Run(ctx context.Context, ui *cli.UI, h Handler) int {
-	result, failure := h.Handle(ctx, Query{Path: c.File})
+	input, refusal := NewInput(c.File)
+	if refusal != nil {
+		return ui.Fail(refusal, c.JSON)
+	}
+	result, failure := h.Handle(ctx, Query{Input: input})
 	if failure != nil {
 		return ui.Fail(failure, c.JSON)
 	}
 	if c.JSON {
-		ui.JSON(counts{Schema: 1, OK: true, File: c.File, Lines: result.Lines, Words: result.Words})
+		ui.JSON(counts{Schema: 1, OK: true, File: input.Path(), Lines: result.Lines, Words: result.Words})
 		return 0
 	}
 	// The counts, and the path as given, never what was read: an input
 	// holding a secret must not reach the output.
-	_, _ = fmt.Fprintf(ui.Stdout, "%s: lines %d, words %d\n", c.File, result.Lines, result.Words)
+	_, _ = fmt.Fprintf(ui.Stdout, "%s: lines %d, words %d\n", input.Path(), result.Lines, result.Words)
 	ui.Line("for scripts, use --json")
 	return 0
 }

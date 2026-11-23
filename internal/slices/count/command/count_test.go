@@ -18,7 +18,7 @@ type ends struct {
 
 // uiOf is a UI writing to ends.
 func uiOf(e *ends) *cli.UI {
-	return &cli.UI{In: strings.NewReader(""), Stdout: &e.stdout, Stderr: &e.stderr}
+	return &cli.UI{In: strings.NewReader(""), Stdout: &e.stdout, Stderr: &e.stderr, Classifiers: []cli.Classifier{Classify}}
 }
 
 // count runs the command over the fake's files named in data. Standard input
@@ -87,21 +87,22 @@ func TestJSONOutputNamesStandardInputAsTheArgument(t *testing.T) {
 }
 
 // A failure is the domain's, given its code by the UI: a missing file is
-// the environment's, exit 3, and the object says so with the rule and what
+// the environment's, exit 82, and the object says so with the rule and what
 // to do about it.
 func TestAMissingFileIsTheEnvironments(t *testing.T) {
 	var e ends
-	if code := count(t, &e, "absent.txt", nil, true); code != 3 {
-		t.Fatalf("Run exit = %d, want 3", code)
+	if code := count(t, &e, "absent.txt", nil, true); code != 82 {
+		t.Fatalf("Run exit = %d, want 82", code)
 	}
-	want := `{"schema":1,"ok":false,"problems":[{"rule":"COUNT_INPUT_MISSING",` +
-		`"message":"the file absent.txt is not there",` +
-		`"fix":"check the path, or give - to count standard input"}]}` + "\n"
+	want := `{"schema":1,"ok":false,"problems":[{"exit":82,` +
+		`"file":"absent.txt",` +
+		`"fix":"Check the path, or give - to count standard input.",` +
+		`"message":"the file absent.txt is not there","rule":"count.input-missing"}]}` + "\n"
 	if got := e.stdout.String(); got != want {
 		t.Errorf("standard output = %q, want %q", got, want)
 	}
-	if got, want := e.stderr.String(), "go-template-itos: the file absent.txt is not there\n"; got != want {
-		t.Errorf("error output = %q, want %q", got, want)
+	if e.stderr.Len() != 0 {
+		t.Errorf("error output = %q, want none under --json", e.stderr.String())
 	}
 }
 
@@ -109,13 +110,13 @@ func TestAMissingFileIsTheEnvironments(t *testing.T) {
 // failure's.
 func TestAFailureWithoutJSONIsALineForAPerson(t *testing.T) {
 	var e ends
-	if code := count(t, &e, "absent.txt", nil, false); code != 3 {
-		t.Fatalf("Run exit = %d, want 3", code)
+	if code := count(t, &e, "absent.txt", nil, false); code != 82 {
+		t.Fatalf("Run exit = %d, want 82", code)
 	}
 	if e.stdout.Len() != 0 {
 		t.Errorf("standard output = %q, want none", e.stdout.String())
 	}
-	if got, want := e.stderr.String(), "go-template-itos: the file absent.txt is not there\n"; got != want {
+	if got, want := e.stderr.String(), "go-template-itos: the file absent.txt is not there. Check the path, or give - to count standard input.\n"; got != want {
 		t.Errorf("error output = %q, want %q", got, want)
 	}
 }
@@ -125,10 +126,26 @@ func TestAFailureWithoutJSONIsALineForAPerson(t *testing.T) {
 func TestAnUnreadableInputIsTheEnvironments(t *testing.T) {
 	var e ends
 	files := porttest.Files{Failures: map[string]port.ReadFailure{"adir": porttest.Unreadable("adir")}}
-	if code := (CLI{File: "adir", JSON: true}).Run(t.Context(), uiOf(&e), Handler{Files: files}); code != 3 {
-		t.Fatalf("Run exit = %d, want 3", code)
+	if code := (CLI{File: "adir", JSON: true}).Run(t.Context(), uiOf(&e), Handler{Files: files}); code != 82 {
+		t.Fatalf("Run exit = %d, want 82", code)
 	}
-	if !strings.Contains(e.stdout.String(), `"rule":"COUNT_INPUT_UNREADABLE"`) {
+	if !strings.Contains(e.stdout.String(), `"rule":"count.input-unreadable"`) {
 		t.Errorf("standard output = %q, want the unreadable rule", e.stdout.String())
+	}
+}
+
+// An argument that names no file is refused where it enters, before any read:
+// a usage failure, exit 80, its object naming the argument, and nothing on
+// stderr under --json.
+func TestAnEmptyArgumentIsRefusedBeforeAnyRead(t *testing.T) {
+	var e ends
+	if code := count(t, &e, "", map[string][]byte{"": []byte("one")}, true); code != 80 {
+		t.Fatalf("Run exit = %d, want 80", code)
+	}
+	if !strings.Contains(e.stdout.String(), `"rule":"count.input-invalid"`) || !strings.Contains(e.stdout.String(), `"file":""`) {
+		t.Errorf("standard output = %q, want the invalid-input problem naming the argument", e.stdout.String())
+	}
+	if e.stderr.Len() != 0 {
+		t.Errorf("error output = %q, want none under --json", e.stderr.String())
 	}
 }
