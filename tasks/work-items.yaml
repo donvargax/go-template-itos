@@ -25,6 +25,7 @@ queue:
   - release-plain
   - ko-image
   - arc42-content
+  - migration-readme
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
