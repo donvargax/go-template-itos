@@ -908,8 +908,8 @@ items:
   - id: T-64
     title: tools/bin/pinned shares its cache across worktrees, bounds downloads and pins the scanners
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
