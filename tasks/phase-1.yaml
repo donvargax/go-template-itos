@@ -1091,8 +1091,8 @@
     project's own (git config hook.go-template-itos-pre-commit.event pre-commit and .command
     tools/hooks/pre-commit, and the same for pre-push), which every worktree shares; README.md's
     setup section gives the four lines and says git 2.54 or later runs config-declared hooks.
-    Take itos-cc's tools/bin/pre-commit-check and its pre-push-check (a Go test in its own
-    folder), adjusted for a plain git push to a local bare remote: each builds a scratch
+    Take itos-cc's tools/bin/pre-commit-check and its pre-push-check (a Go program, go run
+    ./tools/bin/pre-push-check), adjusted for a plain git push to a local bare remote: each builds a scratch
     repository, installs the hook, and proves it refuses what it should (an unformatted staged
     file; a module that does not compile) and passes what it should (a formatted file whose
     working copy is unformatted; a clean module). CI's static job runs both checks. The
@@ -1102,6 +1102,6 @@
     itos-template check passing 2 of 2.
   done_when:
     - run: tools/bin/pre-commit-check
-    - run: go test ./tools/bin/pre-push-check/...
+    - run: go run ./tools/bin/pre-push-check
     - run: '! grep -nE "golangci-lint|govulncheck" tools/hooks/pre-commit && grep -q "go vet" tools/hooks/pre-push'
     - run: grep -q "tools/bin/pre-commit-check" .github/workflows/ci.yml && grep -q "hook.go-template-itos-pre-push.command" README.md
