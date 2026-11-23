@@ -922,8 +922,8 @@ items:
   - id: T-66
     title: A made project's hooks are a staged gofmt before commit and go vet before push, each proven by a fixture check
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-65]
     kind: task
     why: >
