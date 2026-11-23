@@ -28,9 +28,9 @@ import (
 	"golang.org/x/term"
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
-	"github.com/itos-corp/go-template-itos/internal/count"
-	"github.com/itos-corp/go-template-itos/internal/disk"
-	"github.com/itos-corp/go-template-itos/internal/stdin"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/disk"
+	count "github.com/itos-corp/go-template-itos/internal/slices/count/command"
+	"github.com/itos-corp/go-template-itos/internal/slices/count/stdin"
 	"github.com/itos-corp/go-template-itos/internal/version"
 )
 

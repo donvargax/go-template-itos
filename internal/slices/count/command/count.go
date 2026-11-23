@@ -1,4 +1,4 @@
-// Package count is the count command, a slice named for it: its kong struct
+// Package command is the count command, in the count slice: its kong struct
 // and Run are the UI, and its Query and Handler the application.
 //
 // Run assembles the Query from the command line, the one copy of a command
@@ -7,15 +7,15 @@
 // and Run writes what came back. The slice counts nothing, reads no file and
 // knows no exit code: a failure is the domain's, and internal/cli gives it
 // one.
-package count
+package command
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
-	"github.com/itos-corp/go-template-itos/internal/counting"
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/domain"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
 )
 
 // CLI is the count command's command line: the file it counts, and whether

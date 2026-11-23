@@ -1,14 +1,14 @@
 // The tests are in the slice's own package: a slice imports no other slice,
 // and depguard cannot tell a slice's own import from another's.
-package count
+package command
 
 import (
 	"strings"
 	"testing"
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
-	"github.com/itos-corp/go-template-itos/internal/counting/port/porttest"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port/porttest"
 )
 
 // A run's ends, so a test reads what the person or the script would.

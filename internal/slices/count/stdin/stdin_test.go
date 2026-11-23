@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/itos-corp/go-template-itos/internal/counting"
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
-	"github.com/itos-corp/go-template-itos/internal/counting/port/porttest"
-	"github.com/itos-corp/go-template-itos/internal/stdin"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/domain"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port/porttest"
+	"github.com/itos-corp/go-template-itos/internal/slices/count/stdin"
 )
 
 // Standard input is read whole, as a file is: the counts are the domain's,

@@ -12,7 +12,7 @@ import (
 	"context"
 	"io"
 
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
 )
 
 // Dash is the argument that names standard input.
