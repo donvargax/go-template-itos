@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - pinned-tools
+  - T-64
   - plain-ci
   - plain-hooks
   - mutation-fresh
@@ -905,14 +905,15 @@ items:
     status: done
     depends_on: [T-62]
     kind: task
-  - id: pinned-tools
+  - id: T-64
     title: tools/bin/pinned shares its cache across worktrees, bounds downloads and pins the scanners
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was pinned-tools.
       Lands on stack/go and merges into go/cli. Take itos-container's tools/bin/pinned with its
       tests (tools/pinned/*_test.go), curl timeouts and Renovate markers (#15); add itos's cache in
       the git common dir so every worktree shares .tools (#16), itos-cc's gitleaks entry, and
@@ -923,7 +924,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-63, pinned-tools]
+    depends_on: [T-63, T-64]
     kind: idea
     why: >
       ci.yml on stack/go and go/cli runs go build, vet, mod verify, mod tidy -diff, golangci-lint,
@@ -1030,7 +1031,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [pinned-tools]
+    depends_on: [T-64]
     kind: idea
     why: >
       On main and each branch's own file. itos-cc's automergeType pr with automergeStrategy rebase
