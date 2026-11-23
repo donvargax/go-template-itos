@@ -22,6 +22,7 @@ queue:
   - scenarios-two-drivers
   - renovate-plain
   - nightly
+  - release-plain
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
