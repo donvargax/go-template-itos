@@ -1072,3 +1072,36 @@
     pushed. Prove it on all three heads green in both workflows, itos-template check passing 2 of
     2, and a render with its one setup step run having no itos.yaml, itos-policy.yaml or itos
     action in its workflows.
+- id: T-66
+  type: build
+  title: A made project's hooks are a staged gofmt before commit and go vet before push, each proven by a fixture check
+  why: >
+    Was plain-hooks, the migration's fifth item. Lands on stack/go, merged into go/cli; merge
+    main into both first. The pre-commit hook a made project gets today runs the full
+    golangci-lint and govulncheck, which needs the network, on every commit
+    (go-template-itos#11); nothing compiles the whole module before a push (#13). Take itos-cc's
+    two hooks whole, each with a comment naming itos-cc as its source:
+    tools/hooks/pre-commit, gofmt over the staged blobs only (what the commit holds, not the
+    working tree), refusing with the files gofmt would change, in milliseconds; and
+    tools/hooks/pre-push, go vet ./... over the working tree about to be pushed. Their comments
+    stop assuming itos push rebases first: a plain git push pushes HEAD, so the hook vets the
+    checked-out tree and says that it is HEAD's only when the tree is clean, which it checks
+    with git status and says plainly when it is not. They replace the existing
+    tools/hooks/pre-commit. Each hook is declared once per clone, under a hook name of the
+    project's own (git config hook.go-template-itos-pre-commit.event pre-commit and .command
+    tools/hooks/pre-commit, and the same for pre-push), which every worktree shares; README.md's
+    setup section gives the four lines and says git 2.54 or later runs config-declared hooks.
+    Take itos-cc's tools/bin/pre-commit-check and its pre-push-check (a Go test in its own
+    folder), adjusted for a plain git push to a local bare remote: each builds a scratch
+    repository, installs the hook, and proves it refuses what it should (an unformatted staged
+    file; a module that does not compile) and passes what it should (a formatted file whose
+    working copy is unformatted; a clean module). CI's static job runs both checks. The
+    template's own clone keeps itos's commit-msg and pre-push hooks beside these; nothing in a
+    shipped file names itos's hooks. golangci-lint, govulncheck and the tests stay in CI only.
+    Prove it on stack/go and go/cli green, Template check green after go/cli is pushed, and
+    itos-template check passing 2 of 2.
+  done_when:
+    - run: tools/bin/pre-commit-check
+    - run: go test ./tools/bin/pre-push-check/...
+    - run: '! grep -nE "golangci-lint|govulncheck" tools/hooks/pre-commit && grep -q "go vet" tools/hooks/pre-push'
+    - run: grep -q "tools/bin/pre-commit-check" .github/workflows/ci.yml && grep -q "hook.go-template-itos-pre-push.command" README.md
