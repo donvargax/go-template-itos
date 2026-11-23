@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - plain-hooks
+  - T-66
   - mutation-fresh
   - layout-rules
   - cli-contract-code
@@ -919,14 +919,15 @@ items:
     depends_on: [T-63, T-64]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/17, https://github.com/donvargax/go-template-itos/issues/20]
-  - id: plain-hooks
+  - id: T-66
     title: A made project's hooks are a staged gofmt before commit and go vet before push, each proven by a fixture check
     phase: 1
     owner: null
     status: todo
     depends_on: [T-65]
-    kind: idea
+    kind: task
     why: >
+      Was plain-hooks.
       Lands on stack/go and merges into go/cli. itos-cc's tools/hooks/pre-commit (gofmt on the
       staged blobs only) and pre-push (go vet over the tree about to be pushed), declared through
       git config hook.<name>.*, with tools/bin/pre-commit-check and pre-push-check adjusted for a
@@ -1086,7 +1087,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [plain-hooks, renovate-plain, nightly, ko-image, arc42-content]
+    depends_on: [T-66, renovate-plain, nightly, ko-image, arc42-content]
     kind: idea
     why: >
       On main. The README's lists of what a made project gets and what comes next follow the landed
