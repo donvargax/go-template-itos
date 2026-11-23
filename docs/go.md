@@ -74,16 +74,18 @@ runs there as well, because it checks paths and diagnostics that differ by platf
 
 ## Quality checks
 
-`itos.yaml`'s CI plan runs these checks in order, and its generated rules in `AGENTS.md`
-list them exactly:
+CI's `static` and `test` jobs run these checks in order:
 
 - `gofmt`, `go build`, `go vet`, `go mod verify` against `go.sum`, and `go mod tidy -diff`
   so the module files match the code.
 - golangci-lint: the standard linters plus depguard, gosec on non-test code, and revive's
   file-length limit.
 - `tools/bin/architecture-check`, the self-test above.
-- `go tool govulncheck -test ./...`, covering the dependencies in use, test-only ones and
-  the standard library.
+- `go tool actionlint`, which checks the workflows.
+- `tools/bin/govulncheck`, which runs `go tool govulncheck -test ./...` with the toolchain
+  `go.mod` names, covering the dependencies in use, test-only ones and the standard library.
+- `tools/bin/pinned gitleaks git --redact`, a credential scan of the commits a push or pull
+  request brings.
 - The tests with `RAPID_CHECKS=1`.
 - `tools/bin/domain-coverage`, which requires each domain package to reach 80% statement
   coverage from its own tests.
@@ -110,12 +112,9 @@ Tools are pinned:
 
 ## Setup
 
-A new project has no `itos.yaml` or `tasks` yet but has `itos-policy.yaml`: its commit rules,
-CI plan and code-proof gate. `itos-template new` prints the setup steps that adopt it.
-`itos init --policy itos-policy.yaml` gives the project its own `itos.yaml` and a fresh ledger,
-then the policy file is removed. The last step, `itos init --agent-rules`, rewrites
-`AGENTS.md`'s rules to describe the project's own config. From then on the workflow runs the Go
-steps and the Linux, macOS and Windows tests on the project's own `main`.
+A new project needs no itos. `itos-template new` prints one setup step, the move of
+`LICENSE.project` to `LICENSE`, which gives the project its license. From then on the workflow
+runs the Go steps and the Linux, macOS and Windows tests on the project's own `main`.
 
 The project starts with no mutation records: the template's are taken over its own names and
 stay behind. Setup makes the render commit the point judging starts from, so the first push

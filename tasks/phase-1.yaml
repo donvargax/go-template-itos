@@ -1111,8 +1111,56 @@
     working unchanged (CI, the manifest's checks, tools/bin/architecture-check). Prove it on
     stack/go and go/cli green, Template check green after go/cli is pushed, and itos-template
     check passing 2 of 2.
+- id: T-65
+  type: ci
+  title: CI calls plain commands, so a made project's CI needs no itos
+  why: >
+    Was plain-ci, the migration's fourth item, built to decision 10. A made project's CI must run
+    with no itos installed. ci.yml ships, so on every branch it calls plain commands directly and
+    installs no itos action. The template's own itos checks (itos verify and itos ci run over the
+    push's range, the commit shape, footers and ledger) move to a new workflow,
+    .github/workflows/itos.yml, which itos-template.yaml's template_only list keeps out of renders,
+    with a comment saying why; it carries the current ci job's range and itos steps unchanged,
+    on main, stack/go and go/cli. itos.yaml's ci.steps on each branch keep only what is itos's or
+    the template's own (itos config check, doc-caps, the test -f list, the Scenarios and task
+    checks), and drop every step ci.yml now runs, so nothing runs twice; drop the { tests:
+    scenario } step too, keeping the tests: section the Scenarios footer reads; proof.code stays
+    for mutation-fresh. ci.yml takes itos-container's shape: pull_request with types opened,
+    synchronize, reopened and ready_for_review, and every job skipped on a draft
+    (go-template-itos#17); concurrency cancelling in-progress runs on pull requests only; the
+    push branches as they are now. On stack/go and go/cli a static job runs, on ubuntu: gofmt's
+    file list, go build, go vet, go mod verify, go mod tidy -diff, tools/bin/pinned golangci-lint
+    run ./..., tools/bin/architecture-check, go tool actionlint, tools/bin/govulncheck and a
+    gitleaks scan of the pushed commits (tools/bin/pinned gitleaks git --redact over the range
+    from the pull request's base or the push's before, the whole history when before is all
+    zeros). A test job runs RAPID_CHECKS=1 go test over the packages, tools/bin/domain-coverage
+    and the mutation sample step as it is today; go/cli adds go test ./features -count=1 (the
+    features build the binary, which Go cannot track) and the release helpers' tests. Every job
+    sets the toolchain with itos's .github/actions/go-toolchain composite action, harvested with
+    its problem matcher and a comment naming it: it forces go.mod's exact toolchain and caches the
+    module and build caches, so govulncheck judges the standard library the project ships
+    (#20, the CI half). tools/bin/govulncheck is a short script that reads go.mod's toolchain and
+    runs GOTOOLCHAIN=<it> go tool govulncheck -test ./..., so a local machine's distribution Go
+    hides nothing either (#20, the local half). The platform jobs, go test ./... on macos-latest
+    and windows-latest as today, run on pull requests and on pushes to any branch but main: the
+    repository is public, so their minutes are free, and the template lands by direct push to
+    stack/go and go/cli without pull requests. A made project's main push follows a merged pull
+    request that ran them. The release job needs the static and test jobs green and the platform
+    jobs green or skipped. Main's own ci.yml (no Go there) runs doc-caps and the test -f list
+    plainly. In itos-template.yaml the go stack's setup becomes the license move alone, [mv,
+    LICENSE.project, LICENSE], the comment above it saying why; the two itos init steps go and
+    their comment is rewritten. itos-policy.yaml and tools/bin/policy-drift are deleted on
+    stack/go and go/cli, with the policy-drift step and the template_only entry for it. The
+    manifest's stack and feature checks follow ci.yml's commands (tools/bin/govulncheck for go
+    tool govulncheck, go tool actionlint added). release.yml still installs itos for its notes;
+    release-plain removes that, so a made project's first release needs it until then, and the
+    commit says so. Lands on main first (itos.yml, main's ci.yml, the manifest), then stack/go,
+    then go/cli, so every render stays green; rerun the parents' Template check after go/cli is
+    pushed. Prove it on all three heads green in both workflows, itos-template check passing 2 of
+    2, and a render with its one setup step run having no itos.yaml, itos-policy.yaml or itos
+    action in its workflows.
   done_when:
-    - run: go test ./tools/pinned/...
-    - run: grep -q -- "--max-time" tools/bin/pinned && grep -q -- "--git-common-dir" tools/bin/pinned
-    - run: go tool -n actionlint >/dev/null
-    - run: tools/bin/pinned gitleaks version
+    - run: '! grep -nE "itos (ci|verify)|donvargax/itos@" .github/workflows/ci.yml'
+    - run: grep -q ready_for_review .github/workflows/ci.yml && test -f .github/workflows/itos.yml && grep -q "\.github/workflows/itos\.yml" itos-template.yaml
+    - run: '! grep -qE "\[itos, init" itos-template.yaml && test ! -e itos-policy.yaml && test ! -e tools/bin/policy-drift'
+    - run: test ! -f go.mod || { test -x tools/bin/govulncheck && test -f .github/actions/go-toolchain/action.yml && go tool actionlint; }
