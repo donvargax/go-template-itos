@@ -1329,10 +1329,33 @@
     into go/cli, each branch keeping its own AGENTS.md rewritten, itos.yaml, CI and registry.
     Prove it on all three heads green, Template check green on main's run after go/cli is pushed,
     and itos-template check passing 2 of 2.
+- id: T-64
+  type: build
+  title: tools/bin/pinned shares its cache across worktrees, bounds downloads and pins the scanners
+  why: >
+    Was pinned-tools, the migration's third item. Lands on stack/go, merged into go/cli; main has
+    no tools/bin/pinned. First merge main into stack/go and go/cli so their ledgers hold this
+    entry before any commit names it. Take itos-container's tools/bin/pinned as the base, with a
+    comment naming it as the source: its download with curl's retry, connect and total timeouts
+    (--connect-timeout 10 --max-time 60), so a stalled fetch fails instead of hanging
+    (go-template-itos#15), its checksum check per asset, and the Renovate marker comment above
+    each version that a later regex manager reads. Add itos's cache folder in the git common dir
+    (git rev-parse --git-common-dir, with GIT_DIR, GIT_COMMON_DIR and GIT_WORK_TREE unset first),
+    so every worktree of one clone shares one downloaded copy of each tool (#16); a checkout
+    with no git falls back to .tools in the tree, as today. Keep each branch's own tool list and
+    versions as they are now (stack/go gitleaks, golangci-lint and itos-cc; go/cli adds goreleaser
+    and git-cliff), in itos-container's entry shape, so no tool's version moves in this task:
+    Renovate moves versions. Take itos-container's tools/pinned/pinned_test.go, which serves
+    assets from a local server and proves the download, a redirect and the fallback, adapted to
+    these tools; its update_managers_test.go waits for renovate-plain, which adds the regex
+    manager it reads. Add actionlint as a go.mod tool, as itos-cc has it (go get -tool
+    github.com/rhysd/actionlint/cmd/actionlint at itos-cc's version), so the CI item can call go
+    tool actionlint; nothing calls it yet. Every existing caller of tools/bin/pinned keeps
+    working unchanged (CI, the manifest's checks, tools/bin/architecture-check). Prove it on
+    stack/go and go/cli green, Template check green after go/cli is pushed, and itos-template
+    check passing 2 of 2.
   done_when:
-    - run: test -f MAP.md && grep -q MAP.md AGENTS.md && grep -q "docs/architecture/09-architecture-decisions.md" AGENTS.md
-    - run: '! grep -niE "\bitos (go|guide|work|commit|push|init|decision|task)\b|^## itos" AGENTS.md MAP.md CONTRIBUTORS.md'
-    - run: grep -q "itos go" TEMPLATE.md && grep -q "itos commit" TEMPLATE.md
-    - run: grep -q "0010-a-made-project-needs-no-itos" itos-template.yaml
-    - run: '! grep -qi "itos recognizes" CONTRIBUTORS.md'
-    - run: tools/bin/doc-caps
+    - run: go test ./tools/pinned/...
+    - run: grep -q -- "--max-time" tools/bin/pinned && grep -q -- "--git-common-dir" tools/bin/pinned
+    - run: go tool -n actionlint >/dev/null
+    - run: tools/bin/pinned gitleaks version

@@ -1,10 +1,14 @@
 #!/bin/sh
 # Runs a release tool at the version and SHA-256 pinned below. Adapted from
+# github.com/donvargax/itos-container's tools/bin/pinned (itself adapted from
 # github.com/donvargax/itos-template, keeping its goreleaser and git-cliff
-# cases, which the release workflow runs (git-cliff through
-# tools/bin/release-notes); the lint, mutation-proof and credential-scan cases
-# are the ones this branch's CI and its renders need. govulncheck is pinned as
-# a Go tool in go.mod.
+# cases, which the release workflow runs, git-cliff through tools/bin/release-notes);
+# the lint, mutation-proof and credential-scan cases are the ones this branch's CI and
+# its renders need. govulncheck and actionlint are pinned as Go tools in go.mod.
+#
+# Each tool's "# renovate:" comment names the release Renovate tracks for its version.
+# A downloaded archive is cached once per clone, in the git common directory, so every
+# worktree shares it; a checkout with no git caches in .tools in the tree.
 set -eu
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)
 
@@ -37,6 +41,7 @@ case "$tool" in
 gitleaks)
 	# v8.30.1, 2026-03-21. The checksums are the release's own,
 	# gitleaks_8.30.1_checksums.txt, one per asset.
+	# renovate: depName=gitleaks/gitleaks
 	version=8.30.1
 	case "$platform" in
 	linux-amd64) asset=gitleaks_${version}_linux_x64.tar.gz sum=551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb ;;
@@ -53,6 +58,7 @@ gitleaks)
 	esac
 	;;
 golangci-lint)
+	# renovate: depName=golangci/golangci-lint
 	version=2.14.0
 	case "$platform" in
 	linux-amd64) sum=ab90aeb7b066f92a33415b638a50fe5344bbb75a0d32ad30cc248d88f81032ab ;;
@@ -71,6 +77,7 @@ golangci-lint)
 	;;
 goreleaser)
 	# v2.18.2, 2026-09-17.
+	# renovate: depName=goreleaser/goreleaser
 	version=2.18.2
 	case "$platform" in
 	linux-amd64) asset=goreleaser_Linux_x86_64.tar.gz sum=0a96edc9d9bc594e4a41cc4d59467c182062910ab24d9d1f6dd7b667d32606d3 ;;
@@ -87,6 +94,7 @@ git-cliff)
 	# .sha512 file per archive and no Windows one: each SHA-256 below is the
 	# archive's, computed after it matched that .sha512. A release is cut on
 	# Linux.
+	# renovate: depName=orhun/git-cliff
 	version=2.14.2
 	case "$platform" in
 	linux-amd64) target=x86_64-unknown-linux-gnu sum=24f397c733add5390fdceee3a2088588ab0d5f944ce00d34cb7029b888cf2db4 ;;
@@ -100,6 +108,7 @@ git-cliff)
 	member=git-cliff-$version/git-cliff exe=
 	;;
 itos-cc)
+	# renovate: depName=donvargax/itos-cc
 	version=0.5.0
 	case "$platform" in
 	linux-amd64) sum=a94a0d17418dd4ba39e89210468beaa0b34266db317f65ecf0c4bce6a5f4db6d ;;
@@ -119,23 +128,38 @@ itos-cc)
 *) die "unknown pinned tool: $tool" ;;
 esac
 
-dir=$root/.tools/$tool-$version
+# The checkout's own clone, whatever repository a caller's GIT_ variables name.
+cache=$root/.tools
+if common=$(cd -- "$root" && unset GIT_DIR GIT_COMMON_DIR GIT_WORK_TREE && git rev-parse --git-common-dir 2>/dev/null) &&
+	common=$(cd -- "$root" && cd -- "$common" && pwd); then
+	cache=$common/itos/tools
+fi
+dir=$cache/$tool-$version
 bin=$dir/$tool$exe
 if [ ! -x "$bin" ]; then
 	command -v curl >/dev/null 2>&1 || die "curl is not on the PATH, to fetch $tool $version"
 	if command -v sha256sum >/dev/null 2>&1; then check="sha256sum -c -"; else check="shasum -a 256 -c -"; fi
-	tmp=$(mktemp -d)
+	mkdir -p "$dir" || die "cannot make $dir"
+	# Fetched beside the cache, on its file system, and renamed into place last: a fetch
+	# cut short leaves no binary to run, and two worktrees fetching at once each rename a
+	# whole, checked binary over the other's.
+	tmp=$(mktemp -d "$cache/.fetch.XXXXXX") || die "cannot make a folder in $cache"
 	trap 'rm -rf "$tmp"' EXIT
-	curl -fsSL -o "$tmp/$asset" "$url" || die "cannot fetch $url"
+	trap 'exit 2' INT TERM
+	# Six attempts let a short release-service outage recover; retries start for at most
+	# 45 seconds, and each transfer is bounded, so a stalled fetch fails instead of hanging.
+	curl -fsSL --retry 5 --retry-max-time 45 --connect-timeout 10 --max-time 60 \
+		-o "$tmp/$asset" "$url" || die "cannot fetch $url"
 	(cd "$tmp" && echo "$sum  $asset" | $check >/dev/null) || die "$asset SHA-256 did not match the pinned release"
 	case "$asset" in
 	*.zip) (cd "$tmp" && unzip -q "$asset" "$member") || die "$asset holds no $member" ;;
 	*) tar -xzf "$tmp/$asset" -C "$tmp" "$member" || die "$asset holds no $member" ;;
 	esac
-	mkdir -p "$dir"
-	mv -f "$tmp/$member" "$bin.$$" && chmod +x "$bin.$$" && mv -f "$bin.$$" "$bin"
+	chmod +x "$tmp/$member" || die "cannot make $member executable"
+	# Windows refuses to replace an .exe that is running: another fetch's binary is as good.
+	mv -f "$tmp/$member" "$bin" || [ -x "$bin" ] || die "cannot move $tool into $dir"
 	rm -rf "$tmp"
-	trap - EXIT
+	trap - EXIT INT TERM
 fi
 if [ -n "$print" ]; then
 	echo "$bin"

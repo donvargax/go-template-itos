@@ -23,3 +23,9 @@ or domain is added; keep each to a few lines and say where to look, not what the
 - Fake: the counting domain's `internal/counting/port/porttest/files.go`; the command's own tests
   use it too.
 - Test: `go test ./cmd/... ./internal/... ./features -count=1`
+
+## Pinned tools
+
+- Start: `tools/bin/pinned`, the launcher every gate runs scanners and linters through; its cache is
+  in the git common directory, shared by all worktrees.
+- Test: `go test ./tools/pinned/...`, which runs the launcher against a local release server.
