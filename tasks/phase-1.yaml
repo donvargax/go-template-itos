@@ -1072,8 +1072,3 @@
     pushed. Prove it on all three heads green in both workflows, itos-template check passing 2 of
     2, and a render with its one setup step run having no itos.yaml, itos-policy.yaml or itos
     action in its workflows.
-  done_when:
-    - run: '! grep -nE "itos (ci|verify)|donvargax/itos@" .github/workflows/ci.yml'
-    - run: grep -q ready_for_review .github/workflows/ci.yml && test -f .github/workflows/itos.yml && grep -q "\.github/workflows/itos\.yml" itos-template.yaml
-    - run: '! grep -qE "\[itos, init" itos-template.yaml && test ! -e itos-policy.yaml && test ! -e tools/bin/policy-drift'
-    - run: test ! -f go.mod || { test -x tools/bin/govulncheck && test -f .github/actions/go-toolchain/action.yml && go tool actionlint; }

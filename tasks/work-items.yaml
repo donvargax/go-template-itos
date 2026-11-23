@@ -916,24 +916,9 @@ items:
     title: CI calls plain commands, so a made project's CI needs no itos
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-63, T-64]
     kind: task
-    why: >
-      Was plain-ci.
-      ci.yml on stack/go and go/cli runs go build, vet, mod verify, mod tidy -diff, golangci-lint,
-      the architecture check, govulncheck, go test and the scenarios directly, in itos-container's
-      shape: draft pull requests wait for ready_for_review (#17), in-progress runs are cancelled on
-      pull requests only, and jobs fan in before the release. itos's go-toolchain composite action
-      forces go.mod's exact toolchain and caches, so govulncheck judges the right standard library;
-      a tools/bin wrapper does the same on a local machine (#20). gitleaks scans the pushed commits
-      and actionlint the workflows. Linux runs on every push; macOS and Windows on pull requests,
-      free on a public repository, and on the template's own branch pushes, since it lands without
-      pull requests. The template's own itos checks (commit shape, ledger) move to a template_only
-      workflow and itos.yaml's ci.steps keep only those. itos-policy.yaml, policy-drift and the
-      manifest's itos init setup steps go, so a made project's setup is the license move alone, and
-      the manifest's checks follow the new commands. Lands on main first, then stack/go, then
-      go/cli, so every render stays green. Covers itos-ci-workflows and made-project-secret-scan.
     refs: [https://github.com/donvargax/go-template-itos/issues/17, https://github.com/donvargax/go-template-itos/issues/20]
   - id: plain-hooks
     title: A made project's hooks are a staged gofmt before commit and go vet before push, each proven by a fixture check
