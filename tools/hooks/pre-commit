@@ -13,8 +13,8 @@
 # repository of its own.
 #
 # Taken from itos-cc's tools/hooks/pre-commit
-# (https://github.com/donvargax/itos-cc). It replaces a hook that ran
-# golangci-lint and the networked govulncheck over the whole module on every
+# (https://github.com/donvargax/itos-cc). It replaces a hook that ran the
+# linters and the networked vulnerability check over the whole module on every
 # commit; both stay in CI (docs/go.md, Quality checks), so a commit pays only
 # for the files it stages.
 set -eu
