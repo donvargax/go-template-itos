@@ -969,6 +969,11 @@ items:
 
       kong: pin github.com/donvargax/kong v1.17.1-itos.1, tagged 2026-11-23 (the fork rebased on
       upstream v1.17.0); v1.16.2-itos.2 is no longer needed.
+
+      T-68 leaves one temporary arrow, internal/cli -> internal/engine/counting/port, in the
+      depguard ui rule and tools/bin/architecture-check, because cli classifies read failures. This
+      item moves that classification into internal/slices/count/command (itos-container's
+      classify.go shape) and removes the arrow.
     refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
   - id: scenarios-two-drivers
     title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
