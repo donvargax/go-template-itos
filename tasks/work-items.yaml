@@ -1080,6 +1080,10 @@ items:
       the before-1.0 rule (#2); release-notes reading git trailers instead of itos's commit footers;
       itos-cc's tools/bin/notices writing THIRD_PARTY_NOTICES, checked in CI with -check and shipped
       in the archives. Attestation stays on.
+
+      Made projects have no commit-header check, so release-version must tolerate a header that is
+      not a Conventional Commit: it counts as a patch-level change and the output says which commits
+      were read that way, rather than failing the release.
     refs: [https://github.com/donvargax/go-template-itos/issues/2, https://github.com/donvargax/go-template-itos/issues/8]
   - id: ko-image
     title: A release publishes a container image through GoReleaser's ko
