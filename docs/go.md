@@ -127,11 +127,13 @@ CI's `static` and `test` jobs run these checks in order:
   coverage from its own tests.
 - The scenarios, `go test ./features -count=1`, which build the binary Go's test cache cannot
   track.
-- `tools/bin/pinned itos-cc mutation run --count 10 --since <base> --seed <base>
+- `tools/bin/pinned itos-cc mutation run --count 10 --since <base> --seed <base> --all-tests
   --fail-uncovered=lines cmd internal`, run fresh on each push. The base is the pull request's
   base or the push's before; a branch's first push has no base and runs the packages with no
-  `--since`, seeded by the head. A mutant that survives or a line no test reaches fails the
-  step. No mutation result is committed: `.metrics/` is ignored.
+  `--since` and no `--fail-uncovered`, seeded by the head, where only a surviving mutant fails
+  the step. With a base, a mutant that survives or a changed line no test reaches fails it.
+  `--all-tests` is there because `cmd` is reached only through the scenarios. No mutation
+  result is committed: `.metrics/` is ignored.
 
 Tools are pinned:
 
@@ -151,7 +153,7 @@ runs the Go steps, the scenarios and the Linux, macOS and Windows tests on the p
 `main`, and the release job after them, as `docs/CLI.md` describes.
 
 The project starts with no mutation results and commits none. A branch's first push mutates the
-whole packages and each later push the functions it changes; a surviving mutant is a test to write.
+whole packages, judging survivors only, and each later push the functions it changes; a surviving mutant is a test to write.
 `itos-cc.yaml` comes with the template's reviewed exceptions. Most still hold, their hashes
 covering a function's body; one whose function holds the project's name, such as `cmd`'s `run`,
 goes stale, and its reviewed reason is re-applied with `itos-cc mutation except` when that
