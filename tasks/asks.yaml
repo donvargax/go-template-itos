@@ -173,6 +173,7 @@ questions:
   - id: q-38
     item: "T-69"
     question: "Which kong does go/cli build on: upstream alecthomas/kong, or the person's fork github.com/donvargax/kong?"
+    answer: "The fork, github.com/donvargax/kong at v1.17.1-itos.1 (the person, 2026-11-23). It adds typed parse errors and an exported Suggest rule, so the UI classifies a bad flag or an unknown command by its type rather than by its message, and suggests the command meant (itos-cc's decisions 35 and 62). go.mod requires alecthomas/kong and replaces it with the fork, so imports keep the upstream path. The replace retires when upstream kong takes the change."
   - id: q-39
     item: "T-69"
     question: "Which exit codes, precedence and problem shape do go/cli's commands use: the template's 0, 1, 2, 3, 70, 75 and 130, or itos-cc's 0, 1, 75, 80, 81, 82, 100 and 130 with an explicit precedence?"
