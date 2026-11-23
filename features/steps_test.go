@@ -104,6 +104,12 @@ func initializeScenario(sc *godog.ScenarioContext, root, bin string) {
 		}
 		return nil
 	})
+	sc.Step(`^its error output is empty$`, func() error {
+		if w.stderr != "" {
+			return fmt.Errorf("error output is not empty\n%s", w.report())
+		}
+		return nil
+	})
 	sc.Step(`^its error output says "([^"]*)"$`, func(text string) error {
 		if !strings.Contains(w.stderr, text) {
 			return fmt.Errorf("error output does not say %q\n%s", text, w.report())
@@ -124,6 +130,7 @@ func initializeScenario(sc *godog.ScenarioContext, root, bin string) {
 	})
 
 	// The --json object, as a script reads it.
+	sc.Step(`^its JSON output gives the subject "([^"]*)" as "([^"]*)"$`, w.jsonGivesSubject)
 	sc.Step(`^its JSON output names the problem "([^"]*)"$`, w.jsonNamesProblem)
 	sc.Step(`^its JSON output gives file "([^"]*)", (\d+) lines and (\d+) words$`, w.jsonGivesCounts)
 	sc.Step(`^its JSON output gives each problem a rule, a message and a fix$`, w.jsonProblemsComplete)
@@ -500,6 +507,24 @@ func (w *world) jsonNamesProblem(rule string) error {
 		}
 	}
 	return fmt.Errorf("no problem of the JSON output has the rule %q\n%s", rule, w.report())
+}
+
+// jsonGivesSubject is whether the object's one problem holds the key, beside
+// its rule, message and fix, as the value: what the problem is about, which a
+// script reads without parsing a sentence.
+func (w *world) jsonGivesSubject(key, value string) error {
+	object, err := w.json()
+	if err != nil {
+		return err
+	}
+	problems, _ := object["problems"].([]any)
+	for _, one := range problems {
+		problem, _ := one.(map[string]any)
+		if problem[key] == value {
+			return nil
+		}
+	}
+	return fmt.Errorf("no problem of the JSON output has %s %q\n%s", key, value, w.report())
 }
 
 // jsonGivesCounts is whether the success object's file is file, its lines

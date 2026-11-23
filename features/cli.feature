@@ -3,8 +3,10 @@ Feature: The command line
   The rules every command of a project made from this template follows, held by the
   built binary. The harness stamps the binary it builds with a known version and
   commit, as a release's build is stamped with the release's, so a scenario can tell
-  a stamp from the dev version of a build without one. A usage failure is exit 2 and
-  names what was wrong in words a person reads, never kong's own such as "EOL".
+  a stamp from the dev version of a build without one. A usage failure is exit 80,
+  an unknown command exit 81, and each names what was wrong in words a person reads,
+  never kong's own such as "EOL". With --json the failure is one object on stdout and
+  nothing is printed on stderr.
 
   @ID-CLI-01 @count-cli
   Scenario: --version prints the version stamped at build
@@ -27,53 +29,55 @@ Feature: The command line
     Then it exits with code 0
     And the second line of its standard output is "commit" and the stamped commit
 
-  @ID-CLI-04 @count-cli
-  Scenario: an unknown command exits 2, naming it and the command meant
+  @ID-CLI-04 @count-cli @wip
+  Scenario: an unknown command exits 81, naming it and the command meant
     When go-template-itos runs with "coun"
-    Then it exits with code 2
+    Then it exits with code 81
     And its error output says "coun"
     And its error output says "count"
 
-  @ID-CLI-05 @count-cli
-  Scenario: an unknown flag exits 2, naming it
+  @ID-CLI-05 @count-cli @wip
+  Scenario: an unknown flag exits 80, naming it
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --bogus"
-    Then it exits with code 2
+    Then it exits with code 80
     And its error output says "--bogus"
 
   # kong takes a switch given a value; the mappers and the hook on kong's parse
   # refuse it in our words instead.
-  @ID-CLI-06 @count-cli
-  Scenario: a switch given a value exits 2, naming it
+  @ID-CLI-06 @count-cli @wip
+  Scenario: a switch given a value exits 80, naming it
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --json=yes"
-    Then it exits with code 2
+    Then it exits with code 80
     And its error output says "--json"
     And its error output does not say "EOL"
 
   # Decision 1: a flag that is not cumulative is given once. A switch and its
   # --no- pair count as one flag, so giving both is giving it twice; the
   # environment variable is not the flag, and still takes a value beside it.
-  @ID-CLI-08 @T-14
-  Scenario: a switch given twice exits 2, naming it
+  @ID-CLI-08 @T-14 @wip
+  Scenario: a switch given twice exits 80, naming it
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --json --json"
-    Then it exits with code 2
-    And its error output says "--json"
+    Then it exits with code 80
+    And its JSON output names the problem "flags.repeated"
+    And its error output is empty
     And its standard output does not say "words"
 
-  @ID-CLI-09 @T-14
-  Scenario: a switch with its --no- pair exits 2, naming it
+  @ID-CLI-09 @T-14 @wip
+  Scenario: a switch with its --no- pair exits 80, naming it
     Given the file "notes.txt" contains "one two"
     When go-template-itos runs with "count notes.txt --no-json --json"
-    Then it exits with code 2
-    And its error output says "--json"
+    Then it exits with code 80
+    And its JSON output names the problem "flags.repeated"
+    And its error output is empty
     And its standard output does not say "words"
 
-  @ID-CLI-07 @count-cli
+  @ID-CLI-07 @count-cli @wip
   Scenario: version takes no argument and refuses one
     When go-template-itos runs with "version extra"
-    Then it exits with code 2
+    Then it exits with code 80
     And its error output says "extra"
 
   # A script reads the version as JSON, as it reads count's: one object on one
@@ -127,9 +131,32 @@ Feature: The command line
 
   # Under --json the interrupt is a failure like any other: one object, ok false,
   # its problem's rule what a script matches on.
-  @ID-CLI-15 @cli-ctrl-c
-  Scenario: an interrupt under --json prints the INTERRUPTED problem
+  @ID-CLI-15 @cli-ctrl-c @wip
+  Scenario: an interrupt under --json prints the interrupted problem
     When go-template-itos runs with "count - --json" and its standard input left open
     And it is interrupted while it waits
     Then it exits with code 130
-    And its JSON output names the problem "INTERRUPTED"
+    And its JSON output names the problem "interrupted"
+
+  # The problem names the command as it was written, in a key of its own beside the
+  # rule, so a script reads it without parsing a sentence, and the fix says the one
+  # meant. With --json nothing goes to stderr.
+  @ID-CLI-16 @count-cli @wip
+  Scenario: an unknown command under --json exits 81 and names the command meant
+    When go-template-itos runs with "coun --json"
+    Then it exits with code 81
+    And its JSON output names the problem "command.unknown"
+    And its JSON output gives the subject "command" as "coun"
+    And its standard output says "Did you mean 'count'?"
+    And its error output is empty
+
+  # A bad flag is a usage failure of its own rule, naming the flag as it was written
+  # in a key of its own.
+  @ID-CLI-17 @count-cli @wip
+  Scenario: an unknown flag under --json exits 80 and names the flag
+    Given the file "notes.txt" contains "one two"
+    When go-template-itos runs with "count notes.txt --bogus --json"
+    Then it exits with code 80
+    And its JSON output names the problem "flags.unknown"
+    And its JSON output gives the subject "flag" as "--bogus"
+    And its error output is empty

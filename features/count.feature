@@ -7,13 +7,13 @@ Feature: Count
   never the input's contents. --json prints one object, schema 1, with ok, file (the
   argument as given, - for standard input), lines and words, and it prints the hint
   nowhere. Every failure prints its own object, ok false, with problems carrying rule,
-  message and fix. The exit code comes from the kind of the error, in the UI's sealed
-  switch alone: 2 for a usage failure, 3 for an input that is missing
-  (COUNT_INPUT_MISSING) or otherwise unreadable, a directory included
-  (COUNT_INPUT_UNREADABLE). A kind no case classifies is the 70 of an unclassified bug,
-  never a child status passed through, and count itself never refuses with 1. No
-  arguments and --help print help on stdout with exit 0, while count without its file is
-  a usage failure. --help and --version are actions; --json is a negatable switch with
+  message and fix, and with --json nothing is printed on stderr. The exit code comes from
+  the kind of the error, in the count slice's classifier alone: 80 for a usage failure, 82
+  for an input that is missing (count.input-missing) or otherwise unreadable, a directory
+  included (count.input-unreadable). A kind no classifier claims is the 100 of an
+  unclassified bug, never a child status passed through, and count itself never refuses
+  with 1. No arguments and --help print help on stdout with exit 0, while count without
+  its file is a usage failure. --help and --version are actions; --json is a negatable switch with
   GO_TEMPLATE_ITOS_JSON, the project's name in upper case. -- ends the options and flags
   are accepted in any position.
 
@@ -96,36 +96,38 @@ Feature: Count
     Then it exits with code 0
     And its JSON output gives file "long.txt", 1 lines and 1 words
 
-  # Exit 3 is the environment's, not a refusal: the input the person named is not
+  # Exit 82 is the environment's, not a refusal: the input the person named is not
   # there. The rule ID is what a script matches on, not the sentence.
-  @ID-COUNT-10 @count-cli
-  Scenario: a missing file exits 3 with COUNT_INPUT_MISSING
+  @ID-COUNT-10 @count-cli @wip
+  Scenario: a missing file exits 82 with count.input-missing
     When go-template-itos runs with "count absent.txt --json"
-    Then it exits with code 3
-    And its JSON output names the problem "COUNT_INPUT_MISSING"
-    And its error output says "absent.txt"
+    Then it exits with code 82
+    And its JSON output names the problem "count.input-missing"
+    And its JSON output gives the subject "file" as "absent.txt"
 
   # A directory exists and still cannot be read as bytes; a platform says so
   # differently, the kind and the code are the same.
-  @ID-COUNT-11 @count-cli
-  Scenario: a directory exits 3 with COUNT_INPUT_UNREADABLE
+  @ID-COUNT-11 @count-cli @wip
+  Scenario: a directory exits 82 with count.input-unreadable
     Given an empty folder "adirectory"
     When go-template-itos runs with "count adirectory --json"
-    Then it exits with code 3
-    And its JSON output names the problem "COUNT_INPUT_UNREADABLE"
+    Then it exits with code 82
+    And its JSON output names the problem "count.input-unreadable"
 
   # With --json even a failure is one object, and every problem says what to do next,
   # not only what went wrong: a script reads the rule and prints the fix.
-  @ID-COUNT-12 @count-cli
+  @ID-COUNT-12 @count-cli @wip
   Scenario: a JSON failure carries a rule, a message and a fix for each problem
     When go-template-itos runs with "count absent.txt --json"
-    Then it exits with code 3
+    Then it exits with code 82
     And its JSON output gives each problem a rule, a message and a fix
+    And its JSON output gives the subject "file" as "absent.txt"
+    And its error output is empty
 
-  @ID-COUNT-13 @count-cli
+  @ID-COUNT-13 @count-cli @wip
   Scenario: count without its file is a usage failure
     When go-template-itos runs with "count"
-    Then it exits with code 2
+    Then it exits with code 80
     And its error output says "count"
     And its error output does not say "EOL"
 
@@ -142,15 +144,16 @@ Feature: Count
   # The help of a command gives the shape of its --json output and every exit code it
   # can return, so the two agree without a reader holding the source. The wording below
   # is what the help must hold, because a scenario checks it and a script reads it.
-  @ID-COUNT-15 @count-cli
+  @ID-COUNT-15 @count-cli @wip
   Scenario: count's help names its JSON shape and its exit codes
     When go-template-itos runs with "count --help"
     Then it exits with code 0
     And its standard output says "--json prints one object: schema 1, ok true, file the argument, lines and words."
     And its standard output says "Exit codes:"
     And its standard output says "0  success"
-    And its standard output says "2  the command line is wrong"
-    And its standard output says "3  the input is missing or cannot be read"
+    And its standard output says "80  the command line is wrong"
+    And its standard output says "82  the input is missing or cannot be read"
+    And its standard output says "100  an error nothing classified, a bug"
 
   # Decision 8 gives every command the exit code 130, so count's help lists it
   # beside the codes count returns of its own.
