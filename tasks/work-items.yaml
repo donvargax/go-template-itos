@@ -23,6 +23,7 @@ queue:
   - renovate-plain
   - nightly
   - release-plain
+  - ko-image
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
