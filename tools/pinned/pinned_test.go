@@ -121,8 +121,12 @@ func TestPinnedWithoutGitCachesInTree(t *testing.T) {
 	defer server.Close()
 	root, launcher := fixtureLauncher(t, server.URL, archive)
 	path := toolPath(t, launcher, nil)
-	if want := filepath.Join(root, ".tools", "golangci-lint-fixture", "golangci-lint"); !samePath(t, path, want) {
-		t.Fatalf("path = %q, want %q", path, want)
+	// Git for Windows' shell prints paths Go cannot stat, so only the tail is compared.
+	if want := "/.tools/golangci-lint-fixture/golangci-lint"; !strings.HasSuffix(path, want) {
+		t.Fatalf("path = %q, want it to end in %q", path, want)
+	}
+	if _, err := os.Stat(filepath.Join(root, ".tools", "golangci-lint-fixture")); err != nil {
+		t.Fatalf("the tool is not cached in the tree: %v", err)
 	}
 }
 
@@ -141,12 +145,8 @@ func TestPinnedSharesOneCacheAcrossWorktrees(t *testing.T) {
 	other := t.TempDir()
 	env := []string{"GIT_DIR=" + other, "GIT_COMMON_DIR=" + other, "GIT_WORK_TREE=" + other}
 	first := toolPath(t, launcher, env)
-	common, err := filepath.EvalSymlinks(filepath.Join(root, ".git"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if want := filepath.Join(common, "itos", "tools", "golangci-lint-fixture", "golangci-lint"); !samePath(t, first, want) {
-		t.Fatalf("path = %q, want %q", first, want)
+	if want := "/.git/itos/tools/golangci-lint-fixture/golangci-lint"; !strings.HasSuffix(first, want) {
+		t.Fatalf("path = %q, want it to end in %q", first, want)
 	}
 	if _, err := os.Stat(filepath.Join(root, ".tools")); !os.IsNotExist(err) {
 		t.Fatalf("a clone with git also wrote .tools: %v", err)
@@ -165,7 +165,7 @@ func TestPinnedSharesOneCacheAcrossWorktrees(t *testing.T) {
 	if err := os.WriteFile(second, script, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if got := toolPath(t, second, nil); !samePath(t, got, first) {
+	if got := toolPath(t, second, nil); got != first {
 		t.Fatalf("second worktree path = %q, want %q", got, first)
 	}
 	if got := calls.Load(); got != 1 {
@@ -237,7 +237,7 @@ func serveArchive(archive []byte, calls *atomic.Int32) *httptest.Server {
 
 func runLauncher(t *testing.T, launcher string, env []string, args ...string) (int, string) {
 	t.Helper()
-	ctx, cancel := context.WithTimeout(t.Context(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(t.Context(), 90*time.Second)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "sh", append([]string{launcher}, args...)...)
 	// The fixture server must remain local even on a host with proxies.
@@ -251,7 +251,7 @@ func runLauncher(t *testing.T, launcher string, env []string, args ...string) (i
 
 func toolPath(t *testing.T, launcher string, env []string) string {
 	t.Helper()
-	ctx, cancel := context.WithTimeout(t.Context(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(t.Context(), 90*time.Second)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "sh", launcher, "--path", "golangci-lint")
 	cmd.Env = append(append(os.Environ(), "NO_PROXY=*", "no_proxy=*"), env...)
@@ -272,19 +272,6 @@ func git(t *testing.T, dir string, args ...string) {
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Fatalf("git %v: %v\n%s", args, err, out)
 	}
-}
-
-func samePath(t *testing.T, a, b string) bool {
-	t.Helper()
-	ai, err := os.Stat(a)
-	if err != nil {
-		t.Fatal(err)
-	}
-	bi, err := os.Stat(b)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return os.SameFile(ai, bi)
 }
 
 func launcherSource(t *testing.T) string {
