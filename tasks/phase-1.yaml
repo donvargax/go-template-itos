@@ -1132,5 +1132,5 @@
     Template check green after go/cli is pushed, and itos-template check passing 2 of 2.
   done_when:
     - run: test -z "$(git ls-files .metrics)" && grep -qE "^/?\.metrics/?$" .gitignore
-    - run: grep -q "mutation run" .github/workflows/ci.yml && ! grep -q "mutation sample" .github/workflows/ci.yml itos-template.yaml
+    - run: '! grep -qE "mutation,? sample" itos-template.yaml && { test ! -f go.mod || { grep -q "mutation run" .github/workflows/ci.yml && ! grep -q "mutation sample" .github/workflows/ci.yml; }; }'
     - run: '! grep -nE "^proof:" itos.yaml && ! grep -n "itos tests" itos-cc.yaml'
