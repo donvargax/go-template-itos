@@ -173,3 +173,6 @@ questions:
   - id: q-38
     item: "T-69"
     question: "Which kong does go/cli build on: upstream alecthomas/kong, or the person's fork github.com/donvargax/kong?"
+  - id: q-39
+    item: "T-69"
+    question: "Which exit codes, precedence and problem shape do go/cli's commands use: the template's 0, 1, 2, 3, 70, 75 and 130, or itos-cc's 0, 1, 75, 80, 81, 82, 100 and 130 with an explicit precedence?"
