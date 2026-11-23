@@ -4,7 +4,9 @@ set -eu
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
-(cd "$root" && go build -o "$tmp/architecture-check" ./tools/architecture/check) || exit 2
+# GOEXE is .exe on Windows, where a program must carry it to be run by name.
+exe=$(go env GOEXE)
+(cd "$root" && go build -o "$tmp/architecture-check$exe" ./tools/architecture/check) || exit 2
 status=0
-"$tmp/architecture-check" "$@" || status=$?
+"$tmp/architecture-check$exe" "$@" || status=$?
 exit "$status"
