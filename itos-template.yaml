@@ -42,7 +42,7 @@ stacks:
       - [tools/bin/domain-coverage]
       - [tools/bin/pre-commit-check]
       - [go, run, ./tools/bin/pre-push-check]
-      - [tools/bin/pinned, itos-cc, mutation, run, --count, 10, --fail-uncovered=lines, internal]
+      - [tools/bin/pinned, itos-cc, mutation, run, --count, 10, --fail-uncovered, internal]
 
 features:
   - name: cli
@@ -60,7 +60,7 @@ features:
       - [go, test, ./cmd/..., ./internal/...]
       - [tools/bin/domain-coverage]
       - [go, test, ./features, -count=1]
-      - [tools/bin/pinned, itos-cc, mutation, run, --count, 10, --fail-uncovered=lines, cmd, internal]
+      - [tools/bin/pinned, itos-cc, mutation, run, --count, 10, --fail-uncovered, cmd, internal]
 
 questions:
   - name: name
