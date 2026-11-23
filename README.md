@@ -44,9 +44,9 @@ records the release it came from.
 
 Each release tags every branch with one version: `main/v0.3.0`, `stack/go/v0.3.0` and
 `go/cli/v0.3.0` make v0.3.0, the newest. It makes the template AGPL-3.0 with a permission
-letting made projects choose their license, while a made project still starts MIT (decision 9),
+letting made projects choose their license, while a made project still starts MIT (the template's decision 9),
 and moves to itos 8.3.0. v0.2.0 laid the Go code out as a shared domain, separate adapters and a
-slice per command (decisions 6 to 8), so a project made from it adds a command without
+slice per command (the template's decisions 6 to 8), so a project made from it adds a command without
 restructuring first; v0.1.0 came before that layout.
 
 ## Practices
@@ -58,7 +58,7 @@ stack adds, `cli` what the command-line feature adds.
   through its own ports ([docs/engineering.md](docs/engineering.md)); `go` lays the code out as
   a shared domain, separate adapters and one slice per command named for it, with a context
   carrying cancellation to the ports, and enforces the import rules with depguard, each proved
-  by a self-test (`docs/go.md`, `docs/architecture.md`).
+  by a self-test (`docs/go.md`, `docs/architecture/`).
 - Tests: behaviour specified first, failing steps committed before the code; the project's own
   fakes, never a mocking library; `go` adds property tests, an 80% domain coverage floor,
   changed-code mutation proof and runs on Linux, macOS and Windows (`docs/go.md`); `cli` runs
@@ -111,7 +111,7 @@ Distributing the template itself, or a modified copy, as a template stays under 
 Releases up to v0.2.0 were MIT licensed and stay so.
 
 A made project starts MIT licensed: the go stack's setup moves `LICENSE.project` to `LICENSE`,
-with `itos-corp`, an illustrative owner literal, replaced by the project's owner (decision 9).
+with `itos-corp`, an illustrative owner literal, replaced by the project's owner (the template's decision 9).
 
 Infrastructure is harvested from donvargax's
 [itos](https://github.com/donvargax/itos) and

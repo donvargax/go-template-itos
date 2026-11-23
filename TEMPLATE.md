@@ -28,7 +28,7 @@ branch adds to this file a section of its own.
 
 `stack/go` supplies the Go foundation: a private counting domain behind a Files port, with real
 disk access at the boundary and an in-memory fake for domain tests. `go/cli` adds a thin command
-entry point over that domain. Each branch's copy of `docs/architecture.md` describes its own code.
+entry point over that domain. Each branch's `docs/architecture/05-building-block-view.md` describes its own code.
 Root policy and documentation are inherited from `main`; language-specific gates travel with
 their code, and stack and feature branches remain buildable projects.
 
@@ -73,3 +73,25 @@ request has landed yet, so the automation stays unverified until one lands on ea
   MIT license names, `LICENSE.project` here and `LICENSE` once setup moves it, which stays true
   after the replacement.
 - Do not replace real upstream tool and preset identities when substituting project identity.
+
+## Architecture of the root
+
+The root carries project policy and shared documentation. It has no executable or Go module.
+Stack and feature branches add the code and checks they need while retaining these shared files.
+A made project's architecture document is `docs/architecture/`, a lean arc42: one file per
+section, only sections with content. Sections 1, 2 and 9 are what an agent always reads, so
+`tools/bin/doc-caps` holds each to 2048 bytes; section 9 indexes the decision records a made
+project ships.
+
+Rendering and template updates belong to itos-template, not to this repository. Templates use
+real literals and git branches; their generated projects do not contain a template interpreter.
+
+## Security and upgrading, for the template
+
+itos's hooks and commit rules are workflow controls, not a security sandbox.
+
+The root uses a pinned itos. Move itos's repository pin with `itos pin <version>` and the
+workflow action with it, to that release's commit with a `# v<version>` comment and no `version`
+input, so the action installs the launcher of the release its ref names. Then apply each step of
+the release's Upgrading section that the branch's configuration meets, and run
+`itos init --agent-rules`. Do not change only the launcher or action version.
