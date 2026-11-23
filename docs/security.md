@@ -13,4 +13,7 @@ including test dependencies and the standard library. Mutation proof and its CI 
 recorded behavior; these controls do not isolate untrusted programs.
 
 gitleaks is pinned in `tools/bin/pinned`, but the project's own CI runs no standing credential
-scan. itos's hooks and commit rules are workflow controls, not a security sandbox.
+scan.
+
+A template's own check commands can execute programs; run them only in an environment
+appropriate to that trust.

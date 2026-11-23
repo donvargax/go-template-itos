@@ -30,5 +30,13 @@ cap() { # <file> <bytes>
 
 cap AGENTS.md 8192
 cap docs/ORCHESTRATING.md 6144
+# What an agent reads at every start, a made project's too: AGENTS.md, MAP.md
+# (skipped while absent) and the three always-read architecture sections
+# (docs/architecture/09-architecture-decisions.md and sections 1 and 2) stay short enough to
+# read whole each time.
+cap MAP.md 2048
+cap docs/architecture/01-introduction-and-goals.md 2048
+cap docs/architecture/02-architecture-constraints.md 2048
+cap docs/architecture/09-architecture-decisions.md 2048
 
 exit "$over"
