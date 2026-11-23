@@ -1010,7 +1010,7 @@ items:
       go-architecture.
     refs: [https://github.com/donvargax/go-template-itos/issues/19, https://github.com/donvargax/go-template-itos/issues/4, https://github.com/donvargax/go-template-itos/issues/5]
   - id: cli-contract-code
-    title: go/cli's commands share itos-cc's exit codes and problems on stock kong, in itos-container's slice layout
+    title: go/cli's commands share itos-cc's exit codes and problems on the kong fork, in itos-container's slice layout
     phase: 1
     owner: null
     status: todo
@@ -1024,6 +1024,13 @@ items:
       (itos-cc's internal/cli). Input is checked at its edge into value objects with unexported
       fields and trusted inside. Decisions 7 and 8 stay. The scenarios change first, red. Settles #6
       and #5's secure by design.
+
+      Settled 2026-11-23, replacing stock kong: go/cli uses the kong fork,
+      github.com/donvargax/kong, for its typed parse errors and its exported Suggest rule (itos-cc's
+      decisions 35 and 62), through a go.mod replace, while the upstream pull request waits. Take
+      v1.17.1-itos.1, the fork's rebase onto upstream v1.17.0, if that tag exists when the item
+      starts, else v1.16.2-itos.2 and move later. The item records this as a decision that ships,
+      naming the fork, why, and what retires it (the upstream change landing).
     refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
   - id: scenarios-two-drivers
     title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
