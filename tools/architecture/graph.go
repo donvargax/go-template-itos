@@ -129,7 +129,11 @@ func allowed(from, to role, target string, test bool) bool {
 		return from.owner == to.owner || (isEngine(to) && (isSlice(from) || isEngine(from)))
 	}
 	switch from.kind {
-	case "cli", "version":
+	case "cli":
+		// temporary: cli classifies read failures until cli-contract-code moves that
+		// into the count slice, as itos-container does, and removes this arrow.
+		return target == "internal/engine/counting/port"
+	case "version":
 		return false
 	case "release":
 		return to.kind == "release"

@@ -1238,5 +1238,1734 @@
     "Import": "$module/internal/engine/count/port",
     "Kind": "allow",
     "Rule": "siblings"
+  },
+  {
+    "Name": "cli-domain-os",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-domain-os-exec",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-domain-net",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "net",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-domain-net-http",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "net/http",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-domain-syscall",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "syscall",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-domain-golang.org-x-sys-unix",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "golang.org/x/sys/unix",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-domain-encoding-json",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "encoding/json",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-domain-flag",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "flag",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-domain-github.com-alecthomas-kong",
+    "File": "internal/slices/newname/domain/probe.go",
+    "Import": "github.com/alecthomas/kong",
+    "Kind": "lint",
+    "Rule": "domain,kong"
+  },
+  {
+    "Name": "cli-slices/newname-nested-io",
+    "File": "internal/slices/newname/domain/nested/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "cli-slices/newname-port-io",
+    "File": "internal/slices/newname/port/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "port,store-ports-io"
+  },
+  {
+    "Name": "cli-slices/newname-port-domain",
+    "File": "internal/slices/newname/port/probe.go",
+    "Import": "$module/internal/slices/newname/domain",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-slices/newname-port-portother",
+    "File": "internal/slices/newname/port/probe.go",
+    "Import": "$module/internal/slices/newname/portother",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-domain-adapter-count",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "$module/internal/slices/count/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-domain-adapter-countother",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "$module/internal/slices/countother/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-command-adapter-count",
+    "File": "internal/slices/count/command/probe.go",
+    "Import": "$module/internal/slices/count/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-command-adapter-countother",
+    "File": "internal/slices/count/command/probe.go",
+    "Import": "$module/internal/slices/countother/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-sibling-production",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "$module/internal/slices/countother/domain",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-engine-slice-production",
+    "File": "internal/engine/shared/domain/probe.go",
+    "Import": "$module/internal/slices/count/domain",
+    "Kind": "graph",
+    "Rule": "outside"
+  },
+  {
+    "Name": "cli-sibling-internal-test",
+    "File": "internal/slices/count/domain/probe_test.go",
+    "Import": "$module/internal/slices/countother/domain",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-engine-slice-internal-test",
+    "File": "internal/engine/shared/domain/probe_test.go",
+    "Import": "$module/internal/slices/count/domain",
+    "Kind": "graph",
+    "Rule": "outside"
+  },
+  {
+    "Name": "cli-sibling-external-test",
+    "File": "internal/slices/count/domain/external_test.go",
+    "Import": "$module/internal/slices/countother/domain",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-engine-slice-external-test",
+    "File": "internal/engine/shared/domain/external_test.go",
+    "Import": "$module/internal/slices/count/domain",
+    "Kind": "graph",
+    "Rule": "outside"
+  },
+  {
+    "Name": "cli-adapter-other-owner",
+    "File": "internal/slices/count/disk/probe.go",
+    "Import": "$module/internal/slices/countother/domain",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-adapter-ui",
+    "File": "internal/slices/count/disk/probe.go",
+    "Import": "$module/internal/cli",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-layout-internal/engine/shared/command",
+    "File": "internal/engine/shared/command/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "cli-layout-internal/slices/count",
+    "File": "internal/slices/count/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "cli-ui-project-probe.go",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/slices/count/port",
+    "Kind": "lint",
+    "Rule": "ui"
+  },
+  {
+    "Name": "cli-ui-project-probe_test.go",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/slices/count/port",
+    "Kind": "lint",
+    "Rule": "ui-tests"
+  },
+  {
+    "Name": "cli-version-leaf",
+    "File": "internal/version/probe.go",
+    "Import": "$module/internal/cli",
+    "Kind": "lint",
+    "Rule": "version"
+  },
+  {
+    "Name": "cli-release-slice",
+    "File": "internal/release/probe.go",
+    "Import": "$module/internal/slices/count/port",
+    "Kind": "lint",
+    "Rule": "release"
+  },
+  {
+    "Name": "cli-outside-internal",
+    "File": "tools/probe/probe.go",
+    "Import": "$module/internal/version",
+    "Kind": "graph",
+    "Rule": "toplevel"
+  },
+  {
+    "Name": "cli-unlinked-fake-slices/count",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "$module/internal/slices/count/port/porttest",
+    "Kind": "graph",
+    "Rule": "test support",
+    "Flags": [
+      "--toplevel"
+    ]
+  },
+  {
+    "Name": "cli-suppression-//nolint:depguard",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n//nolint:depguard\nconst X=1\n"
+  },
+  {
+    "Name": "cli-suppression-//nolint:unused,depguard",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n//nolint:unused,depguard\nconst X=1\n"
+  },
+  {
+    "Name": "cli-suppression-//nolint",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n//nolint\nconst X=1\n"
+  },
+  {
+    "Name": "cli-suppression-//nolint:all",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n//nolint:all\nconst X=1\n"
+  },
+  {
+    "Name": "cli-suppression-/*nolint:depguard*/",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n/*nolint:depguard*/\nconst X=1\n"
+  },
+  {
+    "Name": "cli-allowed-comment-51",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "siblings",
+    "Source": "package domain\nconst X=\"//nolint:depguard\"\n"
+  },
+  {
+    "Name": "cli-allowed-comment-52",
+    "File": "internal/slices/count/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "siblings",
+    "Source": "package domain\n//nolint:gosec -- fixture control\nconst X=1\n"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-domain-bytes",
+    "File": "internal/slices/fresh/domain/probe.go",
+    "Import": "bytes",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-domain-errors",
+    "File": "internal/slices/fresh/domain/probe.go",
+    "Import": "errors",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-domain-strings",
+    "File": "internal/slices/fresh/domain/probe.go",
+    "Import": "strings",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-domain-$module/internal/slices/fresh/domain/nested",
+    "File": "internal/slices/fresh/domain/probe.go",
+    "Import": "$module/internal/slices/fresh/domain/nested",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-domain-$module/internal/slices/fresh/port",
+    "File": "internal/slices/fresh/domain/probe.go",
+    "Import": "$module/internal/slices/fresh/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-domain-$module/internal/engine/shared/domain",
+    "File": "internal/slices/fresh/domain/probe.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-domain-$module/internal/engine/shared/port",
+    "File": "internal/slices/fresh/domain/probe.go",
+    "Import": "$module/internal/engine/shared/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-port-bytes",
+    "File": "internal/slices/fresh/port/probe.go",
+    "Import": "bytes",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-port-errors",
+    "File": "internal/slices/fresh/port/probe.go",
+    "Import": "errors",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-port-strings",
+    "File": "internal/slices/fresh/port/probe.go",
+    "Import": "strings",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-port-$module/internal/slices/fresh/port/nested",
+    "File": "internal/slices/fresh/port/probe.go",
+    "Import": "$module/internal/slices/fresh/port/nested",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-port-$module/internal/engine/shared/port",
+    "File": "internal/slices/fresh/port/probe.go",
+    "Import": "$module/internal/engine/shared/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-disk-$module/internal/slices/fresh/domain",
+    "File": "internal/slices/fresh/disk/probe.go",
+    "Import": "$module/internal/slices/fresh/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-disk-$module/internal/slices/fresh/port",
+    "File": "internal/slices/fresh/disk/probe.go",
+    "Import": "$module/internal/slices/fresh/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-disk-$module/internal/slices/fresh/disk/nested",
+    "File": "internal/slices/fresh/disk/probe.go",
+    "Import": "$module/internal/slices/fresh/disk/nested",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-disk-$module/internal/engine/shared/domain",
+    "File": "internal/slices/fresh/disk/probe.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-allowed-slices/fresh-disk-$module/internal/engine/shared/port",
+    "File": "internal/slices/fresh/disk/probe.go",
+    "Import": "$module/internal/engine/shared/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-test-fake-slices/fresh-domain",
+    "File": "internal/slices/fresh/domain/probe_test.go",
+    "Import": "$module/internal/slices/fresh/port/porttest",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-test-fake-slices/fresh-domain/nested",
+    "File": "internal/slices/fresh/domain/nested/probe_test.go",
+    "Import": "$module/internal/slices/fresh/port/porttest",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-test-fake-slices/fresh-port",
+    "File": "internal/slices/fresh/port/probe_test.go",
+    "Import": "$module/internal/slices/fresh/port/porttest",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-test-fake-slices/fresh-disk",
+    "File": "internal/slices/fresh/disk/probe_test.go",
+    "Import": "$module/internal/slices/fresh/port/porttest",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-rapid-slices/fresh-probe.go",
+    "File": "internal/slices/fresh/domain/nested/probe.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "lint",
+    "Rule": "domain,rapid"
+  },
+  {
+    "Name": "cli-rapid-slices/fresh-probe_test.go",
+    "File": "internal/slices/fresh/domain/nested/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "allow",
+    "Rule": "rapid"
+  },
+  {
+    "Name": "cli-rapid-command",
+    "File": "internal/slices/fresh/command/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "lint",
+    "Rule": "command,rapid"
+  },
+  {
+    "Name": "cli-rapid-port",
+    "File": "internal/slices/fresh/port/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "lint",
+    "Rule": "port-tests,rapid"
+  },
+  {
+    "Name": "cli-rapid-disk",
+    "File": "internal/slices/fresh/disk/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "lint",
+    "Rule": "rapid"
+  },
+  {
+    "Name": "cli-command-allowed-$module/internal/slices/fresh/domain",
+    "File": "internal/slices/fresh/command/probe.go",
+    "Import": "$module/internal/slices/fresh/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-command-allowed-$module/internal/slices/fresh/port",
+    "File": "internal/slices/fresh/command/probe.go",
+    "Import": "$module/internal/slices/fresh/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-command-allowed-$module/internal/engine/shared/domain",
+    "File": "internal/slices/fresh/command/probe.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-command-allowed-$module/internal/engine/shared/port",
+    "File": "internal/slices/fresh/command/probe.go",
+    "Import": "$module/internal/engine/shared/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-command-allowed-$module/internal/cli",
+    "File": "internal/slices/fresh/command/probe.go",
+    "Import": "$module/internal/cli",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-two-slices-sharing",
+    "File": "internal/slices/alpha/domain/probe.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "allow",
+    "Rule": "siblings",
+    "Files": {
+      "internal/slices/beta/domain/base.go": "package domain\nimport _ \"github.com/itos-corp/go-template-itos/internal/engine/shared/domain\"\n"
+    }
+  },
+  {
+    "Name": "cli-rapid-direct-slices/fresh",
+    "File": "internal/slices/fresh/domain/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "allow",
+    "Rule": "rapid"
+  },
+  {
+    "Name": "cli-standard-library-internal/cli/probe.go",
+    "File": "internal/cli/probe.go",
+    "Import": "encoding/json",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-standard-library-internal/version/probe.go",
+    "File": "internal/version/probe.go",
+    "Import": "runtime/debug",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-standard-library-internal/release/probe.go",
+    "File": "internal/release/probe.go",
+    "Import": "os/exec",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-standard-library-internal/release/probe_test.go",
+    "File": "internal/release/probe_test.go",
+    "Import": "testing",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-standard-library-internal/release/releasetest/probe.go",
+    "File": "internal/release/releasetest/probe.go",
+    "Import": "os",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-standard-library-internal/slices/fresh/command/probe.go",
+    "File": "internal/slices/fresh/command/probe.go",
+    "Import": "fmt",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-standard-library-internal/slices/fresh/domain/probe_test.go",
+    "File": "internal/slices/fresh/domain/probe_test.go",
+    "Import": "testing",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-standard-library-internal/slices/fresh/domain/nested/probe_test.go",
+    "File": "internal/slices/fresh/domain/nested/probe_test.go",
+    "Import": "os",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-standard-library-internal/slices/fresh/port/porttest/probe.go",
+    "File": "internal/slices/fresh/port/porttest/probe.go",
+    "Import": "testing",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-external-own-internal/cli",
+    "File": "internal/cli/external_test.go",
+    "Import": "$module/internal/cli",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-external-own-internal/version",
+    "File": "internal/version/external_test.go",
+    "Import": "$module/internal/version",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-external-own-internal/slices/count/domain",
+    "File": "internal/slices/count/domain/external_test.go",
+    "Import": "$module/internal/slices/count/domain",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-layout-nested-internal/slices/count/domain/porttest",
+    "File": "internal/slices/count/domain/porttest/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "cli-layout-nested-internal/release/fakes",
+    "File": "internal/release/fakes/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "cli-external-own-internal/cli/nested",
+    "File": "internal/cli/nested/external_test.go",
+    "Import": "$module/internal/cli/nested",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-external-own-internal/version/nested",
+    "File": "internal/version/nested/external_test.go",
+    "Import": "$module/internal/version/nested",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-test-leaf-project-internal/version",
+    "File": "internal/version/probe_test.go",
+    "Import": "$module/internal/slices/count/port",
+    "Kind": "lint",
+    "Rule": "version-tests"
+  },
+  {
+    "Name": "cli-release-version-library-probe.go",
+    "File": "tools/bin/release-version/probe.go",
+    "Import": "$module/internal/release",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-version-library-probe_test.go",
+    "File": "tools/bin/release-version/probe_test.go",
+    "Import": "$module/internal/release",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-version-library-external_test.go",
+    "File": "tools/bin/release-version/suite_test.go",
+    "Import": "$module/internal/release",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Files": {
+      "tools/bin/release-version/base.go": "package helper\n"
+    },
+    "Source": "package helper_test\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-version-test-support-probe_test.go",
+    "File": "tools/bin/release-version/probe_test.go",
+    "Import": "$module/internal/release/releasetest",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/releasetest\"\n"
+  },
+  {
+    "Name": "cli-release-version-test-support-external_test.go",
+    "File": "tools/bin/release-version/suite_test.go",
+    "Import": "$module/internal/release/releasetest",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Files": {
+      "tools/bin/release-version/base.go": "package helper\n"
+    },
+    "Source": "package helper_test\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/releasetest\"\n"
+  },
+  {
+    "Name": "cli-release-version-refuse-production-support",
+    "File": "tools/bin/release-version/probe.go",
+    "Import": "$module/internal/release/releasetest",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/releasetest\"\n"
+  },
+  {
+    "Name": "cli-release-version-refuse-other-internal",
+    "File": "tools/bin/release-version/probe.go",
+    "Import": "$module/internal/version",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/version\"\n"
+  },
+  {
+    "Name": "cli-release-version-refuse-test-other-internal",
+    "File": "tools/bin/release-version/probe_test.go",
+    "Import": "$module/internal/version",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/version\"\n"
+  },
+  {
+    "Name": "cli-release-version-refuse-nested-release",
+    "File": "tools/bin/release-version/probe.go",
+    "Import": "$module/internal/release/nested",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/nested\"\n"
+  },
+  {
+    "Name": "cli-release-version-refuse-nested-support",
+    "File": "tools/bin/release-version/probe_test.go",
+    "Import": "$module/internal/release/releasetest/nested",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/releasetest/nested\"\n"
+  },
+  {
+    "Name": "cli-release-version-nested-helper",
+    "File": "tools/bin/release-version/nested/probe.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-notes-library-probe.go",
+    "File": "tools/bin/release-notes/probe.go",
+    "Import": "$module/internal/release",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-notes-library-probe_test.go",
+    "File": "tools/bin/release-notes/probe_test.go",
+    "Import": "$module/internal/release",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-notes-library-external_test.go",
+    "File": "tools/bin/release-notes/suite_test.go",
+    "Import": "$module/internal/release",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Files": {
+      "tools/bin/release-notes/base.go": "package helper\n"
+    },
+    "Source": "package helper_test\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-notes-test-support-probe_test.go",
+    "File": "tools/bin/release-notes/probe_test.go",
+    "Import": "$module/internal/release/releasetest",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/releasetest\"\n"
+  },
+  {
+    "Name": "cli-release-notes-test-support-external_test.go",
+    "File": "tools/bin/release-notes/suite_test.go",
+    "Import": "$module/internal/release/releasetest",
+    "Kind": "allow",
+    "Rule": "toplevel",
+    "Files": {
+      "tools/bin/release-notes/base.go": "package helper\n"
+    },
+    "Source": "package helper_test\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/releasetest\"\n"
+  },
+  {
+    "Name": "cli-release-notes-refuse-production-support",
+    "File": "tools/bin/release-notes/probe.go",
+    "Import": "$module/internal/release/releasetest",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/releasetest\"\n"
+  },
+  {
+    "Name": "cli-release-notes-refuse-other-internal",
+    "File": "tools/bin/release-notes/probe.go",
+    "Import": "$module/internal/version",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/version\"\n"
+  },
+  {
+    "Name": "cli-release-notes-refuse-test-other-internal",
+    "File": "tools/bin/release-notes/probe_test.go",
+    "Import": "$module/internal/version",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/version\"\n"
+  },
+  {
+    "Name": "cli-release-notes-refuse-nested-release",
+    "File": "tools/bin/release-notes/probe.go",
+    "Import": "$module/internal/release/nested",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/nested\"\n"
+  },
+  {
+    "Name": "cli-release-notes-refuse-nested-support",
+    "File": "tools/bin/release-notes/probe_test.go",
+    "Import": "$module/internal/release/releasetest/nested",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release/releasetest/nested\"\n"
+  },
+  {
+    "Name": "cli-release-notes-nested-helper",
+    "File": "tools/bin/release-notes/nested/probe.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-refuse-tools/other-probe.go",
+    "File": "tools/other/probe.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-refuse-tools/other-probe_test.go",
+    "File": "tools/other/probe_test.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-refuse-tools/release-probe.go",
+    "File": "tools/release/probe.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-refuse-tools/release-probe_test.go",
+    "File": "tools/release/probe_test.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-refuse-tools/bin/release-other-probe.go",
+    "File": "tools/bin/release-other/probe.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-release-refuse-tools/bin/release-other-probe_test.go",
+    "File": "tools/bin/release-other/probe_test.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel",
+    "Source": "package helper\nimport _ \"github.com/itos-corp/go-template-itos/internal/release\"\n"
+  },
+  {
+    "Name": "cli-review-command-os",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command-os/exec",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command-net",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "net",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command-net/http",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "net/http",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command-syscall",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "syscall",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command-golang.org/x/sys/unix",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "golang.org/x/sys/unix",
+    "Kind": "lint",
+    "Rule": "command,command-io"
+  },
+  {
+    "Name": "cli-review-command-io/ioutil",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "io/ioutil",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command-path/filepath",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "path/filepath",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command-plugin",
+    "File": "internal/slices/review/command/probe.go",
+    "Import": "plugin",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-os",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-os/exec",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-net",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "net",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-net/http",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "net/http",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-syscall",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "syscall",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-golang.org/x/sys/unix",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "golang.org/x/sys/unix",
+    "Kind": "lint",
+    "Rule": "command,command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-io/ioutil",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "io/ioutil",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-path/filepath",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "path/filepath",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-command/nested-plugin",
+    "File": "internal/slices/review/command/nested/probe.go",
+    "Import": "plugin",
+    "Kind": "lint",
+    "Rule": "command-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-os",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-os/exec",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-net",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "net",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-net/http",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "net/http",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-syscall",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "syscall",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-golang.org/x/sys/unix",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "golang.org/x/sys/unix",
+    "Kind": "lint",
+    "Rule": "porttest,store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-io/ioutil",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "io/ioutil",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-path/filepath",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "path/filepath",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-plugin",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Import": "plugin",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-test-os/exec",
+    "File": "internal/slices/review/port/porttest/probe_test.go",
+    "Import": "os/exec",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-porttest-test-net/http",
+    "File": "internal/slices/review/port/porttest/probe_test.go",
+    "Import": "net/http",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-hidden-testdata/helper",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "$module/internal/slices/review/domain/testdata/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/slices/review/domain/testdata/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "cli-review-slices/review-domain-hidden-_x/helper",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "$module/internal/slices/review/domain/_x/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/slices/review/domain/_x/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "cli-review-slices/review-domain-hidden-.x/helper",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "$module/internal/slices/review/domain/.x/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/slices/review/domain/.x/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "cli-review-slices/review-domain-ignored-tagged",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build architecture_review_never\n\npackage domain\nimport _ \"os/exec\"\n",
+    "Files": {
+      "internal/slices/review/domain/base.go": "package domain\n"
+    },
+    "CompileFiles": [
+      "internal/slices/review/domain/probe.go"
+    ]
+  },
+  {
+    "Name": "cli-review-slices/review-domain-ignored-windows",
+    "File": "internal/slices/review/domain/probe_windows.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe_windows.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build !windows\n\npackage domain\nimport _ \"os/exec\"\n",
+    "Files": {
+      "internal/slices/review/domain/base.go": "package domain\n"
+    },
+    "CompileFiles": [
+      "internal/slices/review/domain/probe_windows.go"
+    ]
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-context",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "context",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-fmt",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "fmt",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-strconv",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "strconv",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-errors",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "errors",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-strings",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "strings",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-sort",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "sort",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-slices",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "slices",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-maps",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "maps",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-bytes",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "bytes",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-unicode",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "unicode",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-domain-pure-time",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "time",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\nimport \"time\"\ntype Timeout time.Duration\n"
+  },
+  {
+    "Name": "cli-review-slices/review-port-hidden-testdata/helper",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "$module/internal/slices/review/port/testdata/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/slices/review/port/testdata/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "cli-review-slices/review-port-hidden-_x/helper",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "$module/internal/slices/review/port/_x/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/slices/review/port/_x/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "cli-review-slices/review-port-hidden-.x/helper",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "$module/internal/slices/review/port/.x/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/slices/review/port/.x/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "cli-review-slices/review-port-ignored-tagged",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build architecture_review_never\n\npackage port\nimport _ \"os/exec\"\n",
+    "Files": {
+      "internal/slices/review/port/base.go": "package port\n"
+    },
+    "CompileFiles": [
+      "internal/slices/review/port/probe.go"
+    ]
+  },
+  {
+    "Name": "cli-review-slices/review-port-ignored-windows",
+    "File": "internal/slices/review/port/probe_windows.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe_windows.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build !windows\n\npackage port\nimport _ \"os/exec\"\n",
+    "Files": {
+      "internal/slices/review/port/base.go": "package port\n"
+    },
+    "CompileFiles": [
+      "internal/slices/review/port/probe_windows.go"
+    ]
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-context",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "context",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-fmt",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "fmt",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-strconv",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "strconv",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-errors",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "errors",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-strings",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "strings",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-sort",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "sort",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-slices",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "slices",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-maps",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "maps",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-bytes",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "bytes",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-unicode",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "unicode",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "cli-review-slices/review-port-pure-time",
+    "File": "internal/slices/review/port/probe.go",
+    "Import": "time",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package port\nimport \"time\"\ntype Timeout time.Duration\n"
+  },
+  {
+    "Name": "cli-review-suppression-104",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint: depguard\n"
+  },
+  {
+    "Name": "cli-review-suppression-105",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:gosec, depguard\n"
+  },
+  {
+    "Name": "cli-review-suppression-106",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:depguard//reason\n"
+  },
+  {
+    "Name": "cli-review-suppression-107",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:DEPGUARD\n"
+  },
+  {
+    "Name": "cli-review-suppression-108",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" // NoLiNt: gosec, DEPGUARD // reason\n"
+  },
+  {
+    "Name": "cli-review-suppression-109",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" /*nolint: gosec, DEPGUARD*/\n"
+  },
+  {
+    "Name": "cli-review-suppression-110",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint: ALL\n"
+  },
+  {
+    "Name": "cli-review-suppression-111",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:gosec,depguard,unused\n"
+  },
+  {
+    "Name": "cli-review-comment-control-112",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\nconst X = \"//nolint: depguard\"\n"
+  },
+  {
+    "Name": "cli-review-comment-control-113",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\n//nolint:gosec // depguard is enforced\nconst X = 1\n"
+  },
+  {
+    "Name": "cli-review-comment-control-114",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\n//nolint:gosec,unused // targeted only\nconst X = 1\n"
+  },
+  {
+    "Name": "cli-review-comment-control-115",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\n// nolinting:depguard is prose\nconst X = 1\n"
+  },
+  {
+    "Name": "cli-review-slices/review-domain-ignored-only",
+    "File": "internal/slices/review/domain/nested/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build architecture_review_never\n\npackage nested\nimport _ \"os/exec\"\n",
+    "CompileFiles": [
+      "internal/slices/review/domain/nested/probe.go"
+    ]
+  },
+  {
+    "Name": "cli-review-slices/review-port-ignored-only",
+    "File": "internal/slices/review/port/nested/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build architecture_review_never\n\npackage nested\nimport _ \"os/exec\"\n",
+    "CompileFiles": [
+      "internal/slices/review/port/nested/probe.go"
+    ]
+  },
+  {
+    "Name": "cli-thread-suppression-depguard-comma",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:depguard,\n"
+  },
+  {
+    "Name": "cli-thread-suppression-all-comma",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:all,\n"
+  },
+  {
+    "Name": "cli-thread-suppression-list-comma",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:gosec,depguard,\n"
+  },
+  {
+    "Name": "cli-thread-suppression-trimmed-list-comma",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:gosec, DEPGUARD,\n"
+  },
+  {
+    "Name": "cli-thread-suppression-adjacent-reason-comma",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:depguard,// reason\n"
+  },
+  {
+    "Name": "cli-thread-suppression-block-comma",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" /*nolint:depguard,*/\n"
+  },
+  {
+    "Name": "cli-thread-comment-control-targeted-comma",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "allow",
+    "Source": "package domain\n//nolint:gosec,\nconst X = 1\n"
+  },
+  {
+    "Name": "cli-thread-comment-control-targeted-reason",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "allow",
+    "Source": "package domain\n//nolint:gosec, // depguard stays enforced\nconst X = 1\n"
+  },
+  {
+    "Name": "cli-thread-comment-control-prose-name",
+    "File": "internal/slices/review/domain/probe.go",
+    "Kind": "allow",
+    "Source": "package domain\n//nolint:depguardextra,\nconst X = 1\n"
+  },
+  {
+    "Name": "cli-thread-porttest-slices/review-excluded",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Kind": "allow",
+    "Files": {},
+    "Source": "//go:build architecture_thread_never\n\npackage porttest\nconst X = 1\n",
+    "CompileFiles": [
+      "internal/slices/review/port/porttest/probe.go"
+    ]
+  },
+  {
+    "Name": "cli-thread-porttest-slices/review-listed",
+    "File": "internal/slices/review/port/porttest/probe.go",
+    "Kind": "allow",
+    "Files": {
+      "internal/slices/review/port/porttest/base.go": "package porttest\n"
+    },
+    "Source": "//go:build architecture_thread_never\n\npackage porttest\nconst X = 1\n",
+    "CompileFiles": [
+      "internal/slices/review/port/porttest/probe.go"
+    ]
+  },
+  {
+    "Name": "cli-thread-porttest-slices/review-nested-excluded",
+    "File": "internal/slices/review/port/porttest/nested/probe.go",
+    "Kind": "allow",
+    "Files": {},
+    "Source": "//go:build architecture_thread_never\n\npackage nested\nconst X = 1\n",
+    "CompileFiles": [
+      "internal/slices/review/port/porttest/nested/probe.go"
+    ]
+  },
+  {
+    "Name": "cli-thread-porttest-slices/review-nested-listed",
+    "File": "internal/slices/review/port/porttest/nested/probe.go",
+    "Kind": "allow",
+    "Files": {
+      "internal/slices/review/port/porttest/nested/base.go": "package nested\n"
+    },
+    "Source": "//go:build architecture_thread_never\n\npackage nested\nconst X = 1\n",
+    "CompileFiles": [
+      "internal/slices/review/port/porttest/nested/probe.go"
+    ]
+  },
+  {
+    "Name": "cli-thread-workspace-current-module",
+    "File": "internal/slices/review/domain/probe.go",
+    "Import": "fmt",
+    "Kind": "allow",
+    "Files": {
+      "go.work": "go 1.27.2\n\nuse (\n .\n ./workspace-peer\n)\n",
+      "workspace-peer/go.mod": "module example.com/aaa\n\ngo 1.27\n",
+      "workspace-peer/lib/base.go": "package lib\nimport _ \"os/exec\"\n"
+    },
+    "Workspace": true
+  },
+  {
+    "Name": "cli-imports-counting-port-allowed",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/engine/counting/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-counting-port-test-allowed",
+    "File": "internal/cli/probe_test.go",
+    "Import": "$module/internal/engine/counting/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-other-engine-port",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/engine/other/port",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-counting-domain",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/engine/counting/domain",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "cli-imports-counting-domain-lint",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/engine/counting/domain",
+    "Kind": "lint",
+    "Rule": "ui"
+  },
+  {
+    "Name": "cli-imports-other-engine-port-lint",
+    "File": "internal/cli/probe.go",
+    "Import": "$module/internal/engine/other/port",
+    "Kind": "lint",
+    "Rule": "ui"
+  },
+  {
+    "Name": "slice-adapter-imports-engine-port",
+    "File": "internal/slices/count/stdin/probe.go",
+    "Import": "$module/internal/engine/counting/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "slice-adapter-imports-other-slice",
+    "File": "internal/slices/count/stdin/probe.go",
+    "Import": "$module/internal/slices/other/command",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "kong-in-engine-adapter",
+    "File": "internal/engine/count/disk/probe.go",
+    "Import": "github.com/alecthomas/kong",
+    "Kind": "lint",
+    "Rule": "kong"
   }
 ]
