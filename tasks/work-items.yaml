@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - agents-no-itos
+  - T-63
   - pinned-tools
   - plain-ci
   - plain-hooks
@@ -899,14 +899,15 @@ items:
     depends_on: []
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/10]
-  - id: agents-no-itos
+  - id: T-63
     title: A made project's AGENTS.md is tool-agnostic and its MAP.md says where to start
     phase: 1
     owner: null
     status: todo
     depends_on: [T-62]
-    kind: idea
+    kind: task
     why: >
+      Was agents-no-itos.
       Lands on main and merges down. AGENTS.md ships itos-container's generic rules in itos-cc's
       structure with every itos line removed: red-first scenarios, staging explicit paths, never
       bypassing hooks, fakes and not mocks, a contract suite per port, the OS as a value, a library
@@ -933,7 +934,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [agents-no-itos, pinned-tools]
+    depends_on: [T-63, pinned-tools]
     kind: idea
     why: >
       ci.yml on stack/go and go/cli runs go build, vet, mod verify, mod tidy -diff, golangci-lint,
