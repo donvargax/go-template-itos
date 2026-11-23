@@ -15,11 +15,10 @@ or domain is added; keep each to a few lines and say where to look, not what the
 
 ## Import rules
 
-- Start: `.golangci.yml`, which gives each package a role by its path and refuses any Go code
-  under `internal` that has none, and `tools/architecture`, the graph check that resolves the
-  owner and layer arrows depguard cannot. The fixtures that prove both are
+- Start: `.golangci.yml`, the role of each package by its path, and `tools/architecture`, the
+  graph check for the arrows depguard cannot hold. Their fixtures are
   `tools/testdata/architecture/cases.json`, a case per arrow.
-- Test: `tools/bin/architecture-check`, which inspects the repository and then runs the fixtures.
+- Test: `tools/bin/architecture-check`, the repository's inspection, then the fixtures.
 
 ## Count command
 
