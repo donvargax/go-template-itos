@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - mutation-fresh
+  - T-67
   - layout-rules
   - cli-contract-code
   - scenarios-two-drivers
@@ -926,14 +926,15 @@ items:
     depends_on: [T-65]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/11, https://github.com/donvargax/go-template-itos/issues/13]
-  - id: mutation-fresh
+  - id: T-67
     title: Mutation runs fresh and seeded on each push, with no committed results
     phase: 1
     owner: null
     status: todo
     depends_on: [T-65]
-    kind: idea
+    kind: task
     why: >
+      Was mutation-fresh.
       Lands on stack/go and merges into go/cli. CI runs the pinned itos-cc as itos-container does:
       mutation run --count 10 --since BASE --seed BASE --fail-uncovered=lines, BASE being the pull
       request's base or the push's before. .metrics/ is ignored and the committed mutation and
@@ -1015,7 +1016,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [scenarios-two-drivers, mutation-fresh]
+    depends_on: [scenarios-two-drivers, T-67]
     kind: idea
     why: >
       Lands on stack/go and go/cli. itos's nightly.yml shape: every test and scenario on Linux,
