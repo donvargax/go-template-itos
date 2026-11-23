@@ -154,7 +154,5 @@ runs the Go steps, the scenarios and the Linux, macOS and Windows tests on the p
 
 The project starts with no mutation results and commits none. A branch's first push mutates the
 whole packages, judging survivors only, and each later push the functions it changes; a surviving mutant is a test to write.
-`itos-cc.yaml` comes with the template's reviewed exceptions. Most still hold, their hashes
-covering a function's body; one whose function holds the project's name, such as `cmd`'s `run`,
-goes stale, and its reviewed reason is re-applied with `itos-cc mutation except` when that
-function next changes.
+`itos-cc.yaml` comes with the template's reviewed exceptions, whose hashes cover a function's
+body and so hold in a render.
