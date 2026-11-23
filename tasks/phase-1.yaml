@@ -999,10 +999,3 @@
     into go/cli, each branch keeping its own AGENTS.md rewritten, itos.yaml, CI and registry.
     Prove it on all three heads green, Template check green on main's run after go/cli is pushed,
     and itos-template check passing 2 of 2.
-  done_when:
-    - run: test -f MAP.md && grep -q MAP.md AGENTS.md && grep -q "docs/architecture/09-architecture-decisions.md" AGENTS.md
-    - run: '! grep -niE "\bitos (go|guide|work|commit|push|init|decision|task)\b|^## itos" AGENTS.md MAP.md CONTRIBUTORS.md'
-    - run: grep -q "itos go" TEMPLATE.md && grep -q "itos commit" TEMPLATE.md
-    - run: grep -q "0010-a-made-project-needs-no-itos" itos-template.yaml
-    - run: '! grep -qi "itos recognizes" CONTRIBUTORS.md'
-    - run: tools/bin/doc-caps

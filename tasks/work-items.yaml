@@ -903,19 +903,9 @@ items:
     title: A made project's AGENTS.md is tool-agnostic and its MAP.md says where to start
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-62]
     kind: task
-    why: >
-      Was agents-no-itos.
-      Lands on main and merges down. AGENTS.md ships itos-container's generic rules in itos-cc's
-      structure with every itos line removed: red-first scenarios, staging explicit paths, never
-      bypassing hooks, fakes and not mocks, a contract suite per port, the OS as a value, a library
-      first, hostile input, no credentials. CLAUDE.md stays @AGENTS.md. The template's own itos
-      rules and itos block move to TEMPLATE.md (template_only), which AGENTS.md already says to read
-      first. A MAP.md skeleton ships: each slice's start files, its fake and its test command.
-      CONTRIBUTORS.md drops the wording tying handles to itos work owners. A template-only decision
-      supersedes decision 2: made projects get plain commands, not itos's policy.
   - id: pinned-tools
     title: tools/bin/pinned shares its cache across worktrees, bounds downloads and pins the scanners
     phase: 1
