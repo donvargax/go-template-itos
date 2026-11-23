@@ -902,8 +902,8 @@ items:
   - id: T-63
     title: A made project's AGENTS.md is tool-agnostic and its MAP.md says where to start
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-62]
     kind: task
     why: >
