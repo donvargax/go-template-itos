@@ -20,7 +20,7 @@ checks:
 stacks:
   - name: go
     # What new prints for the person to run in the made project, never running it
-    # (decision 2): itos adopts the branch's itos-policy.yaml as the project's own
+    # (the template's decision 2): itos adopts the branch's itos-policy.yaml as the project's own
     # itos.yaml, with a fresh ledger and registry (q-13), and asks its offers then;
     # the file is removed after, so the project has one config. The steps sit on
     # the stack, so a go + cli render prints them once, adopting go/cli's file.
@@ -28,7 +28,7 @@ stacks:
     # init --policy leaves it as it is: in itos 8.3.0 it only says init
     # --agent-rules rewrites a block that differs, so the last step writes the
     # block of the itos the project pins (T-39, T-60). The mv
-    # gives the project its license (decision 9): the template's LICENSE is the
+    # gives the project its license (the template's decision 9): the template's LICENSE is the
     # AGPL and stays here, and LICENSE.project, the MIT text naming the owner
     # answered, becomes the project's LICENSE. It stands in until itos-template#8
     # lets the manifest render a file at another path; an update follows the
@@ -88,7 +88,7 @@ template_only:
   - itos.yaml
   - tasks
   # The template's own license, the AGPL, and the section 7 permission that lets
-  # a made project choose its terms (decision 9): a render starts MIT with its
+  # a made project choose its terms (the template's decision 9): a render starts MIT with its
   # owner instead, from LICENSE.project, which the go stack's setup moves to
   # LICENSE.
   - LICENSE
@@ -116,10 +116,11 @@ template_only:
   # function's body, not the module path, so most of them hold in a render.
   - .metrics
   # The decisions about running the template, and the index itos writes from
-  # every record in the folder (q-19): a render ships decision 1 alone, the one
-  # binding a made CLI, and itos writes the made project's own index, naming 1
-  # beside it, when the project records its first decision. A later decision
-  # binding made projects stays off this list; one about the template joins it.
+  # every record in the folder (q-19): a render ships the records that bind a
+  # made project (the template's decisions 1, 6, 7 and 8), indexed by its
+  # docs/architecture/09-architecture-decisions.md, which replaces the index
+  # itos writes. A later decision binding made projects stays off this list;
+  # one about the template joins it.
   - docs/decisions/0002-made-projects-inherit-quality-policy-through-upstream-itos-initialization.md
   - docs/decisions/0003-every-question-is-asked-and-recorded-on-main.md
   - docs/decisions/0004-a-new-task-id-is-one-above-the-highest-on-any-branch.md
