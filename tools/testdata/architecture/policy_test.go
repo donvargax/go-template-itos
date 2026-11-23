@@ -132,8 +132,14 @@ func source(file, imp string) string {
 }
 func TestPolicy(t *testing.T) {
 	r := root(t)
-	// The launcher is a shell script, which Windows cannot run by its path.
-	linter := strings.TrimSpace(must(t, r, "sh", filepath.Join(r, "tools/bin/pinned"), "--path", "golangci-lint"))
+	// tools/bin/architecture-check hands the linter in ARCHITECTURE_LINTER: the shell that
+	// asked the launcher for it converts the path for Windows, which Go cannot do for a path
+	// the launcher prints. Run alone, the launcher is a shell script, which Windows cannot
+	// run by its path.
+	linter := os.Getenv("ARCHITECTURE_LINTER")
+	if linter == "" {
+		linter = strings.TrimSpace(must(t, r, "sh", filepath.Join(r, "tools/bin/pinned"), "--path", "golangci-lint"))
+	}
 	var probes []probe
 	for _, file := range []string{"cases.json"} {
 		var cases []probe
