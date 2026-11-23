@@ -16,6 +16,7 @@ queue:
   - pinned-tools
   - plain-ci
   - plain-hooks
+  - mutation-fresh
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
