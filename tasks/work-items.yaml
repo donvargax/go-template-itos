@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - layout-rules
+  - T-68
   - cli-contract-code
   - scenarios-two-drivers
   - renovate-plain
@@ -933,14 +933,15 @@ items:
     depends_on: [T-65]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/4]
-  - id: layout-rules
+  - id: T-68
     title: Default-deny import rules over static role paths hold the Go layout
     phase: 1
     owner: null
     status: todo
     depends_on: [T-65]
-    kind: idea
+    kind: task
     why: >
+      Was layout-rules.
       Lands on stack/go and merges into go/cli. itos-container's layout
       (internal/slices/<cmd>/{command,domain,port,<adapter>},
       internal/engine/<name>/{domain,port,<adapter>}) and its .golangci.yml: unclassified code
@@ -957,7 +958,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [layout-rules]
+    depends_on: [T-68]
     kind: idea
     why: >
       Lands on go/cli. The count command moves to internal/slices/count/command; internal/cli
