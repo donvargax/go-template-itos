@@ -19,26 +19,15 @@ checks:
 # not only that its own code passes them.
 stacks:
   - name: go
-    # What new prints for the person to run in the made project, never running it
-    # (the template's decision 2): itos adopts the branch's itos-policy.yaml as the project's own
-    # itos.yaml, with a fresh ledger and registry (q-13), and asks its offers then;
-    # the file is removed after, so the project has one config. The steps sit on
-    # the stack, so a go + cli render prints them once, adopting go/cli's file.
-    # AGENTS.md's itos block is the one the itos that last wrote it writes, and
-    # init --policy leaves it as it is: in itos 8.3.0 it only says init
-    # --agent-rules rewrites a block that differs, so the last step writes the
-    # block of the itos the project pins (T-39, T-60). The mv
+    # What new prints for the person to run in the made project, never running it. The mv
     # gives the project its license (the template's decision 9): the template's LICENSE is the
     # AGPL and stays here, and LICENSE.project, the MIT text naming the owner
-    # answered, becomes the project's LICENSE. It stands in until itos-template#8
-    # lets the manifest render a file at another path; an update follows the
-    # rename (itos-template#2), which for a license text is what a made project
-    # wants.
+    # answered, becomes the project's LICENSE. It is the only step, since a made project needs
+    # no itos (decision 10) and keeps no itos.yaml, itos-policy.yaml or registry. It stands in
+    # until itos-template#8 lets the manifest render a file at another path; an update follows
+    # the rename (itos-template#2), which for a license text is what a made project wants.
     setup:
-      - [itos, init, --policy, itos-policy.yaml]
-      - [rm, itos-policy.yaml]
       - [mv, LICENSE.project, LICENSE]
-      - [itos, init, --agent-rules]
     checks:
       - [sh, -c, "! gofmt -l internal | grep ."]
       - [go, build, ./...]
@@ -47,7 +36,8 @@ stacks:
       - [go, mod, tidy, -diff]
       - [tools/bin/pinned, golangci-lint, run, ./...]
       - [tools/bin/architecture-check]
-      - [go, tool, govulncheck, -test, ./...]
+      - [go, tool, actionlint]
+      - [tools/bin/govulncheck]
       - [go, test, ./...]
       - [tools/bin/domain-coverage]
       - [tools/bin/pinned, itos-cc, mutation, sample, --count, 10]
@@ -63,7 +53,8 @@ features:
       - [go, mod, tidy, -diff]
       - [tools/bin/pinned, golangci-lint, run, ./...]
       - [tools/bin/architecture-check]
-      - [go, tool, govulncheck, -test, ./...]
+      - [go, tool, actionlint]
+      - [tools/bin/govulncheck]
       - [go, test, ./cmd/..., ./internal/...]
       - [tools/bin/domain-coverage]
       - [go, test, ./features, -count=1]
@@ -95,6 +86,9 @@ template_only:
   - LICENSE-EXCEPTION
   # Re-proves this template's renders; a made project has no renders to prove.
   - .github/workflows/template-check.yml
+  # The template's own itos checks (commit shape, footers, ledger): a made project needs no
+  # itos (decision 10), so its ci.yml is the only workflow it keeps and calls plain commands.
+  - .github/workflows/itos.yml
   # The template's plan, its coordination notes and the guidance for working on
   # it as a template (q-17): a made project has no branches to merge down, no
   # renders to prove and no coordinator's notes of this repository's, so its
@@ -102,10 +96,6 @@ template_only:
   - PLAN.md
   - docs/ORCHESTRATING.md
   - TEMPLATE.md
-  # Compares itos-policy.yaml with this repository's itos.yaml (q-14); a made
-  # project has neither the template's itos.yaml nor, after setup, the policy.
-  # itos-policy.yaml itself ships: the setup steps read it, then remove it.
-  - tools/bin/policy-drift
   # The template's mutation records: each snapshot hashes the test files that
   # import its file, and those import the module path a render replaces, so
   # every record is stale in every render, and each itos-template update would

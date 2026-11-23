@@ -31,8 +31,7 @@ go test ./features -count=1
 
 Its other gates are formatting, vet, golangci-lint, an import-boundary self-test,
 govulncheck, domain coverage of at least 80 percent and changed-code mutation proof;
-[docs/go.md](docs/go.md) describes each. The rules `AGENTS.md` generates from the project's
-itos configuration say which of them its hooks and CI run.
+[docs/go.md](docs/go.md) describes each. `.github/workflows/ci.yml` runs them, except the changed-code mutation proof.
 
 ## Working here
 

@@ -1,0 +1,13 @@
+#!/bin/sh
+# Runs govulncheck over every package and its tests with the Go toolchain go.mod names, so a
+# machine whose own Go is older or newer hides nothing: the standard library it judges is the
+# one the project ships. CI sets the same toolchain with its go-toolchain action.
+set -eu
+root=$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)
+cd "$root"
+toolchain=$(awk '$1 == "toolchain" { print $2 }' go.mod | tr -d '\r')
+case "$toolchain" in
+go[0-9]*) ;;
+*) echo "govulncheck: go.mod must name a toolchain" >&2; exit 2 ;;
+esac
+GOTOOLCHAIN=$toolchain exec go tool govulncheck -test ./...

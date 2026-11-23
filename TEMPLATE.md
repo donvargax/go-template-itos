@@ -27,9 +27,12 @@ development uses itos, and these rules are the ones it left out.
   (`itos ci range --head HEAD` prints it, given `GITHUB_REPOSITORY` and `GITHUB_TOKEN`); commit
   `.metrics/mutate/`.
 - The block `itos init --agent-rules` writes into `AGENTS.md` points at `itos go` and says to
-  stage only your own files. A made project's `AGENTS.md` carries no such block, but until the
-  go stack's setup step that runs `itos init --agent-rules` is removed, a render's setup writes
-  it back.
+  stage only your own files. A made project's `AGENTS.md` carries no such block, and no setup
+  step writes it back (decision 10).
+- The template's own itos checks run in `.github/workflows/itos.yml`, which `template_only`
+  keeps out of renders; `ci.yml` is what a made project keeps and calls plain commands. Each
+  branch's `itos.yaml` `ci.steps` hold only what itos or the template needs, never a step
+  `ci.yml` runs.
 
 The template's AGPL and its permission for made projects are under Provenance and harvest below.
 
@@ -107,32 +110,31 @@ request has landed yet, so the automation stays unverified until one lands on ea
 the `internal/disk` adapter, their tests, the Go gates and the tools they pin, laid out as
 decision 6 says. It has no command line; `go/cli` adds one, with its own interface contract and
 checks, the `count` slice and the `internal/stdin` adapter over this domain. The manifest's `go`
-checks are the plan this branch's `itos.yaml` runs, less its itos commands, the import-boundary
-self-test included; `itos-template check` runs them after the root's gitleaks scan on each
-supported render. That is evidence about the template, not about a made project's own CI, which
-runs no standing credential scan. `README.md` and the shipped guides here describe the project a
-`go` render makes, with the manifest's literals written as the code has them.
+checks are the commands this branch's `ci.yml` runs, the import-boundary self-test included;
+`itos-template check` runs them after the root's gitleaks scan on each supported render. That is
+evidence about the template, not about a made project's own CI, which scans only the commits a
+push or pull request brings. `README.md` and the shipped guides here describe the project a `go`
+render makes, with the manifest's literals written as the code has them.
 
-A render carries none of the template's itos data. It ships `itos-policy.yaml`, which the
-manifest's setup steps make the project's own `itos.yaml` through `itos init --policy` and then
-remove: this branch's `itos.yaml` less the differences `tools/bin/policy-drift` lists as the
-template's alone, each with its reason. Change the two files together; the drift check in the
-plan fails when they part. Once set up, a made project's CI runs these gates on its own main: the
-ci job sets up Go for the plan and the platform jobs test on Linux, macOS and Windows, with no
-condition on branch names, which only the template has.
+A render carries none of the template's itos data and needs no itos (decision 10): its
+`ci.yml` calls plain commands, `.github/workflows/itos.yml` and `itos.yaml` stay here, and its
+setup is the license move alone. Each job sets the toolchain with `.github/actions/go-toolchain`,
+harvested from itos, so `tools/bin/govulncheck` and CI judge the standard library `go.mod` names.
+The platform jobs run on pull requests and on pushes to any branch but main, so they run on the
+template's own direct pushes and, in a made project, on the pull request before its main push.
 
 ## The CLI feature
 
 `go/cli` adds the command line on top of the stack: `cmd/go-template-itos`, `internal/cli`, the
 scenarios in `features/` and their godog runner, and the release workflow and its tools. The
-manifest's `cli` checks are the plan this branch's `itos.yaml` runs, less its itos commands:
-the scenarios and the import-boundary self-test included, but not the smoke-set check, an itos
-command that a render's checks cannot run. `itos-template check` runs them after the root's
+manifest's `cli` checks are the commands this branch's `ci.yml` runs: the scenarios and the
+import-boundary self-test included, but not the release helpers' tests, and not the smoke-set
+check in `itos.yaml`, an itos command a made project has no use for. `itos-template check` runs them after the root's
 gitleaks scan on each supported render, which is evidence about the template, not about a made
 project's own CI. `README.md`, `AGENTS.md` and the shipped guides here describe the project a
 `go + cli` render makes. The release job runs only on a push to main, which no template branch
-is, so this branch cuts no CLI binary release. On a made project's main it runs after the ci job
-and the platform jobs pass, as the stack's gates do there, and cuts a release when the commits
+is, so this branch cuts no CLI binary release. On a made project's main it runs after the static and
+test jobs pass and the platform jobs pass or skip, as the stack's gates do there, and cuts a release when the commits
 since the last tag call for one. A made project has published one: go-template-itos-sample
 cut v0.1.0 (<https://github.com/donvargax/go-template-itos-sample/releases/tag/v0.1.0>) from its
 version --json feat, with its five archives, `checksums.txt` and the archives' attestations, in

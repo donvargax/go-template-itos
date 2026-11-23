@@ -2,6 +2,7 @@ name: CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [main, "stack/**", "go/**", "renovate/**"]
   push:
     branches: [main, "stack/**", "go/**", "renovate/**"]
@@ -10,41 +11,76 @@ permissions:
   contents: read
   actions: read
 
+# A newer push cancels a pull request's older run; a branch's pushes each keep theirs.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-  TO: ${{ github.event.pull_request.head.sha || github.sha }}
-
+# Every job calls plain commands and sets the toolchain with the project's own go-toolchain
+# action, and a draft pull request waits for ready_for_review.
 jobs:
-  ci:
+  static:
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    steps:
+      # The whole history, which the credential scan walks.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/go-toolchain
+      - name: gofmt
+        run: "! gofmt -l cmd internal features | grep ."
+      - run: go build ./...
+      - run: go vet ./...
+      - run: go mod verify
+      - run: go mod tidy -diff
+      - run: tools/bin/pinned golangci-lint run ./...
+      - run: tools/bin/architecture-check
+      - run: go tool actionlint
+      - run: tools/bin/govulncheck
+      # The commits this run judges: from the pull request's base or the push's before, and the
+      # whole history when before is all zeros, a branch's first push.
+      - name: Credential scan of the pushed commits
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "${BASE//0/}" ]; then
+            tools/bin/pinned gitleaks git --redact
+          else
+            tools/bin/pinned gitleaks git --redact --log-opts="$BASE..$HEAD"
+          fi
+
+  test:
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version-file: go.mod
-          cache-dependency-path: go.sum
-      - uses: donvargax/itos@da2f0eaf40f6fd5584ee2193d866580d4d78263c # v8.3.0
-      - name: Range
+      - uses: ./.github/actions/go-toolchain
+      - name: Tests
+        run: go test ./cmd/... ./internal/...
         env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          out=$(itos ci range --json --head "$TO" --base "$BASE")
-          from=$(jq -er '.from | strings' <<<"$out")
-          echo "FROM=$from"
-          echo "FROM=$from" >> "$GITHUB_ENV"
-      - run: itos verify "$FROM" "$TO"
-      - run: itos ci run "$FROM" "$TO"
+          RAPID_CHECKS: 1
+      # The release helpers' tests, harvested with them from itos-template: the version a range
+      # bumps to, the module-path refusal, what moved beneath the binary and the notes it writes,
+      # over example repositories. The platform jobs run them too, in go test ./....
+      - run: go test ./tools/bin/release-version ./tools/bin/release-notes
+      - run: tools/bin/domain-coverage
+      # The features build the binary they run, which Go's test cache cannot track, so they
+      # always run.
+      - run: go test ./features -count=1
+      - run: tools/bin/pinned itos-cc mutation sample --count 10
 
-  # Every test, the unit tests and the whole godog suite, on Linux, macOS and Windows, with each
-  # platform's paths, shell and line endings: what touches paths and CRLF breaks on Windows first.
+  # Every test on macOS and Windows as well, with each platform's paths, shell and line endings:
+  # what touches paths and CRLF breaks on Windows first. The repository is public, so the minutes
+  # are free. They run on pull requests and on pushes to any branch but main: the template lands
+  # by direct push to its branches, and a made project's main push follows a merged pull request
+  # that ran them.
   platform:
     name: Tests (${{ matrix.os }})
+    if: ${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name == 'pull_request' || github.ref != 'refs/heads/main') }}
     strategy:
       fail-fast: false
       matrix:
@@ -55,20 +91,16 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version-file: go.mod
-          cache-dependency-path: go.sum
-      # go test carries on past a package that fails, so one run shows a platform's every
-      # failure. The features build the binary they run themselves, go-template-itos.exe on
-      # windows, stamped with a known version and commit.
+      - uses: ./.github/actions/go-toolchain
+      # The features build the binary they run themselves, go-template-itos.exe on windows,
+      # stamped with a known version and commit.
       # GOCOVERDIR makes that binary a -cover build, so the scenarios run cover-enabled code
       # rather than the same code with the counter left out. A GOCOVERDIR that is not there is
       # a coverage failure the binary prints on stderr on every run, and stderr is what a
       # scenario reads, so the folder is made first, in this step and not before it. What the
-      # runs write stays on the runner, for the piece that merges coverage to read.
+      # runs write stays on the runner.
       # It is a step's variable, not the job's: the runner context is not there at job level.
-      # RAPID_CHECKS=1: each property of the domain on one random case, as in the CI plan.
+      # RAPID_CHECKS=1: each property of the domain on one random case.
       - name: Tests
         run: |
           mkdir -p "$GOCOVERDIR"
@@ -79,17 +111,16 @@ jobs:
       - name: Import boundary self-test
         run: tools/bin/architecture-check
 
-  # A push to main whose ci job and platform jobs are green cuts a release when its commits since
-  # the last tag carry a feat, a fix or a breaking change, or the binary is built from what moved
-  # beneath it (release.yml says how). Harvested from itos-template's ci.yml, which calls its
-  # release as itos's does. The only job with write access, granted here and to nothing else; a
-  # pull request or a Renovate branch never releases. The template's branches are never main, so
-  # it never runs in the template. On a made project's main it runs after the ci job and the
-  # platform jobs pass, which they can once the project's setup has given it its itos.yaml for
-  # the ci job's plan.
+  # A push to main whose static, test and platform jobs are green cuts a release when its commits
+  # since the last tag carry a feat, a fix or a breaking change, or the binary is built from what
+  # moved beneath it (release.yml says how). Harvested from itos-template's ci.yml, which calls
+  # its release as itos's does. The only job with write access, granted here and to nothing else;
+  # a pull request or a Renovate branch never releases. The template's branches are never main,
+  # so it never runs in the template. The platform jobs skip a push to main, since the pull
+  # request that landed it ran them, so a skipped result counts as green.
   release:
-    needs: [ci, platform]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [static, test, platform]
+    if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.static.result == 'success' && needs.test.result == 'success' && (needs.platform.result == 'success' || needs.platform.result == 'skipped') }}
     permissions:
       contents: write
       id-token: write
