@@ -936,8 +936,8 @@ items:
   - id: T-68
     title: Default-deny import rules over static role paths hold the Go layout
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-65]
     kind: task
     why: >
