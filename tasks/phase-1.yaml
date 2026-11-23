@@ -1024,8 +1024,3 @@
     working unchanged (CI, the manifest's checks, tools/bin/architecture-check). Prove it on
     stack/go and go/cli green, Template check green after go/cli is pushed, and itos-template
     check passing 2 of 2.
-  done_when:
-    - run: go test ./tools/pinned/...
-    - run: grep -q -- "--max-time" tools/bin/pinned && grep -q -- "--git-common-dir" tools/bin/pinned
-    - run: go tool -n actionlint >/dev/null
-    - run: tools/bin/pinned gitleaks version

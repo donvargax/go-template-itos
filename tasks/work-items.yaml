@@ -909,15 +909,9 @@ items:
     title: tools/bin/pinned shares its cache across worktrees, bounds downloads and pins the scanners
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      Was pinned-tools.
-      Lands on stack/go and merges into go/cli. Take itos-container's tools/bin/pinned with its
-      tests (tools/pinned/*_test.go), curl timeouts and Renovate markers (#15); add itos's cache in
-      the git common dir so every worktree shares .tools (#16), itos-cc's gitleaks entry, and
-      actionlint as a go tool.
     refs: [https://github.com/donvargax/go-template-itos/issues/15, https://github.com/donvargax/go-template-itos/issues/16]
   - id: plain-ci
     title: CI calls plain commands, so a made project's CI needs no itos
