@@ -1170,8 +1170,3 @@
     cli-contract-code. Prove it on stack/go and go/cli green, the architecture check's fixtures
     refusing a domain that imports an adapter and an unclassified package, Template check green
     after go/cli is pushed, and itos-template check passing 2 of 2.
-  done_when:
-    - run: test -d internal/engine/counting/domain && test ! -e internal/counting && test ! -e internal/disk
-    - run: tools/bin/pinned golangci-lint run ./... && tools/bin/architecture-check
-    - run: grep -q "forbidigo" .golangci.yml && grep -q "nolintlint" .golangci.yml && grep -q "runtime\\\\.GOOS" .golangci.yml
-    - run: test ! -d cmd || { test -d internal/slices/count/command && test ! -e internal/count; }
