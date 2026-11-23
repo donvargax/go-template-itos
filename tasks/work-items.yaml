@@ -21,6 +21,7 @@ queue:
   - cli-contract-code
   - scenarios-two-drivers
   - renovate-plain
+  - nightly
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
