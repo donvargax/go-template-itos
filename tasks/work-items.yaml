@@ -943,8 +943,8 @@ items:
   - id: T-69
     title: go/cli's commands share itos-cc's exit codes and problems on the kong fork, in itos-container's slice layout
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-68]
     kind: task
     why: >
