@@ -132,7 +132,8 @@ func source(file, imp string) string {
 }
 func TestPolicy(t *testing.T) {
 	r := root(t)
-	linter := strings.TrimSpace(must(t, r, filepath.Join(r, "tools/bin/pinned"), "--path", "golangci-lint"))
+	// The launcher is a shell script, which Windows cannot run by its path.
+	linter := strings.TrimSpace(must(t, r, "sh", filepath.Join(r, "tools/bin/pinned"), "--path", "golangci-lint"))
 	var probes []probe
 	for _, file := range []string{"cases.json"} {
 		var cases []probe
