@@ -927,3 +927,39 @@
     its setup steps run, LICENSE is the MIT text naming the answered owner and itos.yaml pins 8.3.0.
     The coordinator then names v0.3.0 in main's README in a docs commit and tells the person, with
     the adopt command and the tag.
+- id: T-62
+  type: docs
+  title: A made project's architecture document is a lean arc42 and its decisions are MADR records
+  why: >
+    Was docs-arc42, the first item of the migration that lets a made project work without itos
+    (plan approved 2026-11-23). Agents read three short files at every start, not one long
+    architecture document. On main, docs/architecture.md becomes docs/architecture/, one file per
+    arc42 section and only sections with content: 01-introduction-and-goals.md,
+    02-architecture-constraints.md and 09-architecture-decisions.md. Sections 1 and 2 ship empty
+    but for a heading and one line saying what goes there (section 1: the purpose, the goals and
+    who it is for; section 2: what the project must keep to, each line with its source). Section 9
+    is a one-line index of docs/decisions/, one line per record a made project ships (today 1, 6,
+    7 and 8, the records itos-template.yaml does not list in template_only), each linking its
+    file; a superseded record leaves the list. The records stay in their MADR form (status and
+    date front matter; context, options, outcome), as itos-cc's are; docs/decisions/README.md,
+    which itos writes and template_only keeps out of renders, stays. What main's
+    docs/architecture.md says now is about the template, so it moves to TEMPLATE.md. On the merge
+    down, each of stack/go's and go/cli's own docs/architecture.md moves into its branch's
+    05-building-block-view.md unchanged in substance, and its other arc42 sections wait for
+    arc42-content. Every reference to docs/architecture.md follows (AGENTS.md, README.md,
+    TEMPLATE.md, docs/, itos.yaml's test -f steps on each branch, itos-policy.yaml, the
+    manifest). docs/engineering.md takes itos-cc's longer sentence on mocking libraries, its one
+    difference. docs/security.md and docs/upgrading.md lose their itos sentences, which only the
+    template's own development needs, and those move to TEMPLATE.md; docs/CONFIG.md keeps naming
+    itos-template as its rules' source, since it cites that source by name. tools/bin/doc-caps
+    caps AGENTS.md, MAP.md (skipped while absent), and the three always-read sections at 2048
+    bytes each, with the comment saying why. Every shipped text cites its source by name, never a
+    bare "decision 23", which settles go-template-itos#10; say so in the commit. Docs only: no
+    code, workflow or hook changes. Merge main into stack/go, then stack/go into go/cli, keeping
+    each branch's own itos.yaml, CI and registry, as earlier merges did. Prove it on all three
+    heads green, Template check green on main's run after go/cli is pushed, and itos-template
+    check passing 2 of 2.
+  done_when:
+    - run: test -f docs/architecture/01-introduction-and-goals.md && test -f docs/architecture/02-architecture-constraints.md && test -f docs/architecture/09-architecture-decisions.md && test ! -e docs/architecture.md
+    - run: '! git grep -n "docs/architecture\.md" -- ":!tasks" ":!docs/decisions"'
+    - run: tools/bin/doc-caps && grep -q "docs/architecture/09-architecture-decisions.md" tools/bin/doc-caps
