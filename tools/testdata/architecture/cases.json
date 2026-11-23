@@ -1,0 +1,1242 @@
+[
+  {
+    "Name": "domain-os",
+    "File": "internal/engine/newname/domain/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "domain-os-exec",
+    "File": "internal/engine/newname/domain/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "domain-net",
+    "File": "internal/engine/newname/domain/probe.go",
+    "Import": "net",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "domain-net-http",
+    "File": "internal/engine/newname/domain/probe.go",
+    "Import": "net/http",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "domain-syscall",
+    "File": "internal/engine/newname/domain/probe.go",
+    "Import": "syscall",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "domain-golang.org-x-sys-unix",
+    "File": "internal/engine/newname/domain/probe.go",
+    "Import": "golang.org/x/sys/unix",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "domain-encoding-json",
+    "File": "internal/engine/newname/domain/probe.go",
+    "Import": "encoding/json",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "domain-flag",
+    "File": "internal/engine/newname/domain/probe.go",
+    "Import": "flag",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "slices/newname-nested-io",
+    "File": "internal/engine/newname/domain/nested/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "slices/newname-port-io",
+    "File": "internal/engine/newname/port/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "port,store-ports-io"
+  },
+  {
+    "Name": "slices/newname-port-domain",
+    "File": "internal/engine/newname/port/probe.go",
+    "Import": "$module/internal/engine/newname/domain",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "slices/newname-port-portother",
+    "File": "internal/engine/newname/port/probe.go",
+    "Import": "$module/internal/engine/newname/portother",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "engine/shared-nested-io",
+    "File": "internal/engine/shared/domain/nested/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "domain"
+  },
+  {
+    "Name": "engine/shared-port-io",
+    "File": "internal/engine/shared/port/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "port,store-ports-io"
+  },
+  {
+    "Name": "engine/shared-port-domain",
+    "File": "internal/engine/shared/port/probe.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "engine/shared-port-portother",
+    "File": "internal/engine/shared/port/probe.go",
+    "Import": "$module/internal/engine/shared/portother",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "domain-adapter-count",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "$module/internal/engine/count/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "domain-adapter-countother",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "$module/internal/engine/countother/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "layout-internal/flat",
+    "File": "internal/flat/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "layout-internal/engine/shared",
+    "File": "internal/engine/shared/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "layout-internal/engine/shared/adapters/disk",
+    "File": "internal/engine/shared/adapters/disk/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "layout-internal/engine/count",
+    "File": "internal/engine/count/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "layout-pkg/public",
+    "File": "pkg/public/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "flat-import",
+    "File": "internal/flat/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "unlinked-fake-slices/count",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "$module/internal/engine/count/port/porttest",
+    "Kind": "graph",
+    "Rule": "test support",
+    "Flags": [
+      "--toplevel"
+    ]
+  },
+  {
+    "Name": "unlinked-fake-engine/shared",
+    "File": "internal/engine/shared/domain/probe.go",
+    "Import": "$module/internal/engine/shared/port/porttest",
+    "Kind": "graph",
+    "Rule": "test support",
+    "Flags": [
+      "--toplevel"
+    ]
+  },
+  {
+    "Name": "suppression-//nolint:depguard",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n//nolint:depguard\nconst X=1\n"
+  },
+  {
+    "Name": "suppression-//nolint:unused,depguard",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n//nolint:unused,depguard\nconst X=1\n"
+  },
+  {
+    "Name": "suppression-//nolint",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n//nolint\nconst X=1\n"
+  },
+  {
+    "Name": "suppression-//nolint:all",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n//nolint:all\nconst X=1\n"
+  },
+  {
+    "Name": "suppression-/*nolint:depguard*/",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Source": "package domain\n/*nolint:depguard*/\nconst X=1\n"
+  },
+  {
+    "Name": "allowed-comment-51",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "siblings",
+    "Source": "package domain\nconst X=\"//nolint:depguard\"\n"
+  },
+  {
+    "Name": "allowed-comment-52",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "siblings",
+    "Source": "package domain\n//nolint:gosec -- fixture control\nconst X=1\n"
+  },
+  {
+    "Name": "allowed-slices/fresh-domain-bytes",
+    "File": "internal/engine/fresh/domain/probe.go",
+    "Import": "bytes",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-domain-errors",
+    "File": "internal/engine/fresh/domain/probe.go",
+    "Import": "errors",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-domain-strings",
+    "File": "internal/engine/fresh/domain/probe.go",
+    "Import": "strings",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-domain-$module/internal/engine/fresh/domain/nested",
+    "File": "internal/engine/fresh/domain/probe.go",
+    "Import": "$module/internal/engine/fresh/domain/nested",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-domain-$module/internal/engine/fresh/port",
+    "File": "internal/engine/fresh/domain/probe.go",
+    "Import": "$module/internal/engine/fresh/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-domain-$module/internal/engine/shared/domain",
+    "File": "internal/engine/fresh/domain/probe.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-domain-$module/internal/engine/shared/port",
+    "File": "internal/engine/fresh/domain/probe.go",
+    "Import": "$module/internal/engine/shared/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-port-bytes",
+    "File": "internal/engine/fresh/port/probe.go",
+    "Import": "bytes",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-port-errors",
+    "File": "internal/engine/fresh/port/probe.go",
+    "Import": "errors",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-port-strings",
+    "File": "internal/engine/fresh/port/probe.go",
+    "Import": "strings",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-port-$module/internal/engine/fresh/port/nested",
+    "File": "internal/engine/fresh/port/probe.go",
+    "Import": "$module/internal/engine/fresh/port/nested",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-port-$module/internal/engine/shared/port",
+    "File": "internal/engine/fresh/port/probe.go",
+    "Import": "$module/internal/engine/shared/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-disk-$module/internal/engine/fresh/domain",
+    "File": "internal/engine/fresh/disk/probe.go",
+    "Import": "$module/internal/engine/fresh/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-disk-$module/internal/engine/fresh/port",
+    "File": "internal/engine/fresh/disk/probe.go",
+    "Import": "$module/internal/engine/fresh/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-disk-$module/internal/engine/fresh/disk/nested",
+    "File": "internal/engine/fresh/disk/probe.go",
+    "Import": "$module/internal/engine/fresh/disk/nested",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-disk-$module/internal/engine/shared/domain",
+    "File": "internal/engine/fresh/disk/probe.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "allowed-slices/fresh-disk-$module/internal/engine/shared/port",
+    "File": "internal/engine/fresh/disk/probe.go",
+    "Import": "$module/internal/engine/shared/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "test-fake-slices/fresh-domain",
+    "File": "internal/engine/fresh/domain/probe_test.go",
+    "Import": "$module/internal/engine/fresh/port/porttest",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "test-fake-slices/fresh-domain/nested",
+    "File": "internal/engine/fresh/domain/nested/probe_test.go",
+    "Import": "$module/internal/engine/fresh/port/porttest",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "test-fake-slices/fresh-port",
+    "File": "internal/engine/fresh/port/probe_test.go",
+    "Import": "$module/internal/engine/fresh/port/porttest",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "test-fake-slices/fresh-disk",
+    "File": "internal/engine/fresh/disk/probe_test.go",
+    "Import": "$module/internal/engine/fresh/port/porttest",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "rapid-slices/fresh-probe.go",
+    "File": "internal/engine/fresh/domain/nested/probe.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "lint",
+    "Rule": "domain,rapid"
+  },
+  {
+    "Name": "rapid-slices/fresh-probe_test.go",
+    "File": "internal/engine/fresh/domain/nested/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "allow",
+    "Rule": "rapid"
+  },
+  {
+    "Name": "rapid-port",
+    "File": "internal/engine/fresh/port/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "lint",
+    "Rule": "port-tests,rapid"
+  },
+  {
+    "Name": "rapid-disk",
+    "File": "internal/engine/fresh/disk/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "lint",
+    "Rule": "rapid"
+  },
+  {
+    "Name": "two-slices-sharing",
+    "File": "internal/engine/alpha/domain/probe.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "allow",
+    "Rule": "siblings",
+    "Files": {
+      "internal/engine/beta/domain/base.go": "package domain\nimport _ \"github.com/itos-corp/go-template-itos/internal/engine/shared/domain\"\n"
+    }
+  },
+  {
+    "Name": "rapid-direct-slices/fresh",
+    "File": "internal/engine/fresh/domain/probe_test.go",
+    "Import": "pgregory.net/rapid",
+    "Kind": "allow",
+    "Rule": "rapid"
+  },
+  {
+    "Name": "standard-library-internal/engine/fresh/domain/probe_test.go",
+    "File": "internal/engine/fresh/domain/probe_test.go",
+    "Import": "testing",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "standard-library-internal/engine/fresh/domain/nested/probe_test.go",
+    "File": "internal/engine/fresh/domain/nested/probe_test.go",
+    "Import": "os",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "standard-library-internal/engine/fresh/port/probe_test.go",
+    "File": "internal/engine/fresh/port/probe_test.go",
+    "Import": "testing",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "standard-library-internal/engine/fresh/port/nested/probe_test.go",
+    "File": "internal/engine/fresh/port/nested/probe_test.go",
+    "Import": "os",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "standard-library-internal/engine/fresh/port/porttest/probe.go",
+    "File": "internal/engine/fresh/port/porttest/probe.go",
+    "Import": "testing",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "external-own-internal/engine/count/domain",
+    "File": "internal/engine/count/domain/external_test.go",
+    "Import": "$module/internal/engine/count/domain",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "external-own-internal/engine/shared/domain",
+    "File": "internal/engine/shared/domain/external_test.go",
+    "Import": "$module/internal/engine/shared/domain",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "layout-nested-internal/engine/shared/domain/fakes",
+    "File": "internal/engine/shared/domain/fakes/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "layout-nested-internal/engine/count/domain/porttest",
+    "File": "internal/engine/count/domain/porttest/probe.go",
+    "Import": "",
+    "Kind": "layout",
+    "Rule": "unclassified"
+  },
+  {
+    "Name": "review-slices/review-porttest-os",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "os",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-os/exec",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "os/exec",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-net",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "net",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-net/http",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "net/http",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-syscall",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "syscall",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-golang.org/x/sys/unix",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "golang.org/x/sys/unix",
+    "Kind": "lint",
+    "Rule": "porttest,store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-io/ioutil",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "io/ioutil",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-path/filepath",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "path/filepath",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-plugin",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Import": "plugin",
+    "Kind": "lint",
+    "Rule": "store-ports-io"
+  },
+  {
+    "Name": "review-slices/review-porttest-test-os/exec",
+    "File": "internal/engine/review/port/porttest/probe_test.go",
+    "Import": "os/exec",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-porttest-test-net/http",
+    "File": "internal/engine/review/port/porttest/probe_test.go",
+    "Import": "net/http",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-hidden-testdata/helper",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "$module/internal/engine/review/domain/testdata/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/engine/review/domain/testdata/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "review-slices/review-domain-hidden-_x/helper",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "$module/internal/engine/review/domain/_x/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/engine/review/domain/_x/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "review-slices/review-domain-hidden-.x/helper",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "$module/internal/engine/review/domain/.x/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/engine/review/domain/.x/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "review-slices/review-domain-ignored-tagged",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build architecture_review_never\n\npackage domain\nimport _ \"os/exec\"\n",
+    "Files": {
+      "internal/engine/review/domain/base.go": "package domain\n"
+    },
+    "CompileFiles": [
+      "internal/engine/review/domain/probe.go"
+    ]
+  },
+  {
+    "Name": "review-slices/review-domain-ignored-windows",
+    "File": "internal/engine/review/domain/probe_windows.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe_windows.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build !windows\n\npackage domain\nimport _ \"os/exec\"\n",
+    "Files": {
+      "internal/engine/review/domain/base.go": "package domain\n"
+    },
+    "CompileFiles": [
+      "internal/engine/review/domain/probe_windows.go"
+    ]
+  },
+  {
+    "Name": "review-slices/review-domain-pure-context",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "context",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-fmt",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "fmt",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-strconv",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "strconv",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-errors",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "errors",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-strings",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "strings",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-sort",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "sort",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-slices",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "slices",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-maps",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "maps",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-bytes",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "bytes",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-unicode",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "unicode",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-pure-time",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "time",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\nimport \"time\"\ntype Timeout time.Duration\n"
+  },
+  {
+    "Name": "review-slices/review-port-hidden-testdata/helper",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "$module/internal/engine/review/port/testdata/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/engine/review/port/testdata/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "review-slices/review-port-hidden-_x/helper",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "$module/internal/engine/review/port/_x/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/engine/review/port/_x/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "review-slices/review-port-hidden-.x/helper",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "$module/internal/engine/review/port/.x/helper",
+    "Kind": "graph",
+    "Rule": "ignored import path element",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "internal/engine/review/port/.x/helper/probe.go": "package helper\nimport _ \"os/exec\"\n"
+    }
+  },
+  {
+    "Name": "review-slices/review-port-ignored-tagged",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build architecture_review_never\n\npackage port\nimport _ \"os/exec\"\n",
+    "Files": {
+      "internal/engine/review/port/base.go": "package port\n"
+    },
+    "CompileFiles": [
+      "internal/engine/review/port/probe.go"
+    ]
+  },
+  {
+    "Name": "review-slices/review-port-ignored-windows",
+    "File": "internal/engine/review/port/probe_windows.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe_windows.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build !windows\n\npackage port\nimport _ \"os/exec\"\n",
+    "Files": {
+      "internal/engine/review/port/base.go": "package port\n"
+    },
+    "CompileFiles": [
+      "internal/engine/review/port/probe_windows.go"
+    ]
+  },
+  {
+    "Name": "review-slices/review-port-pure-context",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "context",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-fmt",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "fmt",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-strconv",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "strconv",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-errors",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "errors",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-strings",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "strings",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-sort",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "sort",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-slices",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "slices",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-maps",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "maps",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-bytes",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "bytes",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-unicode",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "unicode",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-port-pure-time",
+    "File": "internal/engine/review/port/probe.go",
+    "Import": "time",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package port\nimport \"time\"\ntype Timeout time.Duration\n"
+  },
+  {
+    "Name": "review-suppression-104",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint: depguard\n"
+  },
+  {
+    "Name": "review-suppression-105",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:gosec, depguard\n"
+  },
+  {
+    "Name": "review-suppression-106",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:depguard//reason\n"
+  },
+  {
+    "Name": "review-suppression-107",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:DEPGUARD\n"
+  },
+  {
+    "Name": "review-suppression-108",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" // NoLiNt: gosec, DEPGUARD // reason\n"
+  },
+  {
+    "Name": "review-suppression-109",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" /*nolint: gosec, DEPGUARD*/\n"
+  },
+  {
+    "Name": "review-suppression-110",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint: ALL\n"
+  },
+  {
+    "Name": "review-suppression-111",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:gosec,depguard,unused\n"
+  },
+  {
+    "Name": "review-comment-control-112",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\nconst X = \"//nolint: depguard\"\n"
+  },
+  {
+    "Name": "review-comment-control-113",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\n//nolint:gosec // depguard is enforced\nconst X = 1\n"
+  },
+  {
+    "Name": "review-comment-control-114",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\n//nolint:gosec,unused // targeted only\nconst X = 1\n"
+  },
+  {
+    "Name": "review-comment-control-115",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "",
+    "Kind": "allow",
+    "Rule": "",
+    "Source": "package domain\n// nolinting:depguard is prose\nconst X = 1\n"
+  },
+  {
+    "Name": "review-lib-wired",
+    "File": "lib/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "unclassified package",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Files": {
+      "cmd/control/main.go": "package main\nimport _ \"github.com/itos-corp/go-template-itos/lib\"\nfunc main() {}\n"
+    },
+    "Source": "package lib\nimport _ \"os/exec\"\n"
+  },
+  {
+    "Name": "review-lib-unlinked",
+    "File": "lib/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "unclassified package",
+    "Flags": [
+      "--toplevel"
+    ]
+  },
+  {
+    "Name": "review-top-control-features",
+    "File": "features/probe.go",
+    "Import": "os/exec",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-top-control-tools/probe",
+    "File": "tools/probe/probe.go",
+    "Import": "os/exec",
+    "Kind": "allow",
+    "Rule": ""
+  },
+  {
+    "Name": "review-slices/review-domain-ignored-only",
+    "File": "internal/engine/review/domain/nested/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build architecture_review_never\n\npackage nested\nimport _ \"os/exec\"\n",
+    "CompileFiles": [
+      "internal/engine/review/domain/nested/probe.go"
+    ]
+  },
+  {
+    "Name": "review-slices/review-port-ignored-only",
+    "File": "internal/engine/review/port/nested/probe.go",
+    "Import": "",
+    "Kind": "graph",
+    "Rule": "ignored Go file probe.go",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "//go:build architecture_review_never\n\npackage nested\nimport _ \"os/exec\"\n",
+    "CompileFiles": [
+      "internal/engine/review/port/nested/probe.go"
+    ]
+  },
+  {
+    "Name": "thread-suppression-depguard-comma",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:depguard,\n"
+  },
+  {
+    "Name": "thread-suppression-all-comma",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:all,\n"
+  },
+  {
+    "Name": "thread-suppression-list-comma",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:gosec,depguard,\n"
+  },
+  {
+    "Name": "thread-suppression-trimmed-list-comma",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:gosec, DEPGUARD,\n"
+  },
+  {
+    "Name": "thread-suppression-adjacent-reason-comma",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" //nolint:depguard,// reason\n"
+  },
+  {
+    "Name": "thread-suppression-block-comma",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "suppression",
+    "Rule": "suppresses depguard",
+    "Flags": [
+      "--toplevel"
+    ],
+    "Source": "package domain\nimport _ \"os\" /*nolint:depguard,*/\n"
+  },
+  {
+    "Name": "thread-comment-control-targeted-comma",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "allow",
+    "Source": "package domain\n//nolint:gosec,\nconst X = 1\n"
+  },
+  {
+    "Name": "thread-comment-control-targeted-reason",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "allow",
+    "Source": "package domain\n//nolint:gosec, // depguard stays enforced\nconst X = 1\n"
+  },
+  {
+    "Name": "thread-comment-control-prose-name",
+    "File": "internal/engine/review/domain/probe.go",
+    "Kind": "allow",
+    "Source": "package domain\n//nolint:depguardextra,\nconst X = 1\n"
+  },
+  {
+    "Name": "thread-porttest-slices/review-excluded",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Kind": "allow",
+    "Files": {},
+    "Source": "//go:build architecture_thread_never\n\npackage porttest\nconst X = 1\n",
+    "CompileFiles": [
+      "internal/engine/review/port/porttest/probe.go"
+    ]
+  },
+  {
+    "Name": "thread-porttest-slices/review-listed",
+    "File": "internal/engine/review/port/porttest/probe.go",
+    "Kind": "allow",
+    "Files": {
+      "internal/engine/review/port/porttest/base.go": "package porttest\n"
+    },
+    "Source": "//go:build architecture_thread_never\n\npackage porttest\nconst X = 1\n",
+    "CompileFiles": [
+      "internal/engine/review/port/porttest/probe.go"
+    ]
+  },
+  {
+    "Name": "thread-porttest-slices/review-nested-excluded",
+    "File": "internal/engine/review/port/porttest/nested/probe.go",
+    "Kind": "allow",
+    "Files": {},
+    "Source": "//go:build architecture_thread_never\n\npackage nested\nconst X = 1\n",
+    "CompileFiles": [
+      "internal/engine/review/port/porttest/nested/probe.go"
+    ]
+  },
+  {
+    "Name": "thread-porttest-slices/review-nested-listed",
+    "File": "internal/engine/review/port/porttest/nested/probe.go",
+    "Kind": "allow",
+    "Files": {
+      "internal/engine/review/port/porttest/nested/base.go": "package nested\n"
+    },
+    "Source": "//go:build architecture_thread_never\n\npackage nested\nconst X = 1\n",
+    "CompileFiles": [
+      "internal/engine/review/port/porttest/nested/probe.go"
+    ]
+  },
+  {
+    "Name": "thread-workspace-current-module",
+    "File": "internal/engine/review/domain/probe.go",
+    "Import": "fmt",
+    "Kind": "allow",
+    "Files": {
+      "go.work": "go 1.27.2\n\nuse (\n .\n ./workspace-peer\n)\n",
+      "workspace-peer/go.mod": "module example.com/aaa\n\ngo 1.27\n",
+      "workspace-peer/lib/base.go": "package lib\nimport _ \"os/exec\"\n"
+    },
+    "Workspace": true
+  },
+  {
+    "Name": "domain-imports-its-adapter",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "$module/internal/engine/count/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "domain-imports-its-adapter-test",
+    "File": "internal/engine/count/domain/probe_test.go",
+    "Import": "$module/internal/engine/count/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "domain-imports-other-engine-adapter",
+    "File": "internal/engine/count/domain/probe.go",
+    "Import": "$module/internal/engine/other/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "adapter-imports-other-engine-adapter",
+    "File": "internal/engine/count/disk/probe.go",
+    "Import": "$module/internal/engine/other/disk",
+    "Kind": "graph",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "adapter-imports-other-engine-domain-allowed",
+    "File": "internal/engine/count/disk/probe.go",
+    "Import": "$module/internal/engine/other/domain",
+    "Kind": "allow",
+    "Rule": "siblings"
+  },
+  {
+    "Name": "adapter-imports-its-port-allowed",
+    "File": "internal/engine/count/disk/probe.go",
+    "Import": "$module/internal/engine/count/port",
+    "Kind": "allow",
+    "Rule": "siblings"
+  }
+]

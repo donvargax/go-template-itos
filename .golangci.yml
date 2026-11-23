@@ -3,85 +3,196 @@ linters:
   default: standard
   enable:
     - depguard
+    - forbidigo
     - gosec
+    - nolintlint
     - revive
   settings:
-    # Layer/production-I/O/mock rules harvested from
+    # forbidigo refuses identifiers, each pattern naming the decision it holds.
+    # Patterns and comments are taken from
     # github.com/donvargax/itos-template/.golangci.yml with the owner's
-    # permission (CONTRIBUTORS.md), adapted to this module and layout.
-    # tools/bin/architecture-check proves these with compile-valid fixtures.
-    # The arrows are decision 6's: the domain and its ports reach the outside
-    # only through adapters implementing the ports, and an adapter imports
-    # nothing of ours but the ports. Each desc tells the reader of a refusal
-    # what it means and, where a new package caused it, to extend the rules
-    # as docs/go.md's Adding a package says rather than loosen them.
+    # permission (CONTRIBUTORS.md), each source cited as itos-template's own
+    # decision, never as a number of this project's. analyze-types matches an
+    # identifier by its package, not by the name a file imports it as, so an
+    # alias does not slip past. A pattern holding only some files has its
+    # exclusions below, each saying why.
+    forbidigo:
+      analyze-types: true
+      forbid:
+        # itos-template's decision 26: code that differs by OS takes the OS as a
+        # value, and only a thin caller reads runtime.GOOS. Every read is
+        # refused, a comparison and a copy compared later alike; an edge that
+        # hands the OS in as a value is excepted below, by name, when a project
+        # has one. forbidigo rather than a ruleguard rule, which matches shapes
+        # and misses the OS copied into a variable and compared later.
+        - pattern: ^runtime\.GOOS$
+          pkg: ^runtime$
+          msg: "code that differs by OS takes the OS as a value (itos-template's decision 26): read the OS only at the edge that hands it in as a value"
+        # itos-template's decision 17: the domain knows no UI, and output goes
+        # through the writers the UI hands down, so it is tested and --json
+        # keeps stdout to itself: nothing prints to the process's stdout behind
+        # them.
+        - pattern: ^(fmt\.Print(f|ln)?|print|println)$
+          msg: "output goes through the writers the UI hands down (itos-template's decision 17): write to the io.Writer given"
+        # itos-template's decision 17: the domain knows no UI, exit codes
+        # included; a command returns its code and cmd alone exits with it
+        # (its exclusion below). log.Fatal exits too.
+        - pattern: ^(os|syscall)\.Exit$
+          msg: "cmd alone exits (itos-template's decision 17): return the exit code to it"
+        - pattern: ^log\.Fatal(f|ln)?$
+          msg: "cmd alone exits (itos-template's decision 17): return the exit code to it"
+        # itos-template's docs/CLI.md rule 31: a bug exits 70, as an error
+        # nobody classified, never as a panic, which exits 2 with a trace.
+        # Input is checked at its edge into a value its one constructor makes
+        # and trusted after (itos-template's decision 41), so no inner code
+        # meets a case it must panic on. Tests are left out (below).
+        - pattern: ^panic$
+          msg: "a bug exits 70, never as a panic (itos-template's docs/CLI.md rule 31): return an error, or take a value checked at its edge"
+    # An exception is one finding, excepted on its line with the linter it
+    # silences named and why; one that silences nothing is reported, so an
+    # exception goes when its finding does. Taken from itos-template.
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+      allow-unused: false
+    # Role rules taken from github.com/donvargax/itos-container/.golangci.yml
+    # (its itos-cc ADR-0047/0051 and itos ADR-0053 rules), adapted to this
+    # module's paths and decision 11. A shared domain is an engine,
+    # internal/engine/<name>/{domain,port,port/porttest,<adapter>}. Go code
+    # under internal that no role names is refused, and the domain and port
+    # import only what their exact lists name. The graph check, tools/architecture
+    # (tools/bin/architecture-check), resolves the owner and layer arrows that
+    # depguard's import prefixes cannot express, and its fixtures prove these
+    # rules refuse what they should. The template's own bans on mocks and
+    # rapid follow.
     depguard:
       rules:
-        # The domain and its ports, their tests too: nothing of ours but the
-        # domain and its port subpackages (no adapter, slice, UI or cmd), and
-        # no kong. Its tests run it against porttest's fakes. domain-coverage
-        # reads this list: each glob's folder is a domain package it measures
-        # (./internal/counting), its port subpackages not measured, so the
-        # floor holds behaviour, not the ports and fakes.
+        unclassified:
+          list-mode: strict
+          files:
+            - "**/internal/**"
+            - "**/pkg/**"
+            - "!**/internal/engine/*/*/**"
+          allow:
+            - "architecture.invalid/unclassified$"
         domain:
-          list-mode: lax
+          list-mode: strict
           files:
-            - "**/internal/counting/**"
-          allow:
-            - github.com/itos-corp/go-template-itos/internal/counting$
-            - github.com/itos-corp/go-template-itos/internal/counting/
-          deny:
-            - pkg: github.com/itos-corp/go-template-itos
-              desc: "the domain imports no adapter, slice, UI or cmd (decision 6): reach the outside through its port; if this is another domain package, extend the rules as docs/go.md's Adding a package says, never loosen this one"
-            - pkg: github.com/alecthomas/kong
-              desc: "kong stays in the UI (decision 6): the domain takes plain values, never kong's; never loosen this one"
-        # The domain's own code does no I/O: no os (os/exec with it) and no
-        # net. Its tests may read a fixture.
-        domain-io:
-          files:
-            - "**/internal/counting/**"
-            - "!$test"
-          deny:
-            - pkg: os
-              desc: "the domain does no I/O (decision 6): do the I/O in an adapter behind internal/counting/port, adding it as docs/go.md's Adding a package says; tests may read fixtures. Never loosen this one"
-            - pkg: net
-              desc: "the domain does no I/O (decision 6): reach networks from an adapter behind internal/counting/port, adding it as docs/go.md's Adding a package says; never loosen this one"
-        # An adapter implements the ports and imports nothing of ours but
-        # them: not the domain, another adapter, a slice, the UI or porttest's
-        # fakes, which its tests alone may use. Each adapter is listed.
-        infra:
-          list-mode: lax
-          files:
-            - "**/internal/disk/**"
+            - "**/internal/engine/*/domain/**"
             - "!$test"
           allow:
-            - github.com/itos-corp/go-template-itos/internal/counting/port$
+            - "bytes$"
+            - "context$"
+            - "errors$"
+            - "fmt$"
+            - "maps$"
+            - "slices$"
+            - "sort$"
+            - "strconv$"
+            - "strings$"
+            - "time$"
+            - "unicode$"
+            - "github.com/itos-corp/go-template-itos/internal/engine/"
+        domain-tests:
+          list-mode: strict
+          files:
+            - "**/internal/engine/*/domain/*_test.go"
+            - "**/internal/engine/*/domain/**/*_test.go"
+          allow:
+            - "$gostd"
+            - "github.com/itos-corp/go-template-itos/internal/engine/"
+            - "pgregory.net/rapid$"
+        port:
+          list-mode: strict
+          files:
+            - "**/internal/engine/*/port/**"
+            - "!$test"
+            - "!**/internal/engine/*/port/porttest/**"
+          allow:
+            - "bytes$"
+            - "context$"
+            - "errors$"
+            - "fmt$"
+            - "maps$"
+            - "slices$"
+            - "sort$"
+            - "strconv$"
+            - "strings$"
+            - "time$"
+            - "unicode$"
+            - "github.com/itos-corp/go-template-itos/internal/engine/"
+        store-ports-io:
+          # Adapted from itos ADR-0053 store-ports-io; tests may read fixtures.
+          list-mode: lax
+          files:
+            - "**/internal/engine/*/port/**"
+            - "!$test"
           deny:
-            - pkg: github.com/itos-corp/go-template-itos
-              desc: "an adapter imports nothing of ours but the ports it implements (decision 6), cmd wiring the rest; if it implements another port, extend the rules as docs/go.md's Adding a package says, never loosen this one"
+            - pkg: "os"
+              desc: "I/O belongs in an adapter behind a port; fakes keep their state in memory"
+            - pkg: "net"
+              desc: "I/O belongs in an adapter behind a port; fakes keep their state in memory"
+            - pkg: "syscall"
+              desc: "I/O belongs in an adapter behind a port; fakes keep their state in memory"
+            - pkg: "golang.org/x/sys/"
+              desc: "I/O belongs in an adapter behind a port; fakes keep their state in memory"
+            - pkg: "io/ioutil$"
+              desc: "I/O belongs in an adapter behind a port; fakes keep their state in memory"
+            - pkg: "path/filepath$"
+              desc: "I/O belongs in an adapter behind a port; fakes keep their state in memory"
+            - pkg: "plugin$"
+              desc: "I/O belongs in an adapter behind a port; fakes keep their state in memory"
+        port-tests:
+          list-mode: strict
+          files:
+            - "**/internal/engine/*/port/*_test.go"
+            - "**/internal/engine/*/port/**/*_test.go"
+          allow:
+            - "$gostd"
+            - "github.com/itos-corp/go-template-itos/internal/engine/"
+        adapter:
+          list-mode: lax
+          files:
+            - "**/internal/engine/*/*/**"
+            - "!**/internal/engine/*/domain/**"
+            - "!**/internal/engine/*/port/**"
+          allow:
+            - "github.com/itos-corp/go-template-itos/internal/engine/"
+          deny:
+            - pkg: "github.com/itos-corp/go-template-itos/"
+              desc: "adapters import only their own engine's port, or other engines' APIs"
+        porttest:
+          list-mode: strict
+          files:
+            - "**/internal/engine/*/port/porttest/**"
+          allow:
+            - "$gostd"
+            - "github.com/itos-corp/go-template-itos/internal/engine/"
         mocks:
           files:
             - $all
           deny:
             - pkg: github.com/golang/mock
-              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/engine/counting/port/porttest does"
             - pkg: go.uber.org/mock
-              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/engine/counting/port/porttest does"
             - pkg: github.com/stretchr/testify/mock
-              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/engine/counting/port/porttest does"
             - pkg: github.com/vektra/mockery
-              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/engine/counting/port/porttest does"
             - pkg: github.com/maxbrunsfeld/counterfeiter
-              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/counting/port/porttest does"
-        # Properties are unit tests of the domain: rapid comes in only in the
+              desc: "no mocking library: write an in-memory fake or stub of the port in its porttest package, as internal/engine/counting/port/porttest does"
+        # Properties are unit tests of a domain: rapid comes in only in a
         # domain package's own tests, not its code, its ports or porttest.
         rapid:
+          list-mode: lax
           files:
-            - $all
-            - "!**/internal/counting/*_test.go"
+            - "$all"
+            - "!**/internal/engine/*/domain/*_test.go"
+            - "!**/internal/engine/*/domain/**/*_test.go"
           deny:
-            - pkg: pgregory.net/rapid
-              desc: "rapid is only for the domain's property tests, in internal/counting's own tests; test anything else with ordinary tests and porttest's fakes"
+            - pkg: "pgregory.net/rapid"
+              desc: "rapid is used only by domain property tests; test anything else with ordinary tests and porttest's fakes"
     revive:
       rules:
         - name: file-length-limit
@@ -93,6 +204,17 @@ linters:
     rules:
       - path: _test\.go$
         linters: [gosec]
+      # Tests ask which OS they run on, exit (TestMain's os.Exit(m.Run()) and
+      # a helper process are standard Go; the rule holds production code) and
+      # may panic as a failure of their own. Taken from itos-template.
+      - path: _test\.go$
+        linters: [forbidigo]
+        text: runtime\.GOOS|(os|syscall)\.Exit|panic
+      # tools/ holds this repository's own programs, each a main writing to its
+      # stdout and exiting with its code, outside the layers decision 11 draws.
+      - path: ^tools/
+        linters: [forbidigo]
+        text: os\.Exit|fmt\.Print
 formatters:
   enable:
     - gofmt
