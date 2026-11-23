@@ -1430,8 +1430,37 @@
     shipped file names itos's hooks. golangci-lint, govulncheck and the tests stay in CI only.
     Prove it on stack/go and go/cli green, Template check green after go/cli is pushed, and
     itos-template check passing 2 of 2.
+- id: T-67
+  type: ci
+  title: Mutation runs fresh and seeded on each push, with no committed results
+  why: >
+    Was mutation-fresh, the migration's sixth item. Lands on stack/go, merged into go/cli; merge
+    main into both first. Today CI samples mutants against results committed in .metrics/mutate,
+    which go stale in every render (each snapshot hashes test files that import the module
+    path) and which a made project cannot renew without itos. Replace it with itos-container's
+    fresh run: ci.yml's test job runs tools/bin/pinned itos-cc mutation run --count 10 --since
+    BASE --seed BASE --fail-uncovered=lines cmd internal (stack/go: internal alone, it has no
+    cmd), BASE being the pull request's base SHA or the push's before; when before is all zeros
+    (a new branch) it runs with no --since over the packages, seeded by the head. The step needs
+    the history, so its checkout fetches it. A mutant that survives or a line no test reaches
+    fails the step, as today's check does. The template pins itos-cc 0.5.0, older than the
+    mutation run this needs: move tools/bin/pinned's itos-cc to 0.47.2, the version
+    itos-container runs it with, with its checksums, and carry itos-cc.yaml's exceptions over to
+    what 0.47.2 reads, each kept only while the mutant it excuses still survives. .metrics/ is ignored in .gitignore and every
+    committed file under it is removed, on both branches; itos-template.yaml's template_only
+    entry for .metrics and its comment go, since nothing is committed there now. itos-cc.yaml
+    keeps its reviewed exceptions and drops anything that names itos (a mutation.tests.list
+    calling itos tests list, if a branch has one). itos.yaml's proof.code goes on both branches,
+    since ci.yml now runs the proof and itos would only run it twice. The manifest's mutation
+    sample checks become the same run, over the render's whole history, and the stack's checks
+    gain tools/bin/pre-commit-check and go run ./tools/bin/pre-push-check, which T-66 added to CI
+    but not there. tools/bin/domain-coverage
+    stays as it is. AGENTS.md's Finishing line on each branch says mutation runs in CI on each
+    push and names no itos tool. Settles go-template-itos#4's cache-less mutation; #4 stays open
+    for the lint rules (layout-rules) and the coverage floor (nightly).
+    Prove it on stack/go and go/cli green with the mutation step's output showing mutants run,
+    Template check green after go/cli is pushed, and itos-template check passing 2 of 2.
   done_when:
-    - run: tools/bin/pre-commit-check
-    - run: go run ./tools/bin/pre-push-check
-    - run: '! grep -nE "golangci-lint|govulncheck" tools/hooks/pre-commit && grep -q "go vet" tools/hooks/pre-push'
-    - run: grep -q "tools/bin/pre-commit-check" .github/workflows/ci.yml && grep -q "hook.go-template-itos-pre-push.command" README.md
+    - run: test -z "$(git ls-files .metrics)" && grep -qE "^/?\.metrics/?$" .gitignore
+    - run: grep -q "mutation run" .github/workflows/ci.yml && ! grep -q "mutation sample" .github/workflows/ci.yml itos-template.yaml
+    - run: '! grep -nE "^proof:" itos.yaml && ! grep -n "itos tests" itos-cc.yaml'

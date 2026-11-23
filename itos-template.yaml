@@ -40,7 +40,9 @@ stacks:
       - [tools/bin/govulncheck]
       - [go, test, ./...]
       - [tools/bin/domain-coverage]
-      - [tools/bin/pinned, itos-cc, mutation, sample, --count, 10]
+      - [tools/bin/pre-commit-check]
+      - [go, run, ./tools/bin/pre-push-check]
+      - [tools/bin/pinned, itos-cc, mutation, run, --count, 10, --fail-uncovered, internal]
 
 features:
   - name: cli
@@ -58,7 +60,7 @@ features:
       - [go, test, ./cmd/..., ./internal/...]
       - [tools/bin/domain-coverage]
       - [go, test, ./features, -count=1]
-      - [tools/bin/pinned, itos-cc, mutation, sample, --count, 10]
+      - [tools/bin/pinned, itos-cc, mutation, run, --count, 10, --fail-uncovered, cmd, internal]
 
 questions:
   - name: name
@@ -96,15 +98,6 @@ template_only:
   - PLAN.md
   - docs/ORCHESTRATING.md
   - TEMPLATE.md
-  # The template's mutation records: each snapshot hashes the test files that
-  # import its file, and those import the module path a render replaces, so
-  # every record is stale in every render, and each itos-template update would
-  # conflict on them. A made project's first push judges no code (setup sets
-  # commits.since to the render commit), and its first code change records its
-  # own. itos-cc.yaml still ships: itos-cc reads that one file, configuration
-  # and reviewed exceptions alike, and an exception's hash covers its
-  # function's body, not the module path, so most of them hold in a render.
-  - .metrics
   # The decisions about running the template, and the index itos writes from
   # every record in the folder (q-19): a render ships the records that bind a
   # made project (the template's decisions 1, 6, 7 and 8), indexed by its

@@ -15,9 +15,7 @@ security fixes following the existing security-update policy. Renovate reads
 by the project's own CI. The file alone does not make Renovate run: the automation stays
 unverified until the Renovate app is installed and a request has landed.
 
-Fresh mutation records are required when code or relevant test imports change. Record them
-from the push's range start, the nearest ancestor with a green CI run, since `itos ci run`
-judges the proof from there.
+Mutation runs fresh in CI on each push, so a move of itos-cc needs no records renewed.
 
 git-cliff publishes a `.sha512` file per archive rather than a checksums file: move its pin by
 checking each archive against that file first, then pinning the archive's SHA-256.

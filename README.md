@@ -30,8 +30,8 @@ go test ./features -count=1
 ```
 
 Its other gates are formatting, vet, golangci-lint, an import-boundary self-test,
-govulncheck, domain coverage of at least 80 percent and changed-code mutation proof;
-[docs/go.md](docs/go.md) describes each. `.github/workflows/ci.yml` runs them, except the changed-code mutation proof.
+govulncheck, domain coverage of at least 80 percent and a fresh mutation run over the pushed
+commits; [docs/go.md](docs/go.md) describes each. `.github/workflows/ci.yml` runs them.
 
 ## Hooks
 
