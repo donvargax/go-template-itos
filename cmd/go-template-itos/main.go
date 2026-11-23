@@ -34,6 +34,11 @@ import (
 	"github.com/itos-corp/go-template-itos/internal/version"
 )
 
+// programName is the name the command answers to. It sits outside run so that
+// run's body, which itos-cc.yaml's exception hashes, holds no project name a
+// render replaces.
+const programName = "go-template-itos"
+
 // commandLine is the command line: its flags and commands.
 type commandLine struct {
 	// An action, not a switch: it prints and exits, so it has no --no- pair
@@ -82,11 +87,11 @@ func run(ctx context.Context, args []string, in io.Reader, stdout, stderr io.Wri
 	stopped := -1
 	var c commandLine
 	parser, err := kong.New(&c, append(cli.Flags(),
-		kong.Name("go-template-itos"),
+		kong.Name(programName),
 		kong.Description("Count the lines and words of a file, or of standard input."),
 		kong.Writers(stdout, stderr),
 		kong.Exit(func(code int) { stopped = code }),
-		kong.Vars{"version": version.Text("go-template-itos")},
+		kong.Vars{"version": version.Text(programName)},
 		kong.BindTo(ctx, (*context.Context)(nil)),
 		kong.Bind(ui, count.Handler{Files: stdin.Files{Fallback: disk.Files{}, In: in}}),
 	)...)
@@ -178,3 +183,7 @@ func logger(w io.Writer) *slog.Logger {
 	}
 	return slog.New(slog.NewJSONHandler(w, opts))
 }
+
+// itos-cc mutation: 26 killed, 1 survived, 0 uncovered
+// survived: line 102 `>` → `>=` in run
+// end itos-cc mutation
