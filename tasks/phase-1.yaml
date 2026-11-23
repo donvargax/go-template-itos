@@ -959,3 +959,50 @@
     each branch's own itos.yaml, CI and registry, as earlier merges did. Prove it on all three
     heads green, Template check green on main's run after go/cli is pushed, and itos-template
     check passing 2 of 2.
+- id: T-63
+  type: docs
+  title: A made project's AGENTS.md is tool-agnostic and its MAP.md says where to start
+  why: >
+    Was agents-no-itos, the migration's second item, built to decision 10 (q-36: a made project
+    needs no itos). AGENTS.md ships to every made project, so on main, stack/go and go/cli it
+    names no itos command, registry, ledger, footer or guide. Each branch keeps its own
+    AGENTS.md (its project description and code boundaries), rewritten in itos-cc's structure
+    (a line pointing to each guide, then changes and commits, code boundaries, finishing) and
+    carrying itos-container's generic rules with every itos line removed: specify behavior before
+    building it and commit the failing scenario steps first; Conventional Commits headers, since
+    the release reads them; read git status before staging and stage explicit paths only, never a
+    folder, ., -A or -u; never bypass hooks, force-push or rewrite published history; fix a
+    valid check's failure in the work, never by weakening it; fakes and not mocks, with a
+    contract suite holding each fake and adapter to the same behavior; the OS as a value; a
+    library before building; input is hostile; no credentials in fixtures, logs or commits.
+    The ## itos block that itos init --agent-rules writes goes too. Until plain-ci removes the
+    go stack's setup step that runs it, a render's setup writes it back; that is expected and
+    plain-ci settles it, so say so in the commit. What the template's own development needs, the
+    itos commands, the block's pointer to itos go, the coordinating and implementing roles and
+    the sentence on the template's AGPL and decision 9 (AGENTS.md:38 on main), moves to
+    TEMPLATE.md, which AGENTS.md's first line already sends a template session to read first, so
+    sessions here still start with itos go and commit with itos commit and push with itos push.
+    A MAP.md skeleton ships from main: a short header saying what it is for (where to start in
+    each part of the code: its start files, its fake and its test command), one entry per slice
+    or domain. Main has no code, so its MAP.md has the header alone; stack/go adds the counting
+    domain's entry and go/cli the count command's, with real paths, as they stand today (the
+    layout moves in layout-rules, which updates them). AGENTS.md points to MAP.md and to arc42
+    sections 1, 2 and 9, the always-read files. CONTRIBUTORS.md loses "the handles itos
+    recognizes for work ownership" and says plainly what the table lists. Decision 10 joins
+    itos-template.yaml's template_only list with the template's other decisions, with a comment
+    saying why: it is about how the template stopped shipping itos, and a made project has no
+    decision 2 to compare it with. 0002 is superseded and stays template_only. itos.yaml's test
+    -f steps on each branch add MAP.md. A file a made project keeps names no template, branch or
+    itos; check each branch's AGENTS.md, MAP.md and CONTRIBUTORS.md with git grep. Docs and its
+    chore split as T-62 found: docs commits cannot touch itos.yaml, itos-template.yaml or
+    tools/bin, so those go in a chore commit naming T-63. Merge main into stack/go, then stack/go
+    into go/cli, each branch keeping its own AGENTS.md rewritten, itos.yaml, CI and registry.
+    Prove it on all three heads green, Template check green on main's run after go/cli is pushed,
+    and itos-template check passing 2 of 2.
+  done_when:
+    - run: test -f MAP.md && grep -q MAP.md AGENTS.md && grep -q "docs/architecture/09-architecture-decisions.md" AGENTS.md
+    - run: '! grep -niE "\bitos (go|guide|work|commit|push|init|decision|task)\b|^## itos" AGENTS.md MAP.md CONTRIBUTORS.md'
+    - run: grep -q "itos go" TEMPLATE.md && grep -q "itos commit" TEMPLATE.md
+    - run: grep -q "0010-a-made-project-needs-no-itos" itos-template.yaml
+    - run: '! grep -qi "itos recognizes" CONTRIBUTORS.md'
+    - run: tools/bin/doc-caps
