@@ -27,9 +27,12 @@ development uses itos, and these rules are the ones it left out.
   (`itos ci range --head HEAD` prints it, given `GITHUB_REPOSITORY` and `GITHUB_TOKEN`); commit
   `.metrics/mutate/`.
 - The block `itos init --agent-rules` writes into `AGENTS.md` points at `itos go` and says to
-  stage only your own files. A made project's `AGENTS.md` carries no such block, but until the
-  go stack's setup step that runs `itos init --agent-rules` is removed, a render's setup writes
-  it back.
+  stage only your own files. A made project's `AGENTS.md` carries no such block, and no setup
+  step writes it back (decision 10).
+- The template's own itos checks run in `.github/workflows/itos.yml`, which `template_only`
+  keeps out of renders; `ci.yml` is what a made project keeps and calls plain commands. Each
+  branch's `itos.yaml` `ci.steps` hold only what itos or the template needs, never a step
+  `ci.yml` runs.
 
 The template's AGPL and its permission for made projects are under Provenance and harvest below.
 
