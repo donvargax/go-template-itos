@@ -1,4 +1,4 @@
-# Architecture
+# 5. Building block view
 
 The code is a shared domain behind ports, adapters apart from it, and thin slices named for
 their commands (decision 6 in `docs/decisions/`). `docs/go.md` lists the packages and the

@@ -38,7 +38,7 @@ itos configuration say which of them its hooks and CI run.
 
 Read [AGENTS.md](AGENTS.md) for the project's rules. [docs/CLI.md](docs/CLI.md) holds the
 command line's contract and rules, [docs/engineering.md](docs/engineering.md) the shared
-engineering rules, [docs/go.md](docs/go.md) Go's, [docs/architecture.md](docs/architecture.md)
+engineering rules, [docs/go.md](docs/go.md) Go's, [docs/architecture/05-building-block-view.md](docs/architecture/05-building-block-view.md)
 the layer boundaries, [docs/security.md](docs/security.md) the trust boundaries,
 [docs/upgrading.md](docs/upgrading.md) how to move dependency pins,
 [docs/CONFIG.md](docs/CONFIG.md) the rules for a configuration file the project owns, and
