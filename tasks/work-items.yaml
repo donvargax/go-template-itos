@@ -15,6 +15,7 @@ queue:
   - agents-no-itos
   - pinned-tools
   - plain-ci
+  - plain-hooks
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
