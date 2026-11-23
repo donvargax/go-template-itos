@@ -1077,3 +1077,17 @@ items:
       Lands on go/cli. GoReleaser's ko integration builds and pushes the image with the release,
       attested like the archives (#18).
     refs: [https://github.com/donvargax/go-template-itos/issues/18]
+  - id: arc42-content
+    title: Each branch's arc42 sections, MAP.md and CLI.md's why describe its own code
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [docs-arc42, scenarios-two-drivers]
+    kind: idea
+    why: >
+      On stack/go and go/cli. itos-cc's docs/architecture.md content (layers, ports and contract
+      suites, the OS as a value, the testing model, gates by tier, recipes) folded into arc42
+      sections 4, 5 and 8 for each branch's own code; MAP.md filled for each slice; itos-cc's CLI.md
+      section on why the codes look as they do, on go/cli. Settles #14; covers go-engineering and
+      cli-contract.
+    refs: [https://github.com/donvargax/go-template-itos/issues/14]
