@@ -13,6 +13,7 @@ phases:
 queue:
   - docs-arc42
   - agents-no-itos
+  - pinned-tools
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
