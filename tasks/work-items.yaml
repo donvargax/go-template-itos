@@ -1066,3 +1066,14 @@ items:
       itos-cc's tools/bin/notices writing THIRD_PARTY_NOTICES, checked in CI with -check and shipped
       in the archives. Attestation stays on.
     refs: [https://github.com/donvargax/go-template-itos/issues/2, https://github.com/donvargax/go-template-itos/issues/8]
+  - id: ko-image
+    title: A release publishes a container image through GoReleaser's ko
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [release-plain]
+    kind: idea
+    why: >
+      Lands on go/cli. GoReleaser's ko integration builds and pushes the image with the release,
+      attested like the archives (#18).
+    refs: [https://github.com/donvargax/go-template-itos/issues/18]
