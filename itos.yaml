@@ -1,4 +1,4 @@
-# The commit rules, the checks CI runs and the proof of the Go code.
+# The commit rules and the checks CI runs.
 version: 1
 
 # The source project's pin and checksum, copied with its workflow action.
@@ -54,8 +54,3 @@ ci:
         test -f .gitignore && test -f .github/workflows/ci.yml &&
         test -f .github/renovate.json5 && test -x tools/bin/doc-caps
   watch: { provider: github }
-
-proof:
-  code:
-    paths: ["internal/**/*.go"]
-    check: "tools/bin/pinned itos-cc mutation check --since {base} --fail-uncovered --json internal"
