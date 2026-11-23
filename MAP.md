@@ -11,3 +11,9 @@ or domain is added; keep each to a few lines and say where to look, not what the
 - Adapter: `internal/disk/files.go`, the read-only disk implementation of the port.
 - Fake: `internal/counting/port/porttest/files.go`, the in-memory `Files` the domain's tests use.
 - Test: `go test ./internal/counting/... ./internal/disk/...`
+
+## Pinned tools
+
+- Start: `tools/bin/pinned`, the launcher every gate runs scanners and linters through; its cache is
+  in the git common directory, shared by all worktrees.
+- Test: `go test ./tools/pinned/...`, which runs the launcher against a local release server.
