@@ -1009,3 +1009,17 @@ items:
       fields and trusted inside. Decisions 7 and 8 stay. The scenarios change first, red. Settles #6
       and #5's secure by design.
     refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
+  - id: scenarios-two-drivers
+    title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [cli-contract-code]
+    kind: idea
+    why: >
+      A contract suite per port, run against both the fake and the real adapter, in itos-container's
+      porttest shape, lands on stack/go. On go/cli, itos-cc's two drivers: the scenarios in process
+      against the fakes by default and through the built binary behind a switch, both in CI; itos's
+      -shard=i/n and -timings flags; itos-container's tools/bin/scenario-list, which lists the
+      scenarios with no itos. features/smoke.yaml, read only by itos, goes. Settles #7.
+    refs: [https://github.com/donvargax/go-template-itos/issues/7]
