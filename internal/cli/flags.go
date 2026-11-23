@@ -20,12 +20,24 @@ package cli
 // takes its environment variable's value (GO_TEMPLATE_ITOS_JSON=1) and
 // refuses one on the command line, so its mapper knows which it is reading
 // by the hook, which runs between the two.
+//
+// kong (since #618) reads a --no- pair's own value itself and hands the
+// mapper a bool token for the pair, the same for --no-json and
+// --no-json=true. So the mapper refuses only a value the command line wrote
+// (a string), and the hook refuses a --no- pair written with a value.
+//
+// Each refusal is a type of its own, as the kong fork's are, so the UI tells
+// them apart with errors.As, never by their text: SwitchValueError,
+// ValueMissingError and RepeatedFlagError. A flag's second occurrence is
+// refused as given twice before its value is judged, as the mapper sees it
+// already set.
 
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
-	"github.com/alecthomas/kong"
+	"github.com/donvargax/kong"
 )
 
 // Flags are the kong options that hold the command line's flags to the rules
@@ -51,6 +63,9 @@ type tracing struct{ over bool }
 // environment variable beside its flag is never the flag given twice.
 func (t *tracing) done(ctx *kong.Context) error {
 	t.over = true
+	if err := pairGivenAValue(ctx); err != nil {
+		return err
+	}
 	given := map[*kong.Flag]bool{}
 	for _, p := range ctx.Path {
 		f := p.Flag
@@ -58,9 +73,26 @@ func (t *tracing) done(ctx *kong.Context) error {
 			continue
 		}
 		if given[f] {
-			return fmt.Errorf("--%s%s: given more than once; give it once", f.Name, either(f))
+			return fmt.Errorf("--%s%s: %w", f.Name, either(f), &RepeatedFlagError{Flag: f})
 		}
 		given[f] = true
+	}
+	return nil
+}
+
+// pairGivenAValue refuses a switch's --no- pair written with a value
+// (--no-json=true) before a bare --, in the command line as given, since kong
+// hands the mapper the pair's value as its own bool.
+func pairGivenAValue(ctx *kong.Context) error {
+	for _, arg := range ctx.Args {
+		if arg == "--" {
+			return nil
+		}
+		for _, f := range ctx.Flags() {
+			if value, ok := strings.CutPrefix(arg, "--no-"+f.Name+"="); ok && f.Tag.Negatable != "" && f.IsBool() {
+				return fmt.Errorf("--%s: %w", f.Name, &SwitchValueError{Flag: f, Value: value})
+			}
+		}
 	}
 	return nil
 }
@@ -74,10 +106,26 @@ type switchMapper struct {
 }
 
 func (m switchMapper) Decode(ctx *kong.DecodeContext, target reflect.Value) error {
-	if !m.traced.over && ctx.Scan.Peek().Type == kong.FlagValueToken {
-		return fmt.Errorf("a switch takes no value; give --%s%s alone", ctx.Value.Name, either(ctx.Value.Flag))
+	if next := ctx.Scan.Peek(); !m.traced.over && next.Type == kong.FlagValueToken {
+		if value, written := next.Value.(string); written {
+			if repeated(ctx.Value) {
+				return &RepeatedFlagError{Flag: ctx.Value.Flag}
+			}
+			return &SwitchValueError{Flag: ctx.Value.Flag, Value: value}
+		}
 	}
 	return m.kong.Decode(ctx, target)
+}
+
+// SwitchValueError is a switch the command line gave a value, Value, as it
+// was written after the =.
+type SwitchValueError struct {
+	Flag  *kong.Flag
+	Value string
+}
+
+func (e *SwitchValueError) Error() string {
+	return fmt.Sprintf("a switch takes no value; give --%s%s alone", e.Flag.Name, either(e.Flag))
 }
 
 // valueMapper reads a flag's value as kong does, once there is one: never
@@ -86,12 +134,41 @@ type valueMapper struct{ kong kong.Mapper }
 
 func (m valueMapper) Decode(ctx *kong.DecodeContext, target reflect.Value) error {
 	if next := ctx.Scan.Peek(); ctx.Value.Flag != nil && !next.IsValue() {
-		if next.IsEOL() {
-			return fmt.Errorf("needs a value, as --%s %s", ctx.Value.Name, ctx.Value.Flag.FormatPlaceHolder())
+		if repeated(ctx.Value) {
+			return &RepeatedFlagError{Flag: ctx.Value.Flag}
 		}
-		return fmt.Errorf("needs a value, and %s is a flag, never its value; to give it as the value, write --%s=%s", next, ctx.Value.Name, next)
+		missing := &ValueMissingError{Flag: ctx.Value.Flag}
+		if !next.IsEOL() {
+			missing.Next = next.String()
+		}
+		return missing
 	}
 	return m.kong.Decode(ctx, target)
+}
+
+// ValueMissingError is a flag that takes a value given none: the command
+// line ended after it, or Next, a flag, came next.
+type ValueMissingError struct {
+	Flag *kong.Flag
+	Next string
+}
+
+func (e *ValueMissingError) Error() string {
+	if e.Next == "" {
+		return fmt.Sprintf("needs a value, as --%s %s", e.Flag.Name, e.Flag.FormatPlaceHolder())
+	}
+	return fmt.Sprintf("needs a value, and %s is a flag, never its value; to give it as the value, write --%s=%s", e.Next, e.Flag.Name, e.Next)
+}
+
+// RepeatedFlagError is a flag that is not cumulative given more than once.
+type RepeatedFlagError struct{ Flag *kong.Flag }
+
+func (e *RepeatedFlagError) Error() string { return "given more than once; give it once" }
+
+// repeated is whether v, a flag being traced, was set earlier on the
+// command line and is not cumulative: given again.
+func repeated(v *kong.Value) bool {
+	return v.Flag != nil && v.Set && !v.IsCumulative()
 }
 
 // either is a switch's --no- pair, as a message names it beside the switch.

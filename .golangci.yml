@@ -205,7 +205,7 @@ linters:
             - "**/internal/slices/*/command/**"
           allow:
             - "$gostd"
-            - "github.com/alecthomas/kong$"
+            - "github.com/donvargax/kong$"
             - "github.com/itos-corp/go-template-itos/internal/cli$"
             - "github.com/itos-corp/go-template-itos/internal/slices/"
             - "github.com/itos-corp/go-template-itos/internal/engine/"
@@ -237,7 +237,7 @@ linters:
             - "!$test"
           allow:
             - "$gostd"
-            - "github.com/alecthomas/kong$"
+            - "github.com/donvargax/kong$"
             # temporary: cli classifies read failures until cli-contract-code moves that into the count slice, as itos-container does, and removes this arrow.
             - "github.com/itos-corp/go-template-itos/internal/engine/counting/port$"
         ui-tests:
@@ -249,7 +249,7 @@ linters:
             - "$gostd"
             - "github.com/itos-corp/go-template-itos/internal/cli$"
             - "github.com/itos-corp/go-template-itos/internal/cli/"
-            - "github.com/alecthomas/kong$"
+            - "github.com/donvargax/kong$"
             # temporary: cli classifies read failures until cli-contract-code moves that into the count slice, as itos-container does, and removes this arrow.
             - "github.com/itos-corp/go-template-itos/internal/engine/counting/port$"
         version:
@@ -296,7 +296,7 @@ linters:
             - "!**/internal/cli/**"
             - "!**/internal/slices/*/command/**"
           deny:
-            - pkg: github.com/alecthomas/kong
+            - pkg: github.com/donvargax/kong
               desc: "kong stays in the UI: cmd, internal/cli and a slice's command package; never loosen this one"
         mocks:
           files:

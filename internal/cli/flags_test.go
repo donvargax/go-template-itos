@@ -1,10 +1,11 @@
 package cli
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
-	"github.com/alecthomas/kong"
+	"github.com/donvargax/kong"
 )
 
 // The scenarios (ID-CLI-05 to 09) hold the usage errors by their exit code
@@ -186,4 +187,35 @@ func flagNamed(t *testing.T, name, tag string) *kong.Flag {
 	}
 	t.Fatalf("the model declares no flag named %q", name)
 	return nil
+}
+
+// The UI tells each refusal by its type, never its text, so each has the
+// flag and the value it names, with the --no- pair of a switch counted as it.
+func TestEachRefusalIsOfItsOwnTypeNamingTheFlag(t *testing.T) {
+	var (
+		switchValue  *SwitchValueError
+		valueMissing *ValueMissingError
+		repeatedFlag *RepeatedFlagError
+	)
+	_, err := parse(t, "--json=yes")
+	if !errors.As(err, &switchValue) || switchValue.Flag.Name != "json" || switchValue.Value != "yes" {
+		t.Errorf("--json=yes: got %#v", err)
+	}
+	_, err = parse(t, "--no-json=false")
+	if !errors.As(err, &switchValue) || switchValue.Flag.Name != "json" || switchValue.Value != "false" {
+		t.Errorf("--no-json=false: got %#v", err)
+	}
+	_, err = parse(t, "--stack", "--json")
+	if !errors.As(err, &valueMissing) || valueMissing.Flag.Name != "stack" || valueMissing.Next != "--json" {
+		t.Errorf("--stack --json: got %#v", err)
+	}
+	_, err = parse(t, "--stack")
+	if !errors.As(err, &valueMissing) || valueMissing.Flag.Name != "stack" || valueMissing.Next != "" {
+		t.Errorf("--stack: got %#v", err)
+	}
+	for _, args := range [][]string{{"--json", "--no-json"}, {"--stack", "a", "--stack", "b"}, {"--stack", "a", "--stack"}} {
+		if _, err = parse(t, args...); !errors.As(err, &repeatedFlag) {
+			t.Errorf("%v: got %#v, want a repeated flag", args, err)
+		}
+	}
 }

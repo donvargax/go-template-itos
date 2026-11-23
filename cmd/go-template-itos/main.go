@@ -24,7 +24,7 @@ import (
 	"os/signal"
 	"strings"
 
-	"github.com/alecthomas/kong"
+	"github.com/donvargax/kong"
 	"golang.org/x/term"
 
 	"github.com/itos-corp/go-template-itos/internal/cli"

@@ -1296,9 +1296,9 @@
     "Rule": "domain"
   },
   {
-    "Name": "cli-domain-github.com-alecthomas-kong",
+    "Name": "cli-domain-github.com-donvargax-kong",
     "File": "internal/slices/newname/domain/probe.go",
-    "Import": "github.com/alecthomas/kong",
+    "Import": "github.com/donvargax/kong",
     "Kind": "lint",
     "Rule": "domain,kong"
   },
@@ -2964,7 +2964,7 @@
   {
     "Name": "kong-in-engine-adapter",
     "File": "internal/engine/count/disk/probe.go",
-    "Import": "github.com/alecthomas/kong",
+    "Import": "github.com/donvargax/kong",
     "Kind": "lint",
     "Rule": "kong"
   }
