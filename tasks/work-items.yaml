@@ -1036,3 +1036,18 @@ items:
       as made projects have no footers (#3); a package rule with no minimum release age for go.mod's
       toolchain directive, so govulncheck is not red for a week after a Go security release (#22).
     refs: [https://github.com/donvargax/go-template-itos/issues/3, https://github.com/donvargax/go-template-itos/issues/12, https://github.com/donvargax/go-template-itos/issues/22]
+  - id: nightly
+    title: A nightly run tests everything on three platforms and keeps one Nightly red issue
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [scenarios-two-drivers, mutation-fresh]
+    kind: idea
+    why: >
+      Lands on stack/go and go/cli. itos's nightly.yml shape: every test and scenario on Linux,
+      macOS and Windows, Windows sharded, then a report job that opens, comments on and closes one
+      Nightly red issue, judging go test -json and the jobs' conclusions rather than itos's output.
+      It adds the race detector, fuzz targets and properties with a drawn and printed seed (itos's
+      nightly-fuzz and nightly-properties), and a coverage floor for the code outside the domain.
+      Settles #9 and #4's coverage floor; covers go-race-fuzz.
+    refs: [https://github.com/donvargax/go-template-itos/issues/9, https://github.com/donvargax/go-template-itos/issues/4]
