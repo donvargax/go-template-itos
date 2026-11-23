@@ -1,57 +1,55 @@
 # Working rules
 
-If `TEMPLATE.md` exists, read it first: this repository is then the template projects are made
-from, and that file says how to work on it. The root currently has no Go module or executable.
-Add each language-specific gate with the code it checks; never claim a check runs before it
-exists.
+If `TEMPLATE.md` exists, read it first: it holds what only this repository's own development
+needs. The root currently has no Go module or executable. Add each language-specific gate with
+the code it checks; never claim a check runs before it exists.
 
+Where to start in each part of the code is in `MAP.md`. Always read it with the architecture
+document's sections 1, 2 and 9: `docs/architecture/01-introduction-and-goals.md`,
+`docs/architecture/02-architecture-constraints.md` and
+`docs/architecture/09-architecture-decisions.md`, which indexes the decision records.
 Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
 stack and interface; stack and feature guides add only what is specific to them.
 Rules for any configuration file a project owns are in `docs/CONFIG.md`.
 
-The person's session coordinates with `itos go`. An implementing agent runs `itos guide work`,
-takes its named item with `itos work take`, does the work itself and starts no agents. Read work
-through `itos work`; never edit owners or statuses by hand. Bootstrap initialization is owned
-by the source project's T-25 until this new repository has its own usable registry and history.
+Do the work yourself and start no other agents.
 
 ## Changes and commits
 
 - Specify behavior before building it. When a public entry point and its scenario runner exist,
-  features and fixes follow their scenarios, with red steps committed first. Before that, the
-  bootstrap is a checked task, not an excuse to add unspecified behavior.
-- Everything else names a task in the ledger. Split commit types and their paths before editing.
-- Commit with `itos commit -F <file>`, never `git commit`. Bodies explain what changed and why;
-  no body line starts with a word and a colon, or with `with #,`.
-- Read `git status --short` before staging. Never stage a whole folder, `.` or use `git add -A`
-  or `-u`.
-- Never bypass hooks, force-push or rewrite published history. Push with `itos push` in the
-  background; read its output and watch CI without polling. Do not pipe a commit or push.
-- Run slow gates through their configured hooks and CI, not by hand before committing. A valid
-  check's failure is fixed in the work, not by weakening the check. Stop on a wrong gate.
+  features and fixes follow their scenarios, with the failing steps committed first and the
+  scenarios kept pending until then. Never add unspecified behavior or bend a scenario to fit
+  the code. Until there is an entry point, work is a checked task.
+- Write each commit header as a Conventional Commit, `type: subject`, because the release
+  reads them. The body says what changed and why.
+- Read `git status --short` before staging. Stage only explicit file paths: never a whole
+  folder, `.`, `git add -A` or `git add -u`. Untracked files you did not make are someone
+  else's work in progress.
+- Never bypass hooks, force-push or rewrite published history. Never pipe a commit or push.
+- Run slow gates through their configured hooks and CI, not by hand before committing. Fix a
+  valid check's failure in the work, never by weakening the check. Stop on a wrong gate.
 
-## Boundaries
+## Code boundaries
 
-- Look for an existing library before building what one likely solves; the person settles that
-  choice in the spec. Preserve thin entry points and domain-owned behavior through ports.
-- No credentials belong in fixtures, logs or committed files.
+- Keep thin entry points over domain-owned behavior through ports. The domain knows no UI,
+  filesystem implementation, JSON or exit codes.
+- Test with fakes, never mocks, and give each port a contract suite that holds its fake and
+  its adapters to the same behavior.
+- Code differing by OS takes the OS as a value. Build tags hold only a call unavailable on one
+  OS, with no mutation site; never branch on `runtime.GOOS` inside logic.
+- Look for an existing library before building what one likely solves; settle the choice in
+  the spec.
+- Treat every input as hostile: a file, a flag, an environment variable, a path or a checkout.
+- No credentials in fixtures, logs or committed files. Go vulnerability checks are not
+  credential scans; the pinned gitleaks is, `tools/bin/pinned gitleaks dir . --redact`.
 - Preserve third-party license notices, `CONTRIBUTORS.md` and the comments naming where
-  harvested code came from. The template's AGPL and its permission for made projects (decision 9)
-  do not change dependencies' licenses or the original source projects' licenses.
+  harvested code came from. The project's license does not change its dependencies' licenses.
 
 ## Finishing
 
-An item closes through `itos work done` only after its actual pushed head is green. Add the
-complete code proof with the first Go code, and its mutation results with the code they prove.
-Never copy another project's mutation cache. The block below is itos's own, written by
-`itos init --agent-rules`: it points agents at `itos go`, and `itos guide commit` prints the
-rules `itos.yaml` sets. Rewrite it with that command when itos moves, never by hand.
-
-<!-- itos:begin -->
-
-## itos
-
-Start with `itos go` unless your brief names another guide.
-
-Stage only your own files, by explicit path: untracked files you did not make are someone else's work in progress.
-
-<!-- itos:end -->
+A change is done when its pushed head is green in CI. Add the complete code proof with the
+first Go code, and its mutation results with the code they prove. Kill each surviving mutant
+with a test; only a truly equivalent mutant may be excepted, with a reason for the person to
+review. Code a test does not reach needs a test, never an exception. Never reshape code merely
+to remove mutation sites, hand-edit generated evidence or copy another project's mutation
+cache.
