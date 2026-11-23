@@ -31,7 +31,7 @@ ci:
     - { run: tools/bin/doc-caps, cost: static }
     - run: >-
         test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md &&
-        test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md &&
+        test -f MAP.md && test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md &&
         test -f docs/architecture/01-introduction-and-goals.md &&
         test -f docs/architecture/02-architecture-constraints.md &&
         test -f docs/architecture/09-architecture-decisions.md && test -f docs/security.md &&
@@ -58,7 +58,7 @@ ci:
       - tools/bin/doc-caps
       - >-
         test -f AGENTS.md && test -f CLAUDE.md && test -f CONTRIBUTORS.md &&
-        test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md &&
+        test -f MAP.md && test -f PLAN.md && test -f README.md && test -f docs/ORCHESTRATING.md &&
         test -f docs/architecture/01-introduction-and-goals.md &&
         test -f docs/architecture/02-architecture-constraints.md &&
         test -f docs/architecture/09-architecture-decisions.md && test -f docs/security.md &&

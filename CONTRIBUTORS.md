@@ -1,6 +1,6 @@
 # Contributors and provenance
 
-The GitHub profile links in this table are the handles itos recognizes for work ownership.
+The table lists the people who have contributed to this project, each linked to their GitHub profile.
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <table>
