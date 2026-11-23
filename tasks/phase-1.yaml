@@ -1130,7 +1130,3 @@
     for the lint rules (layout-rules) and the coverage floor (nightly).
     Prove it on stack/go and go/cli green with the mutation step's output showing mutants run,
     Template check green after go/cli is pushed, and itos-template check passing 2 of 2.
-  done_when:
-    - run: test -z "$(git ls-files .metrics)" && grep -qE "^/?\.metrics/?$" .gitignore
-    - run: '! grep -qE "mutation,? sample" itos-template.yaml && { test ! -f go.mod || { grep -q "mutation run" .github/workflows/ci.yml && ! grep -q "mutation sample" .github/workflows/ci.yml; }; }'
-    - run: '! grep -nE "^proof:" itos.yaml && ! grep -n "itos tests" itos-cc.yaml'

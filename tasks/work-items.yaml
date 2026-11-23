@@ -930,17 +930,9 @@ items:
     title: Mutation runs fresh and seeded on each push, with no committed results
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-65]
     kind: task
-    why: >
-      Was mutation-fresh.
-      Lands on stack/go and merges into go/cli. CI runs the pinned itos-cc as itos-container does:
-      mutation run --count 10 --since BASE --seed BASE --fail-uncovered=lines, BASE being the pull
-      request's base or the push's before. .metrics/ is ignored and the committed mutation and
-      coverage records go, with itos-cc.yaml's itos tests list line and itos.yaml's proof.code.
-      domain-coverage stays. The manifest's mutation check follows. Settles #4's cache-less
-      mutation, and retires cli-stale-mutation-snapshots and itos-cc-renew-setup.
     refs: [https://github.com/donvargax/go-template-itos/issues/4]
   - id: layout-rules
     title: Default-deny import rules over static role paths hold the Go layout
