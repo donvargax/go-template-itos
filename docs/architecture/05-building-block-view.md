@@ -1,8 +1,8 @@
 # 5. Building block view
 
-The code is a shared domain behind ports, adapters apart from it, and thin slices named for
-their commands (decision 6 in `docs/decisions/`). `docs/go.md` lists the packages and the
-import rules that hold them.
+The code is engines and slices (decision 11 in `docs/decisions/`): a shared domain is an
+engine, with its port and adapters beneath it, and a command is a slice that uses engines
+through their ports. `docs/go.md` lists the packages and the import rules that hold them.
 
 The private counting domain, `internal/counting`, owns line and word semantics and its result.
 It reads through its `Files` port, whose sealed failures describe the input it needs without

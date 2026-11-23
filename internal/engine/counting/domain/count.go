@@ -6,7 +6,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/itos-corp/go-template-itos/internal/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
 )
 
 // Result is the number of logical lines and whitespace-delimited words.

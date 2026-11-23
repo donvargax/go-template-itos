@@ -103,11 +103,10 @@ request has landed yet, so the automation stays unverified until one lands on ea
 
 ## The Go stack
 
-`stack/go` adds the Go module: the private counting domain `internal/counting` with its port,
-the `internal/disk` adapter, their tests, the Go gates and the tools they pin, laid out as
-decision 6 says. It has no command line; `go/cli` adds one, with its own interface contract and
-checks, the `count` slice and the `internal/stdin` adapter over this domain. The manifest's `go`
-checks are the commands this branch's `ci.yml` runs, the import-boundary self-test included;
+`stack/go` adds the Go module: the private counting engine, `internal/engine/counting`, with its domain, port and disk
+adapter, their tests, the Go gates and the tools they pin, laid out as decision 11 says. It has no command line; `go/cli` adds one, with its own interface contract and
+checks, the `count` slice and its stdin adapter over this engine. The manifest's `go`
+checks are the commands this branch's `ci.yml` runs, the architecture check included;
 `itos-template check` runs them after the root's gitleaks scan on each supported render. That is
 evidence about the template, not about a made project's own CI, which scans only the commits a
 push or pull request brings. `README.md` and the shipped guides here describe the project a `go`

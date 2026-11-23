@@ -39,11 +39,15 @@ The domain is shared, not part of any command, so a second command reuses counti
 port without reaching into another command's package. A context carries cancellation and
 deadlines only, always as the first parameter and never in a struct or as a value.
 
-`.golangci.yml` holds these arrows with depguard:
+The rules are taken from itos-container's `.golangci.yml` and its `tools/architecture`, and are
+default-deny: Go code under `internal` that no role names is refused.
 
-- `domain`: the domain, its port and their tests import nothing of ours but the domain and its
-  port subpackages, and never kong.
-- `domain-io`: the domain's own code does no I/O, neither `os` nor `net`. Its tests may read
+- `unclassified` refuses a package under `internal` or `pkg` that is not a role below, so a new
+  package needs its role before lint accepts it.
+- `domain` and `port` import only the standard library packages their exact lists name and the
+  engines' packages; `domain-tests` and `port-tests` add the rest of the standard library, and
+  the domain's tests rapid.
+- `store-ports-io`: a port does no I/O, neither `os`, `net` nor `syscall`. Its tests may read
   fixtures.
 - `slices`: a slice imports nothing of ours but the domain and `internal/cli`, so never another
   slice, an adapter or `cmd`. Its files are every package under `internal/` except the ones the
@@ -103,8 +107,8 @@ can join two words, so it is not promised to be additive. Every run sets
 `RAPID_CHECKS=1`: one new random case per property, as fast as an example test, with the
 seed printed on failure. This project has no scheduled high-count run.
 
-Tests run on Linux, macOS and Windows in CI's platform jobs. The import-boundary self-test
-runs there as well, because it checks paths and diagnostics that differ by platform.
+Tests run on Linux, macOS and Windows in CI's platform jobs. The architecture check's
+fixtures run there as well, because they check paths and diagnostics that differ by platform.
 
 ## Quality checks
 

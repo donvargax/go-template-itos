@@ -1460,7 +1460,48 @@
     for the lint rules (layout-rules) and the coverage floor (nightly).
     Prove it on stack/go and go/cli green with the mutation step's output showing mutants run,
     Template check green after go/cli is pushed, and itos-template check passing 2 of 2.
+- id: T-68
+  type: refactor
+  title: Default-deny import rules over static role paths hold the Go layout
+  why: >
+    Was layout-rules, the migration's seventh item. The template's import rules hold less than
+    its docs claim (go-template-itos#19): depguard lists are lax and a package no rule names is
+    allowed. Take itos-container's layout and rules instead. The layout: a shared domain is an
+    engine, internal/engine/<name>/{domain,port,port/porttest,<adapter>}; a command is a slice,
+    internal/slices/<cmd>/{command,domain,port,<adapter>}, using engines through their ports and
+    never another slice. On stack/go, internal/counting becomes internal/engine/counting/domain,
+    its port internal/engine/counting/port with porttest beneath it, and internal/disk
+    internal/engine/counting/disk. On go/cli, the same move reaches its importers, and the count
+    command moves to the slice layout as itos-container's internal/slices/count has it:
+    internal/count becomes internal/slices/count/command and internal/stdin its stdin adapter
+    under the slice or the engine, whichever itos-container's rules allow; internal/cli,
+    internal/release and internal/version keep the roles itos-container's .golangci.yml gives its
+    own packages of those names. Moving cmd's code must keep the mutation exception's function and hash in itos-cc.yaml true
+    (T-67 moved the project name into a package constant for this). The move changes no behavior: every test and scenario passes
+    unchanged but for import paths, and exit codes, kong and the UI's contract wait for
+    cli-contract-code. The rules: itos-container's .golangci.yml, adapted to these paths, with a
+    comment naming it as the source: unclassified Go code refused, static role paths, exact
+    allowlists for domain and port, I/O denied in port and command; and its architecture check,
+    the Go program tools/architecture with tools/bin/architecture-check and its fixtures under
+    tools/testdata/architecture, replacing the template's shell check, its fixtures kept to cases
+    these paths have. The template's own bans stay: no mocking library, rapid only in the
+    domain's property tests, kong only in the UI and the slices' command packages; and revive's
+    file length limit. Add forbidigo with analyze-types, taking itos-template's patterns and
+    their comments, each citing its source by name (itos-template's decision, never a bare
+    number): runtime.GOOS read only at the edge that hands the OS in as a value; no fmt.Print*,
+    print or println outside the writers the UI hands down; os.Exit, syscall.Exit and log.Fatal*
+    only in cmd; no panic outside tests. Add nolintlint, requiring each //nolint to name its
+    linter and give a reason. A new decision, shipped to made projects, records the layout and
+    supersedes decision 6, which then leaves arc42 section 9's list; MAP.md's entries and
+    docs/go.md follow the new paths. Merge main into stack/go and go/cli first, so their ledgers hold this entry and T-67's
+    corrected check. Lands on stack/go first, then go/cli with its merge; each
+    branch's .golangci.yml is its own, go/cli's adding its slice and UI. Settles #19, #4's design
+    rules held by lint, and #5's no panic; #5's checked values at the edge stay for
+    cli-contract-code. Prove it on stack/go and go/cli green, the architecture check's fixtures
+    refusing a domain that imports an adapter and an unclassified package, Template check green
+    after go/cli is pushed, and itos-template check passing 2 of 2.
   done_when:
-    - run: test -z "$(git ls-files .metrics)" && grep -qE "^/?\.metrics/?$" .gitignore
-    - run: grep -q "mutation run" .github/workflows/ci.yml && ! grep -q "mutation sample" .github/workflows/ci.yml itos-template.yaml
-    - run: '! grep -nE "^proof:" itos.yaml && ! grep -n "itos tests" itos-cc.yaml'
+    - run: test -d internal/engine/counting/domain && test ! -e internal/counting && test ! -e internal/disk
+    - run: tools/bin/pinned golangci-lint run ./... && tools/bin/architecture-check
+    - run: grep -q "forbidigo" .golangci.yml && grep -q "nolintlint" .golangci.yml && grep -q "runtime\\\\.GOOS" .golangci.yml
+    - run: test ! -d cmd || { test -d internal/slices/count/command && test ! -e internal/count; }
