@@ -184,20 +184,17 @@ func TestPinnedMetadata(t *testing.T) {
 	}
 	script = strings.Replace(script[:end], `"$(uname -s)-$(uname -m)"`, `"$PINNED_PLATFORM"`, 1)
 	script += "\nprintf '%s\\n' \"$version\" \"$asset\" \"$sum\" \"$url\" \"$member\"\n"
-	marker := regexp.MustCompile(`(?m)^\t# renovate: depName=(\S+)\n\tversion=(\S+)$`)
-	markers := map[string][]string{}
-	for _, m := range marker.FindAllStringSubmatch(launcherSource(t), -1) {
-		markers[m[1]] = append(markers[m[1]], m[2])
+	// Every tool the launcher knows is checked: its case label, then the marker and version.
+	label := regexp.MustCompile(`(?m)^([a-z][a-z-]*)\)$`)
+	marker := regexp.MustCompile(`(?m)^([a-z][a-z-]*)\)\n(?:\t#.*\n)*?\t# renovate: depName=(\S+)\n(?:\t#.*\n)*\tversion=(\S+)$`)
+	source := launcherSource(t)
+	labels := label.FindAllStringSubmatch(source, -1)
+	tools := marker.FindAllStringSubmatch(source, -1)
+	if len(labels) < 3 || len(labels) != len(tools) {
+		t.Fatalf("%d tools in the launcher, %d with a renovate marker and version", len(labels), len(tools))
 	}
-	for _, tool := range []struct{ name, dep string }{
-		{"gitleaks", "gitleaks/gitleaks"},
-		{"golangci-lint", "golangci/golangci-lint"},
-		{"itos-cc", "donvargax/itos-cc"},
-	} {
-		versions := markers[tool.dep]
-		if len(versions) != 1 {
-			t.Fatalf("%s: want one renovate marker for %s, got %v", tool.name, tool.dep, versions)
-		}
+	for _, m := range tools {
+		tool := struct{ name, dep, version string }{m[1], m[2], m[3]}
 		for _, platform := range []string{"Linux-x86_64", "Linux-aarch64", "Darwin-x86_64", "Darwin-arm64"} {
 			t.Run(tool.name+"/"+platform, func(t *testing.T) {
 				cmd := exec.CommandContext(t.Context(), "sh", "-s", "--", tool.name)
@@ -211,7 +208,7 @@ func TestPinnedMetadata(t *testing.T) {
 				if len(f) != 5 {
 					t.Fatalf("metadata = %q", out)
 				}
-				if f[0] != versions[0] || !regexp.MustCompile(`^[0-9a-f]{64}$`).MatchString(f[2]) ||
+				if f[0] != tool.version || !regexp.MustCompile(`^[0-9a-f]{64}$`).MatchString(f[2]) ||
 					!strings.HasPrefix(f[3], "https://github.com/"+tool.dep+"/releases/download/v"+f[0]+"/") ||
 					!strings.HasSuffix(f[3], "/"+f[1]) || f[4] == "" {
 					t.Fatalf("metadata incomplete or inconsistent with its marker: %q", f)
