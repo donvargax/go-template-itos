@@ -170,3 +170,13 @@ questions:
     question: "How should a made project's Go code be laid out and held: decision 6's shared domain with lax import lists, or itos-container's engines and slices under default-deny rules?"
     answer: "itos-container's layout under default-deny rules (the migration plan, approved by the person 2026-11-23). A shared domain is an engine, internal/engine/<name>/{domain,port,port/porttest,<adapter>}; a command is a slice, internal/slices/<cmd>/{command,domain,port,<adapter>}, using engines through their ports and never another slice. Unclassified Go code is refused, domain and port import only what their exact allowlists name, port and command do no I/O, and the architecture check proves the rules refuse what they should."
     decision: 11
+  - id: q-38
+    item: "T-69"
+    question: "Which kong does go/cli build on: upstream alecthomas/kong, or the person's fork github.com/donvargax/kong?"
+    answer: "The fork, github.com/donvargax/kong at v1.17.1-itos.1 (the person, 2026-11-23). It adds typed parse errors and an exported Suggest rule, so the UI classifies a bad flag or an unknown command by its type rather than by its message, and suggests the command meant (itos-cc's decisions 35 and 62). The fork declares its own module path, so go.mod requires github.com/donvargax/kong and the code imports that path, as itos-cc does. The fork retires when upstream kong takes the change."
+    decision: 12
+  - id: q-39
+    item: "T-69"
+    question: "Which exit codes, precedence and problem shape do go/cli's commands use: the template's 0, 1, 2, 3, 70, 75 and 130, or itos-cc's 0, 1, 75, 80, 81, 82, 100 and 130 with an explicit precedence?"
+    answer: "itos-cc's (the migration plan, approved by the person 2026-11-23). 0 success, 1 a check said no, 75 temporary, 80 a usage or config error, 81 an unknown command, 82 a requirement not met, 100 an error nothing classified, 130 interrupted. With problems of several codes, the run exits with the first of 130, 80, 81, 100, 82, 75, 1. A problem carries a stable dotted lower-case rule, a message, a fix and its exit, with its subject as keys of their own in --json. Codes stay clear of 2, 3 and 70, which shells, Go and sysexits already use."
+    decision: 13

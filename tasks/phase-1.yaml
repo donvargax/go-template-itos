@@ -1500,8 +1500,42 @@
     cli-contract-code. Prove it on stack/go and go/cli green, the architecture check's fixtures
     refusing a domain that imports an adapter and an unclassified package, Template check green
     after go/cli is pushed, and itos-template check passing 2 of 2.
+- id: T-69
+  type: feat
+  title: go/cli's commands exit with itos-cc's codes and problems, on the kong fork, with input checked at its edge
+  why: >
+    Was cli-contract-code, the migration's eighth item. Lands on go/cli alone: merge main straight
+    into go/cli for this entry and decisions 12 and 13, not through stack/go, whose three published
+    fix commits go/cli's footer rules refuse until the person settles that. Take itos-cc's
+    internal/cli contract as go-template-itos#6 gives it (itos-cc's decision 34, af5e6d9, 42b6a01,
+    5a36acd), with decision 13's codes: 0, 1, 75, 80 usage, 81 unknown command, 82 a requirement
+    not met, 100 an error nothing classified, 130 interrupted, and cli.Precedence 130, 80, 81, 100,
+    82, 75, 1 in place of the highest code. A Problem carries its code, a dotted lower-case rule
+    (count.input-missing, count.input-unreadable, interrupted, usage, internal), message and fix,
+    its subject as flat --json keys beside them, rule, message, fix and exit reserved; the plain
+    line keeps the fix; with --json a failure prints the object on stdout and nothing on stderr.
+    internal/cli becomes generic and imports nothing of the project's: the count slice's
+    classifier, internal/slices/count/command/classify.go in itos-container's shape, maps the
+    counting port's failures to problems, and cmd hands each slice's classifier to the UI; T-68's
+    temporary internal/cli -> internal/engine/counting/port arrow and its three comments go from
+    .golangci.yml and tools/architecture. Decision 12: require and import
+    github.com/donvargax/kong v1.17.1-itos.1 by its own path, as itos-cc does, and classify bad
+    flags (80) and unknown commands (81, naming the command meant through the fork's Suggest) by
+    the fork's typed parse errors, never by message text. Decisions 7 and 8 stay. Secure by
+    design (go-template-itos#5, itos-template's decision on checked values): every input the
+    count command takes, its argument, its flags, standard input and the environment, is checked
+    where it enters into a value with unexported fields and one checking constructor, trusted
+    inside and never checked again; bad input is refused with a problem naming it, never
+    repaired; docs/go.md gets the table of edge, input, checked value and where it is checked.
+    The scenarios change first, red: count.feature and cli.feature read the new codes and rule
+    IDs, and an unknown command and a bad flag each have a scenario of their own; then the code
+    turns them green. docs/CLI.md's exit code table, precedence and rules follow, and the help
+    states each command's codes (rule 34). Settles #6 and #5's checked values. Prove it on go/cli
+    green in CI, Itos and Template check, and itos-template check passing 2 of 2.
   done_when:
-    - run: test -d internal/engine/counting/domain && test ! -e internal/counting && test ! -e internal/disk
-    - run: tools/bin/pinned golangci-lint run ./... && tools/bin/architecture-check
-    - run: grep -q "forbidigo" .golangci.yml && grep -q "nolintlint" .golangci.yml && grep -q "runtime\\\\.GOOS" .golangci.yml
-    - run: test ! -d cmd || { test -d internal/slices/count/command && test ! -e internal/count; }
+    - run: ls docs/decisions/0012-*.md docs/decisions/0013-*.md
+    - run: test ! -d cmd || { grep -q "github.com/donvargax/kong v1.17.1-itos.1" go.mod && ! grep -q "alecthomas/kong" go.mod; }
+    - run: test ! -d cmd || { test -f internal/slices/count/command/classify.go && ! grep -rqE "/internal/(engine|slices)/" internal/cli; }
+    - run: test ! -d cmd || ! grep -rqi "temporary" .golangci.yml tools/architecture
+    - run: test ! -d cmd || { grep -q "exits with code 82" features/count.feature && grep -q "exits with code 81" features/cli.feature && ! grep -qE "exits with code (2|3|70)$" features/*.feature; }
+    - run: test ! -d cmd || go test ./internal/cli/ ./internal/slices/... ./cmd/...

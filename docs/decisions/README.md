@@ -13,5 +13,7 @@ file and leaves this list, which itos decision record writes.
 - [ADR-0009: The template is AGPL-3.0 and lets made projects choose their license](0009-the-template-is-agpl-3-0-and-lets-made-projects-choose-their-license.md)
 - [ADR-0010: A made project needs no itos: its CI, hooks and docs call plain commands](0010-a-made-project-needs-no-itos-its-ci-hooks-and-docs-call-plain-commands.md)
 - [ADR-0011: Go code is laid out as engines and slices, held by default-deny import rules](0011-go-code-is-laid-out-as-engines-and-slices-held-by-default-deny-import-rules.md)
+- [ADR-0012: go/cli builds on the kong fork until upstream kong takes typed parse errors](0012-go-cli-builds-on-the-kong-fork-until-upstream-kong-takes-typed-parse-errors.md)
+- [ADR-0013: Commands exit with itos-cc's codes and precedence and report problems with a rule, message, fix and exit](0013-commands-exit-with-itos-cc-s-codes-and-precedence-and-report-problems-with-a-rule-message-fix-and-exit.md)
 
 <!-- itos:decisions:end -->
