@@ -165,8 +165,10 @@ func TestPinnedSharesOneCacheAcrossWorktrees(t *testing.T) {
 	if err := os.WriteFile(second, script, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if got := toolPath(t, second, nil); got != first {
-		t.Fatalf("second worktree path = %q, want %q", got, first)
+	// The shell may spell the same folder differently (/var and /private/var, /tmp and /c/...),
+	// so what proves the share is that no second download happened.
+	if got := toolPath(t, second, nil); !strings.HasSuffix(got, "/.git/itos/tools/golangci-lint-fixture/golangci-lint") {
+		t.Fatalf("second worktree path = %q, not in the clone's cache", got)
 	}
 	if got := calls.Load(); got != 1 {
 		t.Fatalf("download attempts = %d, want 1", got)
