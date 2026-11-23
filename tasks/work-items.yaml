@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - docs-arc42
+  - T-62
   - agents-no-itos
   - pinned-tools
   - plain-ci
@@ -892,14 +892,15 @@ items:
     status: done
     depends_on: []
     kind: task
-  - id: docs-arc42
+  - id: T-62
     title: A made project's architecture document is a lean arc42 and its decisions are MADR records
     phase: 1
     owner: null
     status: todo
     depends_on: []
-    kind: idea
+    kind: task
     why: >
+      Was docs-arc42.
       Lands on main and merges down. docs/architecture.md becomes docs/architecture/, one file per
       arc42 section and only sections with content. Sections 1 (introduction and goals), 2
       (constraints) and 9 (decisions) ship empty, each with one line saying what goes there; they
@@ -914,7 +915,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [docs-arc42]
+    depends_on: [T-62]
     kind: idea
     why: >
       Lands on main and merges down. AGENTS.md ships itos-container's generic rules in itos-cc's
@@ -1101,7 +1102,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [docs-arc42, scenarios-two-drivers]
+    depends_on: [T-62, scenarios-two-drivers]
     kind: idea
     why: >
       On stack/go and go/cli. itos-cc's docs/architecture.md content (layers, ports and contract
