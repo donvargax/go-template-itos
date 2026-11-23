@@ -53,8 +53,9 @@ Do the work yourself and start no other agents.
 
 ## Finishing
 
-A change is done when its pushed head is green in CI. Add the complete code proof with the
-first Go code, and its mutation results with the code they prove. Kill each surviving mutant
+A change is done when its pushed head is green in CI. Before pushing code, record its
+changed-code proof with the pinned itos-cc (`tools/bin/pinned itos-cc mutation`) and commit
+`.metrics/mutate/`. Kill each surviving mutant
 with a test; only a truly equivalent mutant may be excepted, with a reason for the person to
 review. Code a test does not reach needs a test, never an exception. Never reshape code merely
 to remove mutation sites, hand-edit generated evidence or copy another project's mutation
