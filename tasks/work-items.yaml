@@ -1092,3 +1092,6 @@ items:
       On main. The README's lists of what a made project gets and what comes next follow the landed
       pieces, in plain words. The migration's issues are closed with their fixing commits; #3 and
       #21, which only footers and the ledger needed, go to the person to close.
+
+      T-65 left itos mentions in README.md on each branch and in go/cli's docs/CLI.md; this item
+      clears them, so no shipped text describes itos as part of a made project.
