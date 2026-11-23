@@ -1091,3 +1091,14 @@ items:
       section on why the codes look as they do, on go/cli. Settles #14; covers go-engineering and
       cli-contract.
     refs: [https://github.com/donvargax/go-template-itos/issues/14]
+  - id: migration-readme
+    title: The README says what a made project gets without itos
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [plain-hooks, renovate-plain, nightly, ko-image, arc42-content]
+    kind: idea
+    why: >
+      On main. The README's lists of what a made project gets and what comes next follow the landed
+      pieces, in plain words. The migration's issues are closed with their fixing commits; #3 and
+      #21, which only footers and the ledger needed, go to the person to close.
