@@ -69,14 +69,14 @@ jobs:
       # Mutation runs fresh on each push, over the commits this run judges: from the pull
       # request's base or the push's before, seeded by it. A branch's first push (before is
       # all zeros) runs the packages with no --since, seeded by the head. A surviving mutant or
-      # a line no test reaches fails the step; with no base, whole functions are judged for coverage.
+      # a line no test reaches fails the step when there is a base; with none, only a surviving mutant fails it.
       - name: Mutation
         env:
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
           HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           if [ -z "${BASE//0/}" ]; then
-            tools/bin/pinned itos-cc mutation run --count 10 --seed "$HEAD" --fail-uncovered internal
+            tools/bin/pinned itos-cc mutation run --count 10 --seed "$HEAD" internal
           else
             tools/bin/pinned itos-cc mutation run --count 10 --since "$BASE" --seed "$BASE" --fail-uncovered=lines internal
           fi

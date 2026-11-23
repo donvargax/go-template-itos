@@ -92,8 +92,8 @@ CI's `static` and `test` jobs run these checks in order:
 - `tools/bin/pinned itos-cc mutation run --count 10 --since <base> --seed <base>
   --fail-uncovered=lines internal`, run fresh on each push. The base is the pull request's base
   or the push's before; a branch's first push has no base and runs the packages with no
-  `--since`, seeded by the head. A mutant that survives or a line no test reaches fails the
-  step. No mutation result is committed: `.metrics/` is ignored.
+  `--since` and no `--fail-uncovered`, seeded by the head, where only a surviving mutant fails
+  the step. With a base, a mutant that survives or a changed line no test reaches fails it. No mutation result is committed: `.metrics/` is ignored.
 
 Tools are pinned:
 
@@ -111,4 +111,4 @@ A new project needs no itos. `itos-template new` prints one setup step, the move
 runs the Go steps and the Linux, macOS and Windows tests on the project's own `main`.
 
 The project starts with no mutation results and commits none. A branch's first push mutates the
-whole packages and each later push the functions it changes; a surviving mutant is a test to write.
+whole packages, judging survivors only, and each later push the functions it changes; a surviving mutant is a test to write.
