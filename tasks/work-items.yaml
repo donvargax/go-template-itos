@@ -975,6 +975,10 @@ items:
       v1.17.1-itos.1, the fork's rebase onto upstream v1.17.0, if that tag exists when the item
       starts, else v1.16.2-itos.2 and move later. The item records this as a decision that ships,
       naming the fork, why, and what retires it (the upstream change landing).
+
+      layout-rules (T-68) moves go/cli's packages into the slice layout as a refactor with no
+      behavior change, so the render never conflicts between stack/go and go/cli. This item is the
+      behavior: the exit codes, the problems, the kong fork and the checked values at the edge.
     refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
   - id: scenarios-two-drivers
     title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
