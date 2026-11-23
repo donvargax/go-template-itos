@@ -128,6 +128,9 @@ template_only:
   # Decision 9 is about the template's own license, not one a made project
   # keeps: the project's license is the MIT text it starts with.
   - docs/decisions/0009-the-template-is-agpl-3-0-and-lets-made-projects-choose-their-license.md
+  # Decision 10 is about how the template stopped shipping itos: a made project
+  # has no decision 2 to compare it with, and itos is not something it keeps.
+  - docs/decisions/0010-a-made-project-needs-no-itos-its-ci-hooks-and-docs-call-plain-commands.md
   - docs/decisions/README.md
 
 first_commit: |-

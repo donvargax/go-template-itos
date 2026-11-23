@@ -6,6 +6,33 @@ makes Go projects from. This file holds what only the template needs. It, `PLAN.
 `tasks` and the Template check workflow, so no made project has them. `README.md` and
 `AGENTS.md` on the rendering branches speak to a made project; keep template-facing text here.
 
+## Working with itos here
+
+`AGENTS.md` is what a made project keeps, so it names no itos command. The template's own
+development uses itos, and these rules are the ones it left out.
+
+- The person's session coordinates with `itos go`. An implementing agent runs `itos guide work`,
+  takes its item with `itos work take`, does the work itself and starts no agents. Read work
+  through `itos work`; never edit owners or statuses by hand.
+- Every change not driven by scenarios names a task in the ledger. Split commit types and their
+  paths before editing: a docs commit cannot touch `itos.yaml`, `itos-template.yaml` or
+  `tools/bin`, so that part goes in a chore commit naming the task.
+- Commit with `itos commit -F <file>`, never `git commit`. No body line starts with a word and
+  a colon, or with `with #,`.
+- Push with `itos push` in the background, read its output and watch CI without polling.
+- Close an item with `itos work done` only after its actual pushed head is green. Its
+  `itos ci run` judged the code proof over the push's range, and `work done` runs none. Before
+  pushing code, record changed-code proof with the pinned itos-cc, all-tests, fail-uncovered and
+  no-annotate, from the range's start, the nearest ancestor with a green CI run
+  (`itos ci range --head HEAD` prints it, given `GITHUB_REPOSITORY` and `GITHUB_TOKEN`); commit
+  `.metrics/mutate/`.
+- The block `itos init --agent-rules` writes into `AGENTS.md` points at `itos go` and says to
+  stage only your own files. A made project's `AGENTS.md` carries no such block, but until the
+  go stack's setup step that runs `itos init --agent-rules` is removed, a render's setup writes
+  it back.
+
+The template's AGPL and its permission for made projects are under Provenance and harvest below.
+
 ## Reading order
 
 Read `PLAN.md` first: the template's shape and its order of work. Then `AGENTS.md`, the rules
