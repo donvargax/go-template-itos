@@ -993,3 +993,19 @@ items:
       decision supersedes decision 6. Settles #19, #4's lint rules and #5's no panic; covers
       go-architecture.
     refs: [https://github.com/donvargax/go-template-itos/issues/19, https://github.com/donvargax/go-template-itos/issues/4, https://github.com/donvargax/go-template-itos/issues/5]
+  - id: cli-contract-code
+    title: go/cli's commands share itos-cc's exit codes and problems on stock kong, in itos-container's slice layout
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [layout-rules]
+    kind: idea
+    why: >
+      Lands on go/cli. The count command moves to internal/slices/count/command; internal/cli
+      becomes generic, importing nothing of the project's, and cmd hands it each slice's classifier
+      (itos-container). Exit codes 0, 1, 75, 80, 81, 82, 100 and 130 with an explicit precedence, a
+      problem carrying rule, message, fix and exit, and typed flag errors that need no kong fork
+      (itos-cc's internal/cli). Input is checked at its edge into value objects with unexported
+      fields and trusted inside. Decisions 7 and 8 stay. The scenarios change first, red. Settles #6
+      and #5's secure by design.
+    refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
