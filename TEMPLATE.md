@@ -21,11 +21,8 @@ development uses itos, and these rules are the ones it left out.
   a colon, or with `with #,`.
 - Push with `itos push` in the background, read its output and watch CI without polling.
 - Close an item with `itos work done` only after its actual pushed head is green. Its
-  `itos ci run` judged the code proof over the push's range, and `work done` runs none. Before
-  pushing code, record changed-code proof with the pinned itos-cc, all-tests, fail-uncovered and
-  no-annotate, from the range's start, the nearest ancestor with a green CI run
-  (`itos ci range --head HEAD` prints it, given `GITHUB_REPOSITORY` and `GITHUB_TOKEN`); commit
-  `.metrics/mutate/`.
+  `itos ci run` judged the pushed range's checks, and `work done` runs none. Mutation runs fresh in
+  CI on each push (`ci.yml`'s test job), so no mutation result is committed: `.metrics/` is ignored.
 - The block `itos init --agent-rules` writes into `AGENTS.md` points at `itos go` and says to
   stage only your own files. A made project's `AGENTS.md` carries no such block, and no setup
   step writes it back (decision 10).
