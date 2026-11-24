@@ -1065,3 +1065,16 @@ items:
       serve their downloads from a local fixture server or a skip the test names, so only CI's
       real-download path needs the network; to confirm first: which test downloads, and whether the
       render's check runs it at all.
+  - id: T-73
+    title: The counting contract suite's checkBytesRead is held by a test against a Files that fails while returning the right bytes
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [T-71]
+    kind: task
+    why: >
+      T-72's render check, 2026-11-23: itos-cc's sampled mutation in the go combination left
+      checkBytesRead's '||' to '&&' alive in
+      internal/engine/counting/port/porttest/files_contract.go, so the render check goes red
+      whenever the sample picks it. No test runs the contract against a Files that returns the
+      content and a failure at once, or the wrong content and no failure.
