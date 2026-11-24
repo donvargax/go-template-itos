@@ -1081,3 +1081,15 @@ items:
 
       T-65 left itos mentions in README.md on each branch and in go/cli's docs/CLI.md; this item
       clears them, so no shipped text describes itos as part of a made project.
+  - id: T-70
+    title: go/cli's Scenarios and Upgrading footers are required on feat commits only
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: [T-69]
+    kind: task
+    why: >
+      The person, 2026-11-23: go/cli's itos.yaml required Scenarios and Upgrading on fix commits
+      too, so itos push refused any go/cli that merged stack/go's published fix commits, which carry
+      stack/go's footers. That config governs only the template's own development, which leaves itos
+      at the end of this migration.
