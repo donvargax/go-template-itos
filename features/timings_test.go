@@ -10,11 +10,13 @@ import (
 
 func TestTimingsReportTheScenariosAndTheKindsOfStep(t *testing.T) {
 	file := filepath.Join(t.TempDir(), "timings.txt")
-	defer func(f string) {
-		*timingsFile = f
-		timings.scenarios = nil
-		timings.kinds = map[string]*kindTime{}
-	}(*timingsFile)
+	// A run given -timings (the nightly's) keeps the scenarios' timings in the same state, which End
+	// writes once the suite is done: this test starts from none and leaves them as it found them.
+	savedFile, savedStart, savedScenarios, savedKinds := *timingsFile, timings.start, timings.scenarios, timings.kinds
+	timings.scenarios, timings.kinds = nil, map[string]*kindTime{}
+	defer func() {
+		*timingsFile, timings.start, timings.scenarios, timings.kinds = savedFile, savedStart, savedScenarios, savedKinds
+	}()
 	*timingsFile = file
 	startTimings()
 	timeKind(`it exits with code "…"`, 2*time.Second)
