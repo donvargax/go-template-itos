@@ -1056,11 +1056,6 @@ items:
     title: The release logs in to the image registry before GoReleaser, so a turned-on image can be pushed
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      T-76's follow-up. GoReleaser's ko documentation says ko still needs a login to push ('either
-      with docker login or something else'), and release.yml logs in nowhere, so turning the image
-      on would fail at the push, as would attest-build-provenance's push-to-registry. The snapshot
-      ran against ko.local and could not show it.

@@ -1390,6 +1390,3 @@
     on or off, since the step cannot know before GoReleaser and a login pushes nothing.
     release.yml's header comment says so. Change nothing else. Prove it on go/cli green in CI,
     Itos and Template check, with main's and stack/go's Template check rerun.
-  done_when:
-    - run: test ! -d cmd || grep -q "docker/login-action@" .github/workflows/release.yml
-    - run: test ! -d cmd || grep -q "registry. ghcr.io" .github/workflows/release.yml
