@@ -1315,3 +1315,46 @@
     stack/go and go/cli green in CI, Itos and Template check, a dispatched nightly run on each Go
     branch green or with its red issue opened as described, and itos-template check passing 2
     of 2.
+- id: T-75
+  type: build
+  title: A release is versioned, noted, attested, verified and announced to the Go proxy with no itos
+  why: >
+    Was release-plain, the migration's twelfth item; decision 16 holds the design. Settles
+    go-template-itos#2, #8 and #10. On go/cli, after it merges main and stack/go; stack/go only
+    merges main and lists decision 16 in its arc42 section 9. In tools/bin/release-version, take
+    itos-cc's before-1.0 rule as is (donvargax/itos-cc bc21a3b with its test 217d676, the diffs in
+    #2). A breaking change before 1.0 makes a minor release. Then, test first, a commit whose header
+    is not a Conventional Commit (internal/release's Type gives "") counts as a patch-level change,
+    and the stderr line names each such commit by short hash and header. A merge commit whose header
+    is Git's or GitHub's default ("Merge ...") is skipped, since its parents are read. Typed commits
+    that release nothing (docs, test, ci, build, refactor, chore) still release nothing unless the
+    binary moved. In tools/bin/release-notes, drop -itos and the call to itos commit footers. It
+    reads every Upgrading footer, whole, from each commit's last paragraph with its own footer
+    reader, the one that already reads BREAKING-CHANGE, not git interpret-trailers, whose rule
+    for continuation lines drops the unindented wrapped lines these commits write. Footers saying
+    none are left out as now. In .github/workflows/release.yml, drop the donvargax/itos action. After
+    Attest, verify the attestation on the built linux amd64 archive with gh attestation verify -R
+    "$GITHUB_REPOSITORY", retried as itos's release.yml does (donvargax/itos), failing the job before
+    Publish. Retry the Publish the same way. After Publish, ask proxy.golang.org for the version, as
+    itos's step does, printing a ::warning:: and exiting 0 when it never answers (#8). Keep the
+    pinned GitHub CLI download. Harvest tools/bin/notices from itos-cc's (donvargax/itos-cc), less
+    its viewer and its C runtimes, since go/cli builds with CGO_ENABLED=0. It writes
+    THIRD_PARTY_NOTICES.md from the modules ./cmd/go-template-itos links on .goreleaser.yaml's
+    platforms and from Go's LICENSE. Commit that file, run `go run ./tools/bin/notices -check` in
+    ci.yml's static job and in itos-template.yaml's cli checks, and ship it in every archive
+    (.goreleaser.yaml files). Give the program a role in .golangci.yml and tools/architecture. Name
+    the source of the bare citations (#10): itos-template's decision 23 in internal/release/build.go,
+    release.go and release_test.go, and its decision 26 in features/interrupt_unix_test.go and
+    interrupt_windows_test.go. go/cli's README gains an install paragraph: go install
+    ...@latest can lag the newest release for a while, @v<version> never does, and gh attestation
+    verify checks an archive. release.yml's header comment, docs/go.md, MAP.md and arc42 section
+    9 follow. Prove it on main, stack/go and go/cli green in CI, Itos and Template check, a
+    snapshot build (tools/bin/pinned goreleaser release --snapshot --clean) in CI or once locally
+    showing THIRD_PARTY_NOTICES.md in an archive, and itos-template check passing 2 of 2.
+  done_when:
+    - run: ls docs/decisions/0016-*.md
+    - run: test ! -d cmd || { test -f THIRD_PARTY_NOTICES.md && go run ./tools/bin/notices -check; }
+    - run: test ! -d cmd || ! grep -q donvargax/itos@ .github/workflows/release.yml
+    - run: test ! -d cmd || { grep -q "attestation verify" .github/workflows/release.yml && grep -q proxy.golang.org .github/workflows/release.yml && grep -q THIRD_PARTY_NOTICES .goreleaser.yaml; }
+    - run: test ! -d cmd || go test ./tools/bin/release-version ./tools/bin/release-notes ./tools/bin/notices
+    - run: test ! -d cmd || ! git grep -q -E "[(]decision (23|26)[)]" -- internal features cmd
