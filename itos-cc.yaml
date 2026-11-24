@@ -7,7 +7,7 @@ mutation:
   exceptions:
     - file: cmd/go-template-itos/main.go
       function: github.com/itos-corp/go-template-itos/cmd/go-template-itos#run
-      hash: aa2cb541bbe14ae2
+      hash: 525fa5930f26ac2d
       line_in_function: 22
       column: 15
       original: '>'
