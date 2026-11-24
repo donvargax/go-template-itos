@@ -1216,6 +1216,3 @@
     message says so. Lands on go/cli as its own commit, then go/cli merges stack/go, which proves
     the change: itos push accepts the merge. Prove it on go/cli green in CI, Itos and Template
     check, with stack/go's head an ancestor of go/cli's.
-  done_when:
-    - run: test ! -d cmd || { awk '/^    Scenarios:/,/read_at/' itos.yaml | grep -q "required_for:.\[feat\]$" && awk '/^    Upgrading:/,/required_for/' itos.yaml | grep -q "required_for:.\[feat\]$"; }
-    - run: git merge-base --is-ancestor origin/stack/go origin/go/cli

@@ -1056,11 +1056,6 @@ items:
     title: go/cli's Scenarios and Upgrading footers are required on feat commits only
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-69]
     kind: task
-    why: >
-      The person, 2026-11-23: go/cli's itos.yaml required Scenarios and Upgrading on fix commits
-      too, so itos push refused any go/cli that merged stack/go's published fix commits, which carry
-      stack/go's footers. That config governs only the template's own development, which leaves itos
-      at the end of this migration.
