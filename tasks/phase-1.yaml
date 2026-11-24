@@ -1369,5 +1369,41 @@
     none that returns other content with no failure; add both, each failing the contract. Change
     no production code and no contract rule. Lands on stack/go, then go/cli merges stack/go.
     Prove it on stack/go and go/cli green in CI, Itos and Template check.
+- id: T-74
+  type: ci
+  title: A nightly tests everything on three platforms, explores with race, fuzz, properties and mutation, and keeps one Nightly red issue
+  why: >
+    Was nightly, the migration's eleventh item; decision 15 holds the design. Settles
+    go-template-itos#9 and #4's coverage floor. On stack/go, then go/cli with its merge, each
+    branch's own .github/workflows/nightly.yml in itos's nightly.yml shape (donvargax/itos) with
+    no itos in it: on schedule and workflow_dispatch; a platform matrix on ubuntu, macos and
+    windows, windows in two shards, running go test over cmd and internal and, on go/cli, the
+    scenarios with GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1, -shard and -timings (T-71's flags),
+    each go test -json kept for the report; and a Linux explore job: go test -race over cmd and
+    internal, tools/bin/nightly-fuzz and tools/bin/nightly-properties taken from itos's scripts
+    (the seed drawn and printed, a failing input printed with how to commit it), the coverage
+    floor tools/bin/e2e-coverage taken from itos-template's (80% for each package outside the
+    domain, unit tests and scenarios together, its package list read from the code), then the
+    pinned itos-cc's whole-tree mutation run over cmd and internal with the binary driver on and
+    go/cli's --all-tests, which must kill or show equivalent the signal channel size mutant in
+    cmd/go-template-itos/main.go that T-71 found only the binary reaches. Every step runs even
+    after one fails. Then a report job needing both, if not cancelled, with issues write: a Go
+    program tools/bin/nightly-report reworked from itos's to judge the jobs' conclusions and the
+    go test -json files, not itos's lines, keeping one open issue titled "Nightly red on
+    <branch>": opened on the first red night, commented on each red night after, naming each
+    red job and its failing tests, closed on a green night. Add at least one fuzz target where
+    hostile input enters: the count domain on stack/go, and the count slice's checked input on
+    go/cli. Per push (ci.yml): Linux keeps every test and both drivers; macOS and Windows run go
+    test over cmd and internal and the in-process scenarios, with no binary driver. GitHub runs a
+    schedule only from the default branch, and main has no Go: a template-only workflow on main,
+    .github/workflows/nightly-dispatch.yml, on schedule, dispatches nightly.yml on stack/go and
+    go/cli (actions write), and itos-template.yaml's template_only lists it. docs/go.md, MAP.md
+    and arc42 section 9 on each Go branch (listing decision 15) follow. Prove it on main,
+    stack/go and go/cli green in CI, Itos and Template check, a dispatched nightly run on each Go
+    branch green or with its red issue opened as described, and itos-template check passing 2
+    of 2.
   done_when:
-    - run: test ! -d internal/engine/counting || go test ./internal/engine/counting/port/porttest/
+    - run: ls docs/decisions/0015-*.md
+    - run: test -f go.mod || { test -f .github/workflows/nightly-dispatch.yml && grep -q "nightly-dispatch.yml" itos-template.yaml; }
+    - run: test ! -f go.mod || { test -f .github/workflows/nightly.yml && test -x tools/bin/nightly-fuzz && test -x tools/bin/nightly-properties && test -x tools/bin/e2e-coverage && test -d tools/bin/nightly-report; }
+    - run: test ! -f go.mod || go test -list '^Fuzz' ./internal/... | grep -q '^Fuzz'
