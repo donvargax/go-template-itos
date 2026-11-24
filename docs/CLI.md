@@ -9,6 +9,32 @@ Use these rules when you add or change a command, a flag, an exit code or an out
 in `docs/decisions/` can change a rule; change this document in the same commit. Rules for
 configuration files are in `docs/CONFIG.md`.
 
+## Why the codes and problems look as they do
+
+The exit codes are [square/exit](https://github.com/square/exit)'s, Square's semantic exit
+codes, which take their model from HTTP's status codes. Its two ranges play the part of HTTP's
+classes: 80 to 99 are the caller's errors, as 4xx are the client's (80 a usage error, 81 an
+unknown command, 82 a requirement not met), and 100 to 119 the program's, as 5xx are the
+server's (100 an error nothing classified). Its 0 and 1 are success and a check that said no.
+Two codes come from outside square/exit: 75 for a failure that may pass when run again
+unchanged, and 130 for an interrupt, what a shell reports for a command SIGINT ended. We took
+the set from itos-cc (donvargax/itos-cc), whose `docs/CLI.md` makes the same case, in decision 13.
+
+Each problem carries a stable `rule`, a dotted lower-case id such as `count.input-missing`, and
+its own `exit` code, as [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) gives each problem
+detail its own `status`. Its subject, such as the `file` or the `flag`, sits beside them as a
+flat key, as RFC 9457's extension members do; `rule`, `message`, `fix` and `exit` are reserved.
+A script reads the rule and the code, never the words.
+
+A run with several problems exits with the first code in the precedence order that one of them
+has, not the highest: 130, 80, 81, 100, 82, 75, 1. The first says the most about why nothing
+after it could be trusted: an interrupted run proves nothing, and a misused one checked nothing.
+`internal/cli`'s `Precedence` holds the order and `ExitCode` applies it, and a code missing from
+it is a defect of ours, exit 100. Only `internal/cli` turns problems into an exit code: a
+domain's failures carry no code, rule or wording, and each slice's classifier,
+`internal/slices/count/command/classify.go` for `count`, gives them theirs
+(`docs/architecture/08-crosscutting-concepts.md`).
+
 ## Sources
 
 | Key      | Source                                                                                                                                                         |

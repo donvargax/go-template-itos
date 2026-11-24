@@ -18,14 +18,13 @@ test command. Add an entry for each slice or domain; say where to look, not what
   check for arrows depguard cannot hold; fixtures: `tools/testdata/architecture/cases.json`.
 - Test: `tools/bin/architecture-check`.
 
-## Count command
+## Count slice
 
-- Start: `cmd/go-template-itos/main.go`, which assembles the command; `internal/slices/count/
-  command/count.go`, which carries its values to the domain, with `classify.go` and `input.go`;
-  `internal/cli/cli.go`, the generic UI.
-- Scenarios: `features/*.feature`, steps in `features/steps.go`; run by `scenarios_test.go` here
-  and by `features/features_test.go` through the binary.
-- Fake: counting's `porttest/files.go`.
+- Start: `internal/slices/count/command/count.go`, the command's `Query` and handler, with
+  `classify.go` and `input.go`; `internal/slices/count/stdin`, its adapter for `-`.
+- UI: `internal/cli/cli.go`, shared; `cmd/go-template-itos/main.go` assembles.
+- Scenarios: `features/*.feature`, steps in `features/steps.go`, run by `cmd`'s
+  `scenarios_test.go` and `features/features_test.go`.
 - Test: `go test ./cmd/... ./internal/... ./features -count=1`
 
 ## Release
