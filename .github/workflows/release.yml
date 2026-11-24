@@ -35,7 +35,10 @@ name: Release
 #   1. the version; nothing more when there is none;
 #   2. the tag, made locally only;
 #   3. GoReleaser (tools/bin/pinned, at the version pinned there) builds, packs and uploads a draft
-#      release whose target is this commit;
+#      release whose target is this commit. A step before it logs in to ghcr.io as the workflow's
+#      actor with its token, which ko needs to push the image and the attestation steps need to
+#      write and read it. It runs with the image on or off, since nothing before GoReleaser can
+#      know, and a login pushes nothing;
 #   4. the archives are attested (Sigstore, no keys; `gh attestation verify <file> -R
 #      itos-corp/go-template-itos` checks one). Attesting needs a public repository, as this one is,
 #      or GitHub Enterprise Cloud: a private repository on GitHub Free or Team cannot attest, and
@@ -115,6 +118,13 @@ jobs:
         env:
           TAG: v${{ steps.version.outputs.next }}
         run: git tag "$TAG" "$GITHUB_SHA"
+      - name: Log in to the image registry
+        if: steps.version.outputs.next != ''
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
       - name: GoReleaser
         if: steps.version.outputs.next != ''
         env:
