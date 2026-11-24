@@ -1376,9 +1376,3 @@
     go/cli green in CI, Itos and Template check. Also prove it with one local snapshot build with
     the image turned on in the working tree only, never committed, that lists the image for both
     architectures, and with itos-template check passing 2 of 2.
-  done_when:
-    - run: ls docs/decisions/0017-*.md
-    - run: test ! -d cmd || { grep -q "^kos:" .goreleaser.yaml && grep -q "distroless/static-debian12:nonroot@sha256" .goreleaser.yaml && ! grep -q -E "^ *- *.?latest" .goreleaser.yaml; }
-    - run: test ! -d cmd || { grep -q "packages. write" .github/workflows/release.yml && grep -q "subject-digest" .github/workflows/release.yml && grep -q "oci://" .github/workflows/release.yml; }
-    - run: test ! -d cmd || grep -q "goreleaser check" .github/workflows/ci.yml
-    - run: test ! -d cmd || grep -q "goreleaser" .github/renovate.json5

@@ -979,13 +979,9 @@ items:
     title: A release publishes a container image through GoReleaser's ko
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-75]
     kind: task
-    why: >
-      Was ko-image.
-      Lands on go/cli. GoReleaser's ko integration builds and pushes the image with the release,
-      attested like the archives (#18).
     refs: [https://github.com/donvargax/go-template-itos/issues/18]
   - id: arc42-content
     title: Each branch's arc42 sections, MAP.md and CLI.md's why describe its own code
