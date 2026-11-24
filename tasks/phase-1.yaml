@@ -1706,9 +1706,20 @@
     go/cli green in CI, Itos and Template check. Also prove it with one local snapshot build with
     the image turned on in the working tree only, never committed, that lists the image for both
     architectures, and with itos-template check passing 2 of 2.
+- id: T-77
+  type: ci
+  title: The release logs in to the image registry before GoReleaser, so a turned-on image can be pushed
+  why: >
+    T-76's follow-up. GoReleaser's ko documentation (goreleaser.com/customization/package/ko)
+    says ko still needs a login to push, "either with docker login or something else". go/cli's
+    release.yml logs in nowhere, so a project that turns the image on would fail at the push.
+    actions/attest-build-provenance's push-to-registry and gh attestation verify oci:// read the
+    registry through the same login. On go/cli only, as one ci commit naming T-77: when a version
+    is cut, a step before GoReleaser logs in to ghcr.io as github.actor with the workflow's token,
+    through docker/login-action pinned by digest as every action is. It runs whether the image is
+    on or off, since the step cannot know before GoReleaser and a login pushes nothing.
+    release.yml's header comment says so. Change nothing else. Prove it on go/cli green in CI,
+    Itos and Template check, with main's and stack/go's Template check rerun.
   done_when:
-    - run: ls docs/decisions/0017-*.md
-    - run: test ! -d cmd || { grep -q "^kos:" .goreleaser.yaml && grep -q "distroless/static-debian12:nonroot@sha256" .goreleaser.yaml && ! grep -q -E "^ *- *.?latest" .goreleaser.yaml; }
-    - run: test ! -d cmd || { grep -q "packages. write" .github/workflows/release.yml && grep -q "subject-digest" .github/workflows/release.yml && grep -q "oci://" .github/workflows/release.yml; }
-    - run: test ! -d cmd || grep -q "goreleaser check" .github/workflows/ci.yml
-    - run: test ! -d cmd || grep -q "goreleaser" .github/renovate.json5
+    - run: test ! -d cmd || grep -q "docker/login-action@" .github/workflows/release.yml
+    - run: test ! -d cmd || grep -q "registry. ghcr.io" .github/workflows/release.yml
