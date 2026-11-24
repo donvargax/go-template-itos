@@ -13,8 +13,9 @@ The table lists the people who have contributed to this project, each linked to 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project starts with infrastructure from Jorge Vargas's
-[itos](https://github.com/donvargax/itos) and
-[itos-template](https://github.com/donvargax/itos-template) projects, both under the GNU AGPL.
+[itos](https://github.com/donvargax/itos),
+[itos-template](https://github.com/donvargax/itos-template) and
+[itos-cc](https://github.com/donvargax/itos-cc) projects, all under the GNU AGPL.
 Their copyright owner lets a project made from the template that carries that work distribute it,
 with the rest of the project, under terms of the project's choice; the template keeps this
 permission's text in its `LICENSE-EXCEPTION`. This permission does not change the source

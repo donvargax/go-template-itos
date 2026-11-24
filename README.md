@@ -23,6 +23,19 @@ in process against the ports' fakes, and against the binary the harness builds f
 it is on where `GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1` is set. The release machinery a
 command line needs, its workflow and its version and notes tools, is here as well.
 
+## Install
+
+```sh
+go install github.com/itos-corp/go-template-itos/cmd/go-template-itos@v<version>
+```
+
+`@latest` can lag the newest release for a while, since the Go module proxy refreshes its list
+of versions on its own schedule; `@v<version>` never does, and the release asks the proxy for
+each new version when it publishes. Each release's archives are attested, and
+`gh attestation verify <archive> -R itos-corp/go-template-itos` checks one. Every archive holds
+`LICENSE`, `README.md` and `THIRD_PARTY_NOTICES.md`, the notices of the modules the binary links
+and of Go.
+
 ## Check it
 
 ```sh

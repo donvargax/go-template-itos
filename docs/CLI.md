@@ -32,7 +32,7 @@ Scripts can rely on two things only (ITOS):
 
 All plain output is for people and can change in any release. A script reads `--json` and the
 exit code, never the plain output and never a `message`. A change to the contract is a breaking
-change, and a breaking change makes a major release. CI is meant to run the last release's
+change, and a breaking change makes a major release, a minor one before 1.0. CI is meant to run the last release's
 scenarios against the new binary. Not yet: CI's release job cuts a release on a push to `main`,
 after the ci and platform jobs pass there, but no job runs the last release's scenarios against
 the binary that follows it.
@@ -192,7 +192,8 @@ may repeat, but no command has one yet.
 ### Changing the interface
 
 39. Renaming a command or a flag, or changing an exit code or a key of the `--json` output, is a
-    breaking change. Release the breaking changes that are ready together, in one major release.
+    breaking change. Release the breaking changes that are ready together, in one major release
+    (a minor one before 1.0).
     A commit that changes the contract says so in an `Upgrading` footer.
 40. Do not keep code for compatibility with an old interface: an old name exits 81, naming the new
     one. Only the previous-release check judges compatibility, against the contract above.

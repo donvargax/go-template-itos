@@ -198,6 +198,10 @@ CI's `static` and `test` jobs run these checks in order:
 - `go tool actionlint`, which checks the workflows.
 - `tools/bin/govulncheck`, which runs `go tool govulncheck -test ./...` with the toolchain
   `go.mod` names, covering the dependencies in use, test-only ones and the standard library.
+- `go run ./tools/bin/notices -check`, which holds `THIRD_PARTY_NOTICES.md` to the modules
+  `./cmd/go-template-itos` links on the platforms `.goreleaser.yaml` builds and to Go's own
+  `LICENSE`. A new dependency fails it until `go run ./tools/bin/notices` writes the file again;
+  every archive ships it.
 - `tools/bin/pinned gitleaks git --redact`, a credential scan of the commits a push or pull
   request brings.
 - The unit tests of `cmd` and `internal` with `RAPID_CHECKS=1`, then the release helpers'
@@ -232,6 +236,14 @@ A new project needs no itos. `itos-template new` prints one setup step, the move
 `LICENSE.project` to `LICENSE`, which gives the project its license. From then on the workflow
 runs the Go steps, the scenarios and the Linux, macOS and Windows tests on the project's own
 `main`, and the release job after them, as `docs/CLI.md` describes.
+
+The release job runs plain commands, with no itos. `tools/bin/release-version` reads the
+commits' Conventional Commit headers: a breaking change makes a major release, a minor one before
+1.0; a feat a minor one; a fix a patch. A commit whose header is not a Conventional Commit counts
+as a patch, and the run names it by short hash and header; a merge with Git's or GitHub's
+default header is skipped. `tools/bin/release-notes` quotes every `BREAKING-CHANGE` and
+`Upgrading` footer from each commit's last paragraph, and the job verifies the attestation on
+the built linux amd64 archive before it publishes, then asks proxy.golang.org for the version.
 
 The project starts with no mutation results and commits none. A branch's first push mutates the
 whole packages, judging survivors only, and each later push the functions it changes; a surviving mutant is a test to write.
