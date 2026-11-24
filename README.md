@@ -16,10 +16,15 @@ gets, and what it does not get yet:
 
 - [x] Its CI runs the Go checks on its own `main` branch, on Linux, macOS and Windows: see
   [the sample project's run](https://github.com/donvargax/go-template-itos-sample/actions/runs/38081894211).
-- [x] Setup gives it its own commit rules and checks, the ones this template is held to.
+- [x] It needs no itos: its CI, hooks and release call plain commands, and it keeps no itos
+  registry, commit footers or itos files.
+- [x] A nightly on Linux, macOS and Windows runs the slow checks and keeps one issue open
+  while it is red.
+- [x] Its releases verify their attestation before publishing, ship their licence notices and
+  can publish a container image.
 - [x] A CLI project publishes its binaries when it makes a release: see
   [the sample project's v0.1.0](https://github.com/donvargax/go-template-itos-sample/releases/tag/v0.1.0).
-- [ ] Every guide it ships speaks to the made project, not to the template.
+- [x] Every guide it ships speaks to the made project, not to the template.
 - [ ] Automatic dependency updates are proven running on every branch.
 - [ ] Its CI scans its own commits for credentials, not only the template's renders.
 - [ ] A CLI release is checked against the last release's scenarios, so the `--json` contract
@@ -56,13 +61,13 @@ stack adds, `cli` what the command-line feature adds.
 
 - Design: vertical slices over a domain that owns its behaviour and reaches the outside only
   through its own ports ([docs/engineering.md](docs/engineering.md)); `go` lays the code out as
-  a shared domain, separate adapters and one slice per command named for it, with a context
-  carrying cancellation to the ports, and enforces the import rules with depguard, each proved
-  by a self-test (`docs/go.md`, `docs/architecture/`).
+  engines and slices under default-deny import rules, with a context carrying cancellation to
+  the ports, each rule proved by a self-test (`docs/go.md`, `docs/architecture/`).
 - Tests: behaviour specified first, failing steps committed before the code; the project's own
-  fakes, never a mocking library; `go` adds property tests, an 80% domain coverage floor,
-  changed-code mutation proof and runs on Linux, macOS and Windows (`docs/go.md`); `cli` runs
-  scenarios against the built binary.
+  fakes, never a mocking library, each held to its adapters by one contract suite; `go` runs
+  on Linux, macOS and Windows, and its nightly adds the race detector, fuzzing, property tests,
+  a coverage floor and mutation proof (`docs/go.md`); `cli` runs one set of scenarios in
+  process against the fakes, and against the built binary in CI.
 - Code quality: `go` runs gofmt, vet, golangci-lint with gosec and gochecksumtype, and
   govulncheck (`docs/go.md`).
 - Dependencies: a library before new code, locked and verified modules, every tool and
@@ -70,16 +75,21 @@ stack adds, `cli` what the command-line feature adds.
   Renovate configured for every branch.
 - Security: no credentials in files, fixtures or logs, and provenance kept for copied code
   ([docs/security.md](docs/security.md)).
-- Command line: `cli` treats only the exit code and `--json` as a contract with scripts, stops
-  a command on Ctrl-C with exit 130, and sources its rules from clig.dev and the GNU and POSIX
-  standards (`docs/CLI.md`).
+- Command line: `cli` treats only the exit code and `--json` as a contract with scripts, exits
+  with codes 0, 1, 75, 80, 81, 82, 100 and 130, reports each problem with a rule, a message,
+  a fix and its exit, and sources its rules from clig.dev and the GNU and POSIX standards
+  (`docs/CLI.md`).
 - Configuration: rules for the first configuration file a project adds
   ([docs/CONFIG.md](docs/CONFIG.md)).
 - Releases: `cli` releases on a push to `main` holding a feat or a fix, with notes from
-  git-cliff and attested binaries from GoReleaser.
-- Work: itos holds every commit to Conventional Commits and its task, in hooks and CI alike;
-  decisions are recorded in `docs/decisions/`; coding agents work one item at a time through
-  `itos go` and `itos guide work` ([AGENTS.md](AGENTS.md)).
+  git-cliff and binaries from GoReleaser. Before 1.0 a breaking change makes a minor release,
+  and a commit whose header is not a Conventional Commit counts as a patch and is named in the
+  run. The attestation is verified before publishing, the Go proxy is asked for the new
+  version, `THIRD_PARTY_NOTICES.md` ships in every archive, and a container image can be
+  switched on.
+- Work: decisions are MADR records in `docs/decisions/`; commit headers are Conventional
+  Commits, which the release reads, and nothing checks them. Coding agents follow
+  [AGENTS.md](AGENTS.md); itos is not part of a made project.
 
 ## Branches
 
@@ -93,8 +103,8 @@ manifest's literals and excludes template-only files.
 
 ## Working here
 
-Read [TEMPLATE.md](TEMPLATE.md) first, then [PLAN.md](PLAN.md) and [AGENTS.md](AGENTS.md).
-`itos go` is the coordinator's entry point; an implementing agent uses `itos guide work`. The
+This repository's own development keeps using itos; a made project does not. Read
+[TEMPLATE.md](TEMPLATE.md) first, then [PLAN.md](PLAN.md) and [AGENTS.md](AGENTS.md). The
 repository's own notes are [docs/ORCHESTRATING.md](docs/ORCHESTRATING.md). Hooks and CI judge
 the repository's rules. Those three files, the itos data and the Template check workflow stay
 in the template: a made project's README.md and AGENTS.md speak to it alone.
