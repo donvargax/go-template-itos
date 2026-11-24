@@ -3065,5 +3065,40 @@
     "Import": "$module/internal/engine/counting/disk",
     "Kind": "lint",
     "Rule": "ui-tests"
+  },
+  {
+    "Name": "cli-notices-std-probe.go",
+    "File": "tools/bin/notices/probe.go",
+    "Import": "os/exec",
+    "Kind": "allow",
+    "Rule": "toplevel"
+  },
+  {
+    "Name": "cli-notices-std-probe_test.go",
+    "File": "tools/bin/notices/probe_test.go",
+    "Import": "testing/fstest",
+    "Kind": "allow",
+    "Rule": "toplevel"
+  },
+  {
+    "Name": "cli-notices-refuse-third-party",
+    "File": "tools/bin/notices/probe.go",
+    "Import": "golang.org/x/term",
+    "Kind": "lint",
+    "Rule": "notices"
+  },
+  {
+    "Name": "cli-notices-refuse-third-party-test",
+    "File": "tools/bin/notices/probe_test.go",
+    "Import": "golang.org/x/term",
+    "Kind": "lint",
+    "Rule": "notices"
+  },
+  {
+    "Name": "cli-notices-refuse-internal",
+    "File": "tools/bin/notices/probe.go",
+    "Import": "$module/internal/release",
+    "Kind": "graph",
+    "Rule": "toplevel"
   }
 ]

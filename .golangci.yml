@@ -283,6 +283,15 @@ linters:
             - "$gostd"
             - "github.com/itos-corp/go-template-itos/internal/release$"
             - "github.com/itos-corp/go-template-itos/internal/release/releasetest"
+        # tools/bin/notices writes THIRD_PARTY_NOTICES.md from go list and Go's LICENSE: it
+        # imports the standard library alone, as its header says, so a dependency of its own
+        # would be a module whose notice it must itself carry.
+        notices:
+          list-mode: strict
+          files:
+            - "**/tools/bin/notices/**"
+          allow:
+            - "$gostd"
         # kong is the UI's, harvested from itos-template's kong rule: here the
         # UI is cmd, internal/cli and each slice's command package.
         kong:
