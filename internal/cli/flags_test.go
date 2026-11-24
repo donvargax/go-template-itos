@@ -213,7 +213,7 @@ func TestEachRefusalIsOfItsOwnTypeNamingTheFlag(t *testing.T) {
 	if !errors.As(err, &valueMissing) || valueMissing.Flag.Name != "stack" || valueMissing.Next != "" {
 		t.Errorf("--stack: got %#v", err)
 	}
-	for _, args := range [][]string{{"--json", "--no-json"}, {"--stack", "a", "--stack", "b"}, {"--stack", "a", "--stack"}} {
+	for _, args := range [][]string{{"--json", "--no-json"}, {"--json", "--json=yes"}, {"--stack", "a", "--stack", "b"}, {"--stack", "a", "--stack"}} {
 		if _, err = parse(t, args...); !errors.As(err, &repeatedFlag) {
 			t.Errorf("%v: got %#v, want a repeated flag", args, err)
 		}

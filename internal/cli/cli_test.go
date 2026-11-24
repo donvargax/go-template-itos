@@ -245,3 +245,29 @@ func TestAFailureToWriteJSONIsALineOnStderr(t *testing.T) {
 type failingWriter struct{}
 
 func (failingWriter) Write([]byte) (int, error) { return 0, errors.New("the disk is full") }
+
+// No failure is no problems, and a subject that cannot be written as JSON is
+// an error the caller sees, never a half object.
+func TestNoFailureIsNoProblemsAndAnUnwritableSubjectIsAnError(t *testing.T) {
+	if got := (&UI{}).Problems(nil); got != nil {
+		t.Errorf("Problems(nil) = %v, want none", got)
+	}
+	if _, err := json.Marshal(NewProblem(CodeUsage, "usage", "bad", "Mend it.").With("k", make(chan int))); err == nil {
+		t.Error("a subject of a channel was written as JSON")
+	}
+}
+
+// With no candidate near the word, nothing is suggested.
+func TestDidYouMeanOfNoNearCandidateIsEmpty(t *testing.T) {
+	if got := DidYouMean("zzzzzz", []string{"count", "version"}, func(s string) string { return s }); got != "" {
+		t.Errorf("DidYouMean = %q, want none", got)
+	}
+}
+
+// Several near candidates are all named, in their order.
+func TestDidYouMeanOfSeveralNearCandidatesNamesEachOfThem(t *testing.T) {
+	got := DidYouMean("coun", []string{"count", "counts", "version"}, func(s string) string { return "<" + s + ">" })
+	if want := "Did you mean one of <count>, <counts>? "; got != want {
+		t.Errorf("DidYouMean = %q, want %q", got, want)
+	}
+}

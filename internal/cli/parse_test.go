@@ -59,6 +59,7 @@ func TestEachKindOfParseFailureIsAProblemOfItsOwnRule(t *testing.T) {
 		{[]string{"count", "f", "--json=yes"}, CodeUsage, "flags.switch-value", `--json takes no value, and was given "yes"`, [2]string{"flag", "--json"}},
 		{[]string{"count", "f", "--stack"}, CodeUsage, "flags.value-missing", "--stack needs a value", [2]string{"flag", "--stack"}},
 		{[]string{"count", "f", "--stack", "--json"}, CodeUsage, "flags.value-missing", "--stack needs a value", [2]string{"flag", "--stack"}},
+		{[]string{"count", "f", "--num"}, CodeUsage, "flags.value-missing", "", [2]string{"flag", "--num"}},
 		{[]string{"count", "f", "--kind", "z"}, CodeUsage, "flags.value-invalid", "--kind must be one of \"a\",\"b\" but got \"z\"", [2]string{"value", "z"}},
 		{[]string{"count", "f", "--num", "x"}, CodeUsage, "flags.value-invalid", "", [2]string{"flag", "--num"}},
 		{[]string{"nope"}, CodeUnknownCommand, "command.unknown", `there is no command "nope"`, [2]string{"command", "nope"}},
