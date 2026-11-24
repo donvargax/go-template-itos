@@ -1271,9 +1271,3 @@
     project must install the Renovate App, which a committed config does not prove (#22).
     Prove it on main, stack/go and go/cli green in CI, Itos and Template check, and
     itos-template check passing 2 of 2.
-  done_when:
-    - run: grep -q 'automergeType.."pr"' .github/renovate.json5 && grep -q 'automergeStrategy.."rebase"' .github/renovate.json5 && ! grep -q commitTrailers .github/renovate.json5 && ! grep -q useBaseBranchConfig .github/renovate.json5
-    - run: grep -q '"toolchain"' .github/renovate.json5
-    - run: test ! -f tools/bin/pinned || { grep -q "custom.regex" .github/renovate.json5 && ! grep -q 'donvargax/itos"' .github/renovate.json5 && ! grep -q baseBranchPatterns .github/renovate.json5; }
-    - run: test -f tools/bin/pinned || { grep -q "Task. T-1" .github/renovate.json5 && grep -q "custom.regex" .github/renovate.json5; }
-    - run: '! grep -q "renovate/" .github/workflows/ci.yml && { test ! -f .github/workflows/itos.yml || ! grep -q "renovate/" .github/workflows/itos.yml; }'

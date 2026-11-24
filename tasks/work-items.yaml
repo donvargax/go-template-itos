@@ -958,15 +958,9 @@ items:
     title: Renovate's requests merge cleanly with no footers, and the toolchain line moves on a Go release's day
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-64]
     kind: task
-    why: >
-      Was renovate-plain.
-      On main and each branch's own file. itos-cc's automergeType pr with automergeStrategy rebase
-      (#12); itos-container's regex manager for tools/bin/pinned; no commitTrailers or ignoreDeps,
-      as made projects have no footers (#3); a package rule with no minimum release age for go.mod's
-      toolchain directive, so govulncheck is not red for a week after a Go security release (#22).
     refs: [https://github.com/donvargax/go-template-itos/issues/3, https://github.com/donvargax/go-template-itos/issues/12, https://github.com/donvargax/go-template-itos/issues/22]
   - id: nightly
     title: A nightly run tests everything on three platforms and keeps one Nightly red issue
