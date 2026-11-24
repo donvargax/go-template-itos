@@ -27,7 +27,7 @@ or domain is added; keep each to a few lines and say where to look, not what the
   command's values to the domain through the port, with `classify.go` (failures to problems)
   and `input.go` (the checked argument); and `internal/cli/cli.go`, the generic UI.
 - Scenarios: `features/*.feature`, steps in `features/steps.go`; run in process by
-  `scenarios_test.go` here, through the binary by `features/features_test.go` (see its README).
+  `scenarios_test.go` here, through the binary by `features/features_test.go`.
 - Fake: the counting `porttest/files.go`, which the command's tests use too.
 - Test: `go test ./cmd/... ./internal/... ./features -count=1`
 
