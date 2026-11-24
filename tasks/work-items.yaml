@@ -992,8 +992,8 @@ items:
   - id: T-79
     title: The README says what a made project gets without itos
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-66, T-72, T-74, T-76, T-78]
     kind: task
     why: >
