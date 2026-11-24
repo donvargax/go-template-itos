@@ -6,7 +6,8 @@
 #
 # What it publishes: for linux and darwin on amd64 and arm64 and windows on amd64, as itos builds,
 # go-template-itos-<version>-<os>-<arch>.tar.gz (.zip for windows) holding the binary
-# (go-template-itos, or go-template-itos.exe), LICENSE and README.md at its top level; and
+# (go-template-itos, or go-template-itos.exe), LICENSE, README.md and THIRD_PARTY_NOTICES.md at its
+# top level; and
 # checksums.txt, every archive's SHA-256 in sha256sum's format, which the release workflow
 # attests.
 version: 2
@@ -46,6 +47,10 @@ archives:
       - src: LICENSE
         info: { owner: root, group: root, mode: 0644, mtime: "{{ .CommitDate }}" }
       - src: README.md
+        info: { owner: root, group: root, mode: 0644, mtime: "{{ .CommitDate }}" }
+      # The notices of the modules the binary links and of Go, written by tools/bin/notices and
+      # checked in CI: MIT, BSD and Apache ask them to travel with every copy.
+      - src: THIRD_PARTY_NOTICES.md
         info: { owner: root, group: root, mode: 0644, mtime: "{{ .CommitDate }}" }
 
 checksum:

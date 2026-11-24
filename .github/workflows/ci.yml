@@ -34,6 +34,9 @@ jobs:
       - run: go vet ./...
       - run: go mod verify
       - run: go mod tidy -diff
+      # THIRD_PARTY_NOTICES.md holds the notices of the modules the binary links and of Go: a new
+      # dependency fails here until the file is written again.
+      - run: go run ./tools/bin/notices -check
       - run: tools/bin/pinned golangci-lint run ./...
       - run: tools/bin/architecture-check
       - run: tools/bin/pre-commit-check
