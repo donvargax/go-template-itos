@@ -77,7 +77,7 @@ func TestNewest(t *testing.T) {
 	}
 }
 
-// What moved beneath the binary (decision 23): a linked module's version, a
+// What moved beneath the binary (itos-template's decision 23): a linked module's version, a
 // module newly linked or no longer linked, and the toolchain, each named;
 // the same modules at the same versions with the same toolchain is nothing.
 func TestMoved(t *testing.T) {
