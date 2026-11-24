@@ -1047,8 +1047,8 @@ items:
   - id: T-80
     title: The scenario harness names no agent or coordination tool, so made projects stay tool-agnostic
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
