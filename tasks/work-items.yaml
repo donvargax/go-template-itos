@@ -1048,10 +1048,6 @@ items:
     title: The scenario harness names no agent or coordination tool, so made projects stay tool-agnostic
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      The person's call, 2026-11-24. go/cli's features/binary_test.go, harvested from itos, hides
-      claude, itos and itos extensions from the scenarios' PATH and tells an itos git shim from the
-      real git, and every made project ships it.

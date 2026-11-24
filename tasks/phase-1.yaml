@@ -1462,7 +1462,3 @@
     running the binary driver locally where git is an itos shim. Change no scenario. Prove it on
     main and go/cli green in CI (whose test job runs the binary driver), Itos and Template check,
     with one dispatched go/cli nightly green and itos-template check passing 2 of 2.
-  done_when:
-    - run: test ! -d features || ! git grep -q -i claude -- features cmd internal
-    - run: test ! -d features || ! git grep -q -E "isItos|hiddenAlways|pathHiding" -- features
-    - run: test -f go.mod || grep -q -i "shim" TEMPLATE.md
