@@ -29,43 +29,70 @@ concurrency:
 
 jobs:
   # Every test on each platform, as a person on it meets them: the paths, shell and line endings
-  # of each, which a push's macOS and Windows jobs run only in part. Each go test run is kept as
-  # go test -json events for the report, and its log reads as go test prints it.
+  # of each, and the scenarios through the built binary, its real process and its signals, which a
+  # push's macOS and Windows jobs leave out (decision 15). Each go test run is kept as go test
+  # -json events for the report, and its log reads as go test prints it.
+  #
+  # Windows runs the scenarios in two shards, one job each: its process starts cost several times
+  # what Linux's do. A shard is the share i of n of the scenarios (-shard=i/n, features/shard.go);
+  # the unit tests and the import rules' fixtures run once a platform, in its first shard.
   platform:
-    name: platform (${{ matrix.os }})
+    name: platform (${{ matrix.label }})
     strategy:
       fail-fast: false
       matrix:
         include:
           - { os: ubuntu-latest, label: linux }
           - { os: macos-latest, label: macos }
-          - { os: windows-latest, label: windows }
+          - { os: windows-latest, label: windows-1of2, shard: 1/2 }
+          - { os: windows-latest, label: windows-2of2, shard: 2/2 }
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 90
     defaults:
       run:
         shell: bash # Git for Windows' bash on windows, with pipefail
+    env:
+      GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER: "1"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/go-toolchain
       # RAPID_CHECKS=1 as a push's tests run: the property tests explore in the explore job.
       - name: Tests
+        if: ${{ !matrix.shard || startsWith(matrix.shard, '1/') }}
         env:
           RAPID_CHECKS: 1
         run: |
           mkdir -p "$RUNNER_TEMP/results"
-          go test -json -count=1 ./... | tee "$RUNNER_TEMP/results/${{ matrix.label }}.json" | go run ./tools/bin/nightly-report text
+          go test -json -count=1 ./cmd/... ./internal/... ./tools/... | tee "$RUNNER_TEMP/results/${{ matrix.label }}.json" | go run ./tools/bin/nightly-report text
       # The fixtures that prove the import rules still refuse what they should, which a push runs
       # on Linux alone: they check paths and diagnostics that differ by platform.
       - name: Import boundary self-test
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && (!matrix.shard || startsWith(matrix.shard, '1/')) }}
         run: tools/bin/architecture-check
+      # The features build the binary they run, which Go's test cache cannot track, so they
+      # always run. -timings writes where the run spent its time (features/timings.go), which the
+      # next step prints, so a platform that slows down says what it pays for.
+      - name: Scenarios through the binary
+        id: features
+        if: ${{ !cancelled() }}
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/results"
+          go test -json ./features -count=1 ${SHARD:+-shard=$SHARD} -timings="$RUNNER_TEMP/features-timings.txt" | tee "$RUNNER_TEMP/results/${{ matrix.label }}-features.json" | go run ./tools/bin/nightly-report text
+      - name: Where the scenarios spent their time
+        if: ${{ !cancelled() && (steps.features.outcome == 'success' || steps.features.outcome == 'failure') }}
+        run: |
+          f="$RUNNER_TEMP/features-timings.txt"
+          [ -f "$f" ] || { echo "The scenarios wrote no timings."; exit 0; }
+          cat "$f"
+          { echo "### Scenarios on ${{ matrix.label }}"; echo '```'; cat "$f"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - name: Keep the go test events
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: go-test-${{ matrix.label }}
-          path: ${{ runner.temp }}/results/${{ matrix.label }}.json
+          path: ${{ runner.temp }}/results
           if-no-files-found: ignore
           retention-days: 3
 
@@ -74,6 +101,9 @@ jobs:
   explore:
     runs-on: ubuntu-latest
     timeout-minutes: 360
+    # The binary driver, which the coverage floor and the mutation run need to reach cmd.
+    env:
+      GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER: "1"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -87,7 +117,7 @@ jobs:
           go mod download
       - name: Race detector
         if: ${{ !cancelled() }}
-        run: go test -race -json -count=1 ./internal/... | tee "$RUNNER_TEMP/explore/race.json" | go run ./tools/bin/nightly-report text
+        run: go test -race -json -count=1 ./cmd/... ./internal/... | tee "$RUNNER_TEMP/explore/race.json" | go run ./tools/bin/nightly-report text
       # Each target for a minute (tools/bin/nightly-fuzz). A failing input is printed with its
       # bytes and how to commit it, and named in the issue.
       - name: Fuzz targets
@@ -101,17 +131,18 @@ jobs:
         if: ${{ !cancelled() }}
         run: tools/bin/nightly-properties -json | tee "$RUNNER_TEMP/explore/properties.json" | go run ./tools/bin/nightly-report text
       # Each package outside the domain keeps 80% of its statements covered by the unit tests
-      # (and, where there are scenarios, the scenarios) together. A package under it is given a
+      # and the scenarios, through the binary, together. A package under it is given a
       # test, never a lower floor. Before the mutation run, so a survivor cannot keep it from
       # running.
       - name: Coverage floor
         if: ${{ !cancelled() }}
         run: tools/bin/e2e-coverage
-      # The whole of cmd and internal, with no cache and no count: every site is judged. A
+      # The whole of cmd and internal, with no cache and no count: every site is judged, with
+      # every test and the binary driver on, since cmd is reached only through the scenarios. A
       # survivor itos-cc.yaml does not except fails the step.
       - name: Mutation
         if: ${{ !cancelled() }}
-        run: tools/bin/pinned itos-cc mutation run internal
+        run: tools/bin/pinned itos-cc mutation run --all-tests cmd internal
       - name: Keep the results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
