@@ -81,18 +81,23 @@ jobs:
             tools/bin/pinned itos-cc mutation run --count 10 --since "$BASE" --seed "$BASE" --fail-uncovered=lines internal
           fi
 
-  # Every test on macOS and Windows as well, with each platform's paths, shell and line endings:
-  # what touches paths and CRLF breaks on Windows first. The repository is public, so the minutes
-  # are free. They run on pull requests and on pushes to any branch but main: the template lands
-  # by direct push to its branches, and a made project's main push follows a merged pull request
-  # that ran them.
+  # What a push judges on each platform (decision 15): Linux runs every test, the import rules'
+  # fixtures included; macOS and Windows run the tests of internal, with each platform's paths,
+  # shell and line endings, which is what breaks on Windows first. The rest of each platform's
+  # tests wait for the nightly (nightly.yml), a day late and never lost. The repository is public,
+  # so the minutes are free. They run on pull requests and on pushes to any branch but main: the
+  # template lands by direct push to its branches, and a made project's main push follows a merged
+  # pull request that ran them.
   platform:
     name: Go tests (${{ matrix.os }})
     if: ${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name == 'pull_request' || github.ref != 'refs/heads/main') }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - { os: ubuntu-latest, packages: ./... }
+          - { os: macos-latest, packages: ./internal/... }
+          - { os: windows-latest, packages: ./internal/... }
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -101,8 +106,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/go-toolchain
       - name: Tests
-        run: go test ./... -count=1
+        run: go test ${{ matrix.packages }} -count=1
         env:
           RAPID_CHECKS: 1
       - name: Import boundary self-test
+        if: ${{ runner.os == 'Linux' }}
         run: tools/bin/architecture-check

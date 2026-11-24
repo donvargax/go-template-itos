@@ -1,0 +1,182 @@
+name: Nightly
+
+# What a push's CI leaves out (decision 15): every test on Linux, macOS and Windows, then the
+# exploring that takes too long for a push, on Linux: the race detector, the fuzz targets for a
+# bounded time, the property tests under a seed drawn for the night, a floor of coverage for the
+# packages outside the domain, and a mutation run over the whole of cmd and internal. Nothing waits
+# on it. It runs once a day from the default branch and by hand (workflow_dispatch); a template
+# whose default branch has no code starts its stack branches' nightlies from there
+# (nightly-dispatch.yml, which only the template keeps).
+#
+# Every step runs, whatever an earlier one said, so one night shows every failure. When both jobs
+# are done the report job reads how each ended and keeps one issue, "Nightly red on <branch>": the
+# first red night opens it, each red night after comments on it, naming each red job, its failed
+# steps and its failing tests from go test -json (tools/bin/nightly-report), and a green night
+# closes it. A push's CI opens nothing.
+on:
+  schedule:
+    - cron: "44 11 * * *" # 11:44 UTC every day
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A group of its own: the nightly never cancels a push's run, nor is cancelled by one. A second
+# nightly of a branch waits for the first.
+concurrency:
+  group: nightly-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Every test on each platform, as a person on it meets them: the paths, shell and line endings
+  # of each, which a push's macOS and Windows jobs run only in part. Each go test run is kept as
+  # go test -json events for the report, and its log reads as go test prints it.
+  platform:
+    name: platform (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, label: linux }
+          - { os: macos-latest, label: macos }
+          - { os: windows-latest, label: windows }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash # Git for Windows' bash on windows, with pipefail
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/go-toolchain
+      # RAPID_CHECKS=1 as a push's tests run: the property tests explore in the explore job.
+      - name: Tests
+        env:
+          RAPID_CHECKS: 1
+        run: |
+          mkdir -p "$RUNNER_TEMP/results"
+          go test -json -count=1 ./... | tee "$RUNNER_TEMP/results/${{ matrix.label }}.json" | go run ./tools/bin/nightly-report text
+      # The fixtures that prove the import rules still refuse what they should, which a push runs
+      # on Linux alone: they check paths and diagnostics that differ by platform.
+      - name: Import boundary self-test
+        if: ${{ !cancelled() }}
+        run: tools/bin/architecture-check
+      - name: Keep the go test events
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: go-test-${{ matrix.label }}
+          path: ${{ runner.temp }}/results/${{ matrix.label }}.json
+          if-no-files-found: ignore
+          retention-days: 3
+
+  # What explores, on Linux, each step after whatever the others said: a failing step does not
+  # hide the next, and the report job names every red one.
+  explore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/go-toolchain
+      # The folder the report job gets: go test's events, and the fuzz inputs that failed.
+      - name: Make the results folder
+        run: |
+          mkdir -p "$RUNNER_TEMP/explore"
+          # itos-cc's runs build with Go offline, so the modules are fetched first.
+          go mod download
+      - name: Race detector
+        if: ${{ !cancelled() }}
+        run: go test -race -json -count=1 ./internal/... | tee "$RUNNER_TEMP/explore/race.json" | go run ./tools/bin/nightly-report text
+      # Each target for a minute (tools/bin/nightly-fuzz). A failing input is printed with its
+      # bytes and how to commit it, and named in the issue.
+      - name: Fuzz targets
+        if: ${{ !cancelled() }}
+        env:
+          NIGHTLY_FINDINGS: ${{ runner.temp }}/explore/findings.txt
+        run: tools/bin/nightly-fuzz 60s
+      # The seed is drawn and printed (tools/bin/nightly-properties); to reproduce a failure, run
+      # that package's tests with RAPID_SEED set to it.
+      - name: Property tests
+        if: ${{ !cancelled() }}
+        run: tools/bin/nightly-properties -json | tee "$RUNNER_TEMP/explore/properties.json" | go run ./tools/bin/nightly-report text
+      # Each package outside the domain keeps 80% of its statements covered by the unit tests
+      # (and, where there are scenarios, the scenarios) together. A package under it is given a
+      # test, never a lower floor. Before the mutation run, so a survivor cannot keep it from
+      # running.
+      - name: Coverage floor
+        if: ${{ !cancelled() }}
+        run: tools/bin/e2e-coverage
+      # The whole of cmd and internal, with no cache and no count: every site is judged. A
+      # survivor itos-cc.yaml does not except fails the step.
+      - name: Mutation
+        if: ${{ !cancelled() }}
+        run: tools/bin/pinned itos-cc mutation run internal
+      - name: Keep the results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: go-test-explore
+          path: ${{ runner.temp }}/explore
+          if-no-files-found: ignore
+          retention-days: 3
+
+  # The Nightly red issue, from one job once the others are done, so two red jobs never race to
+  # open two issues. A red night opens the branch's issue or comments on it; a green one closes it.
+  # The issue is the one open issue titled "Nightly red on <branch>", under the label nightly-red.
+  # The GitHub CLI is the runner's own. A cancelled run reports nothing.
+  report:
+    needs: [platform, explore]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read # the checkout, for tools/bin/nightly-report
+      actions: read # the run's jobs and the go test events the others kept
+      issues: write # the Nightly red issue
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/go-toolchain
+      # A night whose jobs died before keeping anything has none, and still reports.
+      - name: Fetch the go test events
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: go-test-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/results
+      - name: Open, comment on or close the Nightly red issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PLATFORM: ${{ needs.platform.result }}
+          EXPLORE: ${{ needs.explore.result }}
+        run: |
+          title="Nightly red on $BRANCH"
+          open=$(gh issue list --label nightly-red --state open --limit 200 --json number,title |
+            jq -r --arg title "$title" '[.[] | select(.title == $title)][0].number // empty')
+          if [ "$PLATFORM" = success ] && [ "$EXPLORE" = success ]; then
+            if [ -z "$open" ]; then
+              echo "Green, and no open issue: $title"
+              exit 0
+            fi
+            gh issue close "$open" --comment "Nightly run $RUN_URL is green."
+            exit 0
+          fi
+          gh api --paginate "repos/$GH_REPO/actions/runs/$RUN_ID/attempts/$RUN_ATTEMPT/jobs?per_page=100" > "$RUNNER_TEMP/jobs.json"
+          body="$RUNNER_TEMP/nightly-red.md"
+          go run ./tools/bin/nightly-report issue -branch "$BRANCH" -url "$RUN_URL" \
+            -jobs "$RUNNER_TEMP/jobs.json" -results "$RUNNER_TEMP/results" \
+            -findings "$RUNNER_TEMP/results/findings.txt" > "$body"
+          cat "$body"
+          if [ -n "$open" ]; then
+            echo "Commenting on issue #$open"
+            gh issue comment "$open" --body-file "$body"
+          else
+            gh label create nightly-red --description "A nightly run is red" --color B60205 2>/dev/null || true
+            gh issue create --title "$title" --label nightly-red --body-file "$body"
+          fi
