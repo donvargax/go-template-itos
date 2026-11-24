@@ -981,6 +981,10 @@ items:
       It adds the race detector, fuzz targets and properties with a drawn and printed seed (itos's
       nightly-fuzz and nightly-properties), and a coverage floor for the code outside the domain.
       Settles #9 and #4's coverage floor; covers go-race-fuzz.
+
+      T-71 left one mutant in cmd/go-template-itos/main.go's signal channel size that only the
+      binary driver reaches; the scoped run had it survive in process. The nightly's binary-driver
+      mutation pass must kill it with a test or show it is equivalent.
     refs: [https://github.com/donvargax/go-template-itos/issues/9, https://github.com/donvargax/go-template-itos/issues/4]
   - id: release-plain
     title: A release is versioned, noted, attested and announced with no itos
