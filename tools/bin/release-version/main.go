@@ -14,6 +14,10 @@
 //     last paragraph) makes a major, or a minor before 1.0;
 //   - else a feat makes a minor;
 //   - else a fix makes a patch;
+//   - else a commit whose header is not a Conventional Commit makes a patch
+//     too, and stderr names each by short hash and header (decision 16), since
+//     a made project has no check on commit headers; a merge with Git's or
+//     GitHub's default header ("Merge ...") is skipped, its parents being read;
 //   - else a patch when the binary is built from something else than the
 //     last release was: the modules ./cmd/go-template-itos links, or the Go
 //     toolchain that builds it (itos-template's decision 23);
@@ -149,6 +153,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 		}
 	}
 	say(stdout, "last=%s\nnext=%s\nbump=%s\nrange=%s\n", tag, next, b.kind, rng)
+	for _, c := range unconventional(out) {
+		say(stderr, "%s: read as a patch, not a Conventional Commit: %s\n", self, c)
+	}
 	from := tag
 	if from == "" {
 		from = "no release (0.0.0)"
@@ -201,6 +208,29 @@ func messages(log string) []string {
 	return out
 }
 
+// unconventional names each commit of git log's records whose header is not a
+// Conventional Commit, by its short hash and header, skipping a merge with
+// Git's or GitHub's default header.
+func unconventional(log string) []string {
+	var out []string
+	for _, record := range strings.Split(log, "\x1e") {
+		hash, message, ok := strings.Cut(strings.TrimLeft(record, "\n"), "\x1f")
+		if !ok || !readAsPatch(message) {
+			continue
+		}
+		header, _, _ := strings.Cut(strings.TrimSpace(message), "\n")
+		out = append(out, hash[:min(7, len(hash))]+" "+header)
+	}
+	return out
+}
+
+// readAsPatch says whether a commit's header is no Conventional Commit's and
+// no default merge's: a made project has no check on headers, so such a
+// commit counts as a patch-level change instead of failing the release.
+func readAsPatch(message string) bool {
+	return release.Type(message) == "" && !strings.HasPrefix(strings.TrimSpace(message), "Merge ")
+}
+
 // bump is what the commits ask for: the kind, how many commits there were,
 // and why, for the line on stderr.
 type bump struct {
@@ -209,7 +239,7 @@ type bump struct {
 }
 
 func bumpOf(messages []string) bump {
-	var breaking, feats, fixes int
+	var breaking, feats, fixes, other int
 	for _, m := range messages {
 		switch {
 		case release.Breaking(m):
@@ -218,6 +248,8 @@ func bumpOf(messages []string) bump {
 			feats++
 		case release.Type(m) == "fix":
 			fixes++
+		case readAsPatch(m):
+			other++
 		}
 	}
 	b := bump{commits: len(messages), kind: "none"}
@@ -228,6 +260,8 @@ func bumpOf(messages []string) bump {
 		b.kind, b.why = "minor", fmt.Sprintf("%d feat(s), no breaking change", feats)
 	case fixes > 0:
 		b.kind, b.why = "patch", fmt.Sprintf("%d fix(es), no feat and no breaking change", fixes)
+	case other > 0:
+		b.kind, b.why = "patch", fmt.Sprintf("%d commit(s) that are not Conventional Commits, read as patches", other)
 	}
 	return b
 }
