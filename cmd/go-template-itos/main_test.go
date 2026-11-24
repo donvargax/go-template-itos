@@ -142,7 +142,7 @@ func TestWantsJSONReadsTheLastJSONFlagBeforeDashDash(t *testing.T) {
 // it can do on stdout and succeeds.
 func TestRunWithNoArgumentsPrintsTheHelpAndSucceeds(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	if code := run(t.Context(), nil, strings.NewReader(""), &stdout, &stderr); code != 0 {
+	if code := run(t.Context(), nil, strings.NewReader(""), &stdout, &stderr, diskAdapters()); code != 0 {
 		t.Fatalf("run with no arguments returned %d, want 0", code)
 	}
 	for _, want := range []string{"count", "version", "completion"} {
@@ -171,7 +171,7 @@ func TestRunReportsAParseFailureAsAUsageOrUnknownCommandExit(t *testing.T) {
 		{[]string{"coun"}, 81, "command.unknown", `go-template-itos: there is no command "coun". Did you mean 'count'?`},
 	} {
 		var stdout, stderr bytes.Buffer
-		if code := run(t.Context(), c.args, strings.NewReader(""), &stdout, &stderr); code != c.code {
+		if code := run(t.Context(), c.args, strings.NewReader(""), &stdout, &stderr, diskAdapters()); code != c.code {
 			t.Fatalf("run of %v returned %d, want %d", c.args, code, c.code)
 		}
 		if !strings.HasPrefix(stderr.String(), c.stderr) || stdout.Len() != 0 {
@@ -179,7 +179,7 @@ func TestRunReportsAParseFailureAsAUsageOrUnknownCommandExit(t *testing.T) {
 		}
 		stdout.Reset()
 		stderr.Reset()
-		if code := run(t.Context(), append(c.args, "--json"), strings.NewReader(""), &stdout, &stderr); code != c.code {
+		if code := run(t.Context(), append(c.args, "--json"), strings.NewReader(""), &stdout, &stderr, diskAdapters()); code != c.code {
 			t.Fatalf("run of %v --json returned %d, want %d", c.args, code, c.code)
 		}
 		if !strings.Contains(stdout.String(), `"rule":"`+c.rule+`"`) || stderr.Len() != 0 {
@@ -192,7 +192,7 @@ func TestRunReportsAParseFailureAsAUsageOrUnknownCommandExit(t *testing.T) {
 // command: __complete is the shell's, and it lists what a new word fits.
 func TestRunOfCompleteAnswersFromTheModelWithoutRunningACommand(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	if code := run(t.Context(), []string{"__complete", ""}, strings.NewReader(""), &stdout, &stderr); code != 0 {
+	if code := run(t.Context(), []string{"__complete", ""}, strings.NewReader(""), &stdout, &stderr, diskAdapters()); code != 0 {
 		t.Fatalf("run of __complete returned %d, want 0", code)
 	}
 	for _, want := range []string{"count", "version", "completion"} {
@@ -209,7 +209,7 @@ func TestRunOfCompleteAnswersFromTheModelWithoutRunningACommand(t *testing.T) {
 // stamps what a release's build stamps, and this is where that is read.
 func TestRunPrintsTheStampVersionAndCommand(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	if code := run(t.Context(), []string{"version"}, strings.NewReader(""), &stdout, &stderr); code != 0 {
+	if code := run(t.Context(), []string{"version"}, strings.NewReader(""), &stdout, &stderr, diskAdapters()); code != 0 {
 		t.Fatalf("run of version returned %d, want 0", code)
 	}
 	if !strings.HasPrefix(stdout.String(), "go-template-itos ") {
@@ -222,7 +222,7 @@ func TestRunPrintsTheStampVersionAndCommand(t *testing.T) {
 // text are made of the same two values.
 func TestRunOfVersionJSONGivesTheBuildsVersionAndCommit(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	if code := run(t.Context(), []string{"version", "--json"}, strings.NewReader(""), &stdout, &stderr); code != 0 {
+	if code := run(t.Context(), []string{"version", "--json"}, strings.NewReader(""), &stdout, &stderr, diskAdapters()); code != 0 {
 		t.Fatalf("run of version --json returned %d, want 0", code)
 	}
 	var object map[string]any
@@ -247,7 +247,7 @@ func TestCountReadsALineWholePastAnyTokenLimit(t *testing.T) {
 		t.Fatal(err)
 	}
 	var stdout, stderr bytes.Buffer
-	code := run(t.Context(), []string{"count", path, "--json"}, strings.NewReader(""), &stdout, &stderr)
+	code := run(t.Context(), []string{"count", path, "--json"}, strings.NewReader(""), &stdout, &stderr, diskAdapters())
 	if code != 0 {
 		t.Fatalf("run of count returned %d: %s", code, stderr.String())
 	}

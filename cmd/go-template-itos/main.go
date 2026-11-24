@@ -32,6 +32,7 @@ import (
 
 	"github.com/itos-corp/go-template-itos/internal/cli"
 	"github.com/itos-corp/go-template-itos/internal/engine/counting/disk"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
 	count "github.com/itos-corp/go-template-itos/internal/slices/count/command"
 	"github.com/itos-corp/go-template-itos/internal/slices/count/stdin"
 	"github.com/itos-corp/go-template-itos/internal/version"
@@ -67,8 +68,19 @@ func main() {
 	interrupts := make(chan os.Signal, 2)
 	signal.Notify(interrupts, os.Interrupt)
 	go cli.StopOnInterrupt(interrupts, cancel, os.Exit)
-	os.Exit(run(ctx, os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+	os.Exit(run(ctx, os.Args[1:], os.Stdin, os.Stdout, os.Stderr, diskAdapters()))
 }
+
+// adapters is every port the commands read through, bound to the adapters
+// that serve it. diskAdapters binds the real ones for main; a test binds
+// porttest's fakes (scenarios_test.go), and TestEveryPortIsBoundOnDiskAndInProcess
+// holds both to every field, so a new port is bound in each before it passes.
+type adapters struct {
+	Files port.Files
+}
+
+// diskAdapters is every port bound to the real adapter.
+func diskAdapters() adapters { return adapters{Files: disk.Files{}} }
 
 // run parses args and runs what they name, returning the exit code. With no
 // arguments at all there is nothing to run and no implicit action to run in
@@ -80,8 +92,9 @@ func main() {
 //
 // ctx, the UI and each slice's handler are kong's bindings, so a command's
 // Run is handed them by type: the count command's handler reads through the
-// stdin adapter, which falls back on the disk, so no adapter imports another.
-func run(ctx context.Context, args []string, in io.Reader, stdout, stderr io.Writer) int {
+// stdin adapter, which falls back on the files port a is given (the disk, in
+// main), so no adapter imports another.
+func run(ctx context.Context, args []string, in io.Reader, stdout, stderr io.Writer, a adapters) int {
 	slog.SetDefault(logger(stderr))
 	ui := &cli.UI{In: in, Stdout: stdout, Stderr: stderr, Classifiers: []cli.Classifier{count.Classify}}
 	if len(args) == 0 {
@@ -96,7 +109,7 @@ func run(ctx context.Context, args []string, in io.Reader, stdout, stderr io.Wri
 		kong.Exit(func(code int) { stopped = code }),
 		kong.Vars{"version": version.Text(programName)},
 		kong.BindTo(ctx, (*context.Context)(nil)),
-		kong.Bind(ui, count.Handler{Files: stdin.Files{Fallback: disk.Files{}, In: in}}),
+		kong.Bind(ui, count.Handler{Files: stdin.Files{Fallback: a.Files, In: in}}),
 	)...)
 	if err != nil {
 		// A model kong refuses is a bug, reported as one.
