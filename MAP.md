@@ -27,3 +27,12 @@ or domain is added; keep each to a few lines and say where to look, not what the
 - Start: `tools/bin/pinned`, the launcher every gate runs scanners and linters through; its cache is
   in the git common directory, shared by all worktrees.
 - Test: `go test ./tools/pinned/...`, which runs the launcher against a local release server.
+
+## Nightly
+
+- Start: `.github/workflows/nightly.yml`, which runs `tools/bin/nightly-fuzz`,
+  `tools/bin/nightly-properties` and `tools/bin/e2e-coverage`, and `tools/bin/nightly-report`, the
+  issue's body from the jobs' results and `go test -json`. Fuzz targets are `Fuzz*` tests, as
+  `FuzzCount` in `internal/engine/counting/domain`.
+- Test: `go test ./tools/bin/nightly-report/`; the scripts and the workflow run only in the
+  nightly (`gh workflow run nightly.yml --ref <branch>`).

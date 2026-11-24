@@ -87,10 +87,33 @@ Properties use `pgregory.net/rapid` and live in the domain's tests. The counting
 joins newline-terminated pieces and checks that their counts add. Arbitrary concatenation
 can join two words, so it is not promised to be additive. Every run sets
 `RAPID_CHECKS=1`: one new random case per property, as fast as an example test, with the
-seed printed on failure. This project has no scheduled high-count run.
+seed printed on failure. The nightly runs them at a thousand checks (below).
 
-Tests run on Linux, macOS and Windows in CI's platform jobs. The architecture check's
-fixtures run there as well, because they check paths and diagnostics that differ by platform.
+A push judges and a nightly explores (decision 15). On a push, Linux runs every test and the
+architecture check's fixtures, and macOS and Windows run the tests of `internal`, with each
+platform's paths, shell and line endings.
+
+`.github/workflows/nightly.yml` runs once a day and by hand. Nothing waits on it.
+
+- `platform`: every test and the architecture check's fixtures on Linux, macOS and Windows, each
+  `go test -json` kept for the report.
+- `explore`, on Linux, every step run whatever an earlier one said: the race detector;
+  `tools/bin/nightly-fuzz`, each `Fuzz` target for a minute; `tools/bin/nightly-properties`, the
+  packages whose tests import rapid at a thousand checks under a seed drawn and printed;
+  `tools/bin/e2e-coverage`, which holds each package outside the domain, the ports and test
+  support to 80% of its statements, the domain read from `architecture-check --domains`; and
+  `itos-cc mutation run internal`, the whole tree.
+- `report` keeps one open issue per branch, "Nightly red on <branch>", under the label
+  `nightly-red`: the first red night opens it, each red night after comments on it, naming each
+  red job, its failed steps and its failing tests from `go test -json`
+  (`tools/bin/nightly-report`), and a green night closes it.
+
+A failure the nightly finds is fixed by a regression test, or by committing the fuzz input or the
+property's fail file it printed, which every push then replays. `FuzzCount` in the counting
+domain is the example target: add one wherever hostile input enters.
+
+GitHub schedules a workflow from the default branch only. A project whose default branch has the
+code gets the nightly from its `schedule`.
 
 ## Quality checks
 
