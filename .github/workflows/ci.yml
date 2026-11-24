@@ -3,9 +3,9 @@ name: CI
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    branches: [main, "stack/**", "go/**", "renovate/**"]
+    branches: [main, "stack/**", "go/**"]
   push:
-    branches: [main, "stack/**", "go/**", "renovate/**"]
+    branches: [main, "stack/**", "go/**"]
 
 permissions:
   contents: read

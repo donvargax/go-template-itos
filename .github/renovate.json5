@@ -5,20 +5,29 @@
 		"github>donvargax/renovate-config#v1.3.0",
 		"github>donvargax/renovate-config:go#v1.3.0",
 	],
-	enabledManagers: ["gomod", "github-actions", "renovate-config"],
+	enabledManagers: ["gomod", "github-actions", "renovate-config", "custom.regex"],
 
-	// The template's base branches and its useBaseBranchConfig merge live in main's file alone:
-	// Renovate reads baseBranchPatterns from the default branch only and merges this file over
-	// main's for this branch's requests, and this file is what a made project, with only main,
-	// gets. main's file also gives this branch's requests their task trailer, since commitTrailers
-	// would add to main's rather than replace them.
-
-	// itos moves with its config pin and workflow action, not through Renovate.
-	ignoreDeps: ["donvargax/itos"],
-	automergeType: "branch",
+	// Every update lands through its own pull request, and GitHub's rebase merge keeps Renovate's
+	// message as written. The default strategy picks a squash, which appends a Co-authored-by
+	// paragraph to the message.
+	automergeType: "pr",
+	automergeStrategy: "rebase",
 	automergeSchedule: ["at any time"],
 	semanticCommits: "enabled",
-	commitBody: "Renovate's update, landed on {{{baseBranch}}} once CI passed on its branch.\n\n{{#each upgrades}}{{#unless @first}}\n{{/unless}}- {{{depName}}} {{#if (equals updateType 'digest')}}{{{currentDigestShort}}} to {{{newDigestShort}}}{{else}}{{{currentVersion}}} to {{{newVersion}}}{{#if newDigestShort}} ({{{newDigestShort}}}){{/if}}{{/if}}{{/each}}",
+	commitBody: "Renovate's update, landed on {{{baseBranch}}} once CI passed on its pull request.\n\n{{#each upgrades}}{{#unless @first}}\n{{/unless}}- {{{depName}}} {{#if (equals updateType 'digest')}}{{{currentDigestShort}}} to {{{newDigestShort}}}{{else}}{{{currentVersion}}} to {{{newVersion}}}{{#if newDigestShort}} ({{{newDigestShort}}}){{/if}}{{/if}}{{/each}}",
+
+	// Renovate proposes versions of the tools pinned in tools/bin/pinned. It cannot read a
+	// release asset's numeric ID, so the match covers the version line alone. A bump leaves the
+	// old checksums, so its pull request goes red until a person refreshes them (docs/upgrading.md).
+	customManagers: [
+		{
+			customType: "regex",
+			managerFilePatterns: ["/^tools/bin/pinned$/"],
+			matchStrings: ["# renovate: depName=(?<depName>\\S+)\\n\\t+version=(?<currentValue>\\S+)\\n"],
+			datasourceTemplate: "github-releases",
+			extractVersionTemplate: "^v?(?<version>.+)$",
+		},
+	],
 
 	packageRules: [
 		{
@@ -36,7 +45,14 @@
 			pinDigests: true,
 		},
 		{
-			// One dependency's updates share a branch name on every base branch, so they move together.
+			// A Go release moves go.mod's toolchain line as soon as CI passes on its pull request.
+			matchManagers: ["gomod"],
+			matchDepTypes: ["toolchain"],
+			minimumReleaseAge: null,
+			schedule: ["at any time"],
+		},
+		{
+			// One dependency's updates share a branch name, so they move together.
 			matchPackageNames: ["*"],
 			groupName: "{{depName}}",
 		},
