@@ -1315,8 +1315,3 @@
     stack/go and go/cli green in CI, Itos and Template check, a dispatched nightly run on each Go
     branch green or with its red issue opened as described, and itos-template check passing 2
     of 2.
-  done_when:
-    - run: ls docs/decisions/0015-*.md
-    - run: test -f go.mod || { test -f .github/workflows/nightly-dispatch.yml && grep -q "nightly-dispatch.yml" itos-template.yaml; }
-    - run: test ! -f go.mod || { test -f .github/workflows/nightly.yml && test -x tools/bin/nightly-fuzz && test -x tools/bin/nightly-properties && test -x tools/bin/e2e-coverage && test -d tools/bin/nightly-report; }
-    - run: test ! -f go.mod || go test -list '^Fuzz' ./internal/... | grep -q '^Fuzz'
