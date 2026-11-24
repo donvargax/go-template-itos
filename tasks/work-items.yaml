@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - nightly
+  - T-74
   - release-plain
   - ko-image
   - arc42-content
@@ -961,14 +961,15 @@ items:
     depends_on: [T-64]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/3, https://github.com/donvargax/go-template-itos/issues/12, https://github.com/donvargax/go-template-itos/issues/22]
-  - id: nightly
+  - id: T-74
     title: A nightly run tests everything on three platforms and keeps one Nightly red issue
     phase: 1
     owner: null
     status: todo
     depends_on: [T-71, T-67]
-    kind: idea
+    kind: task
     why: >
+      Was nightly.
       Lands on stack/go and go/cli. itos's nightly.yml shape: every test and scenario on Linux,
       macOS and Windows, Windows sharded, then a report job that opens, comments on and closes one
       Nightly red issue, judging go test -json and the jobs' conclusions rather than itos's output.
@@ -1034,7 +1035,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-66, T-72, nightly, ko-image, arc42-content]
+    depends_on: [T-66, T-72, T-74, ko-image, arc42-content]
     kind: idea
     why: >
       On main. The README's lists of what a made project gets and what comes next follow the landed
