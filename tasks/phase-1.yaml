@@ -1462,3 +1462,25 @@
     running the binary driver locally where git is an itos shim. Change no scenario. Prove it on
     main and go/cli green in CI (whose test job runs the binary driver), Itos and Template check,
     with one dispatched go/cli nightly green and itos-template check passing 2 of 2.
+- id: T-81
+  type: ci
+  title: Cut the template's release v0.4.0
+  why: >
+    The person asked on 2026-11-24 to cut v0.4.0 once T-80 landed. It holds the migration of made
+    projects off itos (decisions 10 to 17, T-62 to T-80), which v0.3.0 lacks; until it is
+    published, itos-template new renders v0.3.0, whose made projects need itos. Cut it as T-61 cut
+    v0.3.0. With every head green and each local branch at origin's, run itos-template check (2 of
+    2, no warning). Then, with main checked out, run itos-template release v0.4.0 with the Template
+    check workflow's answers. It makes main/v0.4.0, stack/go/v0.4.0 and go/cli/v0.4.0 locally;
+    publish the three tags with itos push --tag main/v0.4.0 --tag stack/go/v0.4.0 --tag
+    go/cli/v0.4.0. If itos push refuses them, stop and report; never push with git directly, and
+    never move or delete a published tag. Prove it with itos-template check --ref v0.4.0 passing
+    both combinations, and with itos-template new from the public URL with no ref rendering v0.4.0,
+    its .itos-template.yaml naming the release. In that render, with its setup steps run, LICENSE is
+    the MIT text naming the answered owner, and it holds no itos.yaml, itos-policy.yaml or tasks
+    folder. Then main's README names v0.4.0 in a docs commit. Its Making a project paragraph says
+    --ref v0.4.0 pins a release and v0.4.0 is the newest, and what v0.4.0 brings over v0.3.0: a made
+    project needs no itos, with the exit codes, two scenario drivers, nightly, release and image of
+    decisions 13 to 17. v0.3.0's sentence is kept as that release's.
+  done_when:
+    - run: test "$(git ls-remote --tags origin refs/tags/main/v0.4.0 refs/tags/stack/go/v0.4.0 refs/tags/go/cli/v0.4.0 | wc -l)" -eq 3
