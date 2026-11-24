@@ -11,11 +11,6 @@ permissions:
   contents: read
   actions: read
 
-# The scenarios run in process by default; the binary driver runs only where this is set, so
-# every job that runs the features sets it (decision 14).
-env:
-  GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER: "1"
-
 # A newer push cancels a pull request's older run; a branch's pushes each keep theirs.
 concurrency:
   group: ci-${{ github.ref }}
@@ -61,6 +56,10 @@ jobs:
   test:
     if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
+    # The scenarios run in process by default; the binary driver runs only where this is set
+    # (decision 14): here, which every step of the job inherits, and in the nightly.
+    env:
+      GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER: "1"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -96,18 +95,24 @@ jobs:
             tools/bin/pinned itos-cc mutation run --count 10 --since "$BASE" --seed "$BASE" --all-tests --fail-uncovered=lines cmd internal
           fi
 
-  # Every test on macOS and Windows as well, with each platform's paths, shell and line endings:
-  # what touches paths and CRLF breaks on Windows first. The repository is public, so the minutes
-  # are free. They run on pull requests and on pushes to any branch but main: the template lands
-  # by direct push to its branches, and a made project's main push follows a merged pull request
-  # that ran them.
+  # What a push judges on each platform (decision 15): Linux runs every test, the import rules'
+  # fixtures included; macOS and Windows run the tests of cmd and internal and the scenarios, in
+  # process (no binary driver), with each platform's paths,
+  # shell and line endings, which is what breaks on Windows first. The rest of each platform's
+  # tests wait for the nightly (nightly.yml), a day late and never lost. The repository is public,
+  # so the minutes are free. They run on pull requests and on pushes to any branch but main: the
+  # template lands by direct push to its branches, and a made project's main push follows a merged
+  # pull request that ran them.
   platform:
     name: Tests (${{ matrix.os }})
     if: ${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name == 'pull_request' || github.ref != 'refs/heads/main') }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - { os: ubuntu-latest, packages: ./... }
+          - { os: macos-latest, packages: ./cmd/... ./internal/... ./features }
+          - { os: windows-latest, packages: ./cmd/... ./internal/... ./features }
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -115,23 +120,15 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/go-toolchain
-      # The features build the binary they run themselves, go-template-itos.exe on windows,
-      # stamped with a known version and commit.
-      # GOCOVERDIR makes that binary a -cover build, so the scenarios run cover-enabled code
-      # rather than the same code with the counter left out. A GOCOVERDIR that is not there is
-      # a coverage failure the binary prints on stderr on every run, and stderr is what a
-      # scenario reads, so the folder is made first, in this step and not before it. What the
-      # runs write stays on the runner.
-      # It is a step's variable, not the job's: the runner context is not there at job level.
+      # The scenarios run in process by default (decision 14): the binary driver waits for the
+      # nightly on macOS and Windows, and Linux's test job runs it (decision 15).
       # RAPID_CHECKS=1: each property of the domain on one random case.
       - name: Tests
-        run: |
-          mkdir -p "$GOCOVERDIR"
-          go test ./... -count=1
+        run: go test ${{ matrix.packages }} -count=1
         env:
           RAPID_CHECKS: 1
-          GOCOVERDIR: ${{ runner.temp }}/cover
       - name: Import boundary self-test
+        if: ${{ runner.os == 'Linux' }}
         run: tools/bin/architecture-check
 
   # A push to main whose static, test and platform jobs are green cuts a release when its commits

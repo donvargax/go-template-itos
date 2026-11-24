@@ -1,0 +1,36 @@
+#!/bin/sh
+# The nightly's property tests: every package under cmd and internal whose tests import rapid,
+# run with a seed drawn for the run and printed, and a thousand checks for each property. A push
+# runs the same tests with RAPID_CHECKS=1 and a seed of its own each time, so a property's
+# failure is a case a push can meet; this step is where they explore. rapid reads RAPID_SEED and
+# RAPID_CHECKS itself. A failure prints the seed of the check that failed and writes a fail file
+# under testdata/rapid; to keep it as a regression, commit that file, which go test replays.
+#
+# Harvested from donvargax/itos, tools/bin/nightly-properties, which selects the properties by a
+# test name; here a property is any test of a package that imports rapid, so a package's tests
+# all run, with the seed and checks only rapid reads.
+#
+#   tools/bin/nightly-properties [go test flag ...]
+#
+# The arguments go to go test, which the nightly gives -json, so the report job can name the
+# failing property.
+set -eu
+
+packages=./internal/...
+[ ! -d cmd ] || packages="./cmd/... $packages"
+
+# The packages whose tests import rapid, one go list line each: the path, then the imports of its
+# tests, in the package and outside it.
+# shellcheck disable=SC2086 # one argument per package
+held=$(go list -f '{{.ImportPath}} {{join .TestImports " "}} {{join .XTestImports " "}}' $packages |
+	awk '{ for (i = 2; i <= NF; i++) if ($i == "pgregory.net/rapid") { print $1; break } }')
+if [ -z "$held" ]; then
+	echo "property tests: no package of cmd or internal imports rapid"
+	exit 0
+fi
+
+seed=$(($(od -An -N4 -tu4 /dev/urandom | tr -d ' ') + 1))
+echo "property tests: RAPID_SEED=$seed RAPID_CHECKS=1000"
+export RAPID_SEED=$seed RAPID_CHECKS=1000
+# shellcheck disable=SC2086 # one argument per package
+exec go test -count=1 "$@" $held

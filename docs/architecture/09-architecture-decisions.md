@@ -9,3 +9,4 @@ One line per decision record in `docs/decisions/`; a superseded record leaves th
 - [go/cli builds on the kong fork until upstream kong takes typed parse errors](../decisions/0012-go-cli-builds-on-the-kong-fork-until-upstream-kong-takes-typed-parse-errors.md)
 - [Commands exit with itos-cc's codes and precedence and report problems with a rule, message, fix and exit](../decisions/0013-commands-exit-with-itos-cc-s-codes-and-precedence-and-report-problems-with-a-rule-message-fix-and-exit.md)
 - [Scenarios run in process against the ports' fakes locally and through the built binary in CI](../decisions/0014-scenarios-run-in-process-against-the-ports-fakes-locally-and-through-the-built-binary-in-ci.md)
+- [A push judges and a nightly explores, reporting through one Nightly red issue](../decisions/0015-a-push-judges-and-a-nightly-explores-reporting-through-one-nightly-red-issue.md)
