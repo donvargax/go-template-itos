@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - migration-readme
+  - T-79
 items:
   - id: T-1
     title: Bootstrap the language-neutral template root
@@ -989,14 +989,15 @@ items:
     depends_on: [T-62, T-71]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/14]
-  - id: migration-readme
+  - id: T-79
     title: The README says what a made project gets without itos
     phase: 1
     owner: null
     status: todo
     depends_on: [T-66, T-72, T-74, T-76, T-78]
-    kind: idea
+    kind: task
     why: >
+      Was migration-readme.
       On main. The README's lists of what a made project gets and what comes next follow the landed
       pieces, in plain words. The migration's issues are closed with their fixing commits; #3 and
       #21, which only footers and the ledger needed, go to the person to close.
