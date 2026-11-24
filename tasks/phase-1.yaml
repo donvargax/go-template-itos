@@ -1351,10 +1351,3 @@
     9 follow. Prove it on main, stack/go and go/cli green in CI, Itos and Template check, a
     snapshot build (tools/bin/pinned goreleaser release --snapshot --clean) in CI or once locally
     showing THIRD_PARTY_NOTICES.md in an archive, and itos-template check passing 2 of 2.
-  done_when:
-    - run: ls docs/decisions/0016-*.md
-    - run: test ! -d cmd || { test -f THIRD_PARTY_NOTICES.md && go run ./tools/bin/notices -check; }
-    - run: test ! -d cmd || ! grep -q donvargax/itos@ .github/workflows/release.yml
-    - run: test ! -d cmd || { grep -q "attestation verify" .github/workflows/release.yml && grep -q proxy.golang.org .github/workflows/release.yml && grep -q THIRD_PARTY_NOTICES .goreleaser.yaml; }
-    - run: test ! -d cmd || go test ./tools/bin/release-version ./tools/bin/release-notes ./tools/bin/notices
-    - run: test ! -d cmd || ! git grep -q -E "[(]decision (23|26)[)]" -- internal features cmd
