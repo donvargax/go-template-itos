@@ -957,8 +957,8 @@ items:
   - id: T-72
     title: Renovate's requests merge cleanly with no footers, and the toolchain line moves on a Go release's day
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-64]
     kind: task
     why: >
