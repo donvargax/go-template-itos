@@ -91,6 +91,9 @@ template_only:
   # The template's own itos checks (commit shape, footers, ledger): a made project needs no
   # itos (decision 10), so its ci.yml is the only workflow it keeps and calls plain commands.
   - .github/workflows/itos.yml
+  # Starts the Go branches' nightlies from main, the only branch GitHub schedules from (decision
+  # 15); a made project's nightly.yml carries its own schedule.
+  - .github/workflows/nightly-dispatch.yml
   # The template's plan, its coordination notes and the guidance for working on
   # it as a template (q-17): a made project has no branches to merge down, no
   # renders to prove and no coordinator's notes of this repository's, so its
