@@ -22,7 +22,8 @@ The counting example is one engine, `internal/engine/counting`:
   bytes, takes none.
 - `port` declares `Files` and its sealed set of failures, `Missing` and `Unreadable`.
   `Files.Read` takes the context first.
-- `port/porttest` holds our in-memory fake of `Files` for the domain's tests.
+- `port/porttest` holds our in-memory fake of `Files` for the domain's tests and `FilesContract`,
+  the one suite the fake and the disk adapter both pass; a new port gets its own.
 - `disk` is the adapter. It reads real files and translates OS errors into the port's failures.
 
 The domain is shared, not part of any command, so a second command reuses counting through its
@@ -80,7 +81,7 @@ example has no OS-specific logic.
 
 The domain's unit tests use the `porttest` fake and assert results and typed failures.
 The disk adapter's tests use real temporary files, since translating OS errors is what
-the adapter does.
+the adapter does, and run the port's contract suite on them.
 
 Properties use `pgregory.net/rapid` and live in the domain's tests. The counting property
 joins newline-terminated pieces and checks that their counts add. Arbitrary concatenation
