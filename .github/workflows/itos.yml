@@ -7,9 +7,9 @@ name: Itos
 
 on:
   pull_request:
-    branches: [main, "stack/**", "go/**", "renovate/**"]
+    branches: [main, "stack/**", "go/**"]
   push:
-    branches: [main, "stack/**", "go/**", "renovate/**"]
+    branches: [main, "stack/**", "go/**"]
 
 permissions:
   contents: read

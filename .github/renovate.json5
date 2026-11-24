@@ -1,24 +1,50 @@
 // Renovate's shared rules come from the owner's preset repository.
 {
 	$schema: "https://docs.renovatebot.com/renovate-schema.json",
-	extends: ["github>donvargax/renovate-config#v1.3.0"],
-	enabledManagers: ["github-actions", "renovate-config"],
+	extends: [
+		"github>donvargax/renovate-config#v1.3.0",
+		"github>donvargax/renovate-config:go#v1.3.0",
+	],
+	enabledManagers: ["gomod", "github-actions", "renovate-config", "custom.regex"],
 
-	// Renovate reads this file from the default branch only. Each branch holding code is a base
-	// branch: its own renovate.json5 is merged over this one, and its own CI judges its requests,
-	// so no update is carried down from main. These keys stay in main's file, since a render ships
-	// a branch's file to a made project, which has only main.
+	// Renovate reads this file from the default branch for every base branch, so this is the
+	// template's own config and the branches' files do not feed it.
+	// The branches' files are what a made project, with only main, gets.
 	baseBranchPatterns: ["main", "stack/go", "go/cli"],
-	useBaseBranchConfig: "merge",
 
 	// itos moves with its config pin and workflow action, not through Renovate.
 	ignoreDeps: ["donvargax/itos"],
-	automergeType: "branch",
+
+	// Every update lands through its own pull request, and GitHub's rebase merge keeps Renovate's
+	// message as written. A squash would append a Co-authored-by paragraph and push the Task
+	// footer out of the last paragraph, the only one git reads trailers from.
+	automergeType: "pr",
+	automergeStrategy: "rebase",
 	automergeSchedule: ["at any time"],
 	semanticCommits: "enabled",
-	commitBody: "Renovate's update, landed on {{{baseBranch}}} once CI passed on its branch.\n\n{{#each upgrades}}{{#unless @first}}\n{{/unless}}- {{{depName}}} {{#if (equals updateType 'digest')}}{{{currentDigestShort}}} to {{{newDigestShort}}}{{else}}{{{currentVersion}}} to {{{newVersion}}}{{#if newDigestShort}} ({{{newDigestShort}}}){{/if}}{{/if}}{{/each}}",
+	// The Task footer is written once, as the body's last paragraph, through a condition:
+	// Renovate applies package rules twice, so a trailer set in a rule was written twice.
+	commitBody: "Renovate's update, landed on {{{baseBranch}}} once CI passed on its pull request.\n\n{{#each upgrades}}{{#unless @first}}\n{{/unless}}- {{{depName}}} {{#if (equals updateType 'digest')}}{{{currentDigestShort}}} to {{{newDigestShort}}}{{else}}{{{currentVersion}}} to {{{newVersion}}}{{#if newDigestShort}} ({{{newDigestShort}}}){{/if}}{{/if}}{{/each}}\n\n{{#if (equals baseBranch 'main')}}Task: T-1{{else}}Task: T-2{{/if}}",
+
+	// Renovate proposes versions of the tools pinned in tools/bin/pinned. It cannot read a
+	// release asset's numeric ID, so the match covers the version line alone. A bump leaves the
+	// old checksums, so its pull request goes red until a person refreshes them (docs/upgrading.md).
+	customManagers: [
+		{
+			customType: "regex",
+			managerFilePatterns: ["/^tools/bin/pinned$/"],
+			matchStrings: ["# renovate: depName=(?<depName>\\S+)\\n\\t+version=(?<currentValue>\\S+)\\n"],
+			datasourceTemplate: "github-releases",
+			extractVersionTemplate: "^v?(?<version>.+)$",
+		},
+	],
 
 	packageRules: [
+		{
+			matchPackageNames: ["*"],
+			semanticCommitType: "build",
+			semanticCommitScope: null,
+		},
 		{
 			matchManagers: ["github-actions", "renovate-config"],
 			semanticCommitType: "ci",
@@ -28,15 +54,12 @@
 			matchManagers: ["github-actions"],
 			pinDigests: true,
 		},
-		// commitTrailers adds up rather than replaces when a branch's file merges over this one, so
-		// the branch files carry none and each base branch gets a task its own ledger holds here.
 		{
-			matchBaseBranches: ["main"],
-			commitTrailers: ["Task: T-1"],
-		},
-		{
-			matchBaseBranches: ["stack/go", "go/cli"],
-			commitTrailers: ["Task: T-2"],
+			// A Go release moves go.mod's toolchain line as soon as CI passes on its pull request.
+			matchManagers: ["gomod"],
+			matchDepTypes: ["toolchain"],
+			minimumReleaseAge: null,
+			schedule: ["at any time"],
 		},
 		{
 			// One dependency's updates share a branch name on every base branch, so they move together.
