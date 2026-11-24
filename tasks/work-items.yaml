@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - scenarios-two-drivers
+  - T-71
   - renovate-plain
   - nightly
   - release-plain
@@ -947,14 +947,15 @@ items:
     depends_on: [T-68]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
-  - id: scenarios-two-drivers
+  - id: T-71
     title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
     phase: 1
     owner: null
     status: todo
     depends_on: [T-69, T-70]
-    kind: idea
+    kind: task
     why: >
+      Was scenarios-two-drivers.
       A contract suite per port, run against both the fake and the real adapter, in itos-container's
       porttest shape, lands on stack/go. On go/cli, itos-cc's two drivers: the scenarios in process
       against the fakes by default and through the built binary behind a switch, both in CI; itos's
@@ -979,7 +980,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [scenarios-two-drivers, T-67]
+    depends_on: [T-71, T-67]
     kind: idea
     why: >
       Lands on stack/go and go/cli. itos's nightly.yml shape: every test and scenario on Linux,
@@ -1029,7 +1030,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-62, scenarios-two-drivers]
+    depends_on: [T-62, T-71]
     kind: idea
     why: >
       On stack/go and go/cli. itos-cc's docs/architecture.md content (layers, ports and contract
