@@ -1,0 +1,11 @@
+#!/bin/sh
+# scenario-list: lists the live scenarios with no itos, one per line: the ID,
+# the feature file and the drivers that run it, "both" or "binary" for a
+# @binary-only scenario, separated by tabs. It runs only the list test of
+# features, which reads the feature files and runs no step.
+set -eu
+cd -- "$(dirname -- "$0")/../.."
+scratch=$(mktemp -d)
+trap 'rm -rf "$scratch"' EXIT
+go test ./features -count=1 -run '^TestScenarioList$' -scenario-list-output="$scratch/list.tsv" >&2
+cat "$scratch/list.tsv"

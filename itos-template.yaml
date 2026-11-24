@@ -59,7 +59,9 @@ features:
       - [tools/bin/govulncheck]
       - [go, test, ./cmd/..., ./internal/...]
       - [tools/bin/domain-coverage]
-      - [go, test, ./features, -count=1]
+      # The binary driver runs only where its variable is set (decision 14); the word is
+      # replaced by the answers like any other.
+      - [env, GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1, go, test, ./features, -count=1]
       - [tools/bin/pinned, itos-cc, mutation, run, --count, 10, --all-tests, cmd, internal]
 
 questions:

@@ -11,6 +11,11 @@ permissions:
   contents: read
   actions: read
 
+# The scenarios run in process by default; the binary driver runs only where this is set, so
+# every job that runs the features sets it (decision 14).
+env:
+  GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER: "1"
+
 # A newer push cancels a pull request's older run; a branch's pushes each keep theirs.
 concurrency:
   group: ci-${{ github.ref }}
@@ -73,6 +78,8 @@ jobs:
       # The features build the binary they run, which Go's test cache cannot track, so they
       # always run.
       - run: go test ./features -count=1
+      # The live scenarios and which drivers run them, with no itos.
+      - run: tools/bin/scenario-list
       # Mutation runs fresh on each push, over the commits this run judges: from the pull
       # request's base or the push's before, seeded by it. A branch's first push (before is
       # all zeros) runs the packages with no --since, seeded by the head. A surviving mutant or

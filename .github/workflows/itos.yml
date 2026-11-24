@@ -20,6 +20,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  # The scenarios itos ci run starts run through the binary (decision 14).
+  GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER: "1"
   TO: ${{ github.event.pull_request.head.sha || github.sha }}
 
 jobs:
