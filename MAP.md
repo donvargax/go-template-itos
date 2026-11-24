@@ -9,9 +9,8 @@ or domain is added; keep each to a few lines and say where to look, not what the
 - Start: `internal/engine/counting/domain/count.go`, the domain that counts lines and words, and
   `internal/engine/counting/port/files.go`, the `Files` port it reads through.
 - Adapter: `internal/engine/counting/disk/files.go`, the read-only disk implementation of the port.
-- Fake: `internal/engine/counting/port/porttest/files.go`, the in-memory `Files` the domain's
-  tests use, and `files_contract.go`, `FilesContract`, which the fake's and the disk adapter's tests
-  both run.
+- Fake: `port/porttest/files.go`, the in-memory `Files`; `files_contract.go`, the contract the
+  fake and the disk adapter both pass.
 - Test: `go test ./internal/engine/counting/...`
 
 ## Import rules
@@ -27,12 +26,9 @@ or domain is added; keep each to a few lines and say where to look, not what the
   interrupt cancels; `internal/slices/count/command/count.go`, the slice that carries the
   command's values to the domain through the port, with `classify.go` (failures to problems)
   and `input.go` (the checked argument); and `internal/cli/cli.go`, the generic UI.
-- Scenarios: `features/*.feature`, with the shared steps in `features/steps.go`. Two drivers run
-  them: `cmd/go-template-itos/scenarios_test.go` in process, the default, and
-  `features/features_test.go` through the built binary where
-  `GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1`. `tools/bin/scenario-list` lists them.
-- Fake: the counting domain's `internal/engine/counting/port/porttest/files.go`; the command's own tests
-  use it too.
+- Scenarios: `features/*.feature`, steps in `features/steps.go`; run in process by
+  `scenarios_test.go` here, through the binary by `features/features_test.go` (see its README).
+- Fake: the counting `porttest/files.go`, which the command's tests use too.
 - Test: `go test ./cmd/... ./internal/... ./features -count=1`
 
 ## Pinned tools
