@@ -3,20 +3,23 @@ name: Release
 # The release, cut by CI: ci.yml calls this after its ci and platform jobs pass
 #
 # Harvested from the owner's itos-template .github/workflows/release.yml, which
-# took it from itos's, keeping the upstream identities (the actions and the itos
-# release it runs) and retargeting the binary this repository builds. ci.yml's
+# took it from itos's, keeping the upstream identities of the actions it runs and
+# retargeting the binary this repository builds. The attestation check, the
+# publish retry and the request to the Go module proxy are itos's own steps
+# (donvargax/itos's release.yml). No step runs itos: the version, the notes and
+# the checks are plain Go programs and commands. ci.yml's
 # release job calls it on a push to main, after the ci and platform jobs pass;
 # the steps run tools/bin/release-version and tools/bin/release-notes, both
 # harvested from itos-template too. The template's branches are never main, so
 # it never runs in the template and nothing is published from it. On a made
-# project's main it runs after the ci and platform jobs pass, which they can
-# once the project's setup has given it its itos.yaml for the ci job's plan.
+# project's main it runs after the ci and platform jobs pass.
 #
 # It runs when ci.yml calls it on a push to main, and releases when the commits since the last
 # vX.Y.Z tag carry a feat, a fix or a breaking change, or the binary is built from other modules
 # or another Go toolchain than the last release was. The tag is the version, computed from those commits
-# (tools/bin/release-version): a breaking change a major, a feat a minor, a fix a patch; with
-# none, a patch when the modules ./cmd/go-template-itos links or go.mod's toolchain moved,
+# (tools/bin/release-version): a breaking change a major (a minor before 1.0), a feat a minor, a
+# fix a patch, and a commit whose header is not a Conventional Commit a patch, named in the
+# version step's output (decision 16); with none, a patch when the modules ./cmd/go-template-itos links or go.mod's toolchain moved,
 # go list reading both commits, which is why Go is set up before the version step;
 # else nothing is released and the job ends green. The notes of such a patch name what moved,
 # read again by the same code (internal/release's BinaryMoved) from the module cache the
@@ -37,13 +40,17 @@ name: Release
 #      itos-corp/go-template-itos` checks one). Attesting needs a public repository, as this one is,
 #      or GitHub Enterprise Cloud: a private repository on GitHub Free or Team cannot attest, and
 #      this step would fail there;
-#   5. the notes are generated (tools/bin/release-notes: why the version is what it is, what
+#   5. the attestation is verified on the built linux amd64 archive, before anything is published:
+#      a release whose attestation cannot be read fails here;
+#   6. the notes are generated (tools/bin/release-notes: why the version is what it is, what
 #      moved beneath the binary for a patch with no feat, fix or breaking change, git-cliff over
 #      the range, every BREAKING-CHANGE and Upgrading footer quoted), from the last release's tag
 #      the version step printed;
-#   6. the draft is published with those notes, which is when GitHub creates the tag, so the tag
+#   7. the draft is published with those notes, which is when GitHub creates the tag, so the tag
 #      and a release holding every asset appear together. A run that fails before leaves no tag,
-#      only a draft the next run replaces; a tag is never moved.
+#      only a draft the next run replaces; a tag is never moved;
+#   8. proxy.golang.org is asked for the version, so go install @latest finds it at once; no
+#      answer is a warning, never a failure, the release being published by then.
 # The releaser never commits: the notes are the release's description, not a file.
 on:
   workflow_call:
@@ -64,7 +71,7 @@ jobs:
       cancel-in-progress: false
     steps:
       # Every action pinned to a commit, as ci.yml pins them, with the upstream
-      # identities kept: donvargax/itos is the itos this repository runs.
+      # identities kept.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0 # the tags and the commits since the last one
@@ -78,10 +85,6 @@ jobs:
           go run ./tools/bin/release-version > "$RUNNER_TEMP/version.txt"
           cat "$RUNNER_TEMP/version.txt" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/version.txt"
-      # The global itos, for the notes' Upgrading footers (itos commit footers); itos.yaml's pin
-      # chooses the itos that runs.
-      - if: steps.version.outputs.next != ''
-        uses: donvargax/itos@da2f0eaf40f6fd5584ee2193d866580d4d78263c # v8.3.0
       # The GitHub CLI, to publish the draft: pinned from its release tarball and checked against
       # its SHA-256, as itos installs it, so the runner's own copy does not decide what runs.
       - name: GitHub CLI
@@ -117,6 +120,25 @@ jobs:
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-checksums: dist/goreleaser/checksums.txt
+      # The attestation is verified here, where the bytes it signs are, on the linux amd64 archive
+      # just built and not on a copy fetched from GitHub; gh attestation verify takes the file,
+      # never a digest. Retried a few times, as the attestation takes a moment to be readable
+      # after the action writes it. It fails the job before Publish.
+      - name: Verify the attestation
+        if: steps.version.outputs.next != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT: ${{ steps.version.outputs.next }}
+        run: |
+          archive="dist/goreleaser/go-template-itos-$NEXT-linux-amd64.tar.gz"
+          for attempt in 1 2 3 4 5 6; do
+            if gh attestation verify "$archive" -R "$GITHUB_REPOSITORY"; then
+              exit 0
+            fi
+            echo "attempt $attempt: the attestation is not readable yet"
+            sleep 10
+          done
+          exit 1
       - name: Notes
         if: steps.version.outputs.next != ''
         env:
@@ -131,4 +153,38 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           TAG: v${{ steps.version.outputs.next }}
-        run: gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md" --draft=false --latest
+        # Retried a few times, as the attestation check is: GitHub answers it with a 5xx now and
+        # then, even after it has made the tag.
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md" --draft=false --latest; then
+              exit 0
+            fi
+            echo "attempt $attempt: the release is not published yet"
+            sleep 10
+          done
+          echo "::error::$TAG is still a draft: publish it by hand with gh release edit $TAG --draft=false"
+          exit 1
+      # proxy.golang.org caches a module's version list and @latest and refreshes them on its own
+      # schedule, so go install ...@latest lags each new release for a while. Asking the proxy for
+      # the new version makes it fetch the tag at once; @latest follows later. The module path is
+      # go.mod's, so the next major needs no edit here (it is all lower case, which the proxy's
+      # path takes as is). The release is published by now, so a proxy that never answers is a
+      # warning and never fails the job.
+      - name: Ask the Go module proxy for the version
+        if: steps.version.outputs.next != ''
+        env:
+          NEXT: ${{ steps.version.outputs.next }}
+        run: |
+          module=$(go list -m)
+          url="https://proxy.golang.org/$module/@v/v$NEXT.info"
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsS --max-time 60 "$url"; then
+              echo
+              exit 0
+            fi
+            echo "attempt $attempt: the proxy has no $module@v$NEXT yet"
+            sleep 10
+          done
+          echo "::warning::proxy.golang.org did not answer for $module@v$NEXT; go install fetches it on first use, and @latest may lag"
+          exit 0
