@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -28,6 +29,15 @@ func TestBumpOf(t *testing.T) {
 		{"docs, ci, test and build commits", []string{"docs: say so", "ci: run it", "test: prove it", "build: pin it"}, "none"},
 		{"a BREAKING-CHANGE line outside the last paragraph", []string{"fix: a bug\n\nBREAKING-CHANGE: not a footer here\n\nTask: T-1"}, "patch"},
 		{"no commit", nil, "none"},
+		{"a header that is not a Conventional Commit", []string{"Update the readme"}, "patch"},
+		{"a header with a type and no space after its colon", []string{"fix:a bug"}, "patch"},
+		{"a header that is not a Conventional Commit beside a docs commit", []string{"docs: say so", "Update the readme"}, "patch"},
+		{"a feat beside a header that is not a Conventional Commit", []string{"Update the readme", "feat: a thing"}, "minor"},
+		{"a header that is not a Conventional Commit and a breaking one", []string{"Update the readme", "feat!: a thing"}, "major"},
+		{"Git's default merge header", []string{"Merge branch 'main' into topic"}, "none"},
+		{"GitHub's default merge header", []string{"Merge pull request #7 from owner/topic\n\nA title."}, "none"},
+		{"a merge header with a type", []string{"docs: merge main into topic"}, "none"},
+		{"a header that only starts with Merge", []string{"Merged the thing"}, "patch"},
 	}
 	for _, c := range cases {
 		b := bumpOf(c.messages)
@@ -214,4 +224,81 @@ func TestBreakingBeforeOne(t *testing.T) {
 			}
 		})
 	}
+}
+
+// The commits release-version read as patches for want of a Conventional Commit
+// header, each named by its short hash and header; a merge with Git's or
+// GitHub's default header is skipped, since its parents are read.
+func TestUnconventional(t *testing.T) {
+	log := "aaaaaaaa1111\x1fUpdate the readme\n\nWhy.\n\x1e\n" +
+		"bbbbbbb2222222\x1ffeat: a thing\n\x1e\n" +
+		"ccccccc3333333\x1fMerge pull request #7 from owner/topic\n\nA title.\n\x1e\n" +
+		"ddddddd4444444\x1fMerge branch 'main' into topic\n\x1e\n" +
+		"eeeeeee5555555\x1ffix:a bug\n\x1e\n"
+	want := []string{"aaaaaaa Update the readme", "eeeeeee fix:a bug"}
+	got := unconventional(log)
+	if len(got) != len(want) || got[0] != want[0] || got[1] != want[1] {
+		t.Errorf("unconventional = %q, want %q", got, want)
+	}
+	if got := unconventional("abc\x1fshort\n\x1e"); len(got) != 1 || got[0] != "abc short" {
+		t.Errorf("a hash shorter than seven characters: %q", got)
+	}
+}
+
+// A commit whose header is not a Conventional Commit releases a patch and is
+// named on stderr by its short hash and header, instead of failing the
+// release (decision 16); a typed commit that releases nothing still releases
+// nothing; a default merge header is skipped.
+func TestNotConventional(t *testing.T) {
+	cases := []struct {
+		name    string
+		message string
+		bump    string
+		says    []string
+		not     string
+	}{
+		{name: "a free-form header", message: "Update the readme", bump: "patch",
+			says: []string{"1 commit(s) that are not Conventional Commits, read as patches: 0.1.1",
+				"read as a patch, not a Conventional Commit: %s Update the readme"}},
+		{name: "a typed commit that releases nothing", message: "docs: say so", bump: "none",
+			not: "read as a patch"},
+		{name: "a default merge header", message: "Merge pull request #7 from owner/topic", bump: "none",
+			not: "read as a patch"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			repo := releasetest.Example(t, true)
+			releasetest.Change(t, filepath.Join(repo, "README.md"), "", "text\n")
+			releasetest.Commit(t, repo, c.message)
+			t.Chdir(repo)
+			short := strings.TrimSpace(gitOut(t, repo, "rev-parse", "--short=7", "HEAD"))
+			var stdout, stderr bytes.Buffer
+			if code := run(nil, &stdout, &stderr); code != 0 {
+				t.Fatalf("exit %d: %s", code, stderr.String())
+			}
+			if !strings.Contains(stdout.String(), "bump="+c.bump+"\n") {
+				t.Errorf("stdout is not bump=%s:\n%s", c.bump, stdout.String())
+			}
+			for _, says := range c.says {
+				says = strings.ReplaceAll(says, "%s", short)
+				if !strings.Contains(stderr.String(), says) {
+					t.Errorf("stderr does not say %q:\n%s", says, stderr.String())
+				}
+			}
+			if c.not != "" && strings.Contains(stderr.String(), c.not) {
+				t.Errorf("stderr says %q:\n%s", c.not, stderr.String())
+			}
+		})
+	}
+}
+
+func gitOut(t *testing.T, dir string, args ...string) string {
+	t.Helper()
+	cmd := exec.Command("git", args...) //nolint:gosec // this test names every argument
+	cmd.Dir = dir
+	out, err := cmd.Output()
+	if err != nil {
+		t.Fatalf("git %s: %v", strings.Join(args, " "), err)
+	}
+	return string(out)
 }
