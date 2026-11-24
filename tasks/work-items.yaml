@@ -985,8 +985,8 @@ items:
   - id: T-78
     title: Each branch's arc42 sections, MAP.md and CLI.md's why describe its own code
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-62, T-71]
     kind: task
     why: >
