@@ -10,10 +10,19 @@ The Go toolchain is pinned too: its standard library is part of the resulting co
 patches matter even when module versions stay unchanged.
 
 Tools by itos's owner can be pinned on release. Other updates normally wait seven days, with
-security fixes following the existing security-update policy. Renovate reads
-`.github/renovate.json5` from `main`, so its requests follow that file's managers and are judged
-by the project's own CI. The file alone does not make Renovate run: the automation stays
-unverified until the Renovate app is installed and a request has landed.
+security fixes following the existing security-update policy. A Go release moves go.mod's
+toolchain line as soon as CI passes on its pull request, since its standard library carries
+security patches. Renovate reads `.github/renovate.json5` from `main`, so its requests follow
+that file's managers, land through rebased pull requests and are judged by the project's own CI.
+
+Renovate also tracks the versions pinned in `tools/bin/pinned`, from the `# renovate: depName=`
+line above each `version=`. It cannot read a release's checksums, so a bumped version beside the
+old checksums fails the pull request's CI and never lands. To land it, check out the pull
+request's branch, refresh that tool's checksums and asset ID from the release, commit them there
+and push. CI then runs again on the same pull request.
+
+The committed file alone does not make Renovate run: install the Renovate App on the repository
+and see a pull request open before counting on it. The file cannot prove the App is installed.
 
 Mutation runs fresh in CI on each push, so a move of itos-cc needs no records renewed.
 
