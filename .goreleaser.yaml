@@ -10,6 +10,7 @@
 # top level; and
 # checksums.txt, every archive's SHA-256 in sha256sum's format, which the release workflow
 # attests.
+# With the kos section on (off by default), also the container image, as it describes below.
 version: 2
 project_name: go-template-itos
 # Inside dist/, which git ignores: --clean empties this folder alone.
@@ -52,6 +53,28 @@ archives:
       # checked in CI: MIT, BSD and Apache ask them to travel with every copy.
       - src: THIRD_PARTY_NOTICES.md
         info: { owner: root, group: root, mode: 0644, mtime: "{{ .CommitDate }}" }
+
+# The container image (decision 17, T-76), built by ko from the build above with no Dockerfile.
+# Off by default: to turn it on, set disable to false in one reviewed commit. The release then
+# pushes ghcr.io/itos-corp/go-template-itos:<version> for linux/amd64 and linux/arm64, which
+# release.yml attests and verifies before it publishes. The base is pinned by digest, which
+# Renovate moves; the version is the only tag, never latest; ko's SBOM is kept.
+kos:
+  - id: go-template-itos
+    disable: true
+    build: go-template-itos
+    base_image: gcr.io/distroless/static-debian12:nonroot@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
+    repositories: [ghcr.io/itos-corp/go-template-itos]
+    platforms: [linux/amd64, linux/arm64]
+    tags: ["{{ .Version }}"]
+    sbom: spdx
+    # The same static binary the archives hold, dated at the commit.
+    env: [CGO_ENABLED=0]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w -X github.com/itos-corp/go-template-itos/internal/version.stamp={{ .Version }} -X github.com/itos-corp/go-template-itos/internal/version.commit={{ .FullCommit }}
+    creation_time: "{{ .CommitTimestamp }}"
+    ko_data_creation_time: "{{ .CommitTimestamp }}"
 
 checksum:
   name_template: checksums.txt

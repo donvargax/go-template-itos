@@ -27,6 +27,13 @@
 			datasourceTemplate: "github-releases",
 			extractVersionTemplate: "^v?(?<version>.+)$",
 		},
+		{
+			// The image's base in .goreleaser.yaml: its tag stays and its digest moves.
+			customType: "regex",
+			managerFilePatterns: ["/^\\.goreleaser\\.yaml$/"],
+			matchStrings: ["base_image: (?<depName>\\S+?):(?<currentValue>[^:@\\s]+)@(?<currentDigest>sha256:[a-f0-9]{64})\\n"],
+			datasourceTemplate: "docker",
+		},
 	],
 
 	packageRules: [
