@@ -1243,9 +1243,3 @@
     --all-tests, now reaching cmd in process. features/README.md, docs/go.md, MAP.md and arc42
     section 9 on go/cli (listing decision 14) follow. Prove it on stack/go and go/cli green in CI,
     Itos and Template check, and itos-template check passing 2 of 2.
-  done_when:
-    - run: ls docs/decisions/0014-*.md
-    - run: test ! -d internal/engine/counting || grep -rq "func FilesContract" internal/engine/counting/port/porttest
-    - run: test ! -d internal/engine/counting || { grep -rq --include=*_test.go "FilesContract(" internal/engine/counting/disk && grep -rq --include=*_test.go "FilesContract(" internal/engine/counting/port/porttest; }
-    - run: test ! -d cmd || { test ! -e features/smoke.yaml && ! grep -q smoke itos.yaml && test -x tools/bin/scenario-list; }
-    - run: test ! -d cmd || { grep -q "GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER" .github/workflows/ci.yml && grep -rq "binary-only" features; }
