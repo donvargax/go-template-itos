@@ -950,8 +950,8 @@ items:
   - id: T-71
     title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-69, T-70]
     kind: task
     why: >
