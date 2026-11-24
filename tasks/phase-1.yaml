@@ -1209,3 +1209,20 @@
     - run: test ! -d cmd || ! grep -rqi "temporary" .golangci.yml tools/architecture
     - run: test ! -d cmd || { grep -q "exits with code 82" features/count.feature && grep -q "exits with code 81" features/cli.feature && ! grep -qE "exits with code (2|3|70)$" features/*.feature; }
     - run: test ! -d cmd || go test ./internal/cli/ ./internal/slices/... ./cmd/...
+- id: T-70
+  type: ci
+  title: go/cli's Scenarios and Upgrading footers are required on feat commits only
+  why: >
+    The person, 2026-11-23. go/cli's itos.yaml requires the Scenarios and Upgrading footers on
+    feat and fix commits. stack/go's published fix commits bfe711f, c6ffd19 and c6e9169 carry
+    stack/go's footers, not these, so itos push refuses any go/cli that merges stack/go, and
+    published history is never rewritten. Require both footers on feat alone: Scenarios'
+    required_for and Upgrading's required_for become [feat]; Scenarios keeps validate_for
+    [feat, fix], so a fix that names scenarios still has them judged. That config governs only
+    the template's own development, which leaves itos at the end of this migration; the commit
+    message says so. Lands on go/cli as its own commit, then go/cli merges stack/go, which proves
+    the change: itos push accepts the merge. Prove it on go/cli green in CI, Itos and Template
+    check, with stack/go's head an ancestor of go/cli's.
+  done_when:
+    - run: test ! -d cmd || { awk '/^    Scenarios:/,/read_at/' itos.yaml | grep -q "required_for:.\[feat\]$" && awk '/^    Upgrading:/,/required_for/' itos.yaml | grep -q "required_for:.\[feat\]$"; }
+    - run: git merge-base --is-ancestor origin/stack/go origin/go/cli
