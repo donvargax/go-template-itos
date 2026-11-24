@@ -8,13 +8,13 @@ Feature: The command line
   never kong's own such as "EOL". With --json the failure is one object on stdout and
   nothing is printed on stderr.
 
-  @ID-CLI-01 @count-cli
+  @ID-CLI-01 @count-cli @binary-only
   Scenario: --version prints the version stamped at build
     When go-template-itos runs with "--version"
     Then it exits with code 0
     And the first line of its standard output is "go-template-itos" and the stamped version
 
-  @ID-CLI-02 @count-cli
+  @ID-CLI-02 @count-cli @binary-only
   Scenario: version prints what --version prints
     When go-template-itos runs with "version"
     Then it exits with code 0
@@ -23,7 +23,7 @@ Feature: The command line
 
   # The commit is the one a release's build stamps, else the revision the go tool
   # records for a build in a checkout, else there is none and no second line.
-  @ID-CLI-03 @count-cli
+  @ID-CLI-03 @count-cli @binary-only
   Scenario: --version prints the build's commit on its second line
     When go-template-itos runs with "--version"
     Then it exits with code 0
@@ -84,7 +84,7 @@ Feature: The command line
   # line, schema 1, with the version and the commit the build was stamped with.
   # A build that knows no commit leaves the commit key out, as its text has no
   # second line; the harness always stamps one, so the unit tests show that.
-  @ID-CLI-10 @T-34
+  @ID-CLI-10 @T-34 @binary-only
   Scenario: version --json prints one object with the stamped version and commit
     When go-template-itos runs with "version --json"
     Then it exits with code 0
@@ -92,7 +92,7 @@ Feature: The command line
     And its standard output is one line
 
   # A shell that set the variable gets JSON from every command that has --json.
-  @ID-CLI-11 @T-34
+  @ID-CLI-11 @T-34 @binary-only
   Scenario: GO_TEMPLATE_ITOS_JSON turns version's JSON on
     When go-template-itos runs with "version" and the environment "GO_TEMPLATE_ITOS_JSON=1"
     Then it exits with code 0
@@ -100,7 +100,7 @@ Feature: The command line
 
   # The variable is not the flag, so declining it on the command line is giving
   # the switch once, and the text --version prints comes back.
-  @ID-CLI-12 @T-34
+  @ID-CLI-12 @T-34 @binary-only
   Scenario: --no-json declines the JSON the environment turns on for version
     When go-template-itos runs with "version --no-json" and the environment "GO_TEMPLATE_ITOS_JSON=1"
     Then it exits with code 0
@@ -121,7 +121,7 @@ Feature: The command line
   # and macOS, CTRL_BREAK_EVENT to the binary's own process group on Windows, which
   # Go reports as the same signal. The input is left open, so nothing but the
   # interrupt can end the wait.
-  @ID-CLI-14 @cli-ctrl-c
+  @ID-CLI-14 @cli-ctrl-c @binary-only
   Scenario: an interrupt while count waits on standard input exits 130 and says so
     When go-template-itos runs with "count -" and its standard input left open
     And it is interrupted while it waits
@@ -131,7 +131,7 @@ Feature: The command line
 
   # Under --json the interrupt is a failure like any other: one object, ok false,
   # its problem's rule what a script matches on.
-  @ID-CLI-15 @cli-ctrl-c
+  @ID-CLI-15 @cli-ctrl-c @binary-only
   Scenario: an interrupt under --json prints the interrupted problem
     When go-template-itos runs with "count - --json" and its standard input left open
     And it is interrupted while it waits
