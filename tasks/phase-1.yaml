@@ -1351,3 +1351,34 @@
     9 follow. Prove it on main, stack/go and go/cli green in CI, Itos and Template check, a
     snapshot build (tools/bin/pinned goreleaser release --snapshot --clean) in CI or once locally
     showing THIRD_PARTY_NOTICES.md in an archive, and itos-template check passing 2 of 2.
+- id: T-76
+  type: build
+  title: A release can publish a container image through GoReleaser's ko, off by default, attested and verified
+  why: >
+    Was ko-image, the migration's thirteenth item; decision 17 holds the design. Settles
+    go-template-itos#18. On go/cli, after it merges main and stack/go. stack/go only merges main
+    and lists decision 17 in its arc42 section 9. In .goreleaser.yaml, a kos section builds the
+    go-template-itos build's binary (CGO_ENABLED=0, the same ldflags) into an image with no
+    Dockerfile. Its base is gcr.io/distroless/static-debian12:nonroot pinned by digest. It builds
+    for linux/amd64 and linux/arm64, its repository is ghcr.io/itos-corp/go-template-itos (rendered
+    as the archives' release owner and name are), and its only tag is the version, never latest.
+    ko's SBOM is kept. It is off by default through the section's own disable or skip field, with
+    one comment line saying how to turn it on. go/cli's .github/renovate.json5 gains a regex
+    manager over .goreleaser.yaml that moves the base's digest, in the shape of the tools/bin/pinned
+    one. release.yml and ci.yml's release job gain packages write. After GoReleaser, when
+    dist/goreleaser/artifacts.json lists a published image, release.yml attests its digest with the
+    pinned actions/attest-build-provenance (subject-name, subject-digest, push-to-registry true).
+    It then verifies the attestation with gh attestation verify oci://<image>@<digest> -R
+    "$GITHUB_REPOSITORY", retried as the archive check is, before Publish. When no image is listed,
+    both steps say so and pass. ci.yml's static job runs tools/bin/pinned goreleaser check. go/cli's
+    README says how to turn the image on and how to pull it by digest and verify it; release.yml's
+    header comment, docs/go.md, MAP.md and arc42 section 9 follow. Prove it on main, stack/go and
+    go/cli green in CI, Itos and Template check. Also prove it with one local snapshot build with
+    the image turned on in the working tree only, never committed, that lists the image for both
+    architectures, and with itos-template check passing 2 of 2.
+  done_when:
+    - run: ls docs/decisions/0017-*.md
+    - run: test ! -d cmd || { grep -q "^kos:" .goreleaser.yaml && grep -q "distroless/static-debian12:nonroot@sha256" .goreleaser.yaml && ! grep -q -E "^ *- *.?latest" .goreleaser.yaml; }
+    - run: test ! -d cmd || { grep -q "packages. write" .github/workflows/release.yml && grep -q "subject-digest" .github/workflows/release.yml && grep -q "oci://" .github/workflows/release.yml; }
+    - run: test ! -d cmd || grep -q "goreleaser check" .github/workflows/ci.yml
+    - run: test ! -d cmd || grep -q "goreleaser" .github/renovate.json5
