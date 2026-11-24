@@ -971,8 +971,8 @@ items:
   - id: T-75
     title: A release is versioned, noted, attested and announced with no itos
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-65]
     kind: task
     why: >
