@@ -24,7 +24,7 @@ commits:
     Scenarios:
       source: { tests: scenario }
       strip_prefix: "@"
-      required_for: [feat, fix]
+      required_for: [feat]
       validate_for: [feat, fix]
       must_be_live: true
       read_at: commit
@@ -33,7 +33,7 @@ commits:
     # notes quote it.
     Upgrading:
       source: text
-      required_for: [feat, fix]
+      required_for: [feat]
     # The work registry item a commit belongs to, for the commits no ledger task ties to:
     # a slice's scenarios committed red first, its specification, a chore it needs. Taken
     # in place of Task for those types, since a slice has no task of its own.
