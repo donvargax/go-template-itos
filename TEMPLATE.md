@@ -23,6 +23,8 @@ development uses itos, and these rules are the ones it left out.
 - Close an item with `itos work done` only after its actual pushed head is green. Its
   `itos ci run` judged the pushed range's checks, and `work done` runs none. Mutation runs fresh in
   CI on each push (`ci.yml`'s test job), so no mutation result is committed: `.metrics/` is ignored.
+- On go/cli the binary driver runs the scenarios against the caller's PATH unchanged. Where `git`
+  here is an itos shim, put the real git first on PATH before running it locally. CI has no shim.
 - The block `itos init --agent-rules` writes into `AGENTS.md` points at `itos go` and says to
   stage only your own files. A made project's `AGENTS.md` carries no such block, and no setup
   step writes it back (decision 10).
