@@ -2,7 +2,7 @@
 
 These rules cover every file this project reads or writes as its own configuration. They
 apply whatever the project's language or interface. Formats that belong to other tools, such
-as `go.mod`, a linter's settings, CI workflows or `itos.yaml`, follow those tools' rules
+as `go.mod`, a linter's settings, or CI workflows, follow those tools' rules
 instead.
 
 The project has no configuration file of its own yet, and applies these rules when it adds its
