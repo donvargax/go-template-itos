@@ -140,3 +140,21 @@ func TestFilesContractAcceptsAFailureOnADoneContext(t *testing.T) {
 		t.Errorf("a failure on a done context was reported wrong: %q", r.errors)
 	}
 }
+
+// A one-byte file is the shortest one the suite can change in place, so the
+// suite must change the byte at the start, never one past it.
+func TestFilesContractHoldsAOneByteFile(t *testing.T) {
+	r := &recorder{}
+	FilesContract(r, func() FilesCase {
+		return FilesCase{
+			Files: Files{
+				Data:     map[string][]byte{"present": []byte("x")},
+				Failures: map[string]port.ReadFailure{"unreadable": Unreadable("unreadable")},
+			},
+			Present: "present", Content: []byte("x"), Absent: "absent", Unreadable: "unreadable",
+		}
+	})
+	if len(r.errors) != 0 {
+		t.Errorf("a one-byte file was reported wrong: %q", r.errors)
+	}
+}
