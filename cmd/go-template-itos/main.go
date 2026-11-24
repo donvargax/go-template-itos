@@ -164,6 +164,6 @@ func logger(w io.Writer) *slog.Logger {
 	return slog.New(slog.NewJSONHandler(w, opts))
 }
 
-// itos-cc mutation: 26 killed, 1 survived, 0 uncovered
-// survived: line 102 `>` → `>=` in run
+// itos-cc mutation: 20 killed, 1 survived, 0 uncovered
+// survived: line 105 `>` → `>=` in run
 // end itos-cc mutation
