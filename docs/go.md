@@ -245,6 +245,16 @@ default header is skipped. `tools/bin/release-notes` quotes every `BREAKING-CHAN
 `Upgrading` footer from each commit's last paragraph, and the job verifies the attestation on
 the built linux amd64 archive before it publishes, then asks proxy.golang.org for the version.
 
+The release can publish a container image through `.goreleaser.yaml`'s `kos` section (decision
+17). It is off; `disable: false` turns it on. ko builds the same static binary into an image with
+no Dockerfile, on the distroless static nonroot base pinned by digest, which Renovate moves
+through a regex manager over `.goreleaser.yaml`. The image is for linux/amd64 and linux/arm64, is
+tagged with the version only and keeps ko's SBOM. When `dist/goreleaser/artifacts.json` lists an
+image, `release.yml` attests its digest, then verifies it with `gh attestation verify
+oci://<image>@<digest>` before it publishes; with none listed both steps say so and pass. The
+release job holds `packages: write` for the push, and `ci.yml`'s static job runs
+`tools/bin/pinned goreleaser check` so the section stays valid while it is off.
+
 The project starts with no mutation results and commits none. A branch's first push mutates the
 whole packages, judging survivors only, and each later push the functions it changes; a surviving mutant is a test to write.
 `itos-cc.yaml` comes with the template's reviewed exceptions, whose hashes cover a function's

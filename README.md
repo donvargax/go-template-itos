@@ -36,6 +36,20 @@ each new version when it publishes. Each release's archives are attested, and
 `LICENSE`, `README.md` and `THIRD_PARTY_NOTICES.md`, the notices of the modules the binary links
 and of Go.
 
+A release can also publish a container image, built by GoReleaser's `kos` section with no
+Dockerfile, on a distroless base pinned by digest, for linux/amd64 and linux/arm64, tagged with the
+version alone. It is off. To turn it on, set `disable: false` in `.goreleaser.yaml`'s `kos` section
+and push that one commit; the release then pushes `ghcr.io/itos-corp/go-template-itos:<version>`,
+attests its digest and verifies the attestation before it publishes. Pull it by digest and verify
+it:
+
+```sh
+docker pull ghcr.io/itos-corp/go-template-itos@sha256:<digest>
+gh attestation verify oci://ghcr.io/itos-corp/go-template-itos@sha256:<digest> -R itos-corp/go-template-itos
+```
+
+The release's run prints the digest, and the image's page on GitHub lists it.
+
 ## Check it
 
 ```sh

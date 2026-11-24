@@ -30,8 +30,8 @@ test command. Add an entry for each slice or domain; say where to look, not what
 
 ## Release
 
-- Start: `.github/workflows/release.yml`; `tools/bin/release-version`, `release-notes` and
-  `notices` (writes THIRD_PARTY_NOTICES.md, `-check` in CI); their library: `internal/release`.
+- Start: `release.yml`, `.goreleaser.yaml` (kos: the image, off); `tools/bin/`
+  `release-version`, `release-notes`, `notices` (`-check` in CI); library: `internal/release`.
 - Test: `go test ./tools/bin/release-version/`, likewise `release-notes`, `notices`
 
 ## Pinned tools
