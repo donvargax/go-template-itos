@@ -130,10 +130,10 @@ func TestMovedNotes(t *testing.T) {
 				"No commit since v0.1.0 is a breaking change.\n   Each `Upgrading:` footer since v0.1.0:\n   - ",
 				"> Rebuild your plugins.",
 			},
-			not: []string{"Nothing to change", "itos"}},
+			not: []string{"Nothing to change", "itos commit"}},
 		{name: "a fix beside a moved module", message: "fix: a bug\n\nUpgrading: none",
 			says: []string{
-				"Cut by CI from the 1 commit since v0.1.0: 0 feats, 1 fix and 0 breaking changes, where a breaking change makes a major release, a feat a minor one and a fix a patch.",
+				"Cut by CI from the 1 commit since v0.1.0: 0 feats, 1 fix and 0 breaking changes, where a breaking change makes a major release (a minor before 1.0), a feat a minor one and a fix a patch.",
 				"Every `feat` and `fix` since v0.1.0 says `Upgrading: none`.",
 			},
 			not: []string{"moved", "Nothing to change"}},

@@ -3,12 +3,12 @@
 // the release workflow once the archives are attested. Harvested with the
 // owner's permission (CONTRIBUTORS.md) from itos-template's
 // tools/bin/release-notes (its T-5), which took it from itos's (its T-069),
-// less what is itos's own: the Changes footer, the config's schema contract,
-// the install script and pin lines a consumer of itos copies, and
-// upgrading.json. The repository and the binary the notes name are this
-// project's.
+// less what is itos's own: the Changes footer, itos commit footers, the
+// config's schema contract, the install script and pin lines a consumer of
+// itos copies, and upgrading.json. The repository and the binary the notes name
+// are this project's.
 //
-//	go run ./tools/bin/release-notes -version <X.Y.Z> [-from <tag>] [-to <rev>] [-itos <bin>]
+//	go run ./tools/bin/release-notes -version <X.Y.Z> [-from <tag>] [-to <rev>]
 //
 // The range is <from>..<to>: <from> the last release's tag (default: the
 // newest vX.Y.Z tag reachable from <to> other than v<version>, which the
@@ -16,7 +16,7 @@
 // Markdown on stdout:
 //
 //   - a title and a line saying what the range holds, and why the version is
-//     what it is (a breaking change makes a major, a feat a minor, a fix a
+//     what it is (a breaking change makes a major, or a minor before 1.0, a feat a minor, a fix a
 //     patch, as tools/bin/release-version computes it); with none of those, a
 //     patch cut because the binary is built from what moved beneath it
 //     (itos-template's decision 23), each module that moved, old to new, and
@@ -25,8 +25,9 @@
 //   - "What changed": every commit of the range, grouped by type, from
 //     git-cliff (tools/bin/release-notes/cliff.toml, run by tools/bin/pinned);
 //   - "Upgrading", last: every breaking change's BREAKING-CHANGE: footer (or
-//     its ! header), and every Upgrading: footer quoted whole, as `itos commit
-//     footers Upgrading` lists them (those saying none left out), or, for a
+//     its ! header), and every Upgrading: footer quoted whole, each read from
+//     its commit's last paragraph by this program's own footer reader, wrapped
+//     lines indented or not (those saying none left out), or, for a
 //     patch cut for what moved, that there is nothing to change when no
 //     footer asks for anything; then how to check the binary and its
 //     attestation.
@@ -42,7 +43,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -73,14 +73,13 @@ func run() int {
 	ver := flag.String("version", "", "the version released, X.Y.Z")
 	from := flag.String("from", "", "the last release's tag (default: the newest vX.Y.Z reachable from -to but v<version>)")
 	to := flag.String("to", "HEAD", "the range's end")
-	itos := flag.String("itos", "itos", "the itos whose commit footers reads the range's footers")
 	flag.Parse()
 	fail := func(format string, a ...any) int {
 		fmt.Fprintf(os.Stderr, self+": "+format+"\n", a...)
 		return 2
 	}
 	if flag.NArg() > 0 || !semver.MatchString(*ver) {
-		return fail("usage: go run ./tools/bin/release-notes -version <X.Y.Z> [-from <tag>] [-to <rev>] [-itos <bin>]")
+		return fail("usage: go run ./tools/bin/release-notes -version <X.Y.Z> [-from <tag>] [-to <rev>]")
 	}
 	n := notes{Version: *ver, Repository: repository, From: *from}
 	var err error
@@ -103,10 +102,7 @@ func run() int {
 	if n.Changed, err = cliff(rng); err != nil {
 		return fail("%v", err)
 	}
-	if n.Upgrading, err = footers(*itos, "Upgrading", n.From, *to); err != nil {
-		return fail("%v", err)
-	}
-	whole(n.Upgrading, "Upgrading", n.Commits)
+	n.Upgrading = upgrading(n.Commits)
 	text, err := n.render()
 	if err != nil {
 		return fail("%v", err)
@@ -147,13 +143,11 @@ type commit struct {
 }
 
 type footer struct {
-	SHA     string `json:"sha"`
-	Subject string `json:"subject"`
-	Text    string `json:"text"`
+	SHA, Subject, Text string
 }
 
 func command(name string, args ...string) (string, error) {
-	cmd := exec.Command(name, args...) //nolint:gosec // git, the pinned git-cliff or itos, each with arguments this program names
+	cmd := exec.Command(name, args...) //nolint:gosec // git, the pinned git-cliff, each with arguments this program names
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	cmd.Env = append(os.Environ(), "RUST_LOG=warn")
@@ -256,19 +250,19 @@ func breaking(message string) string {
 	return ""
 }
 
-// whole gives each footer itos commit footers listed its whole text: itos
-// reads a footer's first line alone, and a commit here wraps a long one onto
-// the lines below it.
-func whole(listed []footer, key string, commits []commit) {
-	for i, f := range listed {
-		for _, c := range commits {
-			if strings.HasPrefix(c.SHA, f.SHA) {
-				if text := footerText(c.message, key, f.Text); text != "" {
-					listed[i].Text = text //nolint:gosec // G602, a false positive: i is from range over listed, so always in range
-				}
-			}
+// upgrading lists every Upgrading footer of the commits, in their order, each
+// read whole from its commit's last paragraph by footerText, which keeps the
+// wrapped lines below its first. A footer saying none is left out.
+func upgrading(commits []commit) []footer {
+	var listed []footer
+	for _, c := range commits {
+		text := footerText(c.message, "Upgrading", "")
+		if text == "" || strings.EqualFold(strings.TrimRight(text, ". "), "none") {
+			continue
 		}
+		listed = append(listed, footer{SHA: c.SHA, Subject: c.Header, Text: text})
 	}
+	return listed
 }
 
 // cliff is the range's commits grouped by type, from git-cliff. git-cliff
@@ -284,21 +278,6 @@ func cliff(rng string) (string, error) {
 	}
 	out, err := command(filepath.Join("tools", "bin", "pinned"), args...)
 	return strings.TrimSpace(out), err
-}
-
-// footers lists the range's footers by name, from itos commit footers.
-func footers(itos, name, from, to string) ([]footer, error) {
-	out, err := command(itos, "commit", "footers", name, from, to, "--json")
-	if err != nil {
-		return nil, err
-	}
-	var listed struct {
-		Footers []footer `json:"footers"`
-	}
-	if err := json.Unmarshal([]byte(out), &listed); err != nil {
-		return nil, fmt.Errorf("itos commit footers %s --json: %v", name, err)
-	}
-	return listed.Footers, nil
 }
 
 // count says how many commits of the range are of a type, or breaking.
@@ -350,7 +329,7 @@ func (n notes) render() (string, error) {
 
 const notesTemplate = `# go-template-itos {{.Version}}
 
-Cut by CI from the {{plural (len .Commits) "commit" "commits"}} since {{since}}: {{if .Moved}}no feat, no fix and no breaking change, but the binary is built from what moved beneath it, which makes a patch: {{join .Moved "; "}}.{{else}}{{plural (count "feat") "feat" "feats"}}, {{plural (count "fix") "fix" "fixes"}} and {{plural (count "breaking") "breaking change" "breaking changes"}}, where a breaking change makes a major release, a feat a minor one and a fix a patch.{{end}}{{if .From}} Every change: https://github.com/{{.Repository}}/compare/{{.From}}...v{{.Version}}{{end}}
+Cut by CI from the {{plural (len .Commits) "commit" "commits"}} since {{since}}: {{if .Moved}}no feat, no fix and no breaking change, but the binary is built from what moved beneath it, which makes a patch: {{join .Moved "; "}}.{{else}}{{plural (count "feat") "feat" "feats"}}, {{plural (count "fix") "fix" "fixes"}} and {{plural (count "breaking") "breaking change" "breaking changes"}}, where a breaking change makes a major release (a minor before 1.0), a feat a minor one and a fix a patch.{{end}}{{if .From}} Every change: https://github.com/{{.Repository}}/compare/{{.From}}...v{{.Version}}{{end}}
 
 ## What changed
 
@@ -367,7 +346,7 @@ Cut by CI from the {{plural (len .Commits) "commit" "commits"}} since {{since}}:
      {{quote .Breaking}}
 {{- end}}{{end}}
 {{- if .Upgrading}}
-   Each ` + "`Upgrading:`" + ` footer since {{since}} (` + "`itos commit footers Upgrading {{.From}} v{{.Version}}`" + `):
+   Each ` + "`Upgrading:`" + ` footer since {{since}}:
 {{- range .Upgrading}}
    - {{short .SHA}} ` + "`{{.Subject}}`" + `:
      {{quote .Text}}
