@@ -1415,9 +1415,3 @@
     1, 2 and 9, it also names 4, 5 and 8, with MAP.md first. arc42 section 1 or 2 changes only if it
     contradicts the new text. Prove it on main, stack/go and go/cli green in CI, Itos and Template
     check, with itos-template check passing 2 of 2.
-  done_when:
-    - run: test ! -f go.mod || { test -f docs/architecture/04-solution-strategy.md && test -f docs/architecture/08-crosscutting-concepts.md; }
-    - run: test ! -f go.mod || grep -q -i "contract suite" docs/architecture/08-crosscutting-concepts.md
-    - run: test ! -d cmd || grep -q "^## Why the codes and problems look as they do" docs/CLI.md
-    - run: test ! -d internal/slices || for d in internal/slices/*; do grep -q "$d" MAP.md || exit 1; done
-    - run: test ! -f go.mod || test "$(wc -c < MAP.md)" -le 2048

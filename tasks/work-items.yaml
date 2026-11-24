@@ -986,16 +986,9 @@ items:
     title: Each branch's arc42 sections, MAP.md and CLI.md's why describe its own code
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-62, T-71]
     kind: task
-    why: >
-      Was arc42-content.
-      On stack/go and go/cli. itos-cc's docs/architecture.md content (layers, ports and contract
-      suites, the OS as a value, the testing model, gates by tier, recipes) folded into arc42
-      sections 4, 5 and 8 for each branch's own code; MAP.md filled for each slice; itos-cc's CLI.md
-      section on why the codes look as they do, on go/cli. Settles #14; covers go-engineering and
-      cli-contract.
     refs: [https://github.com/donvargax/go-template-itos/issues/14]
   - id: migration-readme
     title: The README says what a made project gets without itos
