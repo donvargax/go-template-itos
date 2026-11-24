@@ -1358,9 +1358,16 @@
     project must install the Renovate App, which a committed config does not prove (#22).
     Prove it on main, stack/go and go/cli green in CI, Itos and Template check, and
     itos-template check passing 2 of 2.
+- id: T-73
+  type: test
+  title: The counting contract suite's checkBytesRead is held by a test against a Files that fails while returning the right bytes
+  why: >
+    T-72's render check, 2026-11-23: itos-cc's sampled mutation in the go combination left
+    checkBytesRead's || to && alive in internal/engine/counting/port/porttest/files_contract.go,
+    so the render check goes red whenever the sample picks it. The suite's tests against broken
+    Files (e0e5339, 11a404f) have no Files that returns the content together with a failure, and
+    none that returns other content with no failure; add both, each failing the contract. Change
+    no production code and no contract rule. Lands on stack/go, then go/cli merges stack/go.
+    Prove it on stack/go and go/cli green in CI, Itos and Template check.
   done_when:
-    - run: grep -q 'automergeType.."pr"' .github/renovate.json5 && grep -q 'automergeStrategy.."rebase"' .github/renovate.json5 && ! grep -q commitTrailers .github/renovate.json5 && ! grep -q useBaseBranchConfig .github/renovate.json5
-    - run: grep -q '"toolchain"' .github/renovate.json5
-    - run: test ! -f tools/bin/pinned || { grep -q "custom.regex" .github/renovate.json5 && ! grep -q 'donvargax/itos"' .github/renovate.json5 && ! grep -q baseBranchPatterns .github/renovate.json5; }
-    - run: test -f tools/bin/pinned || { grep -q "Task. T-1" .github/renovate.json5 && grep -q "custom.regex" .github/renovate.json5; }
-    - run: '! grep -q "renovate/" .github/workflows/ci.yml && { test ! -f .github/workflows/itos.yml || ! grep -q "renovate/" .github/workflows/itos.yml; }'
+    - run: test ! -d internal/engine/counting || go test ./internal/engine/counting/port/porttest/
