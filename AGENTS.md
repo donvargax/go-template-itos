@@ -6,10 +6,12 @@ needs.
 This project is a Go module with a private counting example: a domain counting lines and words
 through a Files port, a read-only disk adapter and an in-memory fake. It has no command line.
 
-Where to start in each part of the code is in `MAP.md`. Always read it with the architecture
+Where to start in each part of the code is in `MAP.md`. Read it first, then the architecture
 document's sections 1, 2 and 9: `docs/architecture/01-introduction-and-goals.md`,
 `docs/architecture/02-architecture-constraints.md` and
-`docs/architecture/09-architecture-decisions.md`, which indexes the decision records.
+`docs/architecture/09-architecture-decisions.md`, which indexes the decision records. Before
+changing code, read sections 4, 5 and 8 too: `04-solution-strategy.md`,
+`05-building-block-view.md` and `08-crosscutting-concepts.md`.
 Shared design, testing and dependency rules are in `docs/engineering.md`. They apply to every
 stack and interface; stack and feature guides add only what is specific to them.
 Go's packages, boundary lists, tests and quality checks are in `docs/go.md`.
