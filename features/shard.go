@@ -38,9 +38,9 @@ func inShard(s *godog.Scenario) bool {
 		return true
 	}
 	h := fnv.New32a()
-	h.Write([]byte(s.Uri + "\x00" + s.Name))
+	_, _ = h.Write([]byte(s.Uri + "\x00" + s.Name))
 	for _, step := range s.Steps {
-		h.Write([]byte("\x00" + step.Text))
+		_, _ = h.Write([]byte("\x00" + step.Text))
 	}
-	return int(h.Sum32()%uint32(shardCount)) == shardIndex-1
+	return int(h.Sum32()%uint32(shardCount)) == shardIndex-1 //nolint:gosec // shardCount is 1 or more and small, parsed from -shard
 }

@@ -104,7 +104,7 @@ func featureTags(dir string) ([]string, error) {
 // and for every Scenario line with the tags gathered above it and its name,
 // the tags nil for a line that is not a scenario's.
 func eachTagLine(file string, visit func(tags []string, scenario string)) error {
-	f, err := os.Open(file)
+	f, err := os.Open(file) //nolint:gosec // the feature files of this tree
 	if err != nil {
 		return err
 	}

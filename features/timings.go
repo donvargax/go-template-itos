@@ -163,5 +163,5 @@ func writeTimings() error {
 	for _, k := range kinds[:min(timingsListed, len(kinds))] {
 		fmt.Fprintf(&b, "%7.1fs %5d %6.3fs  %s\n", k.took.Seconds(), k.count, k.took.Seconds()/float64(k.count), k.text)
 	}
-	return os.WriteFile(*timingsFile, []byte(b.String()), 0o644)
+	return os.WriteFile(*timingsFile, []byte(b.String()), 0o600)
 }
