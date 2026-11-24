@@ -1243,3 +1243,37 @@
     --all-tests, now reaching cmd in process. features/README.md, docs/go.md, MAP.md and arc42
     section 9 on go/cli (listing decision 14) follow. Prove it on stack/go and go/cli green in CI,
     Itos and Template check, and itos-template check passing 2 of 2.
+- id: T-72
+  type: ci
+  title: Renovate's updates land through rebased pull requests, track tools/bin/pinned, and move the toolchain line on a Go release's day
+  why: >
+    Was renovate-plain, the migration's tenth item. Settles go-template-itos#12 and #22; #3 stays
+    open for the person, though the template's own footers are met here. Two kinds of file. Main's
+    .github/renovate.json5 is the template's own config: Renovate reads it from the default branch
+    for every base branch, so it drops useBaseBranchConfig, and the branches' files no longer feed
+    the template's own updates. It takes the go preset and the gomod manager beside its
+    github-actions and renovate-config, keeps baseBranchPatterns [main, stack/go, go/cli] and
+    ignoreDeps donvargax/itos (itos moves with its config pin), and writes the template's Task
+    footer once, at the end of commitBody, Task T-1 when baseBranch is main and Task T-2
+    otherwise, through a Handlebars condition: commitTrailers in packageRules goes, because
+    Renovate applies package rules twice and doubles the trailer (#12). stack/go's and go/cli's
+    files are what a made project gets: no baseBranchPatterns, no trailers, no ignoreDeps, no
+    itos. Every file: automergeType pr with automergeStrategy rebase, so GitHub keeps Renovate's
+    message as written (itos-cc's, #12); itos-container's custom.regex manager over
+    tools/bin/pinned's "# renovate: depName=" lines with the github-releases datasource, on
+    main's and the Go branches' files; and a package rule for the gomod manager's toolchain
+    depType with no minimumReleaseAge and schedule at any time, so a Go patch release moves the
+    line as soon as CI passes (#22). commitBody says the update landed once CI passed on its pull
+    request. CI and the Itos workflow stop running on pushes to renovate/** branches, as a
+    pull request now runs them; pull_request triggers keep the base branches. A pinned version
+    bump leaves the old checksums, so its pull request goes red and never lands until a person
+    refreshes the sums on its branch: docs/upgrading.md on stack/go says how, and that a made
+    project must install the Renovate App, which a committed config does not prove (#22).
+    Prove it on main, stack/go and go/cli green in CI, Itos and Template check, and
+    itos-template check passing 2 of 2.
+  done_when:
+    - run: grep -q 'automergeType.."pr"' .github/renovate.json5 && grep -q 'automergeStrategy.."rebase"' .github/renovate.json5 && ! grep -q commitTrailers .github/renovate.json5 && ! grep -q useBaseBranchConfig .github/renovate.json5
+    - run: grep -q '"toolchain"' .github/renovate.json5
+    - run: test ! -f tools/bin/pinned || { grep -q "custom.regex" .github/renovate.json5 && ! grep -q 'donvargax/itos"' .github/renovate.json5 && ! grep -q baseBranchPatterns .github/renovate.json5; }
+    - run: test -f tools/bin/pinned || { grep -q "Task. T-1" .github/renovate.json5 && grep -q "custom.regex" .github/renovate.json5; }
+    - run: '! grep -q "renovate/" .github/workflows/ci.yml && { test ! -f .github/workflows/itos.yml || ! grep -q "renovate/" .github/workflows/itos.yml; }'
