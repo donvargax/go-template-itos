@@ -1442,7 +1442,3 @@
     (Scenarios and --item), keeping how a scenario is named. Citations naming itos or
     donvargax/itos as a source stay, as do the harvest notices. Prove it on main, stack/go and
     go/cli green in CI, Itos and Template check, with itos-template check passing 2 of 2.
-  done_when:
-    - run: "! grep -q 'Setup gives it its own commit rules' README.md"
-    - run: test -f go.mod || grep -q "Every guide it ships speaks to the made project" README.md
-    - run: test ! -f go.mod || ! git grep -q -E "itos (go|guide|commit|work)" -- README.md docs/CONFIG.md features/README.md

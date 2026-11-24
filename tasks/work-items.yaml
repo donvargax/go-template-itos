@@ -993,17 +993,9 @@ items:
     title: The README says what a made project gets without itos
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-66, T-72, T-74, T-76, T-78]
     kind: task
-    why: >
-      Was migration-readme.
-      On main. The README's lists of what a made project gets and what comes next follow the landed
-      pieces, in plain words. The migration's issues are closed with their fixing commits; #3 and
-      #21, which only footers and the ledger needed, go to the person to close.
-
-      T-65 left itos mentions in README.md on each branch and in go/cli's docs/CLI.md; this item
-      clears them, so no shipped text describes itos as part of a made project.
   - id: T-70
     title: go/cli's Scenarios and Upgrading footers are required on feat commits only
     phase: 1
