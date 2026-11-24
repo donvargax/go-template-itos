@@ -981,7 +981,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-69]
+    depends_on: [T-69, T-70]
     kind: idea
     why: >
       A contract suite per port, run against both the fake and the real adapter, in itos-container's
