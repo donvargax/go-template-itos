@@ -294,7 +294,7 @@ func TestNotConventional(t *testing.T) {
 
 func gitOut(t *testing.T, dir string, args ...string) string {
 	t.Helper()
-	cmd := exec.Command("git", args...) //nolint:gosec // this test names every argument
+	cmd := exec.Command("git", args...)
 	cmd.Dir = dir
 	out, err := cmd.Output()
 	if err != nil {
