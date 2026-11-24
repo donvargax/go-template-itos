@@ -41,7 +41,12 @@ name: Release
 #      or GitHub Enterprise Cloud: a private repository on GitHub Free or Team cannot attest, and
 #      this step would fail there;
 #   5. the attestation is verified on the built linux amd64 archive, before anything is published:
-#      a release whose attestation cannot be read fails here;
+#      a release whose attestation cannot be read fails here.
+#      With .goreleaser.yaml's kos section on, GoReleaser also pushes the container image
+#      (ghcr.io/itos-corp/go-template-itos:<version>, linux amd64 and arm64, off by default,
+#      decision 17); the image's digest, read from dist/goreleaser/artifacts.json, is attested and
+#      verified the same way, by `gh attestation verify oci://<image>@<digest>`, before Publish.
+#      With the section off both steps say so and pass;
 #   6. the notes are generated (tools/bin/release-notes: why the version is what it is, what
 #      moved beneath the binary for a patch with no feat, fix or breaking change, git-cliff over
 #      the range, every BREAKING-CHANGE and Upgrading footer quoted), from the last release's tag
@@ -64,6 +69,7 @@ jobs:
       contents: write
       id-token: write
       attestations: write
+      packages: write
     # One at a time, never cancelled, so pushes in a row cut their releases in order. ci.yml's
     # runs on main already wait for each other; this holds even if that changes.
     concurrency:
@@ -136,6 +142,50 @@ jobs:
               exit 0
             fi
             echo "attempt $attempt: the attestation is not readable yet"
+            sleep 10
+          done
+          exit 1
+      # The image, when .goreleaser.yaml's kos section is on, is in artifacts.json: its name, with
+      # the tag, and its digest, which ko pushed as the digest of the multi-platform index. The
+      # attestation signs that digest, so a pull by digest is what the check proves. With the
+      # section off nothing is listed, and this step and the two after it say so and pass.
+      - name: Find the image
+        id: image
+        if: steps.version.outputs.next != ''
+        run: |
+          name=$(jq -r '[.[] | select(.type == "Docker Manifest")][0].name // empty' dist/goreleaser/artifacts.json)
+          digest=$(jq -r '[.[] | select(.type == "Docker Manifest")][0].extra.Digest // empty' dist/goreleaser/artifacts.json)
+          if [ -z "$name" ] || [ -z "$digest" ]; then
+            echo "No image is published: the kos section of .goreleaser.yaml is off."
+            exit 0
+          fi
+          echo "name=$(printf '%s' "$name" | sed -E 's/(@.*|:[^:/]+)$//')" >> "$GITHUB_OUTPUT"
+          echo "digest=sha256:${digest#sha256:}" >> "$GITHUB_OUTPUT"
+          echo "Published image: $name, digest sha256:${digest#sha256:}"
+      - name: Attest the image
+        if: steps.image.outputs.digest != ''
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ${{ steps.image.outputs.name }}
+          subject-digest: ${{ steps.image.outputs.digest }}
+          push-to-registry: true
+      # Verified by digest from the registry, as a consumer pulls it, and retried as the archive's is.
+      - name: Verify the image attestation
+        if: steps.version.outputs.next != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IMAGE: ${{ steps.image.outputs.name }}
+          DIGEST: ${{ steps.image.outputs.digest }}
+        run: |
+          if [ -z "$DIGEST" ]; then
+            echo "No image is published: nothing to verify."
+            exit 0
+          fi
+          for attempt in 1 2 3 4 5 6; do
+            if gh attestation verify "oci://$IMAGE@$DIGEST" -R "$GITHUB_REPOSITORY"; then
+              exit 0
+            fi
+            echo "attempt $attempt: the image attestation is not readable yet"
             sleep 10
           done
           exit 1
