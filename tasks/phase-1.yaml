@@ -1772,7 +1772,27 @@
     (Scenarios and --item), keeping how a scenario is named. Citations naming itos or
     donvargax/itos as a source stay, as do the harvest notices. Prove it on main, stack/go and
     go/cli green in CI, Itos and Template check, with itos-template check passing 2 of 2.
+- id: T-80
+  type: test
+  title: The scenario harness names no agent or coordination tool, so made projects stay tool-agnostic
+  why: >
+    The person's call, 2026-11-24. go/cli's features/binary_test.go, harvested from itos, hides
+    claude, itos and itos-* from the binary driver's PATH (hiddenAlways, pathHiding, the
+    temporary folder of links) and leaves out a git that is an itos shim (isItos in
+    features/git_test.go). Every made project ships that, though a made project has neither
+    tool. On go/cli, as test commits naming T-80: remove hiddenAlways, pathHiding, the links
+    folder and its cleanup, isItos and their own tests, wherever nothing else uses them, so
+    env() passes the caller's PATH unchanged. Narrow the ITOS_ environment scrub to itos-cc's
+    ITOS_CC_ variables, the pinned mutation tool's, saying so. Keep scrubbing GIT_,
+    GO_TEMPLATE_ITOS_, GITHUB_, GH_ and CI, keep the fixed git identity and config, and keep
+    every harvest notice naming where the code came from. Drop the comments that name claude,
+    Claude Code, itos's own tasks or the git shim. features/README.md drops its PATH note. The
+    binary driver runs in CI, where neither tool is installed. On main, as a docs commit,
+    TEMPLATE.md tells this repository's own developers to put the real git first on PATH before
+    running the binary driver locally where git is an itos shim. Change no scenario. Prove it on
+    main and go/cli green in CI (whose test job runs the binary driver), Itos and Template check,
+    with one dispatched go/cli nightly green and itos-template check passing 2 of 2.
   done_when:
-    - run: "! grep -q 'Setup gives it its own commit rules' README.md"
-    - run: test -f go.mod || grep -q "Every guide it ships speaks to the made project" README.md
-    - run: test ! -f go.mod || ! git grep -q -E "itos (go|guide|commit|work)" -- README.md docs/CONFIG.md features/README.md
+    - run: test ! -d features || ! git grep -q -i claude -- features cmd internal
+    - run: test ! -d features || ! git grep -q -E "isItos|hiddenAlways|pathHiding" -- features
+    - run: test -f go.mod || grep -q -i "shim" TEMPLATE.md
