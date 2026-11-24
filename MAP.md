@@ -10,7 +10,8 @@ or domain is added; keep each to a few lines and say where to look, not what the
   `internal/engine/counting/port/files.go`, the `Files` port it reads through.
 - Adapter: `internal/engine/counting/disk/files.go`, the read-only disk implementation of the port.
 - Fake: `internal/engine/counting/port/porttest/files.go`, the in-memory `Files` the domain's
-  tests use.
+  tests use, and `files_contract.go`, `FilesContract`, which the fake's and the disk adapter's tests
+  both run.
 - Test: `go test ./internal/engine/counting/...`
 
 ## Import rules

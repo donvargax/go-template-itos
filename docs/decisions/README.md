@@ -15,5 +15,6 @@ file and leaves this list, which itos decision record writes.
 - [ADR-0011: Go code is laid out as engines and slices, held by default-deny import rules](0011-go-code-is-laid-out-as-engines-and-slices-held-by-default-deny-import-rules.md)
 - [ADR-0012: go/cli builds on the kong fork until upstream kong takes typed parse errors](0012-go-cli-builds-on-the-kong-fork-until-upstream-kong-takes-typed-parse-errors.md)
 - [ADR-0013: Commands exit with itos-cc's codes and precedence and report problems with a rule, message, fix and exit](0013-commands-exit-with-itos-cc-s-codes-and-precedence-and-report-problems-with-a-rule-message-fix-and-exit.md)
+- [ADR-0014: Scenarios run in process against the ports' fakes locally and through the built binary in CI](0014-scenarios-run-in-process-against-the-ports-fakes-locally-and-through-the-built-binary-in-ci.md)
 
 <!-- itos:decisions:end -->

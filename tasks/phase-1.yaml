@@ -1546,6 +1546,36 @@
     message says so. Lands on go/cli as its own commit, then go/cli merges stack/go, which proves
     the change: itos push accepts the merge. Prove it on go/cli green in CI, Itos and Template
     check, with stack/go's head an ancestor of go/cli's.
+- id: T-71
+  type: test
+  title: Scenarios run in process against the ports' fakes and through the binary in CI, each port held by a contract suite
+  why: >
+    Was scenarios-two-drivers, the migration's ninth item; decision 14 holds the design, after
+    itos-cc's decisions 44, 52 and 53. Settles go-template-itos#7. On stack/go first: the counting
+    port's porttest exports one contract suite in itos-container's shape (FilesContract(t
+    Reporter, ...), as internal/engine/approval/port/porttest's *_contract.go files are), asserting
+    what every implementation of the port does: the bytes read, each typed failure (Missing,
+    Unreadable, Cancelled) and a done context. The fake's tests and the disk adapter's tests, the
+    latter against a real temporary directory, both run it. Then go/cli merges stack/go and takes
+    itos-cc's two drivers: an in-process driver, itos-cc's cmd/itos-cc/scenarios_test.go and
+    adapters_test.go in shape, runs every feature file by calling cmd's run with buffers for the
+    UI and each port's porttest fake, the Given steps filling the fakes; it is the default and
+    builds no binary. The binary driver, features/features_test.go today, runs only where
+    GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1 is set, else logs that it ran nothing; CI's
+    workflow sets it on every job that runs the features. A scenario one driver cannot hold
+    (interrupts and signals, the real disk's errors) carries @binary-only, which the in-process
+    driver skips. A test, as itos-cc's TestEveryPortIsBoundOnDiskAndInProcess, fails when a port
+    is bound in one driver and not the other. Both drivers take itos's -shard=i/n and -timings
+    flags, itos's features/shard_test.go and timings_test.go in shape (donvargax/itos), with tests
+    of their own. itos-container's tools/bin/scenario-list lists the live scenarios with no itos.
+    features/smoke.yaml goes, and with it itos.yaml's smoke recognize line, its smoke block and
+    its smoke check step; CI already runs every scenario. go/cli's mutation run keeps
+    --all-tests, now reaching cmd in process. features/README.md, docs/go.md, MAP.md and arc42
+    section 9 on go/cli (listing decision 14) follow. Prove it on stack/go and go/cli green in CI,
+    Itos and Template check, and itos-template check passing 2 of 2.
   done_when:
-    - run: test ! -d cmd || { awk '/^    Scenarios:/,/read_at/' itos.yaml | grep -q "required_for:.\[feat\]$" && awk '/^    Upgrading:/,/required_for/' itos.yaml | grep -q "required_for:.\[feat\]$"; }
-    - run: git merge-base --is-ancestor origin/stack/go origin/go/cli
+    - run: ls docs/decisions/0014-*.md
+    - run: test ! -d internal/engine/counting || grep -rq "func FilesContract" internal/engine/counting/port/porttest
+    - run: test ! -d internal/engine/counting || { grep -rq --include=*_test.go "FilesContract(" internal/engine/counting/disk && grep -rq --include=*_test.go "FilesContract(" internal/engine/counting/port/porttest; }
+    - run: test ! -d cmd || { test ! -e features/smoke.yaml && ! grep -q smoke itos.yaml && test -x tools/bin/scenario-list; }
+    - run: test ! -d cmd || { grep -q "GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER" .github/workflows/ci.yml && grep -rq "binary-only" features; }

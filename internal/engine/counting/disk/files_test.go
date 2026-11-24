@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/itos-corp/go-template-itos/internal/engine/counting/port"
+	"github.com/itos-corp/go-template-itos/internal/engine/counting/port/porttest"
 )
 
 func TestFilesReadExistingFile(t *testing.T) {
@@ -67,4 +68,27 @@ func TestClassifyReadErrorUsesPortFailures(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestDiskFilesHoldTheFilesContract(t *testing.T) {
+	porttest.FilesContract(t, func() porttest.FilesCase {
+		dir := t.TempDir()
+		content := []byte("one two\nthree\n")
+		present := filepath.Join(dir, "present.txt")
+		if err := os.WriteFile(present, content, 0o600); err != nil {
+			t.Fatal(err)
+		}
+		// A directory exists and cannot be read as a file, on every OS.
+		unreadable := filepath.Join(dir, "directory")
+		if err := os.Mkdir(unreadable, 0o700); err != nil {
+			t.Fatal(err)
+		}
+		return porttest.FilesCase{
+			Files:      Files{},
+			Present:    present,
+			Content:    content,
+			Absent:     filepath.Join(dir, "absent"),
+			Unreadable: unreadable,
+		}
+	})
 }
