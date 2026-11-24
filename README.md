@@ -19,7 +19,8 @@ read-only through its port. Its additive property uses newline-terminated pieces
 word boundaries.
 
 The public behaviour lives in [features/](features/README.md) as scenarios, which godog runs
-against the binary the harness builds for the platform it is on. The release machinery a
+in process against the ports' fakes, and against the binary the harness builds for the platform
+it is on where `GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1` is set. The release machinery a
 command line needs, its workflow and its version and notes tools, is here as well.
 
 ## Check it
@@ -27,7 +28,7 @@ command line needs, its workflow and its version and notes tools, is here as wel
 ```sh
 go build ./...
 go test ./...
-go test ./features -count=1
+GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1 go test ./features -count=1
 ```
 
 Its other gates are formatting, vet, golangci-lint, the architecture check,

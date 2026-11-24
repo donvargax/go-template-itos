@@ -16,7 +16,8 @@ carries the command's domain values to the domain through the port and counts no
 JSON or the text answer. A second command is a new slice beside `count` that reuses the domain,
 never `count`'s package. `cmd/go-template-itos` assembles them, making the context that a Ctrl-C
 cancels (decisions 7 and 8). `features/` holds the public behaviour as scenarios, which godog
-runs against the binary the harness builds for the platform it is on.
+runs in process against the ports' fakes by default and against the binary the harness builds
+where CI opts in (decision 14).
 
 Line separators are LF, with CRLF counted once; a nonempty final unterminated line counts.
 Words follow the standard-library Unicode-whitespace rule. No encoding detection or linguistic

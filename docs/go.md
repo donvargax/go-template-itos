@@ -140,8 +140,11 @@ The domain's unit tests use the `porttest` fake and assert results and typed fai
 The disk adapter's tests use real temporary files, since translating OS errors is what
 the adapter does. The `count` slice's tests use the fake too, standard input being its `-`
 key; reading standard input, and stopping when the context is done, is `internal/stdin`'s,
-held by its own tests. The scenarios in `features/` run the built binary through godog,
-interrupting it once it waits on an open standard input to show the 130 exit. A second Ctrl-C
+held by its own tests. The scenarios in `features/` run under two drivers (decision 14): in process by default, through
+`cmd`'s `run` with buffers and the `porttest` fake, and as the built binary where
+`GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1` is set, which CI sets. A scenario only the binary can
+hold, an interrupt or the build's stamp, is tagged `@binary-only`. The binary driver interrupts the
+program once it waits on an open standard input to show the 130 exit. A second Ctrl-C
 ending the process at once is held by `internal/cli`'s unit tests, which feed it fake
 interrupts on every system: `count` has no cleanup for a scenario to see skipped.
 
@@ -174,8 +177,10 @@ CI's `static` and `test` jobs run these checks in order:
   tests, over example repositories.
 - `tools/bin/domain-coverage`, which requires each domain package to reach 80% statement
   coverage from its own tests.
-- The scenarios, `go test ./features -count=1`, which build the binary Go's test cache cannot
-  track.
+- The scenarios in process, with the unit tests, and through the binary,
+  `go test ./features -count=1` with `GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1`, which builds
+  the binary Go's test cache cannot track; then `tools/bin/scenario-list`, which lists the live
+  scenarios with no itos.
 - `tools/bin/pinned itos-cc mutation run --count 10 --since <base> --seed <base> --all-tests
   --fail-uncovered=lines cmd internal`, run fresh on each push. The base is the pull request's
   base or the push's before; a branch's first push has no base and runs the packages with no

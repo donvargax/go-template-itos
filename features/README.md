@@ -2,8 +2,30 @@
 
 Every `feat:` and `fix:` commit of this project is driven by scenarios in this folder.
 Nothing else belongs here. The harness is harvested from itos's
-(github.com/donvargax/itos, `features/`) and itos-template's, without either one's own
-generator behaviour.
+(github.com/donvargax/itos, `features/`), itos-template's and itos-cc's two drivers, without
+any one's own generator behaviour.
+
+## Two drivers
+
+One set of feature files runs under two drivers (decision 14), sharing the steps in `steps.go`:
+
+- **In process**, the default: `cmd/go-template-itos`'s `TestScenarios` calls `run` with buffers
+  for the UI and `porttest`'s fake for the `Files` port, the Given steps filling the fake. No
+  binary is built and no process starts, so a scenario takes milliseconds and `go test ./cmd/...`
+  runs them all.
+- **The built binary**: `TestFeatures` here builds the program and runs it with the real adapters,
+  which proves `main`'s wiring, the real disk, exit codes and signals. It runs only where
+  `GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1` is set, which every CI job that runs the features
+  sets; anywhere else it logs that it ran nothing and passes.
+
+A fake may stand in for its adapter because both pass the port's one contract suite
+(`porttest.FilesContract`). `TestEveryPortIsBoundOnDiskAndInProcess` in `cmd` fails when a port is
+bound in one driver and not the other.
+
+A scenario only the binary can hold carries `@binary-only`, and the in-process driver leaves it
+out: the interrupts (`ID-CLI-14`, `ID-CLI-15`), which need a real process and a real signal, and
+the scenarios that read the stamped version and commit (`ID-CLI-01`, `02`, `03`, `10`, `11`,
+`12`), which need a build with `-ldflags -X`. A scenario is never copied for the other driver.
 
 ## What goes in a feature file
 
@@ -19,8 +41,9 @@ Never here:
 
 ## Black-box boundary
 
-The steps (`*_test.go`, Go, run by [godog](https://github.com/cucumber/godog)) treat the binary as
-a black box. `TestFeatures` builds it once a run from this tree (`go-template-itos.exe` on
+The steps (`steps.go`, Go, run by [godog](https://github.com/cucumber/godog)) treat the program as
+a black box, through a driver. The binary driver (`binary_test.go`) builds the program once a run
+from this tree (`go-template-itos.exe` on
 Windows), stamped with a known version and commit, as a release's build is stamped with the
 release's. Each scenario gets a scratch folder in a temporary directory, runs the binary in it
 and reads its exit code, its output and the files it leaves. A step judges the program by its
@@ -41,11 +64,19 @@ killed by the system's default action fails the step: it never handled the inter
 ## Running them
 
 ```sh
-go test ./features -count=1                          # every live scenario
+go test ./cmd/go-template-itos -count=1 -run '^TestScenarios$'   # in process, every live scenario
+export GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1                  # for the binary driver below
+go test ./features -count=1                          # every live scenario, through the binary
 go test ./features -count=1 -scenarios='^@ID-CLI-'   # the live scenarios with a matching tag
+go test ./features -count=1 -shard=1/3               # the first of three shares of them
+go test ./features -count=1 -timings=timings.txt     # where the run spent its time
 GOCOVERDIR=$d go test ./features -count=1            # built with -cover, its coverage in $d
-itos tests smoke run scenario                        # exactly the smoke set
+tools/bin/scenario-list                              # the live scenarios, with no itos
 ```
+
+`-scenarios`, `-shard=i/n` and `-timings=<file>` work under both drivers. A scenario belongs to
+the share its file, name and steps hash to, so every job agrees on the shares. `scenario-list`
+prints each live scenario's ID, file and drivers (`both`, or `binary`).
 
 `-scenarios` takes a regular expression over each tag, `@` included. It exists because godog's
 own tag filter takes exact tags joined by commas, while itos merges selections into one regular
@@ -61,6 +92,7 @@ running nothing. Each scenario is a subtest of `TestFeatures`, named after the s
 | `@ID-<AREA>-<nn>` | Stable scenario ID. Commits reference these. Never reuse or renumber them.           |
 | `@bug-<n>`        | Reproduces a fixed bug. Added by `fix:` commits.                                     |
 | `@wip`            | Written, not yet implemented. Excluded from every run, and a `feat` may not name it. |
+| `@binary-only`    | Only the binary driver can hold it. The in-process driver leaves it out.             |
 
 **IDs.** `<AREA>` is one word in capitals for the area of behaviour, and one feature file holds
 one area: `COUNT` is `count.feature`, `CLI` is `cli.feature`, `COMPL` is `completion.feature`.
@@ -76,19 +108,6 @@ area gets a new word and a new file.
 - The commit-msg hook checks that the referenced IDs exist and are live at the commit.
 - Red first: a slice's steps go alone in a `test` commit, its scenarios still `@wip`
   (`itos commit --item count-cli`).
-
-## The smoke set
-
-The smoke set is the list in `smoke.yaml`: the scenarios every push runs, beside the ones its
-commits name. The rule, which `itos tests smoke check scenario` checks:
-
-- **Every feature file with a live scenario has at least one smoke scenario**, listed under the
-  file with the reason it was chosen. A file has more only when the list says why (`more`).
-- Every ID in the list is a live scenario of the file it is listed under.
-- A smoke scenario is fast and central to its file.
-
-So a `feat` that adds a feature file, or makes a `@wip` one live, picks its smoke scenario in the
-same commit.
 
 ## Writing a scenario
 

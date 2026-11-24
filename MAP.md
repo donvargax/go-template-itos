@@ -27,8 +27,10 @@ or domain is added; keep each to a few lines and say where to look, not what the
   interrupt cancels; `internal/slices/count/command/count.go`, the slice that carries the
   command's values to the domain through the port, with `classify.go` (failures to problems)
   and `input.go` (the checked argument); and `internal/cli/cli.go`, the generic UI.
-- Scenarios: `features/count.feature` and `features/cli.feature`, run by `features/features_test.go`
-  against the built binary.
+- Scenarios: `features/*.feature`, with the shared steps in `features/steps.go`. Two drivers run
+  them: `cmd/go-template-itos/scenarios_test.go` in process, the default, and
+  `features/features_test.go` through the built binary where
+  `GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1`. `tools/bin/scenario-list` lists them.
 - Fake: the counting domain's `internal/engine/counting/port/porttest/files.go`; the command's own tests
   use it too.
 - Test: `go test ./cmd/... ./internal/... ./features -count=1`
