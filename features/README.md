@@ -49,9 +49,9 @@ release's. Each scenario gets a scratch folder in a temporary directory, runs th
 and reads its exit code, its output and the files it leaves. A step judges the program by its
 command line alone: it never reads its source or calls its code to decide a result.
 
-Commands run in a clean environment: no `GIT_*`, `ITOS_*`, `GO_TEMPLATE_ITOS_*`, `GITHUB_*`,
-`GH_*` or `CI` variable of the caller's, no global or system git config, a fixed author, and none
-of the caller's claude, itos or its extensions on the PATH. A `GOCOVERDIR` that exists builds the
+Commands run in a clean environment: no `GIT_*`, `ITOS_CC_*`, `GO_TEMPLATE_ITOS_*`, `GITHUB_*`,
+`GH_*` or `CI` variable of the caller's, no global or system git config, a fixed author, and the
+caller's PATH unchanged. A `GOCOVERDIR` that exists builds the
 binary with `-cover` and collects what each run did, for itos-cc to merge with `go test`'s.
 
 An interrupt is sent as each system delivers Ctrl-C, from one build-tagged file per system:

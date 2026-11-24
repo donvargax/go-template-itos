@@ -39,7 +39,7 @@
 // w.env() passes it on unchanged, every environment a step runs a command in
 // is w.env() changed elsewhere (noGit, knowingNoOne, withGitConfig). Never
 // ITOS_CC_TEST_COVERDIR, which itos-cc sets alone for a listed test's first
-// coverage run and w.env() drops with every ITOS_ variable. With GOCOVERDIR
+// coverage run and w.env() drops with every ITOS_CC_ variable. With GOCOVERDIR
 // unset the build is the plain one.
 package features
 
@@ -76,7 +76,6 @@ func TestFeatures(t *testing.T) {
 	if err := Begin(); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(removeCallerPath)
 	root, err := moduleRoot()
 	if err != nil {
 		t.Fatal(err)

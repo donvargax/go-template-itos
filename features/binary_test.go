@@ -12,11 +12,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
-	"slices"
-	"strconv"
 	"strings"
-	"sync"
 )
 
 // binary is the Driver over the built program, and a Waiter: it holds a
@@ -98,18 +94,17 @@ func moduleRoot() (string, error) {
 }
 
 // The environment every command runs in: the caller's, less what would make
-// git, itos or go-template-itos read anything but the scratch folder (a
-// hook's GIT_DIR, the caller's GO_TEMPLATE_ITOS_ settings, CI's), with no
-// global or system git config and a fixed identity, and the caller's PATH
-// without its claude, its itos, its itos extensions or a git that is an itos
-// (callerPath).
+// git or go-template-itos read anything but the scratch folder (a hook's
+// GIT_DIR, the caller's GO_TEMPLATE_ITOS_ settings, CI's), and less itos-cc's
+// ITOS_CC_ variables, the pinned mutation tool's, with no global or system git
+// config and a fixed identity. The PATH is the caller's, unchanged.
 func (b *binary) env() []string {
 	var env []string
 	for _, kv := range os.Environ() {
 		name, _, _ := strings.Cut(kv, "=")
-		if strings.HasPrefix(name, "GIT_") || strings.HasPrefix(name, "ITOS_") ||
+		if strings.HasPrefix(name, "GIT_") || strings.HasPrefix(name, "ITOS_CC_") ||
 			strings.HasPrefix(name, "GO_TEMPLATE_ITOS_") || strings.HasPrefix(name, "GITHUB_") ||
-			strings.HasPrefix(name, "GH_") || name == "CI" || strings.EqualFold(name, "PATH") {
+			strings.HasPrefix(name, "GH_") || name == "CI" {
 			continue
 		}
 		env = append(env, kv)
@@ -121,112 +116,7 @@ func (b *binary) env() []string {
 		"GIT_AUTHOR_EMAIL=features@localhost",
 		"GIT_COMMITTER_NAME=go-template-itos features",
 		"GIT_COMMITTER_EMAIL=features@localhost",
-		"PATH="+callerPath(),
 	)
-}
-
-// The programs no scenario reaches on the caller's PATH: its claude, its itos
-// and its itos extensions (itos-*). An itos installed on the machine would
-// run its own policy where a scenario meant only go-template-itos (itos's
-// T-087), and itos runs and lists every extension it finds, so one installed
-// on the machine would change what a scenario sees (itos's T-080).
-var hiddenAlways = []string{"claude", "itos", "itos-*"}
-
-var (
-	hiddenPathsMu sync.Mutex
-	hiddenPaths   = map[string]string{}
-	callerPathDir string
-)
-
-// callerPath is the caller's PATH with none of hiddenAlways on it, so no
-// scenario reaches the Claude Code or the itos of the machine it runs on:
-// each folder holding one is replaced by a folder of links to everything else
-// in it, or left out where links cannot be made (windows without the right to
-// make them).
-func callerPath() string { return pathHiding(hiddenAlways...) }
-
-// pathHiding is the caller's PATH with none of the programs named on it, nor
-// a git that is an itos, made once a run for each set of names. A git shim of
-// the caller's (itos git-shim install) would run the global itos for a
-// scenario's git command; it is told from the real git by the rule itos
-// itself goes by (isItos, git_test.go), so every git a scenario's commands
-// start is the real one, as the steps' own are (gitBin, itos's T-104).
-func pathHiding(names ...string) string {
-	hiddenPathsMu.Lock()
-	defer hiddenPathsMu.Unlock()
-	key := strings.Join(names, " ")
-	if text, ok := hiddenPaths[key]; ok {
-		return text
-	}
-	var folders []string
-	for i, folder := range filepath.SplitList(os.Getenv("PATH")) {
-		hidden := func(e os.DirEntry) bool {
-			return isOneOf(e, names) || isOneOf(e, []string{"git"}) && isItos(filepath.Join(folder, e.Name()))
-		}
-		entries, err := os.ReadDir(folder)
-		if err != nil || !slices.ContainsFunc(entries, hidden) {
-			folders = append(folders, folder)
-			continue
-		}
-		if callerPathDir == "" {
-			if callerPathDir, err = os.MkdirTemp("", "go-template-itos-features-path-"); err != nil {
-				continue
-			}
-		}
-		links := filepath.Join(callerPathDir, strconv.Itoa(len(hiddenPaths)), strconv.Itoa(i))
-		if linkAllBut(folder, links, entries, hidden) == nil {
-			folders = append(folders, links)
-		}
-	}
-	text := strings.Join(folders, string(os.PathListSeparator))
-	hiddenPaths[key] = text
-	return text
-}
-
-// removeCallerPath removes the folders callerPath and pathHiding made.
-func removeCallerPath() {
-	if callerPathDir != "" {
-		_ = os.RemoveAll(callerPathDir)
-	}
-}
-
-// isOneOf is whether a folder's entry is a program of the names the PATH
-// would find: the name, or on windows the name with any extension, in any
-// case. A name ending in * is a prefix, so itos-* is every itos extension.
-func isOneOf(e os.DirEntry, names []string) bool {
-	name := e.Name()
-	same := func(a, b string) bool { return a == b }
-	starts := strings.HasPrefix
-	if runtime.GOOS == "windows" {
-		name = strings.TrimSuffix(name, filepath.Ext(name))
-		same = strings.EqualFold
-		starts = func(s, prefix string) bool {
-			return len(s) >= len(prefix) && strings.EqualFold(s[:len(prefix)], prefix)
-		}
-	}
-	return slices.ContainsFunc(names, func(n string) bool {
-		if prefix, ok := strings.CutSuffix(n, "*"); ok {
-			return starts(name, prefix)
-		}
-		return same(name, n)
-	})
-}
-
-// linkAllBut makes links a folder of links to every entry of folder but the
-// hidden ones.
-func linkAllBut(folder, links string, entries []os.DirEntry, hidden func(os.DirEntry) bool) error {
-	if err := os.MkdirAll(links, 0o755); err != nil {
-		return err
-	}
-	for _, e := range entries {
-		if hidden(e) {
-			continue
-		}
-		if err := os.Symlink(filepath.Join(folder, e.Name()), filepath.Join(links, e.Name())); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 // setEnv is env with the variable name, in any case, set to value.
