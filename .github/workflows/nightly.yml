@@ -1,0 +1,18 @@
+name: Nightly
+
+# The nightly of the Go branches (stack/go and go/cli each carry their own nightly.yml). GitHub
+# dispatches a workflow only when its file is on the default branch, which has no Go, so this
+# stub registers the name there and nightly-dispatch.yml can start each branch's own file with
+# --ref. A branch's file replaces it on every merge down, so a made project never keeps this one.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stub:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: 'echo "This branch has no Go to explore. Dispatch nightly.yml with --ref stack/go or go/cli."'
