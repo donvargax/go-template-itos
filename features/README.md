@@ -71,7 +71,7 @@ go test ./features -count=1 -scenarios='^@ID-CLI-'   # the live scenarios with a
 go test ./features -count=1 -shard=1/3               # the first of three shares of them
 go test ./features -count=1 -timings=timings.txt     # where the run spent its time
 GOCOVERDIR=$d go test ./features -count=1            # built with -cover, its coverage in $d
-tools/bin/scenario-list                              # the live scenarios, with no itos
+tools/bin/scenario-list                              # the live scenarios
 ```
 
 `-scenarios`, `-shard=i/n` and `-timings=<file>` work under both drivers. A scenario belongs to
@@ -79,8 +79,7 @@ the share its file, name and steps hash to, so every job agrees on the shares. `
 prints each live scenario's ID, file and drivers (`both`, or `binary`).
 
 `-scenarios` takes a regular expression over each tag, `@` included. It exists because godog's
-own tag filter takes exact tags joined by commas, while itos merges selections into one regular
-expression joined by `|`. One that matches no tag fails the run, so a selection never passes by
+own tag filter takes exact tags joined by commas. One that matches no tag fails the run, so a selection never passes by
 running nothing. Each scenario is a subtest of `TestFeatures`, named after the scenario.
 
 ## Tags
@@ -89,7 +88,7 @@ running nothing. Each scenario is a subtest of `TestFeatures`, named after the s
 | ----------------- | ------------------------------------------------------------------------------------ |
 | `@phase-<n>`      | The phase a scenario belongs to.                                                     |
 | `@<item>`         | The work item that turns it green (`@count-cli`).                                     |
-| `@ID-<AREA>-<nn>` | Stable scenario ID. Commits reference these. Never reuse or renumber them.           |
+| `@ID-<AREA>-<nn>` | Stable scenario ID. Never reuse or renumber them.           |
 | `@bug-<n>`        | Reproduces a fixed bug. Added by `fix:` commits.                                     |
 | `@wip`            | Written, not yet implemented. Excluded from every run, and a `feat` may not name it. |
 | `@binary-only`    | Only the binary driver can hold it. The in-process driver leaves it out.             |
@@ -101,13 +100,10 @@ area gets a new word and a new file.
 
 ## Commit rules
 
-- `feat:` must add or change scenarios, or reference `@wip` ones it turns green. Footer:
-  `Scenarios: ID-COUNT-01` (`itos commit --scenarios`).
-- `fix:` must add a `@bug-<n>` scenario that failed before the fix, or reference an existing
-  scenario that was failing. Same footer.
-- The commit-msg hook checks that the referenced IDs exist and are live at the commit.
-- Red first: a slice's steps go alone in a `test` commit, its scenarios still `@wip`
-  (`itos commit --item count-cli`).
+- `feat:` adds or changes scenarios, or turns `@wip` ones green.
+- `fix:` adds a `@bug-<n>` scenario that failed before the fix, or turns an existing failing
+  scenario green.
+- Red first: a slice's steps go alone in a `test` commit, its scenarios still `@wip`.
 
 ## Writing a scenario
 
