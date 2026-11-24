@@ -204,15 +204,15 @@ func TestIssueKeepsAFailingTestsOutputToItsTailAndSafe(t *testing.T) {
 	write(t, dir, "r/linux.json", events.String())
 	_, stdout, _ := runProgram(t, "", "issue", "-branch", "b", "-url", "u", "-jobs", jobs, "-results", filepath.Join(dir, "r"))
 
-	if strings.Contains(stdout, "line 9\n") || !strings.Contains(stdout, "line 11\nline 12\n") {
-		t.Errorf("the output of TestLong is not cut to its last %d lines:\n%s", tailLines, stdout)
+	if !strings.Contains(stdout, "line 9\n... 11 lines left out ...\nline 21\n") || strings.Contains(stdout, "line 10\n") {
+		t.Errorf("the output of TestLong is not cut to its first and last %d lines:\n%s", keepLines, stdout)
 	}
 	if !strings.Contains(stdout, "'''red\n") || strings.Contains(stdout, "\x1b") || strings.Contains(stdout, "\r") || strings.Contains(stdout, "\x00") {
 		t.Errorf("the output of TestLong is not made safe:\n%q", stdout)
 	}
 	section := stdout[strings.Index(stdout, "`p` `TestBig`"):]
-	if big := strings.Count(section, "é"); big != tailBytes/2 {
-		t.Errorf("TestBig keeps %d runes, want its last %d bytes, %d runes", big, tailBytes, tailBytes/2)
+	if big := strings.Count(section, "é"); big != keepBytes/2 || !strings.Contains(section, "\n... cut ...\n") {
+		t.Errorf("TestBig keeps %d runes, want the first and last %d bytes, %d runes, with the cut said", big, keepBytes/2, keepBytes/2)
 	}
 }
 

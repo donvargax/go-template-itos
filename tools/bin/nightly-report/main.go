@@ -10,7 +10,7 @@
 // success nor skipped is red, named with the steps that failed in it. The results folder holds a
 // go test -json file for each platform and for the explore job, named <label>.json (read from
 // every level under it): the tests that failed in each, a failing test of subtests named by its
-// failing subtests alone, each with the tail of its output, which holds a property's seed and a
+// failing subtests alone, each with its first and last lines, which holds a property's seed and a
 // failing check's message, and a package that failed with no test failing (it did not build, or
 // timed out) by its own output. The findings file, when given, holds the lines
 // tools/bin/nightly-fuzz appends, "fuzz input: <path>" for each failing fuzz input, which the
@@ -43,8 +43,8 @@ import (
 )
 
 const (
-	tailLines  = 20    // the last lines of a failing test's output kept
-	tailBytes  = 2000  // and the most bytes of them
+	keepLines  = 10    // the first and the last lines of a failing test's output kept
+	keepBytes  = 2000  // and the most bytes of them
 	bodyBytes  = 60000 // GitHub's body limit is 65536
 	maxFailing = 25    // the failing tests named for each file
 )
@@ -312,15 +312,18 @@ func failures(r io.Reader) []failure {
 	return out
 }
 
-// tail is the last lines of a test's output, the most bytes of them kept from the end.
+// tail is a test's output cut to its first and last lines: what it logged before failing is at
+// the start, and what it printed last (a panic, a seed) at the end, and the middle is the long
+// part. The most bytes kept are the output's first and last halves of keepBytes.
 func tail(chunks []string) string {
 	lines := strings.Split(strings.TrimRight(strings.Join(chunks, ""), "\n"), "\n")
-	if len(lines) > tailLines {
-		lines = lines[len(lines)-tailLines:]
+	if len(lines) > 2*keepLines {
+		left := len(lines) - 2*keepLines
+		lines = append(append(lines[:keepLines:keepLines], fmt.Sprintf("... %d lines left out ...", left)), lines[len(lines)-keepLines:]...)
 	}
 	text := strings.Join(lines, "\n")
-	if len(text) > tailBytes {
-		text = strings.ToValidUTF8(text[len(text)-tailBytes:], "")
+	if len(text) > keepBytes {
+		text = strings.ToValidUTF8(text[:keepBytes/2], "") + "\n... cut ...\n" + strings.ToValidUTF8(text[len(text)-keepBytes/2:], "")
 	}
 	return text
 }
