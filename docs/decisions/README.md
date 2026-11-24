@@ -18,5 +18,6 @@ file and leaves this list, which itos decision record writes.
 - [ADR-0014: Scenarios run in process against the ports' fakes locally and through the built binary in CI](0014-scenarios-run-in-process-against-the-ports-fakes-locally-and-through-the-built-binary-in-ci.md)
 - [ADR-0015: A push judges and a nightly explores, reporting through one Nightly red issue](0015-a-push-judges-and-a-nightly-explores-reporting-through-one-nightly-red-issue.md)
 - [ADR-0016: A release reads Conventional Commit headers, releases any other as a patch and says so, and is attested, verified and announced to the Go proxy](0016-a-release-reads-conventional-commit-headers-releases-any-other-as-a-patch-and-says-so-and-is-attested-verified-and-announced-to-the-go-proxy.md)
+- [ADR-0017: A release can publish a container image through GoReleaser's ko, off by default, pinned, attested and verified](0017-a-release-can-publish-a-container-image-through-goreleaser-s-ko-off-by-default-pinned-attested-and-verified.md)
 
 <!-- itos:decisions:end -->
