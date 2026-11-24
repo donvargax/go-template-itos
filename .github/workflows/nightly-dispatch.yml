@@ -4,7 +4,9 @@ name: Nightly dispatch
 # nightly of each Go branch (its own .github/workflows/nightly.yml, decision 15) has no schedule of
 # its own that would fire. This starts them: once a day it dispatches nightly.yml on each branch
 # that has one. A dispatch by the workflow's own token is the one trigger GitHub allows from
-# a workflow, so it needs only actions write. The file is root-owned and the manifest lists it in
+# a workflow, so it needs only actions write. GitHub finds a workflow to dispatch by its file on
+# the default branch, so main holds a stub nightly.yml that registers the name; the run is the
+# branch's own file. The file is root-owned and the manifest lists it in
 # template_only: a made project keeps its one nightly, scheduled on its own default branch.
 on:
   schedule:
