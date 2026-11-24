@@ -944,37 +944,9 @@ items:
     title: go/cli's commands share itos-cc's exit codes and problems on the kong fork, in itos-container's slice layout
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: [T-68]
     kind: task
-    why: >
-      Was cli-contract-code.
-      Lands on go/cli. The count command moves to internal/slices/count/command; internal/cli
-      becomes generic, importing nothing of the project's, and cmd hands it each slice's classifier
-      (itos-container). Exit codes 0, 1, 75, 80, 81, 82, 100 and 130 with an explicit precedence, a
-      problem carrying rule, message, fix and exit, and typed flag errors that need no kong fork
-      (itos-cc's internal/cli). Input is checked at its edge into value objects with unexported
-      fields and trusted inside. Decisions 7 and 8 stay. The scenarios change first, red. Settles #6
-      and #5's secure by design.
-
-      Settled 2026-11-23, replacing stock kong: go/cli uses the kong fork,
-      github.com/donvargax/kong, for its typed parse errors and its exported Suggest rule (itos-cc's
-      decisions 35 and 62), through a go.mod replace, while the upstream pull request waits. Take
-      v1.17.1-itos.1, the fork's rebase onto upstream v1.17.0, if that tag exists when the item
-      starts, else v1.16.2-itos.2 and move later. The item records this as a decision that ships,
-      naming the fork, why, and what retires it (the upstream change landing).
-
-      layout-rules (T-68) moves go/cli's packages into the slice layout as a refactor with no
-      behavior change, so the render never conflicts between stack/go and go/cli. This item is the
-      behavior: the exit codes, the problems, the kong fork and the checked values at the edge.
-
-      kong: pin github.com/donvargax/kong v1.17.1-itos.1, tagged 2026-11-23 (the fork rebased on
-      upstream v1.17.0); v1.16.2-itos.2 is no longer needed.
-
-      T-68 leaves one temporary arrow, internal/cli -> internal/engine/counting/port, in the
-      depguard ui rule and tools/bin/architecture-check, because cli classifies read failures. This
-      item moves that classification into internal/slices/count/command (itos-container's
-      classify.go shape) and removes the arrow.
     refs: [https://github.com/donvargax/go-template-itos/issues/6, https://github.com/donvargax/go-template-itos/issues/5]
   - id: scenarios-two-drivers
     title: Scenarios run in process against the ports' fakes and through the binary, and each port has a contract suite
