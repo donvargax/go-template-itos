@@ -27,14 +27,30 @@ func TestBreaking(t *testing.T) {
 	}
 }
 
-// itos commit footers lists a footer's first line; whole gives it the lines
-// the commit wrapped it onto.
-func TestWhole(t *testing.T) {
-	commits := parseLog("abcdef1234\x1ffeat: a thing\n\nWhy.\n\nUpgrading: rename the flag\n  in your scripts\nScenarios: ID-CLI-02\n\x1e\n")
-	listed := []footer{{SHA: "abcdef1", Subject: "feat: a thing", Text: "rename the flag"}}
-	whole(listed, "Upgrading", commits)
-	if want := "rename the flag\nin your scripts"; listed[0].Text != want {
-		t.Errorf("whole: %q, want %q", listed[0].Text, want)
+// Every Upgrading footer of a commit's last paragraph is read whole by the
+// notes program itself: its first line and each line after it up to the next
+// footer, wrapped lines indented or not, which git interpret-trailers would
+// drop. A footer saying none, a footer outside the last paragraph and a
+// commit with none are left out; the commits keep their order.
+func TestUpgrading(t *testing.T) {
+	commits := parseLog("abcdef1234\x1ffeat: a thing\n\nWhy.\n\nUpgrading: rename the flag\n  in your scripts\nScenarios: ID-CLI-02\n\x1e\n" +
+		"bbbbbbb2222\x1ffix: a bug\n\nUpgrading: none\n\x1e\n" +
+		"ccccccc3333\x1ffix: another\n\nUpgrading: None.\nTask: T-1\n\x1e\n" +
+		"ddddddd4444\x1ffeat: wrapped\n\nUpgrading: set the key\nin the file and\nrun it again\nTask: T-2\n\x1e\n" +
+		"eeeeeee5555\x1fdocs: say so\n\x1e\n" +
+		"fffffff6666\x1ffix: not a footer\n\nUpgrading: outside the last paragraph\n\nTask: T-3\n\x1e\n")
+	want := []footer{
+		{SHA: "abcdef1234", Subject: "feat: a thing", Text: "rename the flag\nin your scripts"},
+		{SHA: "ddddddd4444", Subject: "feat: wrapped", Text: "set the key\nin the file and\nrun it again"},
+	}
+	got := upgrading(commits)
+	if len(got) != len(want) {
+		t.Fatalf("upgrading = %+v, want %+v", got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("upgrading[%d] = %+v, want %+v", i, got[i], want[i])
+		}
 	}
 }
 
@@ -100,7 +116,6 @@ func TestMovedNotes(t *testing.T) {
 	const moved = "example.com/lib v1.0.0 => ./lib to v1.1.0 => ./lib; the toolchain go1.24.0 to go1.24.1"
 	cases := []struct {
 		name, message string
-		upgrading     []footer
 		says, not     []string
 	}{
 		{name: "a build commit moving a linked module and the toolchain", message: "build: move lib and Go",
@@ -109,14 +124,13 @@ func TestMovedNotes(t *testing.T) {
 				"1. **What the commits ask.** Nothing to change: no commit since v0.1.0 is a breaking change, and none has an `Upgrading:` footer asking for anything.\n",
 			},
 			not: []string{"Every `feat` and `fix`"}},
-		{name: "a build commit whose footer asks for something", message: "build: move lib and Go",
-			upgrading: []footer{{SHA: "a1b2c3d", Subject: "build: move lib and Go", Text: "Rebuild your plugins."}},
+		{name: "a build commit whose footer asks for something", message: "build: move lib and Go\n\nUpgrading: Rebuild your plugins.",
 			says: []string{
 				"which makes a patch: " + moved + ".",
-				"No commit since v0.1.0 is a breaking change.\n   Each `Upgrading:` footer since v0.1.0",
+				"No commit since v0.1.0 is a breaking change.\n   Each `Upgrading:` footer since v0.1.0:\n   - ",
 				"> Rebuild your plugins.",
 			},
-			not: []string{"Nothing to change"}},
+			not: []string{"Nothing to change", "itos"}},
 		{name: "a fix beside a moved module", message: "fix: a bug\n\nUpgrading: none",
 			says: []string{
 				"Cut by CI from the 1 commit since v0.1.0: 0 feats, 1 fix and 0 breaking changes, where a breaking change makes a major release, a feat a minor one and a fix a patch.",
@@ -134,11 +148,12 @@ func TestMovedNotes(t *testing.T) {
 			releasetest.Change(t, filepath.Join(repo, "go.mod"), "toolchain go1.24.0", "toolchain go1.24.1")
 			releasetest.Commit(t, repo, c.message)
 			t.Chdir(repo)
-			n := notes{Version: "0.1.1", Repository: repository, From: "v0.1.0", Upgrading: c.upgrading}
+			n := notes{Version: "0.1.1", Repository: repository, From: "v0.1.0"}
 			var err error
 			if n.Commits, err = commits("v0.1.0..HEAD"); err != nil {
 				t.Fatal(err)
 			}
+			n.Upgrading = upgrading(n.Commits)
 			if err := n.readMoved("HEAD"); err != nil {
 				t.Fatal(err)
 			}
