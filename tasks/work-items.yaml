@@ -964,8 +964,8 @@ items:
   - id: T-74
     title: A nightly run tests everything on three platforms and keeps one Nightly red issue
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-71, T-67]
     kind: task
     why: >
