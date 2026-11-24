@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - renovate-plain
+  - T-72
   - nightly
   - release-plain
   - ko-image
@@ -954,14 +954,15 @@ items:
     depends_on: [T-69, T-70]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/7]
-  - id: renovate-plain
+  - id: T-72
     title: Renovate's requests merge cleanly with no footers, and the toolchain line moves on a Go release's day
     phase: 1
     owner: null
     status: todo
     depends_on: [T-64]
-    kind: idea
+    kind: task
     why: >
+      Was renovate-plain.
       On main and each branch's own file. itos-cc's automergeType pr with automergeStrategy rebase
       (#12); itos-container's regex manager for tools/bin/pinned; no commitTrailers or ignoreDeps,
       as made projects have no footers (#3); a package rule with no minimum release age for go.mod's
@@ -1040,7 +1041,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-66, renovate-plain, nightly, ko-image, arc42-content]
+    depends_on: [T-66, T-72, nightly, ko-image, arc42-content]
     kind: idea
     why: >
       On main. The README's lists of what a made project gets and what comes next follow the landed
