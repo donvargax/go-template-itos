@@ -1745,9 +1745,34 @@
     1, 2 and 9, it also names 4, 5 and 8, with MAP.md first. arc42 section 1 or 2 changes only if it
     contradicts the new text. Prove it on main, stack/go and go/cli green in CI, Itos and Template
     check, with itos-template check passing 2 of 2.
+- id: T-79
+  type: docs
+  title: The README says what a made project gets without itos, and no shipped guide describes itos as part of one
+  why: >
+    Was migration-readme, the migration's last item. Docs only. On main, README.md's Status
+    list follows what landed, in plain words with no task ids. Replace "Setup gives it its own
+    commit rules and checks" with a ticked line saying a made project needs no itos and its CI,
+    hooks and release call plain commands (decision 10). Add ticked lines for the nightly on
+    three platforms that keeps one issue open while it is red (decision 15), and for releases
+    whose attestation is verified before publishing, that ship their licence notices and can
+    publish a container image (decisions 16 and 17). Tick "Every guide it ships speaks to the
+    made project" once the Go branches' changes below land. Keep "Automatic dependency updates
+    are proven running on every branch" unticked, since Renovate has opened no pull request
+    yet, and keep the other open lines as they are. The Practices list follows decisions 11 to
+    17. Its Tests line names the contract suites, the two scenario drivers and the nightly's
+    race, fuzz, property, coverage and mutation runs. Its Releases line names the before-1.0
+    rule, the patch for a header that is not a Conventional Commit, the verified attestation,
+    the Go proxy request, THIRD_PARTY_NOTICES.md and the optional image. Its Command line line
+    names the exit codes and each problem's rule and exit. Its Work line says decisions are
+    MADR records in docs/decisions/ and commit headers are Conventional Commits the release
+    reads, with nothing checking them, and itos leaves it. Working here keeps itos for this
+    repository's own development and says so. On stack/go and go/cli, merging main first:
+    README.md drops the itos go and itos guide work sentence, and docs/CONFIG.md drops itos.yaml
+    from its examples. On go/cli, features/README.md drops its itos commit footer lines
+    (Scenarios and --item), keeping how a scenario is named. Citations naming itos or
+    donvargax/itos as a source stay, as do the harvest notices. Prove it on main, stack/go and
+    go/cli green in CI, Itos and Template check, with itos-template check passing 2 of 2.
   done_when:
-    - run: test ! -f go.mod || { test -f docs/architecture/04-solution-strategy.md && test -f docs/architecture/08-crosscutting-concepts.md; }
-    - run: test ! -f go.mod || grep -q -i "contract suite" docs/architecture/08-crosscutting-concepts.md
-    - run: test ! -d cmd || grep -q "^## Why the codes and problems look as they do" docs/CLI.md
-    - run: test ! -d internal/slices || for d in internal/slices/*; do grep -q "$d" MAP.md || exit 1; done
-    - run: test ! -f go.mod || test "$(wc -c < MAP.md)" -le 2048
+    - run: "! grep -q 'Setup gives it its own commit rules' README.md"
+    - run: test -f go.mod || grep -q "Every guide it ships speaks to the made project" README.md
+    - run: test ! -f go.mod || ! git grep -q -E "itos (go|guide|commit|work)" -- README.md docs/CONFIG.md features/README.md
