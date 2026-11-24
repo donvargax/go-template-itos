@@ -7,3 +7,4 @@ One line per decision record in `docs/decisions/`; a superseded record leaves th
 - [An interrupted command exits 130, says so once, and a second interrupt ends it at once](../decisions/0008-an-interrupted-command-exits-130-says-so-once-and-a-second-interrupt-ends-it-at-once.md)
 - [Go code is laid out as engines and slices, held by default-deny import rules](../decisions/0011-go-code-is-laid-out-as-engines-and-slices-held-by-default-deny-import-rules.md)
 - [A push judges and a nightly explores, reporting through one Nightly red issue](../decisions/0015-a-push-judges-and-a-nightly-explores-reporting-through-one-nightly-red-issue.md)
+- [A release reads Conventional Commit headers, releases any other as a patch and says so, and is attested, verified and announced to the Go proxy](../decisions/0016-a-release-reads-conventional-commit-headers-releases-any-other-as-a-patch-and-says-so-and-is-attested-verified-and-announced-to-the-go-proxy.md)
