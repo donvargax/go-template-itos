@@ -71,8 +71,8 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 }
 
 func usage(stderr io.Writer) int {
-	fmt.Fprintln(stderr, "usage: nightly-report issue -branch <name> -url <run's URL> -jobs <file> -results <folder> [-findings <file>]")
-	fmt.Fprintln(stderr, "       nightly-report text < go-test.json")
+	_, _ = fmt.Fprintln(stderr, "usage: nightly-report issue -branch <name> -url <run's URL> -jobs <file> -results <folder> [-findings <file>]")
+	_, _ = fmt.Fprintln(stderr, "       nightly-report text < go-test.json")
 	return 2
 }
 
@@ -95,7 +95,7 @@ func issue(args []string, stdout, stderr io.Writer) int {
 
 	jobs, err := readJobs(*jobsFile)
 	if err != nil {
-		fmt.Fprintf(stderr, "nightly-report: the jobs could not be read: %v\n", err)
+		_, _ = fmt.Fprintf(stderr, "nightly-report: the jobs could not be read: %v\n", err)
 		fmt.Fprintf(&b, "\nIts jobs could not be read: see the run's log.\n\n%s\n", fence(firstLine(err)))
 	}
 	red := redJobs(jobs)
@@ -113,7 +113,7 @@ func issue(args []string, stdout, stderr io.Writer) int {
 
 	files, err := readResults(*results)
 	if err != nil {
-		fmt.Fprintf(stderr, "nightly-report: the go test results could not be read: %v\n", err)
+		_, _ = fmt.Fprintf(stderr, "nightly-report: the go test results could not be read: %v\n", err)
 		fmt.Fprintf(&b, "\nThe go test results could not be read.\n\n%s\n", fence(firstLine(err)))
 	}
 	named := 0
@@ -147,7 +147,7 @@ func issue(args []string, stdout, stderr io.Writer) int {
 	if len(body) > bodyBytes {
 		body = strings.ToValidUTF8(body[:bodyBytes], "") + "\n\n... cut: see the run's log.\n"
 	}
-	fmt.Fprint(stdout, body)
+	_, _ = fmt.Fprint(stdout, body)
 	return 0
 }
 
@@ -163,7 +163,7 @@ type job struct {
 
 // readJobs decodes the jobs file: gh --paginate prints one JSON object a page, back to back.
 func readJobs(path string) ([]job, error) {
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(path) //nolint:gosec // the job list the workflow wrote, named by its own flag
 	if err != nil {
 		return nil, err
 	}
@@ -245,14 +245,14 @@ func readResults(dir string) ([]resultFile, error) {
 	sort.Strings(paths)
 	var files []resultFile
 	for _, path := range paths {
-		f, openErr := os.Open(path)
+		f, openErr := os.Open(path) //nolint:gosec // a results file the workflow downloaded, found under the folder its flag names
 		if openErr != nil {
 			err = errors.Join(err, openErr)
 			continue
 		}
 		label := strings.TrimSuffix(filepath.Base(path), ".json")
 		files = append(files, resultFile{label: label, failures: failures(f)})
-		f.Close()
+		_ = f.Close()
 	}
 	return files, err
 }
@@ -331,10 +331,10 @@ func readFindings(path string, stderr io.Writer) []string {
 	if path == "" {
 		return nil
 	}
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(path) //nolint:gosec // the findings file the workflow wrote, named by its own flag
 	if err != nil {
 		if !errors.Is(err, fs.ErrNotExist) {
-			fmt.Fprintf(stderr, "nightly-report: the findings could not be read: %v\n", err)
+			_, _ = fmt.Fprintf(stderr, "nightly-report: the findings could not be read: %v\n", err)
 		}
 		return nil
 	}
@@ -355,10 +355,10 @@ func text(r io.Reader, w io.Writer) {
 	for scanner.Scan() {
 		var e event
 		if err := json.Unmarshal(scanner.Bytes(), &e); err != nil {
-			fmt.Fprintln(w, scanner.Text())
+			_, _ = fmt.Fprintln(w, scanner.Text())
 			continue
 		}
-		fmt.Fprint(w, e.Output)
+		_, _ = fmt.Fprint(w, e.Output)
 	}
 }
 

@@ -247,7 +247,7 @@ func TestIssueReportsAnUnreadableResultsFileAndStillReadsTheOthers(t *testing.T)
 		t.Fatal(err)
 	}
 	if f, err := os.Open(bad); err == nil {
-		f.Close()
+		_ = f.Close()
 		t.Skip("the file is readable whatever its mode (running as root)")
 	}
 	_, stdout, stderr := runProgram(t, "", "issue", "-branch", "b", "-url", "u", "-jobs", jobs, "-results", results)
