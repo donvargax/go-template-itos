@@ -190,3 +190,6 @@ questions:
     question: "What runs per push and what waits for a nightly, and how does a red night reach a person?"
     answer: "A push judges, a nightly explores (the migration plan, approved by the person 2026-11-23, after itos's nightly and its testing tiers). Per push: Linux runs every test and both scenario drivers; macOS and Windows run the unit tests and the in-process scenarios. Nightly, on Linux, macOS and Windows with Windows sharded: every test and the binary driver, then on Linux the race detector, every fuzz target for a bounded time, the property tests with a seed drawn and printed, a coverage floor of 80% for each package outside the domain, and a whole-tree mutation run. A report job that needs every other job keeps one Nightly red issue per branch: it opens it, comments on it while the nights stay red, naming each red job and its failing tests from go test -json, and closes it on a green night. Nothing waits on the nightly."
     decision: 15
+  - id: q-42
+    item: "T-75"
+    question: "How does a made project's release choose its version and prove what it publishes, with no itos and no check on commit headers?"
