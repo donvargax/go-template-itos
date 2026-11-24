@@ -1,0 +1,37 @@
+name: Nightly dispatch
+
+# GitHub runs a scheduled workflow only from the default branch, and main has no Go, so the
+# nightly of each Go branch (its own .github/workflows/nightly.yml, decision 15) has no schedule of
+# its own that would fire. This starts them: once a day it dispatches nightly.yml on each branch
+# that has one. A dispatch by the workflow's own token is the one trigger GitHub allows from
+# a workflow, so it needs only actions write. GitHub finds a workflow to dispatch by its file on
+# the default branch, so main holds a stub nightly.yml that registers the name; the run is the
+# branch's own file. The file is root-owned and the manifest lists it in
+# template_only: a made project keeps its one nightly, scheduled on its own default branch.
+on:
+  schedule:
+    - cron: "11 2 * * *" # 02:11 UTC every day, before the Template check's weekly run
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Every branch is tried and a branch with no nightly yet is named and skipped, so one miss
+      # leaves the other started and the job red afterwards.
+      - name: Start each branch's nightly
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          status=0
+          for branch in stack/go go/cli; do
+            echo "Dispatching nightly.yml on $branch"
+            gh workflow run nightly.yml --ref "$branch" || status=1
+          done
+          exit $status

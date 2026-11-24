@@ -16,5 +16,6 @@ file and leaves this list, which itos decision record writes.
 - [ADR-0012: go/cli builds on the kong fork until upstream kong takes typed parse errors](0012-go-cli-builds-on-the-kong-fork-until-upstream-kong-takes-typed-parse-errors.md)
 - [ADR-0013: Commands exit with itos-cc's codes and precedence and report problems with a rule, message, fix and exit](0013-commands-exit-with-itos-cc-s-codes-and-precedence-and-report-problems-with-a-rule-message-fix-and-exit.md)
 - [ADR-0014: Scenarios run in process against the ports' fakes locally and through the built binary in CI](0014-scenarios-run-in-process-against-the-ports-fakes-locally-and-through-the-built-binary-in-ci.md)
+- [ADR-0015: A push judges and a nightly explores, reporting through one Nightly red issue](0015-a-push-judges-and-a-nightly-explores-reporting-through-one-nightly-red-issue.md)
 
 <!-- itos:decisions:end -->
