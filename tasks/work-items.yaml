@@ -1043,3 +1043,16 @@ items:
     status: done
     depends_on: [T-71]
     kind: task
+  - id: snapshot-template-tags
+    title: A local snapshot build works in the template despite its branch-prefixed tags
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      On go/cli, tools/bin/pinned goreleaser release --snapshot --clean fails with 'current tag is
+      not semver' because the template's own tags are go/cli/vX.Y.Z, which git describe finds first;
+      T-75's worker had to set GORELEASER_CURRENT_TAG=v0.3.0 by hand. CI is unaffected and made
+      projects tag vX.Y.Z, so this binds only the template's own development: say how in
+      TEMPLATE.md, or set the variable in a snapshot helper.
