@@ -1056,3 +1056,18 @@ items:
     status: done
     depends_on: [T-69]
     kind: task
+  - id: pinned-tests-offline
+    title: tools/pinned's tests pass with no network, so a local itos-template check doesn't fail on a download
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: idea
+    why: >
+      T-71, 2026-11-23: itos-template check run locally in a worktree reported 0 of 2 combinations,
+      failing in tools/pinned's tests with exit 7 (curl's could-not-connect) while the network was
+      unreachable; CI's Template check on the same go/cli head passed 2 of 2. A check that needs the
+      network to judge the render reads an outage as a broken template. tools/pinned's tests should
+      serve their downloads from a local fixture server or a skip the test names, so only CI's
+      real-download path needs the network; to confirm first: which test downloads, and whether the
+      render's check runs it at all.
