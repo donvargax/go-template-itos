@@ -155,19 +155,22 @@ can join two words, so it is not promised to be additive. Every run sets
 seed printed on failure. The nightly runs them at a thousand checks (below).
 
 A push judges and a nightly explores (decision 15). On a push, Linux runs every test and the
-architecture check's fixtures, and macOS and Windows run the tests of `internal`, with each
-platform's paths, shell and line endings.
+architecture check's fixtures and the scenarios under both drivers (the test job runs the binary
+driver), and macOS and Windows run the tests of `cmd` and `internal` and the scenarios in process,
+with each platform's paths, shell and line endings.
 
 `.github/workflows/nightly.yml` runs once a day and by hand. Nothing waits on it.
 
-- `platform`: every test and the architecture check's fixtures on Linux, macOS and Windows, each
+- `platform`: every test, the architecture check's fixtures and the scenarios through the binary
+  driver on Linux, macOS and Windows, Windows's scenarios in two shards (`-shard=i/n`), each
   `go test -json` kept for the report.
 - `explore`, on Linux, every step run whatever an earlier one said: the race detector;
   `tools/bin/nightly-fuzz`, each `Fuzz` target for a minute; `tools/bin/nightly-properties`, the
   packages whose tests import rapid at a thousand checks under a seed drawn and printed;
   `tools/bin/e2e-coverage`, which holds each package outside the domain, the ports and test
-  support to 80% of its statements, the domain read from `architecture-check --domains`; and
-  `itos-cc mutation run internal`, the whole tree.
+  support to 80% of its statements, unit tests and scenarios together, the domain read from `architecture-check --domains`; and
+  `itos-cc mutation run --all-tests cmd internal`, the whole tree, `--all-tests` because `cmd` is
+  reached only through the scenarios.
 - `report` keeps one open issue per branch, "Nightly red on <branch>", under the label
   `nightly-red`: the first red night opens it, each red night after comments on it, naming each
   red job, its failed steps and its failing tests from `go test -json`
@@ -175,7 +178,8 @@ platform's paths, shell and line endings.
 
 A failure the nightly finds is fixed by a regression test, or by committing the fuzz input or the
 property's fail file it printed, which every push then replays. `FuzzCount` in the counting
-domain is the example target: add one wherever hostile input enters.
+domain and `FuzzNewInput` in the count slice are the examples: add a target wherever hostile input
+enters.
 
 GitHub schedules a workflow from the default branch only. A project whose default branch has the
 code gets the nightly from its `schedule`.
