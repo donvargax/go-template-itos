@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - release-plain
+  - T-75
   - ko-image
   - arc42-content
   - migration-readme
@@ -968,14 +968,15 @@ items:
     depends_on: [T-71, T-67]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/9, https://github.com/donvargax/go-template-itos/issues/4]
-  - id: release-plain
+  - id: T-75
     title: A release is versioned, noted, attested and announced with no itos
     phase: 1
     owner: null
     status: todo
     depends_on: [T-65]
-    kind: idea
+    kind: task
     why: >
+      Was release-plain.
       Lands on go/cli. itos-container's release.yml and .goreleaser.yaml (one job, called after
       green: version, tag, GoReleaser, attest, notes, publish); itos's check of the attestation on
       the built archive and its request to the Go module proxy (#8); itos-cc's release-version with
@@ -997,7 +998,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [release-plain]
+    depends_on: [T-75]
     kind: idea
     why: >
       Lands on go/cli. GoReleaser's ko integration builds and pushes the image with the release,
