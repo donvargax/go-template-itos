@@ -1055,9 +1055,6 @@ items:
     title: Cut the template's release v0.4.0
     phase: 1
     owner: donvargax
-    status: doing
+    status: done
     depends_on: []
     kind: task
-    why: >
-      The person asked on 2026-11-24 for v0.4.0 once T-80 landed; it holds the migration off itos
-      for made projects (decisions 10 to 17).

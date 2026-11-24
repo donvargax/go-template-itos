@@ -1482,5 +1482,3 @@
     --ref v0.4.0 pins a release and v0.4.0 is the newest, and what v0.4.0 brings over v0.3.0: a made
     project needs no itos, with the exit codes, two scenario drivers, nightly, release and image of
     decisions 13 to 17. v0.3.0's sentence is kept as that release's.
-  done_when:
-    - run: test "$(git ls-remote --tags origin refs/tags/main/v0.4.0 refs/tags/stack/go/v0.4.0 refs/tags/go/cli/v0.4.0 | wc -l)" -eq 3
