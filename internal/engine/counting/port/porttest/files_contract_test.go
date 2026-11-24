@@ -158,3 +158,32 @@ func TestFilesContractHoldsAOneByteFile(t *testing.T) {
 		t.Errorf("a one-byte file was reported wrong: %q", r.errors)
 	}
 }
+
+// The first read of a present file is held on both counts alone: the right
+// bytes with a failure, and other bytes with no failure, each fail it even
+// though later checks may report the same Files too.
+func TestFilesContractHoldsTheFirstReadOnEachCountAlone(t *testing.T) {
+	want := fmt.Sprintf("want %q and no failure", content)
+	for _, test := range []struct {
+		name   string
+		answer func(data []byte) ([]byte, port.ReadFailure)
+	}{
+		{"the right bytes with a failure", func(data []byte) ([]byte, port.ReadFailure) {
+			return data, &port.Unreadable{Path: "present"}
+		}},
+		{"other bytes with no failure", func([]byte) ([]byte, port.ReadFailure) {
+			return []byte("other"), nil
+		}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			r := &recorder{}
+			FilesContract(r, open(breaking("present", false, test.answer)))
+			for _, report := range r.errors {
+				if strings.HasPrefix(report, "Read(present) = ") && strings.HasSuffix(report, want) {
+					return
+				}
+			}
+			t.Errorf("reports = %q, want one that holds the first read to %q", r.errors, want)
+		})
+	}
+}
