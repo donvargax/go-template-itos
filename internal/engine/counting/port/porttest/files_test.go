@@ -46,3 +46,19 @@ func TestUnreadableNamesThePath(t *testing.T) {
 		t.Errorf("Unreadable() = %T %v, want Unreadable for input", failure, failure)
 	}
 }
+
+func TestFakeFilesHoldTheFilesContract(t *testing.T) {
+	FilesContract(t, func() FilesCase {
+		content := []byte("one two\nthree\n")
+		return FilesCase{
+			Files: Files{
+				Data:     map[string][]byte{"present": content},
+				Failures: map[string]port.ReadFailure{"unreadable": Unreadable("unreadable")},
+			},
+			Present:    "present",
+			Content:    content,
+			Absent:     "absent",
+			Unreadable: "unreadable",
+		}
+	})
+}
