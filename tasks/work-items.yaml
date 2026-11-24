@@ -1068,8 +1068,8 @@ items:
   - id: T-73
     title: The counting contract suite's checkBytesRead is held by a test against a Files that fails while returning the right bytes
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: [T-71]
     kind: task
     why: >
