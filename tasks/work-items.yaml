@@ -11,7 +11,7 @@
 phases:
   1: null # the ledger's phase 1, owned by nobody: a handle, or null
 queue:
-  - arc42-content
+  - T-78
   - migration-readme
 items:
   - id: T-1
@@ -982,14 +982,15 @@ items:
     depends_on: [T-75]
     kind: task
     refs: [https://github.com/donvargax/go-template-itos/issues/18]
-  - id: arc42-content
+  - id: T-78
     title: Each branch's arc42 sections, MAP.md and CLI.md's why describe its own code
     phase: 1
     owner: null
     status: todo
     depends_on: [T-62, T-71]
-    kind: idea
+    kind: task
     why: >
+      Was arc42-content.
       On stack/go and go/cli. itos-cc's docs/architecture.md content (layers, ports and contract
       suites, the OS as a value, the testing model, gates by tier, recipes) folded into arc42
       sections 4, 5 and 8 for each branch's own code; MAP.md filled for each slice; itos-cc's CLI.md
@@ -1001,7 +1002,7 @@ items:
     phase: 1
     owner: null
     status: todo
-    depends_on: [T-66, T-72, T-74, T-76, arc42-content]
+    depends_on: [T-66, T-72, T-74, T-76, T-78]
     kind: idea
     why: >
       On main. The README's lists of what a made project gets and what comes next follow the landed
