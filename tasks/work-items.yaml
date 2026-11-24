@@ -1055,8 +1055,8 @@ items:
   - id: T-77
     title: The release logs in to the image registry before GoReleaser, so a turned-on image can be pushed
     phase: 1
-    owner: null
-    status: todo
+    owner: donvargax
+    status: doing
     depends_on: []
     kind: task
     why: >
