@@ -1052,3 +1052,15 @@ items:
       T-75's worker had to set GORELEASER_CURRENT_TAG=v0.3.0 by hand. CI is unaffected and made
       projects tag vX.Y.Z, so this binds only the template's own development: say how in
       TEMPLATE.md, or set the variable in a snapshot helper.
+  - id: T-77
+    title: The release logs in to the image registry before GoReleaser, so a turned-on image can be pushed
+    phase: 1
+    owner: null
+    status: todo
+    depends_on: []
+    kind: task
+    why: >
+      T-76's follow-up. GoReleaser's ko documentation says ko still needs a login to push ('either
+      with docker login or something else'), and release.yml logs in nowhere, so turning the image
+      on would fail at the push, as would attest-build-provenance's push-to-registry. The snapshot
+      ran against ko.local and could not show it.
