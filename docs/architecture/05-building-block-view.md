@@ -3,21 +3,23 @@
 The code is engines and slices (decision 11 in `docs/decisions/`): a shared domain is an
 engine, with its port and adapters beneath it, and a command is a slice that uses engines
 through their ports. `docs/go.md` lists the packages and the import rules that hold them.
+This stack has one engine and no slice.
 
-The private counting engine, `internal/engine/counting`, has its domain in `domain`, which owns
-line and word semantics and its result. It reads through the engine's `Files` port, whose sealed
-failures describe the input it needs without exposing an OS's own errors. The engine's `disk`
-adapter and the count slice's `stdin` adapter implement it; an in-memory fake holds the domain's test inputs and failures. Unit tests assert outcomes, and the
-rapid property checks addition for newline-terminated pieces.
+| Block | Path | What it holds | May import | Held by |
+| --- | --- | --- | --- | --- |
+| Domain | `internal/engine/counting/domain` | Counting of lines and words and its result | the standard library packages its rule lists, other engines | `domain`, `domain-tests` |
+| Port | `internal/engine/counting/port` | `Files` and its sealed failures, `Missing` and `Unreadable` | the same short list; no `os`, `net` or `syscall` | `port`, `store-ports-io` |
+| Fake and suite | `internal/engine/counting/port/porttest` | The in-memory `Files` and `FilesContract` | the standard library, engines | `porttest` |
+| Adapter | `internal/engine/counting/disk` | Read-only disk access, OS errors turned into the port's failures | its engine's port, other engines' APIs | `adapter` |
 
-The domain knows no command-line flags, JSON or exit codes. The `count` slice, `internal/slices/count`,
-carries the command's domain values to the domain through the port and counts nothing itself;
-`internal/cli`, the UI every slice shares, maps each failure to its exit code and prints the
-JSON or the text answer. A second command is a new slice beside `count` that reuses the domain,
-never `count`'s package. `cmd/go-template-itos` assembles them, making the context that a Ctrl-C
-cancels (decisions 7 and 8). `features/` holds the public behaviour as scenarios, which godog
-runs in process against the ports' fakes by default and against the binary the harness builds
-where CI opts in (decision 14).
+The domain reads through `Files` and takes a `context.Context` first where it calls the port,
+carrying cancellation only (decision 7). Pure logic, such as counting bytes, takes none. Unit
+tests assert outcomes against the fake, and the rapid property checks that counts add for
+newline-terminated pieces.
+
+The domain knows no command-line flags, JSON or exit codes. Those belong to a slice and the
+UI, which a command line adds; a second command reuses the engine through its port, never
+another command's package. This stack has no public executable or scenario runner.
 
 Line separators are LF, with CRLF counted once; a nonempty final unterminated line counts.
 Words follow the standard-library Unicode-whitespace rule. No encoding detection or linguistic
