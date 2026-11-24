@@ -41,14 +41,11 @@ type running struct {
 	exited         bool       // done has been read: cmd.ProcessState is the process's end
 }
 
-// startWithInputOpen starts go-template-itos in the scratch folder with
-// args, its standard input a pipe the step holds open, and returns without
-// waiting for it.
-func (w *world) startWithInputOpen(args string) error {
-	fields, err := commandWords(args)
-	if err != nil {
-		return err
-	}
+// Start starts go-template-itos in the scratch folder with args, its
+// standard input a pipe the driver holds open, and returns without waiting
+// for it.
+func (w *binary) Start(fields []string) error {
+	var err error
 	r := &running{cmd: exec.Command(w.bin, fields...), done: make(chan error, 1)}
 	r.cmd.Dir = w.dir
 	r.cmd.Env = w.env()
@@ -72,10 +69,10 @@ func (w *world) startWithInputOpen(args string) error {
 // stop promptly, and where the interrupt killed it by the system's default
 // action rather than reaching a handler of its own: that run exited by the
 // signal, not by anything the binary decided.
-func (w *world) interruptWhileWaiting() error {
+func (w *binary) Interrupt() (Result, error) {
 	r := w.running
 	if r == nil {
-		return errors.New("no run waits on its standard input: start one with its standard input left open")
+		return Result{}, errors.New("no run waits on its standard input: start one with its standard input left open")
 	}
 	written := make(chan error, 1)
 	go func() {
@@ -94,7 +91,7 @@ func (w *world) interruptWhileWaiting() error {
 	}
 	if err := interrupt(r.cmd.Process); err != nil {
 		r.stop()
-		return fmt.Errorf("interrupting go-template-itos: %w", err)
+		return Result{}, fmt.Errorf("interrupting go-template-itos: %w", err)
 	}
 	select {
 	case <-r.done:
@@ -111,19 +108,21 @@ func (w *world) interruptWhileWaiting() error {
 
 // ended records what the stopped run wrote and its exit code for the Then
 // steps, and returns err with them, so a failing step shows the run.
-func (w *world) ended(err error) error {
+func (w *binary) ended(err error) (Result, error) {
 	r := w.running
 	w.running = nil
-	w.stdout, w.stderr = r.stdout.String(), r.stderr.String()
-	w.exit = -1
+	result := Result{Stdout: r.stdout.String(), Stderr: r.stderr.String(), Exit: -1}
 	if r.exited {
-		w.exit = r.cmd.ProcessState.ExitCode()
+		result.Exit = r.cmd.ProcessState.ExitCode()
 	}
 	if err != nil {
-		return fmt.Errorf("%w\n%s", err, w.report())
+		return result, fmt.Errorf("%w\nexit %d\n--- stdout\n%s--- stderr\n%s", err, result.Exit, result.Stdout, result.Stderr)
 	}
-	return nil
+	return result, nil
 }
+
+// Stop ends a run still under way, so no scenario leaves a process behind.
+func (w *binary) Stop() { w.running.stop() }
 
 // stop ends the run if it is still under way, by killing it, and waits for
 // it, so no scenario leaves a process behind and its end is known; on a nil

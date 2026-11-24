@@ -4,9 +4,19 @@
 // (github.com/donvargax/itos, features/features_test.go) and the owner's
 // itos-template's, without either one's generator behaviour.
 //
+// This is the binary driver (decision 14). It runs only where
+// GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER=1 is set, which CI's workflows set;
+// anywhere else TestFeatures logs that it ran nothing, builds nothing and
+// passes, since the scenarios run in process against the ports' fakes
+// (cmd/go-template-itos's TestScenarios). A scenario only this driver can
+// hold carries @binary-only. Every command below assumes the variable set.
+//
 //	go test ./features -count=1                        every live scenario
 //	go test ./features -count=1 -scenarios=<regexp>    the live scenarios with a
 //	                                                   tag the expression matches
+//	go test ./features -count=1 -shard=1/3             the first of three shares
+//	go test ./features -count=1 -timings=<file>        any run, writing where it
+//	                                                   spent its time to <file>
 //	GOCOVERDIR=<dir> go test ./features -count=1       either, go-template-itos
 //	                                                   built with -cover, what
 //	                                                   the scenarios ran in <dir>
@@ -34,32 +44,18 @@
 package features
 
 import (
-	"bufio"
-	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"runtime"
-	"sort"
-	"strings"
 	"testing"
 
 	"github.com/cucumber/godog"
 )
 
-var scenarios = flag.String("scenarios", "", "run only the live scenarios with a tag this regular expression matches")
-
-// stampedVersion is the version the binary under test is stamped with, as a
-// release's build stamps the release's, so a scenario can tell the stamp
-// from the version a build without one says.
-const stampedVersion = "1.2.3-features"
-
-// stampedCommit is the commit the binary under test is stamped with, as a
-// release's build stamps the commit it was built from, so a scenario can
-// name the commit the binary says it was built from.
-const stampedCommit = "0123456789abcdef0123456789abcdef01234567"
+// binaryDriverVariable opts into the binary driver.
+const binaryDriverVariable = "GO_TEMPLATE_ITOS_FEATURES_BINARY_DRIVER"
 
 // versionSymbol and commitSymbol are the variables the build stamps
 // (-ldflags -X).
@@ -69,8 +65,15 @@ const (
 )
 
 func TestFeatures(t *testing.T) {
-	filter, err := tagFilter(*scenarios, ".")
+	if os.Getenv(binaryDriverVariable) != "1" {
+		t.Logf("ran nothing: the binary driver runs only with %s=1; the scenarios run in process under go test ./cmd/go-template-itos", binaryDriverVariable)
+		return
+	}
+	filter, err := TagFilter(Selection(), ".")
 	if err != nil {
+		t.Fatal(err)
+	}
+	if err := Begin(); err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(removeCallerPath)
@@ -84,7 +87,7 @@ func TestFeatures(t *testing.T) {
 	}
 	suite := godog.TestSuite{
 		Name:                "go-template-itos",
-		ScenarioInitializer: func(sc *godog.ScenarioContext) { initializeScenario(sc, root, bin) },
+		ScenarioInitializer: func(sc *godog.ScenarioContext) { Initialize(sc, &binary{root: root, bin: bin}) },
 		Options: &godog.Options{
 			Format:   "pretty",
 			Paths:    []string{"."},
@@ -93,7 +96,11 @@ func TestFeatures(t *testing.T) {
 			TestingT: t,
 		},
 	}
-	if suite.Run() != 0 {
+	failed := suite.Run() != 0
+	if err := End(); err != nil {
+		t.Error(err)
+	}
+	if failed {
 		t.Fatal("a scenario failed")
 	}
 }
@@ -121,77 +128,4 @@ func build(root, dir string) (string, error) {
 		return "", fmt.Errorf("building go-template-itos: %v\n%s", err, out)
 	}
 	return bin, nil
-}
-
-// godog's tag filter for a selection: every live scenario without one, else
-// the live scenarios carrying a tag the expression matches. An expression
-// that matches no tag is an error, so a selection never runs nothing.
-func tagFilter(selection, dir string) (string, error) {
-	if selection == "" {
-		return "~@wip", nil
-	}
-	pattern, err := regexp.Compile(selection)
-	if err != nil {
-		return "", err
-	}
-	tags, err := featureTags(dir)
-	if err != nil {
-		return "", err
-	}
-	var each []string
-	for _, tag := range tags {
-		if pattern.MatchString(tag) {
-			each = append(each, tag+"&&~@wip")
-		}
-	}
-	if len(each) == 0 {
-		return "", &noMatch{selection}
-	}
-	return strings.Join(each, ","), nil
-}
-
-type noMatch struct{ selection string }
-
-func (e *noMatch) Error() string {
-	return "no scenario has a tag that " + e.selection + " matches"
-}
-
-// Every tag written in the feature files under dir, once each, sorted.
-func featureTags(dir string) ([]string, error) {
-	files, err := filepath.Glob(filepath.Join(dir, "*.feature"))
-	if err != nil {
-		return nil, err
-	}
-	seen := map[string]bool{}
-	for _, file := range files {
-		f, err := os.Open(file)
-		if err != nil {
-			return nil, err
-		}
-		lines := bufio.NewScanner(f)
-		for lines.Scan() {
-			line := strings.TrimSpace(lines.Text())
-			if !strings.HasPrefix(line, "@") {
-				continue
-			}
-			for _, word := range strings.Fields(line) {
-				if strings.HasPrefix(word, "#") {
-					break
-				}
-				if strings.HasPrefix(word, "@") {
-					seen[word] = true
-				}
-			}
-		}
-		_ = f.Close()
-		if err := lines.Err(); err != nil {
-			return nil, err
-		}
-	}
-	tags := make([]string, 0, len(seen))
-	for tag := range seen {
-		tags = append(tags, tag)
-	}
-	sort.Strings(tags)
-	return tags, nil
 }
